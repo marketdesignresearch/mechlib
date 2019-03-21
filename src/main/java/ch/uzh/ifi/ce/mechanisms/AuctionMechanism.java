@@ -10,9 +10,11 @@ public interface AuctionMechanism extends PaymentMechanism, Allocator {
     @Override
     default Payment getPayment() {
         return getAuctionResult().getPayment();
-
     }
 
 
-    Allocation getAllocation();
+    @Override
+    default Allocation getAllocation() {
+        return getAuctionResult().getAllocation();
+    }
 }

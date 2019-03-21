@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.vcg;
 
 import ch.uzh.ifi.ce.domain.Allocation;
 import ch.uzh.ifi.ce.domain.AuctionInstance;
+import ch.uzh.ifi.ce.domain.Bidder;
 import ch.uzh.ifi.ce.mechanisms.winnerdetermination.ORWinnerDetermination;
 import ch.uzh.ifi.ce.mechanisms.winnerdetermination.WinnerDetermination;
 
@@ -16,8 +17,13 @@ public class ORVCGAuction extends VCGAuction {
     }
 
     @Override
-    protected WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance) {
-        return new ORWinnerDetermination(auctionInstance);
+    protected WinnerDetermination getWinnerDetermination() {
+        return new ORWinnerDetermination(getAuctionInstance());
+    }
+
+    @Override
+    protected WinnerDetermination getWinnerDeterminationWithout(Bidder bidder) {
+        return new ORWinnerDetermination(getAuctionInstance().without(bidder));
     }
 
 }

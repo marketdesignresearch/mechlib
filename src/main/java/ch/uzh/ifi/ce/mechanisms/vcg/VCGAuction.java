@@ -15,6 +15,11 @@ public abstract class VCGAuction implements AuctionMechanism {
     private final AuctionInstance auctionInstance;
     private final Allocation allocation;
 
+    public VCGAuction(WinnerDetermination winnerDetermination) {
+        this.auctionInstance = null;
+        this.allocation = winnerDetermination.getAllocation();
+    }
+
     public VCGAuction(AuctionInstance auctionInstance, Allocation allocation) {
         this.auctionInstance = auctionInstance;
         this.allocation = allocation;
@@ -22,7 +27,11 @@ public abstract class VCGAuction implements AuctionMechanism {
 
     public VCGAuction(AuctionInstance auctionInstance) {
         this.auctionInstance = auctionInstance;
-        this.allocation = getWinnerDetermination(auctionInstance).getAllocation();
+        this.allocation = getWinnerDetermination().getAllocation();
+    }
+
+    protected AuctionInstance getAuctionInstance() {
+        return auctionInstance;
     }
 
     @Override
@@ -39,14 +48,14 @@ public abstract class VCGAuction implements AuctionMechanism {
 
         Map<Bidder, BidderPayment> payments = new HashMap<>(allocation.getWinners().size());
         MetaInfo metaInfo = allocation.getMetaInfo();
-        if (auctionInstance.getBidders().size() <= 1) {
+        /*FIXME
+        if (allocation.getWinners().size() <= 1) {
             allocation.getWinners().forEach(b -> payments.put(b, new BidderPayment(BigDecimal.ZERO)));
-        } else {
+        } else {*/
             for (Bidder bidder : allocation.getWinners()) {
 
                 BigDecimal valueWithoutBidder = allocation.getTotalAllocationValue().subtract(allocation.allocationOf(bidder).getValue());
-                AuctionInstance auctionWithoutBidder = auctionInstance.without(bidder);
-                WinnerDetermination wdWithoutBidder = getWinnerDetermination(auctionWithoutBidder);
+                WinnerDetermination wdWithoutBidder = getWinnerDeterminationWithout(bidder);
                 Allocation allocationWithoutBidder = wdWithoutBidder.getAllocation();
                 metaInfo = metaInfo.join(allocationWithoutBidder.getMetaInfo());
 
@@ -55,14 +64,15 @@ public abstract class VCGAuction implements AuctionMechanism {
                 payments.put(bidder, new BidderPayment(paymentAmount));
 
             }
-        }
+        //}
         long end = System.currentTimeMillis();
         metaInfo.setJavaRuntime(end - start);
         Payment payment = new Payment(payments, metaInfo);
         return new AuctionResult(payment, allocation);
     }
 
-    protected abstract WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance);
+    protected abstract WinnerDetermination getWinnerDetermination();
+    protected abstract WinnerDetermination getWinnerDeterminationWithout(Bidder bidder);
 
     @Override
     public Allocation getAllocation() {

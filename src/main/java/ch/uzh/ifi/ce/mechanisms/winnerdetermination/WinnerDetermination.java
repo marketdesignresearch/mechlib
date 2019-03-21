@@ -48,9 +48,10 @@ public abstract class WinnerDetermination implements Allocator {
     }
 
     protected Allocation solveWinnerDetermination() {
-        if(auctionInstance.getBidders().isEmpty()){
+        /*FIXME
+        if (auctionInstance.getBidders().isEmpty()) {
             return Allocation.EMPTY_ALLOCATION;
-        }
+        }*/
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
         try {
             IMIPResult mipResult = new SolverClient().solve(getMIP());
@@ -83,6 +84,7 @@ public abstract class WinnerDetermination implements Allocator {
             Builder<BundleBid> bundleBids = ImmutableSet.builder();
             for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
+                    // FIXME: Check if this needs to be adapted to generic quantities. No problem in tests, though..
                     goodsBuilder.addAll(bundleBid.getBundle());
                     bundleBids.add(bundleBid);
                     totalValue = totalValue.add(bundleBid.getAmount());

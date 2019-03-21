@@ -43,6 +43,7 @@ public class ORWinnerDetermination extends WinnerDetermination {
 
         for (Bidder bidder : auctionInstance.getBidders()) {
             for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
+                // FIXME: Adapt to possible generic goods
                 for (Good good : bundleBid.getBundle()) {
                     Constraint noDoubleAssignment = goods.computeIfAbsent(good, g -> new Constraint(CompareType.LEQ, 1));
                     noDoubleAssignment.addTerm(1.0, bidVariables.get(bundleBid));

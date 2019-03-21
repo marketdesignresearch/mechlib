@@ -1,10 +1,6 @@
 package ch.uzh.ifi.ce.mechanisms.winnerdetermination;
 
-import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.Bidder;
-import ch.uzh.ifi.ce.domain.BundleBid;
-import ch.uzh.ifi.ce.domain.Good;
-import ch.uzh.ifi.ce.mechanisms.Allocator;
+import ch.uzh.ifi.ce.domain.*;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
@@ -19,7 +15,7 @@ import java.util.Map;
  * @author Benedikt Buenz
  * 
  */
-public class XORWinnerDetermination extends WinnerDetermination implements Allocator {
+public class XORWinnerDetermination extends WinnerDetermination {
     private final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     private final MIPWrapper winnerDeterminationProgram;
 
@@ -42,9 +38,9 @@ public class XORWinnerDetermination extends WinnerDetermination implements Alloc
                 double bidAmount = bundleBid.getAmount().doubleValue();
                 winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
                 exclusiveBids.addTerm(1, bidI);
-                for (Good good : bundleBid.getBundle()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(good, g -> new Constraint(CompareType.LEQ, 1));
-                    noDoubleAssignment.addTerm(1.0, bidI);
+                for (Map.Entry<Good, Integer> entry : bundleBid.getBundleWithQuantities().entrySet()) {
+                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
+                    noDoubleAssignment.addTerm(entry.getValue(), bidI);
                 }
             }
             winnerDeterminationProgram.add(exclusiveBids);

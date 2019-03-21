@@ -19,10 +19,10 @@ public class VCGTest {
 
     @Before
     public void setUp() {
-        A = new Good(false, 0);
-        B = new Good(false, 1);
-        C = new Good(false, 2);
-        D = new Good(false, 3);
+        A = new SimpleGood(false, 0);
+        B = new SimpleGood(false, 1);
+        C = new SimpleGood(false, 2);
+        D = new SimpleGood(false, 3);
 
     }
 
@@ -37,7 +37,7 @@ public class VCGTest {
         bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
         bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
         bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionInstance auctionInstance = new AuctionInstance(bids, Sets.newHashSet(A, B, C, D));
+        AuctionInstance auctionInstance = new AuctionInstance(bids);
         AuctionMechanism am = new ORVCGAuction(auctionInstance);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
@@ -58,7 +58,7 @@ public class VCGTest {
         bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
         bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
         bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionInstance auctionInstance = new AuctionInstance(bids, Sets.newHashSet(A, B, C, D));
+        AuctionInstance auctionInstance = new AuctionInstance(bids);
         AuctionMechanism am = new XORVCGAuction(auctionInstance);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);

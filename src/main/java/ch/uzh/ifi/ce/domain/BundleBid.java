@@ -1,7 +1,12 @@
 package ch.uzh.ifi.ce.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -13,34 +18,36 @@ import java.util.Set;
  * 
  */
 public class BundleBid {
-    private BigDecimal amount = BigDecimal.ZERO;
-    private final Set<Good> bundle;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BundleBid.class);
+
+
+    private BigDecimal amount;
+    private final Map<Good, Integer> bundle = new HashMap<>();
     private final String id;
 
     /**
-     * The constructor will add this bid to all the goods
-     * 
      * @param amount Bid amount
      * @param bundle Goods to bid on
      * @param id Same id as BundleValue
      */
     public BundleBid(BigDecimal amount, Set<Good> bundle, String id) {
         this.amount = amount;
-        this.bundle = bundle;
+        bundle.forEach(good -> this.bundle.put(good, 1));
+        this.id = id;
+    }
+
+    /**
+     * @param amount Bid amount
+     * @param bundleMap Goods with quantities to bid on
+     * @param id Same id as BundleValue
+     */
+    public BundleBid(BigDecimal amount, Map<Good, Integer> bundleMap, String id) {
+        this.amount = amount;
+        this.bundle.putAll(bundleMap);
         this.id = id;
 
     }
 
-    /**
-     * The constructor will add this bid to all the goods
-     * 
-     * @param amount
-     * @param bundle
-     * @param id
-     */
-    public BundleBid(BigDecimal amount, Set<Good> bundle, int id) {
-        this(amount, bundle, String.valueOf(id));
-    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -50,7 +57,18 @@ public class BundleBid {
      * @return The {@link Good}s that this Bid bids on
      */
     public Set<Good> getBundle() {
-        return Collections.unmodifiableSet(bundle);
+        if (bundle.values().stream().anyMatch(n -> n > 1)) {
+            // TODO: Fix this
+            LOGGER.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
+        }
+        return Collections.unmodifiableSet(bundle.keySet());
+    }
+
+    /**
+     * @return The {@link Good}s that this Bid bids on
+     */
+    public Map<Good, Integer> getBundleWithQuantities() {
+        return Collections.unmodifiableMap(bundle);
     }
 
     public String getId() {
@@ -94,7 +112,7 @@ public class BundleBid {
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {
 
-        return new PotentialCoalition(bundle, bidder, amount);
+        return new PotentialCoalition(bundle.keySet(), bidder, amount);
     }
 
 }

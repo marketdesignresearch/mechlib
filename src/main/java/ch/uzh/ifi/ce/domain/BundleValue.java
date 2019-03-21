@@ -1,12 +1,11 @@
 package ch.uzh.ifi.ce.domain;
 
-import com.sun.istack.internal.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -19,13 +18,12 @@ import java.util.function.UnaryOperator;
  * 
  */
 public class BundleValue implements Comparable<BundleValue>, Serializable {
-    /**
-     * 
-     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(BundleValue.class);
+    
     private static final long serialVersionUID = 1037198522505712712L;
     public static final BundleValue ZERO = new BundleValue(BigDecimal.ZERO, Collections.emptySet(), "ZEROBUNDLE");
-    private BigDecimal amount = BigDecimal.ZERO;
-    private final Set<Good> bundle;
+    private BigDecimal amount;
+    private final Map<Good, Integer> bundle = new HashMap<>();
     private final String id;
 
     /**
@@ -37,7 +35,19 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
      */
     public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
         this.amount = amount;
-        this.bundle = bundle;
+        bundle.forEach(good -> this.bundle.put(good, 1));
+        this.id = id;
+
+    }
+
+    /**
+     * @param amount Bid amount
+     * @param bundleMap Goods with quantities to bid on
+     * @param id Same id as BundleValue
+     */
+    public BundleValue(BigDecimal amount, Map<Good, Integer> bundleMap, String id) {
+        this.amount = amount;
+        this.bundle.putAll(bundleMap);
         this.id = id;
 
     }
@@ -50,12 +60,16 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
      * @return The {@link Good}s that this Value is defined on
      */
     public Set<Good> getBundle() {
-        return Collections.unmodifiableSet(bundle);
+        if (bundle.values().stream().anyMatch(n -> n > 1)) {
+            // TODO: Fix this
+            LOGGER.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
+        }
+        return Collections.unmodifiableSet(bundle.keySet());
     }
 
     public long nonDummySize() {
         Predicate<Good> isDummy = Good::isDummyGood;
-        return bundle.stream().filter(isDummy.negate()).count();
+        return bundle.keySet().stream().filter(isDummy.negate()).count();
     }
 
     public String getId() {
@@ -97,7 +111,7 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
     }
 
     @Override
-    public int compareTo(@NotNull BundleValue o) {
+    public int compareTo(BundleValue o) {
         return Comparator.comparing(BundleValue::getAmount).compare(this, o);
     }
 

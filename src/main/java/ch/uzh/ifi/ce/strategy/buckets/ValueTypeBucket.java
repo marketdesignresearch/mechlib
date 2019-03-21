@@ -1,7 +1,6 @@
 package ch.uzh.ifi.ce.strategy.buckets;
 
 import ch.uzh.ifi.ce.domain.ValueType;
-import com.sun.istack.internal.NotNull;
 
 /**
  * Created by buenz on 28.01.16.
@@ -34,7 +33,7 @@ public class ValueTypeBucket implements StrategyBucket, Comparable<ValueTypeBuck
     }
 
     @Override
-    public int compareTo(@NotNull ValueTypeBucket other) {
+    public int compareTo(ValueTypeBucket other) {
         return type.compareTo(other.type);
     }
 

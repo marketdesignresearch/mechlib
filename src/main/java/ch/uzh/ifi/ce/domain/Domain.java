@@ -48,7 +48,7 @@ public final class Domain {
      */
     public AuctionInstance toAuction() {
         Bids bids = values.toBids();
-        return new AuctionInstance(bids, goods);
+        return new AuctionInstance(bids);
     }
 
     public AuctionInstance toAuction(StrategySpace<?, ?> strategySpace) {
@@ -62,7 +62,7 @@ public final class Domain {
     private AuctionInstance toAuction(StrategySpace<?, ?> strategySpace, Optional<Bidder> bidder, Strategy specificStrategy) {
         Bids bids = new Bids(new HashMap<>(Maps.transformValues(getValues().getValueMap(), strategySpace::applyStrategyTo)));
         bidder.ifPresent(b -> bids.setBid(b, specificStrategy.apply(getValue(b))));
-        return new AuctionInstance(bids, getGoods());
+        return new AuctionInstance(bids);
 
     }
 

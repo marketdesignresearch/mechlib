@@ -2,17 +2,14 @@ package ch.uzh.ifi.ce.domain;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Set;
 
 public class AuctionInstance {
     private final Bids bids;
-    private final Set<Good> goods;
 
-    public AuctionInstance(Bids bids, Set<Good> goods) {
+    public AuctionInstance(Bids bids) {
         this.bids = bids;
-        this.goods = Collections.unmodifiableSet(goods);
     }
 
     public Set<Bidder> getBidders() {
@@ -34,7 +31,7 @@ public class AuctionInstance {
      */
     public AuctionInstance without(Bidder bidder) {
 
-        return new AuctionInstance(bids.without(bidder), goods);
+        return new AuctionInstance(bids.without(bidder));
 
     }
 
@@ -45,12 +42,8 @@ public class AuctionInstance {
      */
     public AuctionInstance of(Set<Bidder> bidders) {
 
-        return new AuctionInstance(bids.of(bidders), goods);
+        return new AuctionInstance(bids.of(bidders));
 
-    }
-
-    public Set<Good> getGoods() {
-        return goods;
     }
 
     // TODO: Does not work with OR*
@@ -65,7 +58,7 @@ public class AuctionInstance {
             BigDecimal payoff = auctionResult.payoffOf(bidder.getKey());
             newBids.setBid(bidder.getKey(), bidder.getValue().reducedBy(payoff));
         }
-        return new AuctionInstance(newBids, goods);
+        return new AuctionInstance(newBids);
     }
 
     public Bid getBid(Bidder bidder) {

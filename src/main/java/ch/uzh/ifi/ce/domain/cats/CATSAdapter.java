@@ -18,9 +18,9 @@ public class CATSAdapter {
         List<Good> goods = new ArrayList<>();
         for (int i = 0; i < catsAuction.getNumberOfGoods() + catsAuction.getNumberOfDummyGoods(); ++i) {
             if (i < catsAuction.getNumberOfGoods()) {
-                goods.add(new Good(false, i));
+                goods.add(new SimpleGood(false, i));
             } else {
-                goods.add(new Good(true, i));
+                goods.add(new SimpleGood(true, i));
             }
         }
         return goods;
