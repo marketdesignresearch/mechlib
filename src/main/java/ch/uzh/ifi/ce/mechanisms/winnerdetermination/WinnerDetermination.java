@@ -5,7 +5,6 @@ import ch.uzh.ifi.ce.mechanisms.Allocator;
 import ch.uzh.ifi.ce.mechanisms.MetaInfo;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.*;
 import edu.harvard.econcs.jopt.solver.client.SolverClient;
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +27,8 @@ public abstract class WinnerDetermination implements Allocator {
     private List<Allocation> intermediateSolutions = null;
     private final AuctionInstance auctionInstance;
     private double lowerBound = 0;
+    private double epsilon = 1e-6;
+    private boolean displayOutput = false;
 
     public WinnerDetermination(AuctionInstance auctionInstance) {
         this.auctionInstance = auctionInstance;
@@ -53,6 +54,8 @@ public abstract class WinnerDetermination implements Allocator {
             return Allocation.EMPTY_ALLOCATION;
         }*/
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
+        getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
+        getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
         try {
             IMIPResult mipResult = new SolverClient().solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
@@ -80,17 +83,16 @@ public abstract class WinnerDetermination implements Allocator {
         ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
         for (Bidder bidder : auctionInstance.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
-            Builder<Good> goodsBuilder = ImmutableSet.builder();
-            Builder<BundleBid> bundleBids = ImmutableSet.builder();
+            ImmutableMap.Builder<Good, Integer> goodsBuilder = ImmutableMap.builder();
+            ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
             for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    // FIXME: Check if this needs to be adapted to generic quantities. No problem in tests, though..
-                    goodsBuilder.addAll(bundleBid.getBundle());
+                    goodsBuilder.putAll(bundleBid.getBundleWithQuantities());
                     bundleBids.add(bundleBid);
                     totalValue = totalValue.add(bundleBid.getAmount());
                 }
             }
-            Set<Good> goods = goodsBuilder.build();
+            Map<Good, Integer> goods = goodsBuilder.build();
             if (!goods.isEmpty()) {
                 trades.put(bidder, new BidderAllocation(totalValue, goods, bundleBids.build()));
             }
@@ -111,4 +113,11 @@ public abstract class WinnerDetermination implements Allocator {
         this.lowerBound = lowerBound;
     }
 
+    public void setEpsilon(double epsilon) {
+        this.epsilon = epsilon;
+    }
+
+    public void setDisplayOutput(boolean displayOutput) {
+        this.displayOutput = displayOutput;
+    }
 }

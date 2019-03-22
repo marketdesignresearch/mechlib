@@ -56,6 +56,7 @@ public class BundleBid {
     /**
      * @return The {@link Good}s that this Bid bids on
      */
+    @Deprecated
     public Set<Good> getBundle() {
         if (bundle.values().stream().anyMatch(n -> n > 1)) {
             // TODO: Fix this
