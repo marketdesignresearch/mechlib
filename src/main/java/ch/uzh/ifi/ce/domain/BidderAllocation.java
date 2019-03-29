@@ -1,5 +1,6 @@
 package ch.uzh.ifi.ce.domain;
 
+import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,28 +53,24 @@ public final class BidderAllocation {
         return totalValue;
     }
 
-    @Deprecated
-    public Set<Good> getGoods() {
-        if (goods.values().stream().anyMatch(n -> n > 1)) {
-            // TODO: Fix this
-            LOGGER.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
-        }
-        return Collections.unmodifiableSet(goods.keySet());
+    public Map<Good, Integer> getGoodsWithQuantities() {
+        return Collections.unmodifiableMap(goods);
     }
 
-    public Map<Good, Integer> getGoodsWithQuantities() {
-        return goods;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BidderAllocation that = (BidderAllocation) o;
+        if (!totalValue.equals(that.totalValue)) return false;
+        return goods.equals(that.goods);
     }
 
     @Override
     public int hashCode() {
-        return totalValue.hashCode() ^ goods.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        BidderAllocation otherBidderAllocation = (BidderAllocation) obj;
-        return goods.equals(otherBidderAllocation.goods)&&getValue().compareTo(otherBidderAllocation.getValue())==0;
+        int result = totalValue.hashCode();
+        result = 31 * result + goods.hashCode();
+        return result;
     }
 
     @Override
@@ -86,7 +83,6 @@ public final class BidderAllocation {
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {
-
         return new PotentialCoalition(goods, bidder, totalValue);
     }
 

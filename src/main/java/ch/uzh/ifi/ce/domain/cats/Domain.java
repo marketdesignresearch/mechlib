@@ -1,10 +1,8 @@
-package ch.uzh.ifi.ce.domain;
+package ch.uzh.ifi.ce.domain.cats;
 
+import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.strategy.Strategy;
 import ch.uzh.ifi.ce.strategy.StrategySpace;
-import ch.uzh.ifi.ce.domain.cats.CATSAdapter;
-import ch.uzh.ifi.ce.domain.cats.CATSAuction;
-import ch.uzh.ifi.ce.domain.cats.CATSParser;
 import com.google.common.collect.Maps;
 
 import java.io.IOException;

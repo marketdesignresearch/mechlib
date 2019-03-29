@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.domain;
 
 import ch.uzh.ifi.ce.mechanisms.MechanismResult;
 import ch.uzh.ifi.ce.mechanisms.MetaInfo;
+import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * @author Benedikt Buenz
  */
 public class Allocation implements MechanismResult {
-    public static final Allocation EMPTY_ALLOCATION=new Allocation(ImmutableMap.of(),new Bids(new HashMap<>()),new MetaInfo());
+    public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new Bids(new HashMap<>()), new MetaInfo());
     private final BigDecimal totalValue;
     private final Map<Bidder, BidderAllocation> trades;
     private final Bids bids;
@@ -72,11 +73,7 @@ public class Allocation implements MechanismResult {
     }
 
     public BidderAllocation allocationOf(Bidder bidder) {
-        if (trades.containsKey(bidder)) {
-            return trades.get(bidder);
-        } else {
-            return BidderAllocation.ZERO_ALLOCATION;
-        }
+        return trades.getOrDefault(bidder, BidderAllocation.ZERO_ALLOCATION);
     }
 
     public Set<Bidder> getWinners() {
@@ -91,7 +88,10 @@ public class Allocation implements MechanismResult {
         if (coalitions == null) {
 
             Set<PotentialCoalition> coalitions = new HashSet<>(trades.size());
-            coalitions.addAll(getWinners().stream().map(bidder -> allocationOf(bidder).getPotentialCoalition(bidder)).filter(pc->pc.getValue().signum()>0).collect(Collectors.toList()));
+            coalitions.addAll(getWinners().stream()
+                    .map(bidder -> allocationOf(bidder).getPotentialCoalition(bidder))
+                    .filter(pc -> pc.getValue().signum() > 0)
+                    .collect(Collectors.toList()));
             this.coalitions = coalitions;
         }
         return this.coalitions;
@@ -105,6 +105,9 @@ public class Allocation implements MechanismResult {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Allocation otherAllocation = (Allocation) obj;
         return trades.equals(otherAllocation.trades);
     }

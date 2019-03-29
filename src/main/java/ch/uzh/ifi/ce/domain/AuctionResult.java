@@ -1,15 +1,21 @@
 package ch.uzh.ifi.ce.domain;
 
+import ch.uzh.ifi.ce.domain.cats.Domain;
+import ch.uzh.ifi.ce.mechanisms.MechanismResult;
+import ch.uzh.ifi.ce.mechanisms.MetaInfo;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class AuctionResult {
+public class AuctionResult implements MechanismResult {
     private final Payment payment;
     private final Allocation allocation;
+    private final MetaInfo metaInfo;
 
     public AuctionResult(Payment payment, Allocation allocation) {
         this.payment = payment;
         this.allocation = allocation;
+        this.metaInfo = allocation.getMetaInfo().join(payment.getMetaInfo());
     }
 
     public Payment getPayment() {
@@ -51,6 +57,11 @@ public class AuctionResult {
         int result = payment.hashCode();
         result = 31 * result + allocation.hashCode();
         return result;
+    }
+
+    @Override
+    public MetaInfo getMetaInfo() {
+        return metaInfo;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.ce.domain;
 
+import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.mechanisms.winnerdetermination;
+package ch.uzh.ifi.ce.winnerdetermination;
 
 import ch.uzh.ifi.ce.domain.*;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Benedikt Buenz
  * 
  */
-public class XORWinnerDetermination extends WinnerDetermination {
+public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     private final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     private final MIPWrapper winnerDeterminationProgram;
 

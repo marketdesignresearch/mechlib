@@ -41,9 +41,9 @@ public class CATSAdapter {
             BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, catsBid.getId());
             Bidder bidder = new Bidder(bidderId);
             if (!values.contains(bidderId)) {
-                values.addValue(bidder, new CombinatorialValue(ValueType.CATS));
+                values.addValue(bidder, new Value(ValueType.CATS));
             }
-            ((CombinatorialValue) values.getValue(bidder)).addBundleValue(bundleValue);
+            values.getValue(bidder).addBundleValue(bundleValue);
         }
         return new Domain(values, new HashSet<>(goods), catsAuction);
 

@@ -43,11 +43,7 @@ public final class Payment implements MechanismResult {
     }
 
     public BidderPayment paymentOf(Bidder bidder) {
-        if (payments.containsKey(bidder)) {
-            return payments.get(bidder);
-        } else {
-            return BidderPayment.ZERO_PAYMENT;
-        }
+        return payments.getOrDefault(bidder, BidderPayment.ZERO_PAYMENT);
     }
 
     @Override
@@ -57,13 +53,15 @@ public final class Payment implements MechanismResult {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Payment otherPayment = (Payment) obj;
         return payments.equals(otherPayment.payments);
     }
 
     @Override
     public String toString() {
-
         return "Payment[payments=" + payments + "\nmetaInfo=" + metaInfo + "]";
     }
 

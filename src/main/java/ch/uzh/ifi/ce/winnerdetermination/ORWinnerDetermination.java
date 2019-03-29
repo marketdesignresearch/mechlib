@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.mechanisms.winnerdetermination;
+package ch.uzh.ifi.ce.winnerdetermination;
 
 import ch.uzh.ifi.ce.domain.AuctionInstance;
 import ch.uzh.ifi.ce.domain.Bidder;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Benedikt Buenz
  * 
  */
-public class ORWinnerDetermination extends WinnerDetermination {
+public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     protected final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     protected final MIPWrapper winnerDeterminationProgram;
 

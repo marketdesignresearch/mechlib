@@ -2,12 +2,8 @@ package ch.uzh.ifi.ce.domain;
 
 import java.io.Serializable;
 
-//Functionality into new Bid class
 public class Bidder implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -4896848195956099257L;
     private final String id;
 
@@ -26,9 +22,8 @@ public class Bidder implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
+        if (this == object) return true;
+        if (object.getClass() != this.getClass()) return false;
         Bidder otherBidder = (Bidder) object;
         return id.equals(otherBidder.getId());
     }

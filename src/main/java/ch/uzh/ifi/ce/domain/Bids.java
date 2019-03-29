@@ -44,7 +44,6 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     }
 
     public Bids of(Set<Bidder> bidders) {
-
         Map<Bidder, Bid> newBidderBidMap = new HashMap<>(Maps.filterKeys(bids, bidders::contains));
         return new Bids(newBidderBidMap);
     }

@@ -25,13 +25,15 @@ public class BidderPayment implements Comparable<BidderPayment> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        BidderPayment otherPayment = (BidderPayment) obj;
-        return amount.compareTo(otherPayment.amount) == 0;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BidderPayment that = (BidderPayment) o;
+        return amount.equals(that.amount);
     }
 
     @Override
     public int hashCode() {
-        return amount.stripTrailingZeros().hashCode();
+        return amount.hashCode();
     }
 }

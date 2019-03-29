@@ -1,22 +1,15 @@
-package ch.uzh.ifi.ce.mechanisms.winnerdetermination;
+package ch.uzh.ifi.ce.winnerdetermination;
 
 import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.mechanisms.Allocator;
-import ch.uzh.ifi.ce.mechanisms.MetaInfo;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.*;
 import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
-import edu.harvard.econcs.jopt.solver.mip.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,14 +18,9 @@ public abstract class WinnerDetermination implements Allocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
-    private final AuctionInstance auctionInstance;
     private double lowerBound = 0;
     private double epsilon = 1e-6;
     private boolean displayOutput = false;
-
-    public WinnerDetermination(AuctionInstance auctionInstance) {
-        this.auctionInstance = auctionInstance;
-    }
 
     protected abstract IMIP getMIP();
 
@@ -44,15 +32,7 @@ public abstract class WinnerDetermination implements Allocator {
         return result;
     }
 
-    protected AuctionInstance getAuction() {
-        return auctionInstance;
-    }
-
     protected Allocation solveWinnerDetermination() {
-        /*FIXME
-        if (auctionInstance.getBidders().isEmpty()) {
-            return Allocation.EMPTY_ALLOCATION;
-        }*/
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
         getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
@@ -77,32 +57,7 @@ public abstract class WinnerDetermination implements Allocator {
         }
     }
 
-    protected abstract Variable getBidVariable(BundleBid bundleBid);
-
-    protected Allocation adaptMIPResult(ISolution mipResult) {
-        ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
-        for (Bidder bidder : auctionInstance.getBidders()) {
-            BigDecimal totalValue = BigDecimal.ZERO;
-            ImmutableMap.Builder<Good, Integer> goodsBuilder = ImmutableMap.builder();
-            ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
-            for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
-                if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    goodsBuilder.putAll(bundleBid.getBundleWithQuantities());
-                    bundleBids.add(bundleBid);
-                    totalValue = totalValue.add(bundleBid.getAmount());
-                }
-            }
-            Map<Good, Integer> goods = goodsBuilder.build();
-            if (!goods.isEmpty()) {
-                trades.put(bidder, new BidderAllocation(totalValue, goods, bundleBids.build()));
-            }
-        }
-
-        MetaInfo metaInfo = new MetaInfo();
-        metaInfo.setNumberOfMIPs(1);
-        metaInfo.setMipSolveTime(mipResult.getSolveTime());
-        return new Allocation(trades.build(), auctionInstance.getBids(), metaInfo);
-    }
+    protected abstract Allocation adaptMIPResult(ISolution mipResult);
 
     public List<Allocation> getIntermediateSolutions() {
         getAllocation();

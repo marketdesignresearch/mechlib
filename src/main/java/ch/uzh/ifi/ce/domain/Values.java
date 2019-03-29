@@ -12,11 +12,11 @@ public class Values implements Iterable<Entry<Bidder, Value>>, Serializable {
      * 
      */
     private static final long serialVersionUID = -580085158734188659L;
-    private final Map<Bidder, Value> combinatorialValues;
+    private final Map<Bidder, Value> values;
 
-    public Values(Map<Bidder, Value> combinatorialValues) {
+    public Values(Map<Bidder, Value> values) {
 
-        this.combinatorialValues = combinatorialValues;
+        this.values = values;
     }
 
     public Values() {
@@ -29,11 +29,11 @@ public class Values implements Iterable<Entry<Bidder, Value>>, Serializable {
      * @see ch.uzh.ifi.ce.cca.domain.Values#getValueMap()
      */
     public Map<Bidder, Value> getValueMap() {
-        return combinatorialValues;
+        return values;
     }
 
     public boolean addValue(Bidder bidder, Value combinatorialValue) {
-        return combinatorialValues.put(bidder, combinatorialValue) == null;
+        return values.put(bidder, combinatorialValue) == null;
     }
 
     public Values subValue(Collection<Bidder> bidders) {

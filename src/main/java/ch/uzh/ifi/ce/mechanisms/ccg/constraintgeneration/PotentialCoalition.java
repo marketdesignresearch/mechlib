@@ -1,5 +1,7 @@
-package ch.uzh.ifi.ce.domain;
+package ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration;
 
+import ch.uzh.ifi.ce.domain.Bidder;
+import ch.uzh.ifi.ce.domain.Good;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

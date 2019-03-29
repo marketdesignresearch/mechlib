@@ -56,17 +56,6 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
         return amount;
     }
 
-    /**
-     * @return The {@link Good}s that this Value is defined on
-     */
-    public Set<Good> getBundle() {
-        if (bundle.values().stream().anyMatch(n -> n > 1)) {
-            // TODO: Fix this
-            LOGGER.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
-        }
-        return Collections.unmodifiableSet(bundle.keySet());
-    }
-
     public long nonDummySize() {
         Predicate<Good> isDummy = Good::isDummyGood;
         return bundle.keySet().stream().filter(isDummy.negate()).count();
@@ -81,26 +70,14 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
         return "BundleBid[id=" + id + ", amount=" + amount + ", goods=" + bundle + "]";
     }
 
-    /**
-     * based on id
-     */
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object instanceof BundleValue) {
-            BundleValue otherBid = (BundleValue) object;
-            return id.equals(otherBid.getId());
-        } else {
-            return false;
-        }
-
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BundleValue that = (BundleValue) o;
+        return id.equals(that.id);
     }
 
-    /**
-     * based on id
-     */
     @Override
     public int hashCode() {
         return id.hashCode();
