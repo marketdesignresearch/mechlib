@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.ccg;
 
 import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.MetaInfo;
 import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.BlockingAllocation;
 import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.BlockingAllocationFinder;
@@ -60,7 +61,7 @@ public class CCGAuction implements AuctionMechanism {
         do {
 
             if (blockingAllocation != null) {
-                // Ommit first run
+                // Omit first run
                 LOGGER.debug("adding constraints");
                 for (Allocation allo : blockingAllocation) {
                     constraintGenerator.addConstraint(allo, lastResult);

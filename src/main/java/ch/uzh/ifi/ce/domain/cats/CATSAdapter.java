@@ -38,7 +38,7 @@ public class CATSAdapter {
                     bidderId = "DB" + id;
                 }
             }
-            BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, catsBid.getId());
+            BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, String.valueOf(catsBid.getId()));
             Bidder bidder = new Bidder(bidderId);
             if (!values.contains(bidderId)) {
                 values.addValue(bidder, new Value(ValueType.CATS));

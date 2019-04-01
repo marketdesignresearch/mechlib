@@ -2,7 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation;
 
 import ch.uzh.ifi.ce.domain.Allocation;
 import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.domain.Bidder;
 import ch.uzh.ifi.ce.utils.PrecisionUtils;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;

@@ -1,6 +1,6 @@
 package ch.uzh.ifi.ce.mechanisms.ccg.paymentrules;
 
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.ReferencePointFactory;
 
 public class InversePayoffWeightsFactory implements CorePaymentWeightsFactory {

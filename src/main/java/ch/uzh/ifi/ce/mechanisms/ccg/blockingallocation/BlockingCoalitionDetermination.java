@@ -1,6 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import ch.uzh.ifi.ce.winnerdetermination.ORWinnerDetermination;
 import edu.harvard.econcs.jopt.solver.ISolution;
@@ -56,7 +57,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
             if (previousPayoff.containsKey(bidder)) {
                 BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
                 BigDecimal tradeValue = oldBidderAllocation.getValue().subtract(previousPayoff.get(bidder));
-                BidderAllocation bidderAllocation = new BidderAllocation(tradeValue, oldBidderAllocation.getGoodsWithQuantities(), oldBidderAllocation.getAcceptedBids());
+                BidderAllocation bidderAllocation = new BidderAllocation(tradeValue, oldBidderAllocation.getGoods(), oldBidderAllocation.getAcceptedBids());
                 allocations.put(bidder, bidderAllocation);
                 potentialCoalitions.add(bidderAllocation.getPotentialCoalition(bidder));
             } else {

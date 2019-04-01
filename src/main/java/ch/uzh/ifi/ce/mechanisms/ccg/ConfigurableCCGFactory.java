@@ -3,7 +3,7 @@ package ch.uzh.ifi.ce.mechanisms.ccg;
 import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import ch.uzh.ifi.ce.domain.Allocation;
 import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.domain.Payment;
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.*;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.ReferencePointFactory;

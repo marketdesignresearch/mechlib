@@ -1,64 +1,57 @@
 package ch.uzh.ifi.ce.domain;
 
 import com.google.common.collect.Maps;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.Map.Entry;
 
+@RequiredArgsConstructor
+@ToString
 public class Bids implements Iterable<Entry<Bidder, Bid>> {
-    private final Map<Bidder, Bid> bids;
-
-    public Bids(Map<Bidder, Bid> bids) {
-        this.bids = bids;
-    }
+    @Getter
+    private final Map<Bidder, Bid> bidMap;
 
     public Bids() {
         this(new LinkedHashMap<>());
     }
 
-    public Map<Bidder, Bid> getBidMap() {
-        return bids;
-    }
-
     public boolean setBid(Bidder bidder, Bid bid) {
-        return bids.put(bidder, bid) == null;
-    }
-
-    @Override
-    public Iterator<Entry<Bidder, Bid>> iterator() {
-        return bids.entrySet().iterator();
+        return bidMap.put(bidder, bid) == null;
     }
 
     public Set<Bidder> getBidders() {
-        return bids.keySet();
+        return bidMap.keySet();
     }
 
     public Collection<Bid> getBids() {
-        return bids.values();
+        return bidMap.values();
     }
 
     public Bids without(Bidder bidder) {
-        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(bids);
+        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(bidMap);
         newBidderBidMap.remove(bidder);
         return new Bids(newBidderBidMap);
     }
 
     public Bids of(Set<Bidder> bidders) {
-        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(Maps.filterKeys(bids, bidders::contains));
+        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(Maps.filterKeys(bidMap, bidders::contains));
         return new Bids(newBidderBidMap);
     }
 
     public Bid getBid(Bidder bidder) {
-        return bids.get(bidder);
+        return bidMap.get(bidder);
     }
 
     public boolean contains(String id) {
         Bidder searchBidder = new Bidder(id);
-        return bids.containsKey(searchBidder);
+        return bidMap.containsKey(searchBidder);
     }
 
     @Override
-    public String toString() {
-        return "Bids[bidMap=" + bids + "]";
+    public Iterator<Entry<Bidder, Bid>> iterator() {
+        return bidMap.entrySet().iterator();
     }
 }

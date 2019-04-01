@@ -1,16 +1,18 @@
 package ch.uzh.ifi.ce.domain;
 
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
+@RequiredArgsConstructor
 public class AuctionInstance {
+    @Getter
     private final Bids bids;
-
-    public AuctionInstance(Bids bids) {
-        this.bids = bids;
-    }
 
     public Set<Bidder> getBidders() {
         return bids.getBidders();
@@ -20,19 +22,13 @@ public class AuctionInstance {
         return bids.getBids();
     }
 
-    public Bids getBids() {
-        return bids;
-    }
-
     /**
-     * 
+     *
      * @param bidder to be removed
      * @return A new auction without the specified bidder
      */
     public AuctionInstance without(Bidder bidder) {
-
         return new AuctionInstance(bids.without(bidder));
-
     }
 
     /**
@@ -41,9 +37,7 @@ public class AuctionInstance {
      * @return A new auction including only the specified bidders
      */
     public AuctionInstance of(Set<Bidder> bidders) {
-
         return new AuctionInstance(bids.of(bidders));
-
     }
 
     // TODO: Does not work with OR*

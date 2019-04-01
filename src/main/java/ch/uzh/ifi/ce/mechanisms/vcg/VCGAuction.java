@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.vcg;
 
 import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.MetaInfo;
 import ch.uzh.ifi.ce.winnerdetermination.WinnerDetermination;
 

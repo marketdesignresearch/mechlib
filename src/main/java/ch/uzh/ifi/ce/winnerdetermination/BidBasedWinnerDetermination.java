@@ -43,7 +43,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
             ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
             for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    goodsBuilder.putAll(bundleBid.getBundleWithQuantities());
+                    goodsBuilder.putAll(bundleBid.getGoodsMap());
                     bundleBids.add(bundleBid);
                     totalValue = totalValue.add(bundleBid.getAmount());
                 }

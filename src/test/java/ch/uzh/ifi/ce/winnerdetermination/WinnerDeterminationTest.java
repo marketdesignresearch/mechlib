@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.winnerdetermination;
 
 import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.mechanisms.Allocator;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.ccg.CCGAuction;
 import ch.uzh.ifi.ce.mechanisms.ccg.CCGMechanismFactory;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.VCGReferencePointFactory;

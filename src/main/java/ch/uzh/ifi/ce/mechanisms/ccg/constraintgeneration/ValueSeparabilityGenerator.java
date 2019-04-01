@@ -1,5 +1,6 @@
 package ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration;
 
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.BlockedBidders;
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.CorePaymentRule;
 import ch.uzh.ifi.ce.domain.*;

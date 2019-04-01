@@ -2,7 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration;
 
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.CorePaymentRule;
 import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import com.google.common.collect.Sets;
 
 import java.util.HashSet;

@@ -1,7 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration;
 
 import ch.uzh.ifi.ce.domain.Allocation;
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 
 public interface ConstraintGenerator {
     /**

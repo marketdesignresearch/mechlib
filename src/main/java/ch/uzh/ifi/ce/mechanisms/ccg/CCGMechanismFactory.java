@@ -1,7 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.ccg;
 
 import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 
 public interface CCGMechanismFactory extends MechanismFactory {
     @Override

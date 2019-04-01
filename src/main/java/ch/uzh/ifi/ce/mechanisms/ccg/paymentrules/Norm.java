@@ -1,6 +1,6 @@
 package ch.uzh.ifi.ce.mechanisms.ccg.paymentrules;
 
-import ch.uzh.ifi.ce.domain.AuctionResult;
+import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 
 public enum Norm {
     MANHATTAN, EUCLIDEAN, MAXIMUM, ITERATIVE_MAXIMUM;
