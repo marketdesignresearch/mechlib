@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,8 +25,12 @@ public class Bid {
         return bundleBids.add(bundleBid);
     }
 
+    public BundleBid getBundleBid(Map<Good, Integer> bundleBid) {
+        return bundleBids.stream().filter(b -> b.getBundle().equals(bundleBid)).findFirst().orElse(null);
+}
+
     public Bid reducedBy(BigDecimal payoff) {
-        LinkedHashSet<BundleBid> newBids = getBundleBids().stream().map(bid -> bid.reducedBy(payoff)).collect(Collectors.toCollection(() -> new LinkedHashSet<>()));
+        LinkedHashSet<BundleBid> newBids = getBundleBids().stream().map(bid -> bid.reducedBy(payoff)).collect(Collectors.toCollection(LinkedHashSet::new));
         return new Bid(newBids);
     }
 

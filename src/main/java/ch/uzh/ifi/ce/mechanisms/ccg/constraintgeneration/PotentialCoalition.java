@@ -38,7 +38,6 @@ public class PotentialCoalition {
         this.value = value;
     }
 
-
     @Deprecated
     public Set<Good> getGoods() {
         if (goods.values().stream().anyMatch(n -> n > 1)) {
@@ -48,7 +47,7 @@ public class PotentialCoalition {
         return Collections.unmodifiableSet(goods.keySet());
     }
 
-    public Map<Good, Integer> getGoodsWithQuantities() {
+    public Map<Good, Integer> getGoodsMap() {
         return goods;
     }
 

@@ -43,7 +43,7 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
 
         for (Bidder bidder : auctionInstance.getBidders()) {
             for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
-                for (Map.Entry<Good, Integer> entry : bundleBid.getGoodsMap().entrySet()) {
+                for (Map.Entry<Good, Integer> entry : bundleBid.getBundle().entrySet()) {
                     Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
                     noDoubleAssignment.addTerm(entry.getValue(), bidVariables.get(bundleBid));
                 }

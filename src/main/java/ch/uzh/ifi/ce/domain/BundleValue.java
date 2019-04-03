@@ -32,21 +32,21 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
     @Getter
     private final BigDecimal amount;
     @Getter
-    private final Map<Good, Integer> goodsMap;
+    private final Bundle bundle;
     @Getter
     private final String id;
 
     public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, bundle.stream().collect(Collectors.toMap(good -> good, good -> 1)), id);
+        this(amount, new Bundle(bundle.stream().collect(Collectors.toMap(good -> good, good -> 1))), id);
     }
 
     public long nonDummySize() {
         Predicate<Good> isDummy = Good::isDummyGood;
-        return goodsMap.keySet().stream().filter(isDummy.negate()).count();
+        return bundle.keySet().stream().filter(isDummy.negate()).count();
     }
 
     public BundleBid toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
-        return new BundleBid(valueToBidFunction.apply(amount), goodsMap, id);
+        return new BundleBid(valueToBidFunction.apply(amount), bundle, id);
     }
 
     @Override

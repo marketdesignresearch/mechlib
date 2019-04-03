@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class BundleBid {
     @Getter
     private final BigDecimal amount;
     @Getter
-    private final Map<Good, Integer> goodsMap;
+    private final Bundle bundle;
     @Getter
     private final String id;
 
@@ -40,27 +39,30 @@ public class BundleBid {
      * @param id Same id as BundleValue
      */
     public BundleBid(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, bundle.stream().collect(Collectors.toMap(good -> good, good -> 1)), id);
+        this(amount, Bundle.singleGoods(bundle), id);
     }
 
     /**
      * @return The {@link Good}s that this Bid bids on
      */
     @Deprecated
-    public Set<Good> getBundle() {
-        if (goodsMap.values().stream().anyMatch(n -> n > 1)) {
-            // TODO: Fix this
+    public Set<Good> getGoods() {
+        if (bundle.values().stream().anyMatch(n -> n > 1)) {
             log.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
         }
-        return Collections.unmodifiableSet(goodsMap.keySet());
+        return Collections.unmodifiableSet(bundle.keySet());
     }
 
     public BundleBid reducedBy(BigDecimal amount) {
-        return new BundleBid(getAmount().subtract(amount).max(BigDecimal.ZERO), goodsMap, id);
+        return new BundleBid(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
+    }
+
+    public BundleBid withAmount(BigDecimal amount) {
+        return new BundleBid(amount, bundle, id);
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {
-        return new PotentialCoalition(goodsMap.keySet(), bidder, amount);
+        return new PotentialCoalition(bundle.keySet(), bidder, amount);
     }
 
 }

@@ -38,7 +38,7 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
                 double bidAmount = bundleBid.getAmount().doubleValue();
                 winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
                 exclusiveBids.addTerm(1, bidI);
-                for (Map.Entry<Good, Integer> entry : bundleBid.getGoodsMap().entrySet()) {
+                for (Map.Entry<Good, Integer> entry : bundleBid.getBundle().entrySet()) {
                     Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
                     noDoubleAssignment.addTerm(entry.getValue(), bidI);
                 }

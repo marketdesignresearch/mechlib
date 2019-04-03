@@ -15,6 +15,7 @@ import ch.uzh.ifi.ce.utils.CPLEXUtils;
 import ch.uzh.ifi.ce.utils.PrecisionUtils;
 import com.google.common.collect.ImmutableList;
 import org.assertj.core.data.Offset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
+@Ignore // Takes quite long and is not very relevant at currently
 public class CCGMechanismTest {
     private final MechanismFactory factory;
 

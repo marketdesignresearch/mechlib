@@ -1,9 +1,6 @@
 package ch.uzh.ifi.ce.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -15,6 +12,7 @@ import java.io.Serializable;
  * @author Benedikt Bünz
  *
  */
+@AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString
@@ -25,6 +23,7 @@ public final class SimpleGood implements Good, Serializable {
     private final boolean dummyGood;
     @Getter
     private final String id;
+    private int availability = 1;
 
     public SimpleGood(int id) {
         this(false, String.valueOf(id));
@@ -36,5 +35,10 @@ public final class SimpleGood implements Good, Serializable {
 
     public SimpleGood(boolean dummyGood, int id) {
         this(dummyGood, String.valueOf(id));
+    }
+
+    @Override
+    public int available() {
+        return availability;
     }
 }
