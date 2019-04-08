@@ -1,4 +1,4 @@
-package ch.uzh.ifi.ce.mechanisms.cca.supplementaryround;
+package ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround;
 
 import ch.uzh.ifi.ce.domain.Bid;
 import ch.uzh.ifi.ce.domain.Bidder;

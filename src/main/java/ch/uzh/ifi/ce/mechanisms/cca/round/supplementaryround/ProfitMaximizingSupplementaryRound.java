@@ -1,17 +1,15 @@
-package ch.uzh.ifi.ce.mechanisms.cca.supplementaryround;
+package ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround;
 
 import ch.uzh.ifi.ce.domain.Bid;
 import ch.uzh.ifi.ce.domain.Bidder;
 import ch.uzh.ifi.ce.domain.BundleBid;
-import ch.uzh.ifi.ce.domain.Good;
 import ch.uzh.ifi.ce.mechanisms.cca.CCAuction;
-import ch.uzh.ifi.ce.mechanisms.cca.Price;
-import ch.uzh.ifi.ce.mechanisms.cca.demandquery.DemandQuery;
+import ch.uzh.ifi.ce.mechanisms.cca.Prices;
+import ch.uzh.ifi.ce.demandquery.DemandQuery;
 import com.google.common.collect.Sets;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
 
@@ -19,16 +17,12 @@ public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
 
     @Setter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-    private Map<Good, Price> prices;
+    private Prices prices;
     private DemandQuery demandQuery;
 
-    public ProfitMaximizingSupplementaryRound(CCAuction cca) {
-        this(cca, true);
-    }
-
-    public ProfitMaximizingSupplementaryRound(CCAuction cca, boolean useLastDemandedPrices) {
-        this.prices = useLastDemandedPrices ? cca.getLastDemandedPrices() : cca.getPrices();
-        this.demandQuery = cca.getDemandQuery();
+    public ProfitMaximizingSupplementaryRound(CCAuction auction) {
+        this.prices = auction.getLatestPrices();
+        this.demandQuery = auction.getDemandQuery();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.ce.domain;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -53,5 +54,17 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     @Override
     public Iterator<Entry<Bidder, Bid>> iterator() {
         return bidMap.entrySet().iterator();
+    }
+
+    public Bids join(Bids other) {
+        Bids result = new Bids();
+        Set<Bidder> bidders = Sets.union(getBidders(), other.getBidders());
+        bidders.forEach(b -> {
+            Bid joined = new Bid();
+            if (getBid(b) != null) getBid(b).getBundleBids().forEach(joined::addBundleBid);
+            if (other.getBid(b) != null) other.getBid(b).getBundleBids().forEach(joined::addBundleBid);
+            result.setBid(b, joined);
+        });
+        return result;
     }
 }

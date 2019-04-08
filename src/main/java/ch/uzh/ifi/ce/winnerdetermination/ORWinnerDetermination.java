@@ -55,7 +55,7 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     }
 
     @Override
-    protected MIPWrapper getMIP() {
+    public MIPWrapper getMIP() {
         return winnerDeterminationProgram;
     }
 

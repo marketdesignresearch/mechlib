@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.cca.priceupdate;
 
 import ch.uzh.ifi.ce.domain.Good;
 import ch.uzh.ifi.ce.mechanisms.cca.Price;
+import ch.uzh.ifi.ce.mechanisms.cca.Prices;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,17 +19,8 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
     private BigDecimal constant = DEFAULT_CONSTANT;
     private int round = 1;
 
-    @Getter
-    private Map<Good, Price> lastPrices = new HashMap<>();
-
     @Override
-    public Map<Good, Price> updatePrices(Map<Good, Price> oldPrices, Map<Good, Integer> demand) {
-        // Fill the last prices map with initial values
-        if (lastPrices.isEmpty()) {
-            for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
-                lastPrices.put(oldPriceEntry.getKey(), oldPriceEntry.getValue());
-            }
-        }
+    public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
 
         Map<Good, Price> newPrices = new HashMap<>();
         for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
@@ -37,14 +29,9 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
             BigDecimal factor = constant.divide(BigDecimal.valueOf(Math.sqrt(round)), RoundingMode.HALF_UP);
             BigDecimal price = oldPriceEntry.getValue().getAmount().add(factor.multiply(diff));
             newPrices.put(good, new Price(price));
-
-            // Overdemanded
-            if (price.compareTo(oldPriceEntry.getValue().getAmount()) > 0) {
-                lastPrices.put(good, oldPriceEntry.getValue());
-            }
         }
 
         round++;
-        return newPrices;
+        return new Prices(newPrices);
     }
 }

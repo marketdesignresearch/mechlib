@@ -52,12 +52,12 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     }
 
     @Override
-    protected MIPWrapper getMIP() {
+    public MIPWrapper getMIP() {
         return winnerDeterminationProgram;
     }
 
     @Override
-    protected Variable getBidVariable(BundleBid bundleBid) {
+    public Variable getBidVariable(BundleBid bundleBid) {
         return bidVariables.get(bundleBid);
     }
 }

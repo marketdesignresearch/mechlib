@@ -37,5 +37,12 @@ public class Bid {
     public static Bid singleBundleBid(BundleBid bundleBid) {
         return new Bid(ImmutableSet.of(bundleBid));
     }
+
+    public Bid join(Bid other) {
+        Bid result = new Bid();
+        getBundleBids().forEach(result::addBundleBid);
+        other.getBundleBids().forEach(result::addBundleBid);
+        return result;
+    }
 }
 

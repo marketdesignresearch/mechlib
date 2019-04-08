@@ -2,6 +2,7 @@ package ch.uzh.ifi.ce.mechanisms.cca.priceupdate;
 
 import ch.uzh.ifi.ce.domain.Good;
 import ch.uzh.ifi.ce.mechanisms.cca.Price;
+import ch.uzh.ifi.ce.mechanisms.cca.Prices;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,25 +20,14 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
     @Setter
     private BigDecimal initialUpdate = DEFAULT_INITIAL_UPDATE;
 
-    @Getter
-    private Map<Good, Price> lastPrices = new HashMap<>();
-
     @Override
-    public Map<Good, Price> updatePrices(Map<Good, Price> oldPrices, Map<Good, Integer> demand) {
-        // Fill the last prices map with initial values
-        if (lastPrices.isEmpty()) {
-            for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
-                lastPrices.put(oldPriceEntry.getKey(), oldPriceEntry.getValue());
-            }
-        }
+    public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
 
         Map<Good, Price> newPrices = new HashMap<>();
 
         for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
             Good good = oldPriceEntry.getKey();
             if (good.available() < demand.getOrDefault(good, 0)) {
-                // Overdemanded
-                lastPrices.put(good, oldPriceEntry.getValue());
                 if (oldPriceEntry.getValue().equals(Price.ZERO))
                     newPrices.put(good, new Price(initialUpdate));
                 else
@@ -48,7 +38,7 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
 
         }
 
-        return newPrices;
+        return new Prices(newPrices);
     }
 
     public SimpleRelativePriceUpdate withPriceUpdate(BigDecimal priceUpdate) {

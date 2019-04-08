@@ -28,7 +28,7 @@ public final class BidderAllocation {
     @Getter
     private final BigDecimal value;
     @Getter
-    private final Map<Good, Integer> goodsMap;
+    private final Map<Good, Integer> goodsMap; // TODO: Change to bundle
     @Getter
     private final Set<BundleBid> acceptedBids; // TODO: Check if this is needed
 

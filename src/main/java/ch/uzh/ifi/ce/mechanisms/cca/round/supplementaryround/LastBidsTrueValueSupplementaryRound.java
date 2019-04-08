@@ -1,6 +1,7 @@
-package ch.uzh.ifi.ce.mechanisms.cca.supplementaryround;
+package ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.mechanisms.cca.CCAuction;
 import lombok.Setter;
 
 import java.util.Iterator;
@@ -13,8 +14,8 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
     private Bids bids;
 
-    public LastBidsTrueValueSupplementaryRound(Bids bids) {
-        this.bids = bids;
+    public LastBidsTrueValueSupplementaryRound(CCAuction auction) {
+        this.bids = auction.getLatestBids();
     }
 
     @Override
@@ -23,7 +24,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
         if (bid == null) return new Bid();
         Bid result = new Bid();
         int count = 0;
-        // FIXME: Must be sorted bids -> Change CCA to include rounds
+        // TODO: This is not ordered nor unique. If needed, consider storing BundleBids in a List and filtering duplicates
         Iterator<BundleBid> iterator = bid.getBundleBids().iterator();
         while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
             BundleBid bundleBid = iterator.next();
