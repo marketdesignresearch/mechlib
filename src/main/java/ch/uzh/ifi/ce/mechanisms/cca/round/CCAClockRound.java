@@ -25,7 +25,7 @@ public class CCAClockRound extends CCARound {
         Bids bids = new Bids();
 
         for (Bidder bidder : getBidders()) {
-            Bundle bundle = getDemandQuery().getBundleBid(bidder, getPrices()).getBundle(); // We ignore the value here
+            Bundle bundle = getDemandQuery().getBundleBid(String.valueOf(getRoundNumber()), bidder, getPrices()).getBundle(); // We ignore the value here
             int totalQuantities = bundle.values().stream().mapToInt(i -> i).sum();
             if (totalQuantities > 0) {
                 BigDecimal bidAmount = BigDecimal.ZERO;

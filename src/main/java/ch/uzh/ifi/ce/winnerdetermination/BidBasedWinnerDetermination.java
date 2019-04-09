@@ -35,7 +35,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     }
 
     @Override
-    protected Allocation adaptMIPResult(ISolution mipResult) {
+    public Allocation adaptMIPResult(ISolution mipResult) {
         ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
         for (Bidder bidder : auctionInstance.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;

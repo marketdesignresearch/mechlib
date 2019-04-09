@@ -11,9 +11,7 @@ import java.util.List;
 
 @Getter @Setter
 public class CATSAuction implements Serializable {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = -3253471183746973026L;
     private int numberOfGoods;
     private int numberOfBids;

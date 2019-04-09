@@ -5,9 +5,11 @@ import ch.uzh.ifi.ce.domain.Bids;
 import ch.uzh.ifi.ce.mechanisms.cca.Prices;
 import ch.uzh.ifi.ce.demandquery.DemandQuery;
 import ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround.SupplementaryRound;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
 
+@Slf4j
 public class CCASupplementaryRound extends CCARound {
 
     private SupplementaryRound supplementaryRound;
@@ -21,8 +23,15 @@ public class CCASupplementaryRound extends CCARound {
     public Bids collectBids() {
         Bids bids = new Bids();
         for (Bidder bidder : getBidders()) {
-            bids.setBid(bidder, supplementaryRound.getSupplementaryBids(bidder));
+            log.debug("Asking bidder {} for additional bids...", bidder);
+            bids.setBid(bidder, supplementaryRound.getSupplementaryBids(String.valueOf(getRoundNumber()), bidder));
+            log.debug("Done, bids for bidder {} collected", bidder);
         }
         return bids;
+    }
+
+    @Override
+    public String toString() {
+        return supplementaryRound.getDescription();
     }
 }

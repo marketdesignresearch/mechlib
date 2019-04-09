@@ -20,7 +20,7 @@ public class XORBlockingCoalitionDetermination extends XORWinnerDetermination {
      * their opportunity costs
      */
     @Override
-    protected Allocation adaptMIPResult(ISolution mipResult) {
+    public Allocation adaptMIPResult(ISolution mipResult) {
         Allocation allocation = super.adaptMIPResult(mipResult);
         Set<PotentialCoalition> potentialCoalitions = new HashSet<>();
         for (Bidder bidder : allocation.getWinners()) {

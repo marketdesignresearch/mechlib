@@ -49,7 +49,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
      * their opportunity costs
      */
     @Override
-    protected Allocation adaptMIPResult(ISolution mipResult) {
+    public Allocation adaptMIPResult(ISolution mipResult) {
         Allocation allocation = super.adaptMIPResult(mipResult);
         Map<Bidder, BidderAllocation> allocations = new HashMap<>(allocation.getTradesMap());
         Set<PotentialCoalition> potentialCoalitions = new HashSet<>();

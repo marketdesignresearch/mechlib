@@ -15,9 +15,11 @@ import ch.uzh.ifi.ce.mechanisms.vcg.XORVCGAuction;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
+@Slf4j
 public class CCAuction implements AuctionMechanism {
 
     private AuctionResult result;
@@ -29,15 +31,17 @@ public class CCAuction implements AuctionMechanism {
     @Setter
     private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
     private List<SupplementaryRound> supplementaryRounds = new ArrayList<>();
+    private Queue<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
 
     @Setter
     private int maxRounds = 1000;
     private int roundCounter = 0;
     private Prices currentPrices;
+    @Getter
     private boolean clockPhaseCompleted = false;
 
     public CCAuction(Set<Good> goods, Set<Bidder> bidders, DemandQuery demandQuery) {
-        currentPrices = new Prices(goods);
+        this.currentPrices = new Prices(goods);
         this.bidders = bidders;
         this.demandQuery = demandQuery;
     }
@@ -50,18 +54,22 @@ public class CCAuction implements AuctionMechanism {
 
     public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
         supplementaryRounds.add(supplementaryRound);
+        supplementaryRoundQueue.add(supplementaryRound);
     }
 
     @Override
     public AuctionResult getAuctionResult() {
         if (result == null) {
+            log.info("Running all clock rounds...");
             while (!clockPhaseCompleted) {
-                clockPhaseCompleted = nextClockRound();
+                nextClockRound();
             }
-            if (supplementaryRounds.isEmpty()) supplementaryRounds.add(new ProfitMaximizingSupplementaryRound(this));
-            for (SupplementaryRound supplementaryRound : supplementaryRounds) {
-                runSupplementaryRound(supplementaryRound);
+            if (supplementaryRounds.isEmpty()) addSupplementaryRound(new ProfitMaximizingSupplementaryRound(this));
+            log.info("Running all supplementary rounds...");
+            while (hasNextSupplementaryRound()) {
+                nextSupplementaryRound();
             }
+            log.info("Collected all bids. Running XOR VCG auction to determine allocation & payments.");
             AuctionInstance auctionInstance = new AuctionInstance(getLatestBids());
             AuctionMechanism mechanism = new XORVCGAuction(auctionInstance);
             result = mechanism.getAuctionResult();
@@ -69,23 +77,41 @@ public class CCAuction implements AuctionMechanism {
         return result;
     }
 
-    public boolean nextClockRound() {
+    public void nextClockRound() {
+        if (clockPhaseCompleted) {
+            log.warn("The clock phase is completed, there is no next clock round.");
+            return;
+        }
         CCAClockRound round = new CCAClockRound(roundCounter++, currentPrices, bidders, demandQuery);
+        log.debug("Starting clock round {}...", roundCounter);
         round.getBids();
         rounds.add(round);
         Prices updatedPrices = priceUpdater.updatePrices(currentPrices, round.getDemand());
         if (currentPrices.equals(updatedPrices) || roundCounter >= maxRounds) {
-            return true;
+            clockPhaseCompleted = true;
+            return;
         }
         currentPrices = updatedPrices;
-        return false;
     }
 
-    public void runSupplementaryRound(SupplementaryRound supplementaryRound) {
-        if (!clockPhaseCompleted) throw new IllegalStateException("The supplementary round cannot be run before the clock phase has completed.");
+    public void nextSupplementaryRound() {
+        if (!clockPhaseCompleted) {
+            log.warn("The supplementary round cannot be run before the clock phase has completed.");
+            return;
+        }
+        if (supplementaryRoundQueue.isEmpty()) {
+            log.warn("No supplementary round found to run");
+            return;
+        }
+        SupplementaryRound supplementaryRound = supplementaryRoundQueue.poll();
         CCARound ccaRound = new CCASupplementaryRound(++roundCounter, currentPrices, bidders, demandQuery, supplementaryRound);
+        log.debug("Starting supplementary round '{}'...", ccaRound);
         ccaRound.getBids();
         rounds.add(ccaRound);
+    }
+
+    public boolean hasNextSupplementaryRound() {
+        return !supplementaryRoundQueue.isEmpty();
     }
 
     public Bids getBidsAt(int round) {
@@ -121,8 +147,12 @@ public class CCAuction implements AuctionMechanism {
     }
 
     public void resetToRound(int round) {
+        Preconditions.checkArgument(round < rounds.size());
+        Preconditions.checkArgument(rounds.get(round) instanceof CCAClockRound, "Currently, you can only reset the CCA to a round before the supplementary rounds.");
         clockPhaseCompleted = false;
+        supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         rounds = rounds.subList(0, round);
+        result = null;
     }
 
 }

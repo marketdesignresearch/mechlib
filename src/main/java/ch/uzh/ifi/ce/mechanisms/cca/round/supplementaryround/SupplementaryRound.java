@@ -4,5 +4,9 @@ import ch.uzh.ifi.ce.domain.Bid;
 import ch.uzh.ifi.ce.domain.Bidder;
 
 public interface SupplementaryRound {
-    Bid getSupplementaryBids(Bidder bidder);
+    Bid getSupplementaryBids(String id, Bidder bidder);
+
+    default String getDescription() {
+        return "(no description provided)";
+    }
 }

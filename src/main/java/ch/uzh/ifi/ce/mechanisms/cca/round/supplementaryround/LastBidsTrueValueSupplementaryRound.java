@@ -1,6 +1,9 @@
 package ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround;
 
-import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.Bid;
+import ch.uzh.ifi.ce.domain.Bidder;
+import ch.uzh.ifi.ce.domain.Bids;
+import ch.uzh.ifi.ce.domain.BundleBid;
 import ch.uzh.ifi.ce.mechanisms.cca.CCAuction;
 import lombok.Setter;
 
@@ -19,7 +22,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
     }
 
     @Override
-    public Bid getSupplementaryBids(Bidder bidder) {
+    public Bid getSupplementaryBids(String id, Bidder bidder) {
         Bid bid = bids.getBid(bidder);
         if (bid == null) return new Bid();
         Bid result = new Bid();
@@ -28,7 +31,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
         Iterator<BundleBid> iterator = bid.getBundleBids().iterator();
         while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
             BundleBid bundleBid = iterator.next();
-            BundleBid trueValuedBundleBid = new BundleBid(bidder.getValue(bundleBid.getBundle()), bundleBid.getBundle(), "TrueValued_" + bundleBid.getId());
+            BundleBid trueValuedBundleBid = new BundleBid(bidder.getValue(bundleBid.getBundle()), bundleBid.getBundle(), "TrueValued_" + id + "_" + bundleBid.getId());
             result.addBundleBid(trueValuedBundleBid);
         }
         return result;
@@ -37,5 +40,10 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
     public LastBidsTrueValueSupplementaryRound withNumberOfSupplementaryBids(int numberOfSupplementaryBids) {
         setNumberOfSupplementaryBids(numberOfSupplementaryBids);
         return this;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Supplementary round to submit the true values of the last " + numberOfSupplementaryBids + " bids";
     }
 }
