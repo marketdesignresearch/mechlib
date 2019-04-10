@@ -18,8 +18,6 @@ public interface StrategySpace<B extends StrategyBucket,S extends Strategy> {
         return strategyOf(bucketOf(value)).apply(value);
     }
 
-    ;
-
     /*static <S extends Strategy> StrategySpace< ValueTypeBucket,S> getStrategySpace(DomainGenerator domain, S initialStrategy) {
         List<ValueTypeBucket> buckets = domain.getValueTypes().stream().map(ValueTypeBucket::new).collect(Collectors.toList());
         return new BucketStrategySpace<>(buckets, initialStrategy);

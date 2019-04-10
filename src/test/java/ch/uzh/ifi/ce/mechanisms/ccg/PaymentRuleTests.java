@@ -5,7 +5,6 @@ import ch.uzh.ifi.ce.domain.bidder.BundleValue;
 import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
 import ch.uzh.ifi.ce.domain.bidder.Value;
 import ch.uzh.ifi.ce.domain.bidder.ValueType;
-import ch.uzh.ifi.ce.domain.Domain;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.*;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.BidsReferencePointFactory;

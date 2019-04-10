@@ -25,7 +25,7 @@ public class BlockedBidders {
         this.blockingCoalition = blockingBidders;
 
         Set<Bidder> nonTraitors = new HashSet<>(blockedBidders);
-        blockingBidders.stream().forEach(pc -> nonTraitors.remove(pc.getBidder()));
+        blockingBidders.forEach(pc -> nonTraitors.remove(pc.getBidder()));
         this.nonTraitors = nonTraitors;
     }
 

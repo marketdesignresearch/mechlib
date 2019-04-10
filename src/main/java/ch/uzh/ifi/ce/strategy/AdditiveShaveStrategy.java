@@ -6,6 +6,7 @@ import ch.uzh.ifi.ce.utils.PrecisionUtils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveStrategy> {
     public static final AdditiveShaveStrategy TRUTHFUL = new AdditiveShaveStrategy(BigDecimal.ZERO);
@@ -49,7 +50,7 @@ public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveSt
 
     @Override
     public AdditiveShaveStrategy merge(AdditiveShaveStrategy other) {
-        return from(additiveShave.add(other.additiveShave).divide(BigDecimal.valueOf(2)));
+        return from(additiveShave.add(other.additiveShave).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
     }
 
     public static AdditiveShaveStrategy from(double shaveFactor) {

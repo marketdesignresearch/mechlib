@@ -8,6 +8,7 @@ import ch.uzh.ifi.ce.mechanisms.ccg.MechanismFactory;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VariableNormCCGFactory extends ConfigurableCCGFactory implements MechanismFactory {
 
@@ -25,7 +26,7 @@ public class VariableNormCCGFactory extends ConfigurableCCGFactory implements Me
     }
 
     public VariableNormCCGFactory(ReferencePointFactory rpFacory, Norm primaryNorm, Norm... secondaryNorms) {
-        this(rpFacory, Lists.transform(Lists.asList(primaryNorm, secondaryNorms), NormFactory::withEqualWeights));
+        this(rpFacory, Lists.asList(primaryNorm, secondaryNorms).stream().map(NormFactory::withEqualWeights).collect(Collectors.toList()));
 
     }
 }

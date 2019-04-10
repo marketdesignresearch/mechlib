@@ -12,7 +12,7 @@ import java.util.Set;
 @Slf4j
 public class CCASupplementaryRound extends CCARound {
 
-    private SupplementaryRound supplementaryRound;
+    private final SupplementaryRound supplementaryRound;
 
     public CCASupplementaryRound(int number, Prices prices, Set<? extends Bidder> bidders, DemandQuery demandQuery, SupplementaryRound supplementaryRound) {
         super(number, prices, bidders, demandQuery);

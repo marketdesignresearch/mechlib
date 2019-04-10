@@ -13,7 +13,7 @@ import java.util.Set;
 public class CCAClockRound extends CCARound {
 
     @Getter
-    private Map<Good, Integer> demand = new HashMap<>();
+    private final Map<Good, Integer> demand = new HashMap<>();
 
     public CCAClockRound(int roundNumber, Prices prices, Set<? extends Bidder> bidders, DemandQuery demandQuery) {
         super(roundNumber, prices, bidders, demandQuery);

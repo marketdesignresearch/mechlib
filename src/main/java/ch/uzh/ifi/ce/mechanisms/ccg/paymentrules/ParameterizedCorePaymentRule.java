@@ -20,7 +20,7 @@ public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements
     private final List<CorePaymentNorm> objectiveNorms;
     private final IMIP program;
     private MetaInfo metaInfo = new MetaInfo();
-    private Payment result = null;
+    private Payment result;
 
     public ParameterizedCorePaymentRule(CorePaymentNorm primaryObjectiveNorm, CorePaymentNorm... secondaryObjectiveNorms) {
         this(Lists.asList(primaryObjectiveNorm, secondaryObjectiveNorms));

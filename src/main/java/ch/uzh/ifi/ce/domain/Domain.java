@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public final class Domain {
         return toAuction(strategySpace, null, null);
     }
 
-    private AuctionInstance toAuction(StrategySpace<?, ?> strategySpace, SimpleBidder bidder, Strategy specificStrategy) {
+    public AuctionInstance toAuction(StrategySpace<?, ?> strategySpace, SimpleBidder bidder, Strategy specificStrategy) {
         Bids bids = Bids.fromSimpleBidders(bidders, strategySpace::applyStrategyTo);
         if (bidder != null && specificStrategy != null) bids.setBid(bidder, specificStrategy.apply(bidder.getValue()));
         return new AuctionInstance(bids);

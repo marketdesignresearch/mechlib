@@ -1,16 +1,20 @@
 package ch.uzh.ifi.ce.mechanisms.ccg;
 
-import ch.uzh.ifi.ce.domain.*;
-import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.Bidder;
 import ch.uzh.ifi.ce.domain.Domain;
-import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.*;
-import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
-import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.*;
+import ch.uzh.ifi.ce.domain.Payment;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
 import ch.uzh.ifi.ce.domain.cats.CATSAdapter;
 import ch.uzh.ifi.ce.domain.cats.CATSAuction;
 import ch.uzh.ifi.ce.domain.cats.CATSParser;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import ch.uzh.ifi.ce.mechanisms.MechanismResult;
+import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.*;
+import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
+import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.EqualWeightsFactory;
+import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.Norm;
+import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.NormFactory;
+import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.VariableNormCCGFactory;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.VCGReferencePointFactory;
 import ch.uzh.ifi.ce.utils.CPLEXUtils;
 import ch.uzh.ifi.ce.utils.PrecisionUtils;

@@ -7,6 +7,7 @@ import ch.uzh.ifi.ce.domain.bidder.Value;
 import com.google.common.collect.ImmutableSet;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Set;
 
 /**
@@ -90,7 +91,7 @@ public class AdditiveOverbiddingStrategy<S extends ComparableStrategy<S>> implem
     @Override
     public AdditiveOverbiddingStrategy<S> merge(AdditiveOverbiddingStrategy<S> other) {
         S mergedNormal = normalStrategy.merge(other.normalStrategy);
-        BigDecimal mergedOverbid = overBid.add(other.overBid).divide(BigDecimal.valueOf(2));
+        BigDecimal mergedOverbid = overBid.add(other.overBid).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
         return new AdditiveOverbiddingStrategy<>(mergedNormal, mergedOverbid, allGoods);
     }
 }

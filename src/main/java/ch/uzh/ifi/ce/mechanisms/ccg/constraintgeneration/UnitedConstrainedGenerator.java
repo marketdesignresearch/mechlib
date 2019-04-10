@@ -22,7 +22,8 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         this.corePaymentRule = corePaymentRule;
 
         for (PotentialCoalition coalition : referencePoint.getAllocation().getPotentialCoalitions()) {
-            for (Good good : coalition.getGoods()) {
+            // TODO: Using keySet assumes that there are only single-availability goods
+            for (Good good : coalition.getBundle().keySet()) {
                 goodToCoalitionMap.put(good, coalition);
             }
         }
@@ -40,7 +41,8 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         priorResult.getAllocation().getPotentialCoalitions().forEach(tempGraph::addVertex);
         for (PotentialCoalition coalition : blockingCoalition.getPotentialCoalitions()) {
             tempGraph.addVertex(coalition);
-            for (Good good : coalition.getGoods()) {
+            // TODO: Using keySet assumes that there are only single-availability goods
+            for (Good good : coalition.getBundle().keySet()) {
                 PotentialCoalition blockedCoalition = goodToCoalitionMap.get(good);
 
                 if (blockedCoalition != null) {

@@ -3,7 +3,6 @@ package ch.uzh.ifi.ce.mechanisms.cca.priceupdate;
 import ch.uzh.ifi.ce.domain.Good;
 import ch.uzh.ifi.ce.mechanisms.cca.Price;
 import ch.uzh.ifi.ce.mechanisms.cca.Prices;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;

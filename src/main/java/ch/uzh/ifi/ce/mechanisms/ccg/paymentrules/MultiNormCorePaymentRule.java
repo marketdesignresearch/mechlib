@@ -29,7 +29,7 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
     private final PaymentNorm[] additionalNorms;
     private final IMIP program;
     private MetaInfo metaInfo = new MetaInfo();
-    private Payment result = null;
+    private Payment result;
     private final Allocation allocation;
 
     public MultiNormCorePaymentRule(AuctionResult referencePoint, PaymentNorm primaryNorm, PaymentNorm... additionalNorms) {

@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Class that represents a Bid of one {@link Bidder} on one bundle of

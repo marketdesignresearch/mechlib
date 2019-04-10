@@ -15,7 +15,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
 
     @Setter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-    private Bids bids;
+    private final Bids bids;
 
     public LastBidsTrueValueSupplementaryRound(CCAuction auction) {
         this.bids = auction.getLatestBids();

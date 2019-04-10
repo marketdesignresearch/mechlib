@@ -19,7 +19,7 @@ import java.util.*;
 @Slf4j
 public class DiscreteDemandQuery implements DemandQuery {
 
-    private Bids bids;
+    private final Bids bids;
 
     public DiscreteDemandQuery(Set<SimpleBidder> simpleBidders) {
         this.bids = Bids.fromSimpleBidders(simpleBidders);

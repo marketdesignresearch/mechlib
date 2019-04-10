@@ -24,13 +24,13 @@ public class CCAuction implements AuctionMechanism {
 
     private AuctionResult result;
     private List<CCARound> rounds = new ArrayList<>();
-    private Set<? extends Bidder> bidders;
+    private final Set<? extends Bidder> bidders;
     @Getter
-    private DemandQuery demandQuery;
+    private final DemandQuery demandQuery;
 
     @Setter
     private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
-    private List<SupplementaryRound> supplementaryRounds = new ArrayList<>();
+    private final List<SupplementaryRound> supplementaryRounds = new ArrayList<>();
     private Queue<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
 
     @Setter

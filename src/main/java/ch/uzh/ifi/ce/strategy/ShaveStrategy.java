@@ -5,6 +5,7 @@ import ch.uzh.ifi.ce.domain.bidder.Value;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
     public static final ShaveStrategy TRUTHFUL = new ShaveStrategy(BigDecimal.ONE);
@@ -39,7 +40,7 @@ public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
 
     @Override
     public ShaveStrategy merge(ShaveStrategy other) {
-        return from(shaveFactor.add(other.shaveFactor).divide(BigDecimal.valueOf(2)));
+        return from(shaveFactor.add(other.shaveFactor).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
     }
 
     @Override
