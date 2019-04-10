@@ -1,7 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.singleitem;
 
 import ch.uzh.ifi.ce.domain.BidderPayment;
-import ch.uzh.ifi.ce.domain.SingleItemAuctionInstance;
+import ch.uzh.ifi.ce.domain.singleitem.SingleItemAuctionInstance;
 import ch.uzh.ifi.ce.domain.singleitem.SingleItemBid;
 
 import java.util.Iterator;

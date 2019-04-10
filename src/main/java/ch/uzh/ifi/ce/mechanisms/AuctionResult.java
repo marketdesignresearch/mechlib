@@ -12,7 +12,7 @@ import java.util.Set;
 
 @EqualsAndHashCode
 @ToString
-public class AuctionResult implements MechanismResult {
+public final class AuctionResult implements MechanismResult {
     @Getter
     private final Payment payment;
     @Getter

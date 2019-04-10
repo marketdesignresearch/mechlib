@@ -1,5 +1,8 @@
 package ch.uzh.ifi.ce.domain;
 
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.bidder.Value;
+import ch.uzh.ifi.ce.strategy.Strategy;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Getter;
@@ -8,6 +11,7 @@ import lombok.ToString;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @ToString
@@ -46,11 +50,6 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         return bidMap.get(bidder);
     }
 
-    public boolean contains(String id) {
-        Bidder searchBidder = new Bidder(id);
-        return bidMap.containsKey(searchBidder);
-    }
-
     @Override
     public Iterator<Entry<Bidder, Bid>> iterator() {
         return bidMap.entrySet().iterator();
@@ -66,5 +65,20 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
             result.setBid(b, joined);
         });
         return result;
+    }
+
+    /**
+     * Gives truthful bids
+     */
+    public static Bids fromSimpleBidders(Set<SimpleBidder> bidders) {
+        return fromSimpleBidders(bidders, Strategy.TRUTHFUL::apply);
+    }
+
+    public static Bids fromSimpleBidders(Set<SimpleBidder> bidders, Function<Value, Bid> operator) {
+        Map<Bidder, Bid> bidMap = new HashMap<>();
+        for (SimpleBidder simpleBidder : bidders) {
+            bidMap.put(simpleBidder, operator.apply(simpleBidder.getValue()));
+        }
+        return new Bids(bidMap);
     }
 }

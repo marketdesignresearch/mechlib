@@ -1,6 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.singleitem;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.singleitem.SingleItemAuctionInstance;
 import ch.uzh.ifi.ce.domain.singleitem.SingleItemBid;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
@@ -19,7 +20,7 @@ public abstract class SingleItemAuction implements AuctionMechanism {
     }
 
     @Override
-    public AuctionResult getAuctionResult() {
+    public final AuctionResult getAuctionResult() {
         Iterator<SingleItemBid> iterator = instance.getDescendingHighestBids().iterator();
         if (!iterator.hasNext()) {
             return new AuctionResult(Payment.ZERO, Allocation.EMPTY_ALLOCATION);

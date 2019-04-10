@@ -1,5 +1,9 @@
-package ch.uzh.ifi.ce.domain;
+package ch.uzh.ifi.ce.domain.bidder;
 
+import ch.uzh.ifi.ce.domain.Bidder;
+import ch.uzh.ifi.ce.domain.Bundle;
+import ch.uzh.ifi.ce.domain.BundleBid;
+import ch.uzh.ifi.ce.domain.Good;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -11,7 +11,7 @@ public class ORVCGAuction extends BidBasedVCGAuction {
     }
 
     @Override
-    protected WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance) {
+    protected final WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance) {
         return new ORWinnerDetermination(auctionInstance);
     }
 

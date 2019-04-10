@@ -1,6 +1,7 @@
 package ch.uzh.ifi.ce.mechanisms.vcg;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -19,10 +20,10 @@ public class VCGTest {
 
     @Before
     public void setUp() {
-        A = new SimpleGood(false, 0);
-        B = new SimpleGood(false, 1);
-        C = new SimpleGood(false, 2);
-        D = new SimpleGood(false, 3);
+        A = new SimpleGood("0");
+        B = new SimpleGood("1");
+        C = new SimpleGood("2");
+        D = new SimpleGood("3");
 
     }
 
@@ -33,18 +34,18 @@ public class VCGTest {
         BundleBid bid3 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
         Bids bids = new Bids();
-        bids.setBid(new Bidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
+        bids.setBid(new SimpleBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
         AuctionInstance auctionInstance = new AuctionInstance(bids);
         AuctionMechanism am = new ORVCGAuction(auctionInstance);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(payment.paymentOf(new Bidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new Bidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new Bidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new Bidder("B" + 4)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 4)).getAmount()).isZero();
     }
 
     @Test
@@ -54,18 +55,18 @@ public class VCGTest {
         BundleBid bid3 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
         Bids bids = new Bids();
-        bids.setBid(new Bidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
+        bids.setBid(new SimpleBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
         AuctionInstance auctionInstance = new AuctionInstance(bids);
         AuctionMechanism am = new XORVCGAuction(auctionInstance);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(payment.paymentOf(new Bidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new Bidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new Bidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new Bidder("B" + 4)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(new SimpleBidder("B" + 4)).getAmount()).isZero();
     }
 
 }

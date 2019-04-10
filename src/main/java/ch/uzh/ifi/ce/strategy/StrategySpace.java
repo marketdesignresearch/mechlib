@@ -1,13 +1,10 @@
 package ch.uzh.ifi.ce.strategy;
 
 import ch.uzh.ifi.ce.strategy.buckets.StrategyBucket;
-import ch.uzh.ifi.ce.strategy.buckets.ValueTypeBucket;
 import ch.uzh.ifi.ce.domain.Bid;
-import ch.uzh.ifi.ce.domain.Value;
+import ch.uzh.ifi.ce.domain.bidder.Value;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public interface StrategySpace<B extends StrategyBucket,S extends Strategy> {
 

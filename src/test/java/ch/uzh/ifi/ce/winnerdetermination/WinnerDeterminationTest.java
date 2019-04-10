@@ -1,6 +1,7 @@
 package ch.uzh.ifi.ce.winnerdetermination;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
 import ch.uzh.ifi.ce.mechanisms.Allocator;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.ccg.CCGAuction;
@@ -27,11 +28,11 @@ public class WinnerDeterminationTest {
 
     @Before
     public void setUp() {
-        A = new SimpleGood(0);
-        B = new SimpleGood(1);
-        C = new SimpleGood(2);
-        D = new SimpleGood(3);
-        E = new SimpleGood(4);
+        A = new SimpleGood("0");
+        B = new SimpleGood("1");
+        C = new SimpleGood("2");
+        D = new SimpleGood("3");
+        E = new SimpleGood("4");
 
     }
 
@@ -45,11 +46,11 @@ public class WinnerDeterminationTest {
         BundleBid bid6 = new BundleBid(BigDecimal.valueOf(22), Sets.newHashSet(A,B), "5");
 
         Bids bids = new Bids();
-        Bidder bidder1 = new Bidder("B" + 1);
+        Bidder bidder1 = new SimpleBidder("B" + 1);
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1,bid4)));
-        Bidder bidder2 = new Bidder("B" + 2);
+        Bidder bidder2 = new SimpleBidder("B" + 2);
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2,bid6)));
-        Bidder bidder3 = new Bidder("B" + 3);
+        Bidder bidder3 = new SimpleBidder("B" + 3);
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         auctionInstance = new AuctionInstance(bids);
         VCGReferencePointFactory rpFacory = new VCGReferencePointFactory();
@@ -70,19 +71,19 @@ public class WinnerDeterminationTest {
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
 
         Bids bids = new Bids();
-        bids.setBid(new Bidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
+        bids.setBid(new SimpleBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
         auctionInstance = new AuctionInstance(bids);
         Allocator wd = new ORWinnerDetermination(auctionInstance);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(result.allocationOf(new Bidder("B" + 1)).getValue().doubleValue()).isEqualTo(2);
-        assertThat(result.allocationOf(new Bidder("B" + 3)).getValue().doubleValue()).isEqualTo(2);
-        assertThat(result.allocationOf(new Bidder("B" + 2)).getValue()).isZero();
-        assertThat(result.allocationOf(new Bidder("B" + 4)).getValue()).isZero();
+        assertThat(result.allocationOf(new SimpleBidder("B" + 1)).getValue().doubleValue()).isEqualTo(2);
+        assertThat(result.allocationOf(new SimpleBidder("B" + 3)).getValue().doubleValue()).isEqualTo(2);
+        assertThat(result.allocationOf(new SimpleBidder("B" + 2)).getValue()).isZero();
+        assertThat(result.allocationOf(new SimpleBidder("B" + 4)).getValue()).isZero();
     }
 
 
@@ -99,25 +100,25 @@ public class WinnerDeterminationTest {
         BundleBid bid8 = new BundleBid(BigDecimal.valueOf(893.983), Sets.newHashSet(A), "8");
         BundleBid bid9 = new BundleBid(BigDecimal.valueOf(1816.69), Sets.newHashSet(A, C), "9");
         Bids bids = new Bids();
-        bids.setBid(new Bidder("B" + 0), new Bid(Sets.newHashSet(bid0)));
-        bids.setBid(new Bidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new Bidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new Bidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new Bidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        bids.setBid(new Bidder("B" + 5), new Bid(Sets.newHashSet(bid5)));
-        bids.setBid(new Bidder("B" + 6), new Bid(Sets.newHashSet(bid6)));
-        bids.setBid(new Bidder("B" + 7), new Bid(Sets.newHashSet(bid7)));
-        bids.setBid(new Bidder("B" + 8), new Bid(Sets.newHashSet(bid8)));
-        bids.setBid(new Bidder("B" + 9), new Bid(Sets.newHashSet(bid9)));
+        bids.setBid(new SimpleBidder("B" + 0), new Bid(Sets.newHashSet(bid0)));
+        bids.setBid(new SimpleBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
+        bids.setBid(new SimpleBidder("B" + 5), new Bid(Sets.newHashSet(bid5)));
+        bids.setBid(new SimpleBidder("B" + 6), new Bid(Sets.newHashSet(bid6)));
+        bids.setBid(new SimpleBidder("B" + 7), new Bid(Sets.newHashSet(bid7)));
+        bids.setBid(new SimpleBidder("B" + 8), new Bid(Sets.newHashSet(bid8)));
+        bids.setBid(new SimpleBidder("B" + 9), new Bid(Sets.newHashSet(bid9)));
         auctionInstance = new AuctionInstance(bids);
         Allocator wd = new ORWinnerDetermination(auctionInstance);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
-        assertThat(result.allocationOf(new Bidder("B" + 1)).getValue().doubleValue()).isEqualTo(894.644);
-        assertThat(result.allocationOf(new Bidder("B" + 2)).getValue()).isZero();
-        assertThat(result.allocationOf(new Bidder("B" + 4)).getValue()).isZero();
-        assertThat(result.allocationOf(new Bidder("B" + 0)).getValue()).isZero();
+        assertThat(result.allocationOf(new SimpleBidder("B" + 1)).getValue().doubleValue()).isEqualTo(894.644);
+        assertThat(result.allocationOf(new SimpleBidder("B" + 2)).getValue()).isZero();
+        assertThat(result.allocationOf(new SimpleBidder("B" + 4)).getValue()).isZero();
+        assertThat(result.allocationOf(new SimpleBidder("B" + 0)).getValue()).isZero();
 
     }
 }

@@ -14,7 +14,7 @@ public class CCASupplementaryRound extends CCARound {
 
     private SupplementaryRound supplementaryRound;
 
-    public CCASupplementaryRound(int number, Prices prices, Set<Bidder> bidders, DemandQuery demandQuery, SupplementaryRound supplementaryRound) {
+    public CCASupplementaryRound(int number, Prices prices, Set<? extends Bidder> bidders, DemandQuery demandQuery, SupplementaryRound supplementaryRound) {
         super(number, prices, bidders, demandQuery);
         this.supplementaryRound = supplementaryRound;
     }

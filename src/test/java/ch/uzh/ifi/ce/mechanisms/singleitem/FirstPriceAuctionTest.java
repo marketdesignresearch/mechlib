@@ -1,8 +1,9 @@
 package ch.uzh.ifi.ce.mechanisms.singleitem;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.singleitem.SingleItemAuctionInstance;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class FirstPriceAuctionTest {
 
@@ -23,9 +23,9 @@ public class FirstPriceAuctionTest {
     @Before
     public void setUp() {
         item = new SimpleGood("item");
-        bidder1 = new Bidder("B" + 1);
-        bidder2 = new Bidder("B" + 2);
-        bidder3 = new Bidder("B" + 3);
+        bidder1 = new SimpleBidder("B" + 1);
+        bidder2 = new SimpleBidder("B" + 2);
+        bidder3 = new SimpleBidder("B" + 3);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FirstPriceAuctionTest {
         for (Bidder bidder : losers) {
             assertThat(allocation.allocationOf(bidder).getAcceptedBids()).isEmpty();
             assertThat(allocation.allocationOf(bidder).getValue()).isZero();
-            assertThat(allocation.allocationOf(bidder).getGoodsMap()).isEmpty();
+            assertThat(allocation.allocationOf(bidder).getBundle()).isEmpty();
             assertThat(payment.paymentOf(bidder).getAmount()).isZero();
         }
 
@@ -91,8 +91,8 @@ public class FirstPriceAuctionTest {
         assertThat(winningBid.getId()).isEqualTo(expectedWinningBid.getId());
         assertThat(winningBid.getAmount()).isEqualTo(expectedWinningBid.getAmount());
         assertThat(winningBid.getBundle().getSingleGood()).isEqualTo(item);
-        assertThat(allocation.allocationOf(expectedWinner).getGoodsMap()).hasSize(1);
-        assertThat(allocation.allocationOf(expectedWinner).getGoodsMap().keySet().iterator().next()).isEqualTo(item);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle()).hasSize(1);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle().keySet().iterator().next()).isEqualTo(item);
         assertThat(allocation.allocationOf(expectedWinner).getValue()).isEqualTo(BigDecimal.TEN);
 
         assertThat(payment.getTotalPayments()).isEqualTo(BigDecimal.TEN);

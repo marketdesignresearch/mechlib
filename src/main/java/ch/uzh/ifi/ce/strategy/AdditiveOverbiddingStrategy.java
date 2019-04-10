@@ -3,7 +3,7 @@ package ch.uzh.ifi.ce.strategy;
 import ch.uzh.ifi.ce.domain.Bid;
 import ch.uzh.ifi.ce.domain.BundleBid;
 import ch.uzh.ifi.ce.domain.Good;
-import ch.uzh.ifi.ce.domain.Value;
+import ch.uzh.ifi.ce.domain.bidder.Value;
 import com.google.common.collect.ImmutableSet;
 
 import java.math.BigDecimal;

@@ -3,7 +3,7 @@ package ch.uzh.ifi.ce.mechanisms;
 import lombok.Data;
 
 @Data
-public class MetaInfo {
+public final class MetaInfo {
     private long javaRuntime = 0;
     private long mipSolveTime = 0;
     private long lpSolveTime = 0;

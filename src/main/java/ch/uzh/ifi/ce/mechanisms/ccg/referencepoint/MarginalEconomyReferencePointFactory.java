@@ -17,7 +17,7 @@ public class MarginalEconomyReferencePointFactory implements ReferencePointFacto
         Bids bids = auctionInstance.getBids();
         Map<Good, Bidder> winnerMap = new HashMap<>();
         for (Bidder bidder : allocation.getWinners()) {
-            allocation.allocationOf(bidder).getBundle().forEach(g -> winnerMap.put(g, bidder));
+            allocation.allocationOf(bidder).getBundle().keySet().forEach(g -> winnerMap.put(g, bidder));
         }
         Map<Good, BigDecimal> highestLosingBids = new HashMap<>(winnerMap.size());
         for (Bidder bidder : bids.getBidders()) {
@@ -29,7 +29,7 @@ public class MarginalEconomyReferencePointFactory implements ReferencePointFacto
         Map<Bidder, BidderPayment> paymentMap = new HashMap<>(allocation.getWinners().size());
         for (Bidder winner : allocation.getWinners()) {
             BidderAllocation bidderAllocation = allocation.allocationOf(winner);
-            BigDecimal referencePayment = bidderAllocation.getBundle().stream().map(g -> highestLosingBids.getOrDefault(g, BigDecimal.ZERO))
+            BigDecimal referencePayment = bidderAllocation.getBundle().keySet().stream().map(g -> highestLosingBids.getOrDefault(g, BigDecimal.ZERO))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             paymentMap.put(winner, new BidderPayment(referencePayment));
         }

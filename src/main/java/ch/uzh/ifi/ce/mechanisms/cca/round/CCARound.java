@@ -16,11 +16,11 @@ public abstract class CCARound {
     private final Prices prices;
     private Bids bids;
     @Getter(AccessLevel.PROTECTED)
-    private Set<Bidder> bidders;
+    private Set<? extends Bidder> bidders;
     @Getter(AccessLevel.PROTECTED)
     private DemandQuery demandQuery;
 
-    public CCARound(int roundNumber, Prices prices, Set<Bidder> bidders, DemandQuery demandQuery) {
+    public CCARound(int roundNumber, Prices prices, Set<? extends Bidder> bidders, DemandQuery demandQuery) {
         this.roundNumber = roundNumber;
         this.prices = prices;
         this.bidders = bidders;

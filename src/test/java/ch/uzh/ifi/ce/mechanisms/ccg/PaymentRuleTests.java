@@ -1,21 +1,23 @@
 package ch.uzh.ifi.ce.mechanisms.ccg;
 
 import ch.uzh.ifi.ce.domain.*;
-import ch.uzh.ifi.ce.domain.cats.Domain;
+import ch.uzh.ifi.ce.domain.bidder.BundleValue;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.bidder.Value;
+import ch.uzh.ifi.ce.domain.bidder.ValueType;
+import ch.uzh.ifi.ce.domain.Domain;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.*;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.BidsReferencePointFactory;
 import ch.uzh.ifi.ce.mechanisms.ccg.referencepoint.VCGReferencePointFactory;
 import ch.uzh.ifi.ce.mechanisms.vcg.ORVCGAuction;
 import ch.uzh.ifi.ce.utils.CPLEXUtils;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,20 +25,19 @@ public class PaymentRuleTests {
     @Test
     public void testEqualRule() {
         CPLEXUtils.SOLVER.initializeSolveParams();
-        Bidder westBidder = new Bidder("west");
-        Bidder eastBidder = new Bidder("east");
-        Bidder globalBidder = new Bidder("global");
         Good west = new SimpleGood("west");
         Good east = new SimpleGood("east");
 
         BundleValue westBundle = new BundleValue(BigDecimal.valueOf(1), ImmutableSet.of(west), "west");
-        Value valueWest = new Value(ImmutableSet.of(westBundle), ValueType.LOCAL_WEST);
+        SimpleBidder westBidder = new SimpleBidder("west", new Value(ImmutableSet.of(westBundle), ValueType.LOCAL_WEST));
+
         BundleValue eastBundle = new BundleValue(BigDecimal.valueOf(2.5), ImmutableSet.of(east), "east");
-        Value valueEast = new Value(ImmutableSet.of(eastBundle), ValueType.LOCAL_EAST);
+        SimpleBidder eastBidder = new SimpleBidder("east", new Value(ImmutableSet.of(eastBundle), ValueType.LOCAL_EAST));
+
         BundleValue globalBundle = new BundleValue(BigDecimal.valueOf(2), ImmutableSet.of(west, east), "global");
-        Value globalValue = new Value(ImmutableSet.of(globalBundle), ValueType.GLOBAL);
-        Map<Bidder, Value> valueMap = ImmutableMap.of(westBidder, valueWest, eastBidder, valueEast, globalBidder, globalValue);
-        Domain domain = new Domain(new Values(valueMap), ImmutableSet.of(west, east), null);
+        SimpleBidder globalBidder = new SimpleBidder("global", new Value(ImmutableSet.of(globalBundle), ValueType.GLOBAL));
+
+        Domain domain = new Domain(ImmutableSet.of(westBidder, eastBidder, globalBidder), ImmutableSet.of(west, east));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         AuctionMechanism mechanism = equalNorm.getMechanism(domain.toAuction());

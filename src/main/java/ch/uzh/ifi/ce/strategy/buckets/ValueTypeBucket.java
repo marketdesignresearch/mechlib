@@ -1,6 +1,6 @@
 package ch.uzh.ifi.ce.strategy.buckets;
 
-import ch.uzh.ifi.ce.domain.ValueType;
+import ch.uzh.ifi.ce.domain.bidder.ValueType;
 
 /**
  * Created by buenz on 28.01.16.

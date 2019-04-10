@@ -1,11 +1,12 @@
 package ch.uzh.ifi.ce.domain.cats;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.bidder.BundleValue;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.bidder.Value;
+import ch.uzh.ifi.ce.domain.bidder.ValueType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CATSAdapter {
 
@@ -18,9 +19,9 @@ public class CATSAdapter {
         List<Good> goods = new ArrayList<>();
         for (int i = 0; i < catsAuction.getNumberOfGoods() + catsAuction.getNumberOfDummyGoods(); ++i) {
             if (i < catsAuction.getNumberOfGoods()) {
-                goods.add(new SimpleGood(false, i));
+                goods.add(new SimpleGood(String.valueOf(i), false));
             } else {
-                goods.add(new SimpleGood(true, i));
+                goods.add(new SimpleGood(String.valueOf(i), true));
             }
         }
         return goods;
@@ -28,7 +29,7 @@ public class CATSAdapter {
 
     public Domain adaptToDomain(CATSAuction catsAuction) {
         List<Good> goods = adaptGoods(catsAuction);
-        Values values = new Values();
+        Map<String, Value> values = new HashMap<>();
         for (CATSBid catsBid : catsAuction.getCatsBids()) {
             Set<Good> goodsPerBid = new HashSet<>();
             String bidderId = "SB" + catsBid.getId();
@@ -39,13 +40,14 @@ public class CATSAdapter {
                 }
             }
             BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, String.valueOf(catsBid.getId()));
-            Bidder bidder = new Bidder(bidderId);
-            if (!values.contains(bidderId)) {
-                values.addValue(bidder, new Value(ValueType.CATS));
+            if (!values.containsKey(bidderId)) {
+                values.put(bidderId, new Value(ValueType.CATS));
             }
-            values.getValue(bidder).addBundleValue(bundleValue);
+            values.get(bidderId).addBundleValue(bundleValue);
         }
-        return new Domain(values, new HashSet<>(goods), catsAuction);
+        Set<SimpleBidder> bidders = new HashSet<>();
+        values.forEach((k, v) -> bidders.add(new SimpleBidder(k, v)));
+        return new Domain(bidders, new HashSet<>(goods));
 
     }
 }

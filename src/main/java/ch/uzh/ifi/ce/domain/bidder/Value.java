@@ -1,5 +1,8 @@
-package ch.uzh.ifi.ce.domain;
+package ch.uzh.ifi.ce.domain.bidder;
 
+import ch.uzh.ifi.ce.domain.Bid;
+import ch.uzh.ifi.ce.domain.Bundle;
+import ch.uzh.ifi.ce.domain.BundleBid;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,12 @@ public class Value implements Serializable {
 
     public boolean addBundleValue(BundleValue bundleValue) {
         return bundleValues.add(bundleValue);
+    }
+
+    public BigDecimal getXORValueFor(Bundle bundle) {
+        return bundleValues.stream()
+                .filter(bundleValue -> bundleValue.getBundle().equals(bundle))
+                .max(BundleValue::compareTo).orElse(BundleValue.ZERO).getAmount();
     }
 
     public Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {

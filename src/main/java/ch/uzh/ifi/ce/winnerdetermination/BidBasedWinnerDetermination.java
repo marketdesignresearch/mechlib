@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BidBasedWinnerDetermination.class);
 
     private final AuctionInstance auctionInstance;
 
@@ -50,7 +49,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
             }
             Map<Good, Integer> goods = goodsBuilder.build();
             if (!goods.isEmpty()) {
-                trades.put(bidder, new BidderAllocation(totalValue, goods, bundleBids.build()));
+                trades.put(bidder, new BidderAllocation(totalValue, new Bundle(goods), bundleBids.build()));
             }
         }
 

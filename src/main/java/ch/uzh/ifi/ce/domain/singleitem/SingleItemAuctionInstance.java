@@ -1,5 +1,6 @@
-package ch.uzh.ifi.ce.domain;
+package ch.uzh.ifi.ce.domain.singleitem;
 
+import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.domain.singleitem.SingleItemBid;
 import com.google.common.base.Preconditions;
 import lombok.Getter;

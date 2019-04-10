@@ -68,7 +68,7 @@ public class CCGAuction implements AuctionMechanism {
 
                 }
                 LOGGER.debug("constraints added");
-                LOGGER.debug("mimizing payment");
+                LOGGER.debug("minimizing payment");
 
                 lastPayment = paymentRule.getPayment();
                 LOGGER.debug("payment minimized");

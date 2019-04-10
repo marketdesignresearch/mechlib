@@ -12,29 +12,24 @@ import java.io.Serializable;
  * @author Benedikt Bünz
  *
  */
-@AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString
+@ToString(of = "id")
 public final class SimpleGood implements Good, Serializable {
     private static final long serialVersionUID = 6681285736188564800L;
 
     @Getter
-    private final boolean dummyGood;
-    @Getter
     private final String id;
-    private int availability = 1;
-
-    public SimpleGood(int id) {
-        this(false, String.valueOf(id));
-    }
+    private final int availability;
+    @Getter
+    private final boolean dummyGood;
 
     public SimpleGood(String id) {
-        this(false, id);
+        this(id, 1, false);
     }
 
-    public SimpleGood(boolean dummyGood, int id) {
-        this(dummyGood, String.valueOf(id));
+    public SimpleGood(String id, boolean dummyGood) {
+        this(id, 1, dummyGood);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package ch.uzh.ifi.ce.mechanisms.vcg;
 
 import ch.uzh.ifi.ce.domain.AuctionInstance;
-import ch.uzh.ifi.ce.domain.Bidder;
 import ch.uzh.ifi.ce.domain.Payment;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
 import ch.uzh.ifi.ce.domain.cats.CATSAdapter;
 import ch.uzh.ifi.ce.domain.cats.CATSAuction;
 import ch.uzh.ifi.ce.domain.cats.CATSParser;
@@ -48,11 +48,11 @@ public class VCGFromCATSTest {
         // Compare to direct CPLEX result
         assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
         Offset<Double> offset = Offset.offset(0.001);
-        assertThat(payment.paymentOf(new Bidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(798.446, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(907.544, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 5)).getAmount().doubleValue()).isEqualTo(1656.076, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 6)).getAmount().doubleValue()).isEqualTo(754.196, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(798.446, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(907.544, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 5)).getAmount().doubleValue()).isEqualTo(1656.076, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 6)).getAmount().doubleValue()).isEqualTo(754.196, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 2)).getAmount()).isZero();
         LOGGER.info(payment.toString());
 
     }

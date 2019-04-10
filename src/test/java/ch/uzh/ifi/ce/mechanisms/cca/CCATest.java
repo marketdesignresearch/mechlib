@@ -6,7 +6,7 @@ import ch.uzh.ifi.ce.domain.AuctionInstance;
 import ch.uzh.ifi.ce.domain.cats.CATSAdapter;
 import ch.uzh.ifi.ce.domain.cats.CATSAuction;
 import ch.uzh.ifi.ce.domain.cats.CATSParser;
-import ch.uzh.ifi.ce.domain.cats.Domain;
+import ch.uzh.ifi.ce.domain.Domain;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import ch.uzh.ifi.ce.mechanisms.cca.priceupdate.PriceUpdater;
 import ch.uzh.ifi.ce.mechanisms.cca.priceupdate.SimpleRelativePriceUpdate;
@@ -43,7 +43,7 @@ public class CCATest {
 
     @Test
     public void testCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getValues()));
+        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
@@ -57,7 +57,7 @@ public class CCATest {
         VCGAuction vcgAuction = new XORVCGAuction(domain.toAuction());
         AuctionResult resultIncludingAllBids = vcgAuction.getAuctionResult();
 
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getValues()));
+        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
@@ -86,7 +86,7 @@ public class CCATest {
 
     @Test
     public void testResettingCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getValues()));
+        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
@@ -111,7 +111,7 @@ public class CCATest {
         assertThat(cca.isClockPhaseCompleted()).isTrue();
         assertThat(cca.hasNextSupplementaryRound()).isFalse();
         assertThat(second.getAllocation().getTotalAllocationValue())
-                .isLessThanOrEqualTo(first.getAllocation().getTotalAllocationValue());
+                .isEqualTo(first.getAllocation().getTotalAllocationValue());
 
     }
 }

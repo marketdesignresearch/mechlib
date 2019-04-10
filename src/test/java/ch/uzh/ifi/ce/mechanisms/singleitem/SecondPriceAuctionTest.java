@@ -1,6 +1,8 @@
 package ch.uzh.ifi.ce.mechanisms.singleitem;
 
 import ch.uzh.ifi.ce.domain.*;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.singleitem.SingleItemAuctionInstance;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -22,9 +24,9 @@ public class SecondPriceAuctionTest {
     @Before
     public void setUp() {
         item = new SimpleGood("item");
-        bidder1 = new Bidder("B" + 1);
-        bidder2 = new Bidder("B" + 2);
-        bidder3 = new Bidder("B" + 3);
+        bidder1 = new SimpleBidder("B" + 1);
+        bidder2 = new SimpleBidder("B" + 2);
+        bidder3 = new SimpleBidder("B" + 3);
     }
 
     @Test
@@ -93,8 +95,8 @@ public class SecondPriceAuctionTest {
     @Test
     public void testInvalidSingleGoodAuction() {
         BundleBid bid1 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1");
-        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(new SimpleGood(false, "item2")), "2");
-        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(15), Sets.newHashSet(item, new SimpleGood(false, "item3", 2)), "3");
+        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(new SimpleGood("item2")), "2");
+        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(15), Sets.newHashSet(item, new SimpleGood("item3", 2, false)), "3");
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> bid3.getBundle().getSingleGood());
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> new Bundle(ImmutableMap.of(item, 3)).getSingleGood());
@@ -119,7 +121,7 @@ public class SecondPriceAuctionTest {
         for (Bidder bidder : losers) {
             assertThat(allocation.allocationOf(bidder).getAcceptedBids()).isEmpty();
             assertThat(allocation.allocationOf(bidder).getValue()).isZero();
-            assertThat(allocation.allocationOf(bidder).getGoodsMap()).isEmpty();
+            assertThat(allocation.allocationOf(bidder).getBundle()).isEmpty();
             assertThat(payment.paymentOf(bidder).getAmount()).isZero();
         }
 
@@ -128,8 +130,8 @@ public class SecondPriceAuctionTest {
         assertThat(winningBid.getId()).isEqualTo(expectedWinningBid.getId());
         assertThat(winningBid.getAmount()).isEqualTo(expectedWinningBid.getAmount());
         assertThat(winningBid.getBundle().getSingleGood()).isEqualTo(item);
-        assertThat(allocation.allocationOf(expectedWinner).getGoodsMap()).hasSize(1);
-        assertThat(allocation.allocationOf(expectedWinner).getGoodsMap().keySet().iterator().next()).isEqualTo(item);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle()).hasSize(1);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle().keySet().iterator().next()).isEqualTo(item);
         assertThat(allocation.allocationOf(expectedWinner).getValue()).isEqualTo(BigDecimal.TEN);
 
         assertThat(payment.getTotalPayments()).isEqualTo(expectedPayment);

@@ -24,7 +24,7 @@ public class CCAuction implements AuctionMechanism {
 
     private AuctionResult result;
     private List<CCARound> rounds = new ArrayList<>();
-    private Set<Bidder> bidders;
+    private Set<? extends Bidder> bidders;
     @Getter
     private DemandQuery demandQuery;
 
@@ -40,7 +40,7 @@ public class CCAuction implements AuctionMechanism {
     @Getter
     private boolean clockPhaseCompleted = false;
 
-    public CCAuction(Set<Good> goods, Set<Bidder> bidders, DemandQuery demandQuery) {
+    public CCAuction(Set<Good> goods, Set<? extends Bidder> bidders, DemandQuery demandQuery) {
         this.currentPrices = new Prices(goods);
         this.bidders = bidders;
         this.demandQuery = demandQuery;

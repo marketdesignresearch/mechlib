@@ -15,7 +15,7 @@ public abstract class VCGAuction implements AuctionMechanism {
     private AuctionResult result;
 
     @Override
-    public AuctionResult getAuctionResult() {
+    public final AuctionResult getAuctionResult() {
         if (result == null) {
             result = calculateVCGPrices();
         }

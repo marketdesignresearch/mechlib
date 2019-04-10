@@ -1,7 +1,7 @@
 package ch.uzh.ifi.ce.strategy;
 
 import ch.uzh.ifi.ce.domain.Bid;
-import ch.uzh.ifi.ce.domain.Value;
+import ch.uzh.ifi.ce.domain.bidder.Value;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

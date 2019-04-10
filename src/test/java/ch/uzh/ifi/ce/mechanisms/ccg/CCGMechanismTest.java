@@ -1,7 +1,8 @@
 package ch.uzh.ifi.ce.mechanisms.ccg;
 
 import ch.uzh.ifi.ce.domain.*;
-import ch.uzh.ifi.ce.domain.cats.Domain;
+import ch.uzh.ifi.ce.domain.bidder.SimpleBidder;
+import ch.uzh.ifi.ce.domain.Domain;
 import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.*;
 import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import ch.uzh.ifi.ce.mechanisms.ccg.paymentrules.*;
@@ -29,7 +30,6 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-@Ignore // Takes quite long and is not very relevant at currently
 public class CCGMechanismTest {
     private final MechanismFactory factory;
 
@@ -77,10 +77,10 @@ public class CCGMechanismTest {
         AuctionMechanism wd = factory.getMechanism(domain.toAuction());
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
-        Bidder bidder0 = new Bidder("SB" + 0);
-        Bidder bidder1 = new Bidder("SB" + 1);
-        Bidder bidder2 = new Bidder("SB" + 2);
-        Bidder bidder3 = new Bidder("SB" + 3);
+        Bidder bidder0 = new SimpleBidder("SB" + 0);
+        Bidder bidder1 = new SimpleBidder("SB" + 1);
+        Bidder bidder2 = new SimpleBidder("SB" + 2);
+        Bidder bidder3 = new SimpleBidder("SB" + 3);
         Offset<Double> offset = Offset.offset(0.00001);
 
         assertThat(result.getTotalPayments().doubleValue()).isEqualTo(38, offset);
@@ -102,10 +102,10 @@ public class CCGMechanismTest {
         AuctionMechanism wd = factory.getMechanism(domain.toAuction());
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
-        Bidder bidder1 = new Bidder("DB" + 3);
-        Bidder bidder2 = new Bidder("DB" + 4);
-        Bidder bidder3 = new Bidder("DB" + 5);
-        Bidder bidder4 = new Bidder("DB" + 6);
+        Bidder bidder1 = new SimpleBidder("DB" + 3);
+        Bidder bidder2 = new SimpleBidder("DB" + 4);
+        Bidder bidder3 = new SimpleBidder("DB" + 5);
+        Bidder bidder4 = new SimpleBidder("DB" + 6);
         System.out.println(wd.getAllocation());
         System.out.println(wd.getPayment());
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
@@ -117,6 +117,7 @@ public class CCGMechanismTest {
     }
 
     @Test
+    @Ignore // Takes quite long and is not very relevant currently
     public void testHardRealisticExample() throws IOException {
         Path catsFileStream = Paths.get("src/test/resources/hard0000.txt");
         CATSParser parser = new CATSParser();
@@ -153,9 +154,9 @@ public class CCGMechanismTest {
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(26, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 0)).getAmount().doubleValue()).isEqualTo(10, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(8, offset);
-        assertThat(payment.paymentOf(new Bidder("SB" + 2)).getAmount().doubleValue() + payment.paymentOf(new Bidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(8, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 0)).getAmount().doubleValue()).isEqualTo(10, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(8, offset);
+        assertThat(payment.paymentOf(new SimpleBidder("SB" + 2)).getAmount().doubleValue() + payment.paymentOf(new SimpleBidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(8, offset);
         System.out.println(payment.getMetaInfo());
 
     }
@@ -226,10 +227,10 @@ public class CCGMechanismTest {
         Domain domain = adapter.adaptToDomain(catsAuction);
         AuctionMechanism wd = factory.getMechanism(domain.toAuction());
         Payment result = wd.getPayment();
-        Bidder bidder0 = new Bidder("DB" + 4);
-        Bidder bidder1 = new Bidder("DB" + 5);
-        Bidder bidder2 = new Bidder("SB" + 2);
-        Bidder bidder3 = new Bidder("SB" + 1);
+        Bidder bidder0 = new SimpleBidder("DB" + 4);
+        Bidder bidder1 = new SimpleBidder("DB" + 5);
+        Bidder bidder2 = new SimpleBidder("SB" + 2);
+        Bidder bidder3 = new SimpleBidder("SB" + 1);
 
         assertThat(result.getTotalPayments().doubleValue()).isEqualTo(25);
         assertThat(result.paymentOf(bidder0).getAmount().doubleValue()).isEqualTo(5);
@@ -248,8 +249,8 @@ public class CCGMechanismTest {
         Domain domain = adapter.adaptToDomain(catsAuction);
         AuctionMechanism wd = factory.getMechanism(domain.toAuction());
         Payment result = wd.getPayment();
-        Bidder bidder0 = new Bidder("SB" + 0);
-        Bidder bidder1 = new Bidder("SB" + 1);
+        Bidder bidder0 = new SimpleBidder("SB" + 0);
+        Bidder bidder1 = new SimpleBidder("SB" + 1);
         assertThat(result.getTotalPayments().doubleValue()).isEqualTo(100);
         assertThat(result.paymentOf(bidder0).getAmount().doubleValue()).isEqualTo(60);
         assertThat(result.paymentOf(bidder1).getAmount().doubleValue()).isEqualTo(40);

@@ -57,7 +57,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
             if (previousPayoff.containsKey(bidder)) {
                 BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
                 BigDecimal tradeValue = oldBidderAllocation.getValue().subtract(previousPayoff.get(bidder));
-                BidderAllocation bidderAllocation = new BidderAllocation(tradeValue, oldBidderAllocation.getGoodsMap(), oldBidderAllocation.getAcceptedBids());
+                BidderAllocation bidderAllocation = new BidderAllocation(tradeValue, oldBidderAllocation.getBundle(), oldBidderAllocation.getAcceptedBids());
                 allocations.put(bidder, bidderAllocation);
                 potentialCoalitions.add(bidderAllocation.getPotentialCoalition(bidder));
             } else {
