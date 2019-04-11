@@ -1,9 +1,9 @@
 package ch.uzh.ifi.ce.mechanisms.cca;
 
+import ch.uzh.ifi.ce.demandquery.DemandQuery;
 import ch.uzh.ifi.ce.domain.*;
 import ch.uzh.ifi.ce.mechanisms.AuctionMechanism;
 import ch.uzh.ifi.ce.mechanisms.AuctionResult;
-import ch.uzh.ifi.ce.demandquery.DemandQuery;
 import ch.uzh.ifi.ce.mechanisms.cca.priceupdate.PriceUpdater;
 import ch.uzh.ifi.ce.mechanisms.cca.priceupdate.SimpleRelativePriceUpdate;
 import ch.uzh.ifi.ce.mechanisms.cca.round.CCAClockRound;
@@ -11,7 +11,10 @@ import ch.uzh.ifi.ce.mechanisms.cca.round.CCARound;
 import ch.uzh.ifi.ce.mechanisms.cca.round.CCASupplementaryRound;
 import ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround.ProfitMaximizingSupplementaryRound;
 import ch.uzh.ifi.ce.mechanisms.cca.round.supplementaryround.SupplementaryRound;
-import ch.uzh.ifi.ce.mechanisms.vcg.XORVCGAuction;
+import ch.uzh.ifi.ce.mechanisms.ccg.MechanismFactory;
+import ch.uzh.ifi.ce.mechanisms.ccg.VariableAlgorithmCCGFactory;
+import ch.uzh.ifi.ce.mechanisms.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
+import ch.uzh.ifi.ce.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,9 +72,10 @@ public class CCAuction implements AuctionMechanism {
             while (hasNextSupplementaryRound()) {
                 nextSupplementaryRound();
             }
-            log.info("Collected all bids. Running XOR VCG auction to determine allocation & payments.");
+            log.info("Collected all bids. Running CCG Auction to determine allocation & payments.");
             AuctionInstance auctionInstance = new AuctionInstance(getLatestBids());
-            AuctionMechanism mechanism = new XORVCGAuction(auctionInstance);
+            MechanismFactory quadraticCCG = new VariableAlgorithmCCGFactory(new XORBlockingCoalitionFinderFactory(), ConstraintGenerationAlgorithm.STANDARD_CCG);
+            AuctionMechanism mechanism = quadraticCCG.getMechanism(auctionInstance);
             result = mechanism.getAuctionResult();
         }
         return result;
