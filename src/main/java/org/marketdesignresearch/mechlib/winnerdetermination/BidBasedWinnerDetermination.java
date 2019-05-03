@@ -13,19 +13,19 @@ import java.util.Map;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
-    private final AuctionInstance auctionInstance;
+    private final Bids bids;
 
-    public BidBasedWinnerDetermination(AuctionInstance auctionInstance) {
-        this.auctionInstance = auctionInstance;
+    public BidBasedWinnerDetermination(Bids bids) {
+        this.bids = bids;
     }
 
-    protected AuctionInstance getAuction() {
-        return auctionInstance;
+    protected Bids getBids() {
+        return bids;
     }
 
     @Override
     protected Allocation solveWinnerDetermination() {
-        if (auctionInstance.getBidders().isEmpty()) {
+        if (bids.getBidders().isEmpty()) {
             return Allocation.EMPTY_ALLOCATION;
         }
         return super.solveWinnerDetermination();
@@ -34,11 +34,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     @Override
     public Allocation adaptMIPResult(ISolution mipResult) {
         ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
-        for (Bidder bidder : auctionInstance.getBidders()) {
+        for (Bidder bidder : bids.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
             ImmutableMap.Builder<Good, Integer> goodsBuilder = ImmutableMap.builder();
             ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
-            for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
+            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
                     goodsBuilder.putAll(bundleBid.getBundle());
                     bundleBids.add(bundleBid);
@@ -54,7 +54,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         MetaInfo metaInfo = new MetaInfo();
         metaInfo.setNumberOfMIPs(1);
         metaInfo.setMipSolveTime(mipResult.getSolveTime());
-        return new Allocation(trades.build(), auctionInstance.getBids(), metaInfo);
+        return new Allocation(trades.build(), bids, metaInfo);
     }
 
     protected abstract Variable getBidVariable(BundleBid bundleBid);

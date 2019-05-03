@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemAuctionInstance;
+import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 
 import java.math.BigDecimal;
@@ -43,8 +43,8 @@ public class SecondPriceAuctionTest {
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(bids);
-        AuctionResult auctionResult = new SecondPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+        AuctionResult auctionResult = new SecondPriceAuction(singleItemBids).getAuctionResult();
         checkResult(auctionResult, bidder2, bid2B, BigDecimal.valueOf(8));
     }
 
@@ -61,15 +61,15 @@ public class SecondPriceAuctionTest {
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(bids);
-        AuctionResult auctionResult = new SecondPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+        AuctionResult auctionResult = new SecondPriceAuction(singleItemBids).getAuctionResult();
         checkResult(auctionResult, bidder1, bid1B, BigDecimal.TEN);
     }
 
     @Test
     public void testSecondPriceAuctionNoBidder() {
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(new Bids());
-        AuctionResult auctionResult = new SecondPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids bids = new SingleItemBids(new Bids());
+        AuctionResult auctionResult = new SecondPriceAuction(bids).getAuctionResult();
         Allocation allocation = auctionResult.getAllocation();
         assertThat(allocation.getTotalAllocationValue()).isZero();
         Payment payment = auctionResult.getPayment();
@@ -88,8 +88,8 @@ public class SecondPriceAuctionTest {
         BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
         Bids bids = new Bids();
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B, bid2A, bid2B, bid3A, bid3B, bid3C)));
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(bids);
-        AuctionResult auctionResult = new SecondPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+        AuctionResult auctionResult = new SecondPriceAuction(singleItemBids).getAuctionResult();
         checkResult(auctionResult, bidder1, bid2B, BigDecimal.ZERO);
     }
 
@@ -105,12 +105,12 @@ public class SecondPriceAuctionTest {
         Bids bidsOnTwoDifferentGoods = new Bids();
         bidsOnTwoDifferentGoods.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
         bidsOnTwoDifferentGoods.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new SingleItemAuctionInstance(bidsOnTwoDifferentGoods));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new SingleItemBids(bidsOnTwoDifferentGoods));
 
         Bids bidsOnComplexGood = new Bids();
         bidsOnComplexGood.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
         bidsOnComplexGood.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new SingleItemAuctionInstance(bidsOnComplexGood));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new SingleItemBids(bidsOnComplexGood));
     }
 
     private void checkResult(AuctionResult auctionResult, Bidder expectedWinner, BundleBid expectedWinningBid, BigDecimal expectedPayment) {

@@ -1,19 +1,19 @@
 package org.marketdesignresearch.mechlib.domain.cats;
 
+import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.Domain;
+import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.SimpleGood;
 import org.marketdesignresearch.mechlib.domain.bidder.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.Value;
 import org.marketdesignresearch.mechlib.domain.bidder.ValueType;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
-import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.SimpleGood;
 
 import java.util.*;
 
 public class CATSAdapter {
 
-    public AuctionInstance adaptCATSAuction(CATSAuction catsAuction) {
+    public Bids adaptCATSAuction(CATSAuction catsAuction) {
         return adaptToDomain(catsAuction).toAuction();
 
     }

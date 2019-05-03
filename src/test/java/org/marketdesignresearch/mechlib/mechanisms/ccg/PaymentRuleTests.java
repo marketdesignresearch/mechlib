@@ -56,7 +56,7 @@ public class PaymentRuleTests {
     @Test
     public void paperExample() throws IOException {
         CPLEXUtils.SOLVER.initializeSolveParams();
-        AuctionInstance auctionInstance = Domain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).toAuction();
+        Bids bids = Domain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).toAuction();
         MechanismFactory quadratic = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         MechanismFactory large = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN), new NormFactory(Norm.MANHATTAN,
@@ -65,11 +65,11 @@ public class PaymentRuleTests {
                 new InversePayoffWeightsFactory()));
         MechanismFactory fractional = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN), new NormFactory(Norm.EUCLIDEAN,
                 new InversePayoffWeightsFactory()));
-        System.out.println(quadratic.getMechanism(auctionInstance).getPayment());
-        System.out.println(fractional.getMechanism(auctionInstance).getPayment());
-        System.out.println(small.getMechanism(auctionInstance).getPayment());
-        System.out.println(large.getMechanism(auctionInstance).getPayment());
-        System.out.println(new ORVCGAuction(auctionInstance).getPayment());
+        System.out.println(quadratic.getMechanism(bids).getPayment());
+        System.out.println(fractional.getMechanism(bids).getPayment());
+        System.out.println(small.getMechanism(bids).getPayment());
+        System.out.println(large.getMechanism(bids).getPayment());
+        System.out.println(new ORVCGAuction(bids).getPayment());
 
     }
 }

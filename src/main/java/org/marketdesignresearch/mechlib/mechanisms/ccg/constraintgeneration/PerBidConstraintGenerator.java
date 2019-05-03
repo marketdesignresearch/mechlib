@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
  */
 class PerBidConstraintGenerator implements PartialConstraintGenerator {
     @Override
-    public void generateFirstRoundConstraints(AuctionInstance auctionInstance, AuctionResult referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(Bids bids, AuctionResult referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
         corePaymentRule.resetResult();
         Allocation allocation = referencePoint.getAllocation();
         Payment lowerBound = referencePoint.getPayment();
-        for (Entry<Bidder, Bid> bid : auctionInstance.getBids()) {
+        for (Entry<Bidder, Bid> bid : bids) {
             for (BundleBid bundleBid : bid.getValue().getBundleBids()) {
                 // TODO: .keySet() assumes availability of 1
                 Set<Bidder> blockedBiddersSet = bundleBid.getBundle().keySet().stream().filter(goodToBidderMap::containsKey).map(good -> goodToBidderMap.get(good).getBidder()).collect(Collectors.toSet());

@@ -1,31 +1,30 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public abstract class BidBasedVCGAuction extends VCGAuction {
 
-    private final AuctionInstance auctionInstance;
+    @Getter(AccessLevel.PROTECTED)
+    private final Bids bids;
 
-    protected BidBasedVCGAuction(AuctionInstance auctionInstance) {
-        this.auctionInstance = auctionInstance;
-    }
-
-    protected AuctionInstance getAuctionInstance() {
-        return auctionInstance;
+    protected BidBasedVCGAuction(Bids bids) {
+        this.bids = bids;
     }
 
     @Override
     protected WinnerDetermination getWinnerDetermination() {
-        return getWinnerDetermination(getAuctionInstance());
+        return getWinnerDetermination(getBids());
     }
 
     @Override
     protected WinnerDetermination getWinnerDeterminationWithout(Bidder bidder) {
-        return getWinnerDetermination(getAuctionInstance().without(bidder));
+        return getWinnerDetermination(getBids().without(bidder));
     }
 
-    protected abstract WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance);
+    protected abstract WinnerDetermination getWinnerDetermination(Bids bids);
 
 }

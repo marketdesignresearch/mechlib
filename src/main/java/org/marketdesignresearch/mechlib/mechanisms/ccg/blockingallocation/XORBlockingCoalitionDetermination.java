@@ -2,9 +2,9 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
 import edu.harvard.econcs.jopt.solver.ISolution;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
 import org.marketdesignresearch.mechlib.domain.Bidder;
 import org.marketdesignresearch.mechlib.domain.BidderAllocation;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 public class XORBlockingCoalitionDetermination extends XORWinnerDetermination {
 
-    public XORBlockingCoalitionDetermination(AuctionInstance auctionInstance) {
-        super(auctionInstance);
+    public XORBlockingCoalitionDetermination(Bids bids) {
+        super(bids);
     }
 
     /**

@@ -20,8 +20,8 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
     private final Map<Bidder, BigDecimal> previousPayoff = new HashMap<>();
     protected static final String TRAITOR = "TRAITOR_";
 
-    public BlockingCoalitionDetermination(AuctionInstance auctionInstance, AuctionResult previousAuctionResult) {
-        super(auctionInstance);
+    public BlockingCoalitionDetermination(Bids bids, AuctionResult previousAuctionResult) {
+        super(bids);
         MIPWrapper mip = getMIP();
         for (Bidder winningBidder : previousAuctionResult.getWinners()) {
             Variable traitor = mip.makeNewBooleanVar(TRAITOR + winningBidder.getId());
@@ -31,7 +31,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
 
             // traitor is 1 if at least one bundleBid of the bidder was
             // allocated else 0
-            for (BundleBid bundleBid : auctionInstance.getBid(winningBidder).getBundleBids()) {
+            for (BundleBid bundleBid : bids.getBid(winningBidder).getBundleBids()) {
 
                 Variable bidVariable = getBidVariable(bundleBid);
 
@@ -65,7 +65,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
                 potentialCoalitions.addAll(oldBidderAllocation.getAcceptedBids().stream().map(bundleBid -> bundleBid.getPotentialCoalition(bidder)).collect(Collectors.toList()));
             }
         }
-        return new Allocation(allocations, getAuction().getBids(), allocation.getMetaInfo(), potentialCoalitions);
+        return new Allocation(allocations, getBids(), allocation.getMetaInfo(), potentialCoalitions);
     }
 
 }

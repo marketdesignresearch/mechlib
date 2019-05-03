@@ -10,7 +10,7 @@ import java.util.Map;
 public class BidsReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(AuctionInstance auctionInstance, Allocation allocation) {
+    public Payment computeReferencePoint(Bids bids, Allocation allocation) {
         Map<Bidder, BidderPayment> paymentMap = ImmutableMap.copyOf(Maps.transformValues(allocation.getTradesMap(), ba -> new BidderPayment(ba.getValue())));
         return new Payment(paymentMap, new MetaInfo());
     }

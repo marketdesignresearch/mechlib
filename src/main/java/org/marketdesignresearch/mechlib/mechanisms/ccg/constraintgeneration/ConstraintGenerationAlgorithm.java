@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import com.google.common.collect.Sets;
+import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,16 +24,16 @@ public enum ConstraintGenerationAlgorithm {
     VALUE_SEPARABILITY,
     /** VS DOWN */
     VALUE_SEPARABILITY_DOWN, FULL;
-    public static ConstraintGenerator getInstance(AuctionInstance auctionInstance, AuctionResult referencePoint, CorePaymentRule corePaymentRule, ConstraintGenerationAlgorithm... algorithms) {
+    public static ConstraintGenerator getInstance(Bids bids, AuctionResult referencePoint, CorePaymentRule corePaymentRule, ConstraintGenerationAlgorithm... algorithms) {
         Set<ConstraintGenerationAlgorithm> algorithmSet = Sets.newHashSet(algorithms);
-        return getInstance(algorithmSet, auctionInstance, referencePoint, corePaymentRule);
+        return getInstance(algorithmSet, bids, referencePoint, corePaymentRule);
 
     }
 
-    public static ConstraintGenerator getInstance(Set<ConstraintGenerationAlgorithm> algorithms, AuctionInstance auctionInstance, AuctionResult referencePoint, CorePaymentRule corePaymentRule) {
+    public static ConstraintGenerator getInstance(Set<ConstraintGenerationAlgorithm> algorithms, Bids bids, AuctionResult referencePoint, CorePaymentRule corePaymentRule) {
         Set<PartialConstraintGenerator> constraintGenerators = new HashSet<>(algorithms.size());
         constraintGenerators.addAll(algorithms.stream().map(ConstraintGenerationAlgorithm::getConstraintGenerator).collect(Collectors.toList()));
-        return new UnitedConstrainedGenerator(auctionInstance, referencePoint, constraintGenerators, corePaymentRule);
+        return new UnitedConstrainedGenerator(bids, referencePoint, constraintGenerators, corePaymentRule);
     }
 
     private PartialConstraintGenerator getConstraintGenerator() {

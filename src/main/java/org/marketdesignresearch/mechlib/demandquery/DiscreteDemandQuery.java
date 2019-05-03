@@ -32,7 +32,7 @@ public class DiscreteDemandQuery implements DemandQuery {
         }
         Preconditions.checkArgument(bids.getBidders().contains(bidder));
 
-        XORWinnerDetermination xorWinnerDetermination = new XORWinnerDetermination(new AuctionInstance(bids.of(Sets.newHashSet(bidder))));
+        XORWinnerDetermination xorWinnerDetermination = new XORWinnerDetermination(bids.of(Sets.newHashSet(bidder)));
         xorWinnerDetermination.getMIP().clearObjective();
 
         for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {

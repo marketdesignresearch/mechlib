@@ -6,7 +6,7 @@ import org.marketdesignresearch.mechlib.domain.*;
 
 import java.util.*;
 
-public class SingleItemAuctionInstance extends AuctionInstance {
+public class SingleItemBids extends Bids {
 
     @Getter
     private Good item;
@@ -14,8 +14,8 @@ public class SingleItemAuctionInstance extends AuctionInstance {
     @Getter
     private List<SingleItemBid> descendingHighestBids;
 
-    public SingleItemAuctionInstance(Bids bids) {
-        super(bids);
+    public SingleItemBids(Bids bids) {
+        super(bids.getBidMap());
         descendingHighestBids = new ArrayList<>();
         for (Map.Entry<Bidder, Bid> bidEntry : bids.getBidMap().entrySet()) {
             SingleItemBid highestBid = null;
@@ -31,5 +31,11 @@ public class SingleItemAuctionInstance extends AuctionInstance {
             descendingHighestBids.add(highestBid);
         }
         descendingHighestBids.sort((a, b) -> b.getBundleBid().getAmount().compareTo(a.getBundleBid().getAmount()));
+    }
+
+    @Override
+    public boolean setBid(Bidder bidder, Bid bid) {
+        // FIXME: This should not be set anymore -> breaks sorting
+        throw new RuntimeException("Not allowed");
     }
 }

@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +28,8 @@ public class IntermediateSolutionsAllocationFinderFactory implements BlockingAll
     }
 
     @Override
-    public BlockingAllocation findBlockingAllocation(AuctionInstance auctionInstance, AuctionResult priorResult) {
-        WinnerDetermination blockingCoalitionFinder = new MultiBlockingAllocationsDetermination(auctionInstance, priorResult, mode);
+    public BlockingAllocation findBlockingAllocation(Bids bids, AuctionResult priorResult) {
+        WinnerDetermination blockingCoalitionFinder = new MultiBlockingAllocationsDetermination(bids, priorResult, mode);
         blockingCoalitionFinder.setLowerBound(priorResult.getPayment().getTotalPayments().subtract(epsilon).doubleValue());
         LOGGER.debug("Found {} intermediate solutions", blockingCoalitionFinder.getIntermediateSolutions().size());
         return new BlockingAllocation(blockingCoalitionFinder.getAllocation(), blockingCoalitionFinder.getIntermediateSolutions());

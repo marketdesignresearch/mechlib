@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.domain;
 
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.Value;
+import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.strategy.Strategy;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -35,12 +37,22 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         return bidMap.values();
     }
 
+    /**
+     *
+     * @param bidder to be removed
+     * @return New bids not including the bid of the specified bidder
+     */
     public Bids without(Bidder bidder) {
         Map<Bidder, Bid> newBidderBidMap = new HashMap<>(bidMap);
         newBidderBidMap.remove(bidder);
         return new Bids(newBidderBidMap);
     }
 
+    /**
+     *
+     * @param bidders to be included
+     * @return New bids consisting only of the bids of the specified bidders
+     */
     public Bids of(Set<Bidder> bidders) {
         Map<Bidder, Bid> newBidderBidMap = new HashMap<>(Maps.filterKeys(bidMap, bidders::contains));
         return new Bids(newBidderBidMap);
@@ -80,5 +92,20 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
             bidMap.put(simpleBidder, operator.apply(simpleBidder.getValue()));
         }
         return new Bids(bidMap);
+    }
+
+    // TODO: Does not work with OR*
+    /**
+     *
+     * @return New bids, but reduced by the payoff of
+     *         auctionResult
+     */
+    public Bids reducedBy(AuctionResult auctionResult) {
+        Bids newBids = new Bids();
+        for (Map.Entry<Bidder, Bid> entry : getBidMap().entrySet()) {
+            BigDecimal payoff = auctionResult.payoffOf(entry.getKey());
+            newBids.setBid(entry.getKey(), entry.getValue().reducedBy(payoff));
+        }
+        return newBids;
     }
 }

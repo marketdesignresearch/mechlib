@@ -4,8 +4,8 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
 import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
 
@@ -22,19 +22,19 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     private final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     private final MIPWrapper winnerDeterminationProgram;
 
-    public XORWinnerDetermination(AuctionInstance auctionInstance) {
-        super(auctionInstance);
-        winnerDeterminationProgram = createWinnerDeterminationMIP(auctionInstance);
+    public XORWinnerDetermination(Bids bids) {
+        super(bids);
+        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
     }
 
-    private MIPWrapper createWinnerDeterminationMIP(AuctionInstance auctionInstance) {
+    private MIPWrapper createWinnerDeterminationMIP(Bids bids) {
         MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
         // Add decision variables and objective terms:
         Map<Good, Constraint> goods = new HashMap<>();
-        for (Bidder bidder : auctionInstance.getBidders()) {
+        for (Bidder bidder : bids.getBidders()) {
             Constraint exclusiveBids = new Constraint(CompareType.LEQ, 1);
 
-            for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
+            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
 
                 Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
                 bidVariables.put(bundleBid, bidI);

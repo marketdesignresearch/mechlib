@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
@@ -29,8 +29,8 @@ public class VCGFromCATSTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        AuctionInstance auctionInstance = adapter.adaptCATSAuction(catsAuction);
-        AuctionMechanism ar = new ORVCGAuction(auctionInstance);
+        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        AuctionMechanism ar = new ORVCGAuction(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(1787.8971);
         LOGGER.info(ar.getAllocation().toString());
@@ -43,8 +43,8 @@ public class VCGFromCATSTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        AuctionInstance auctionInstance = adapter.adaptCATSAuction(catsAuction);
-        AuctionMechanism ar = new ORVCGAuction(auctionInstance);
+        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        AuctionMechanism ar = new ORVCGAuction(bids);
         Payment payment = ar.getPayment();
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
@@ -64,8 +64,8 @@ public class VCGFromCATSTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        AuctionInstance auctionInstance = adapter.adaptCATSAuction(catsAuction);
-        AuctionMechanism ar = new ORVCGAuction(auctionInstance);
+        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        AuctionMechanism ar = new ORVCGAuction(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8.4188562000e003, Offset.offset(0.00001));
         LOGGER.info(ar.getAllocation().toString());
@@ -77,8 +77,8 @@ public class VCGFromCATSTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        AuctionInstance auctionInstance = adapter.adaptCATSAuction(catsAuction);
-        AuctionMechanism ar = new ORVCGAuction(auctionInstance);
+        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        AuctionMechanism ar = new ORVCGAuction(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(3.2847555000e+004, Offset.offset(0.00001));
         LOGGER.info(ar.getAllocation().toString());

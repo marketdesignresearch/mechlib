@@ -38,8 +38,7 @@ public class VCGTest {
         bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
         bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
         bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionInstance auctionInstance = new AuctionInstance(bids);
-        AuctionMechanism am = new ORVCGAuction(auctionInstance);
+        AuctionMechanism am = new ORVCGAuction(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
         assertThat(payment.paymentOf(new SimpleBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
@@ -59,8 +58,7 @@ public class VCGTest {
         bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
         bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
         bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionInstance auctionInstance = new AuctionInstance(bids);
-        AuctionMechanism am = new XORVCGAuction(auctionInstance);
+        AuctionMechanism am = new XORVCGAuction(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
         assertThat(payment.paymentOf(new SimpleBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);

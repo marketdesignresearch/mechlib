@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemAuctionInstance;
+import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 
 import java.math.BigDecimal;
@@ -41,15 +41,15 @@ public class FirstPriceAuctionTest {
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(bids);
-        AuctionResult auctionResult = new FirstPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+        AuctionResult auctionResult = new FirstPriceAuction(singleItemBids).getAuctionResult();
         checkResult(auctionResult, bidder2, bid2B);
     }
 
     @Test
     public void testFirstPriceAuctionNoBidder() {
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(new Bids());
-        AuctionResult auctionResult = new FirstPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids bids = new SingleItemBids(new Bids());
+        AuctionResult auctionResult = new FirstPriceAuction(bids).getAuctionResult();
         Allocation allocation = auctionResult.getAllocation();
         assertThat(allocation.getTotalAllocationValue()).isZero();
         Payment payment = auctionResult.getPayment();
@@ -68,8 +68,8 @@ public class FirstPriceAuctionTest {
         BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
         Bids bids = new Bids();
         bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B, bid2A, bid2B, bid3A, bid3B, bid3C)));
-        SingleItemAuctionInstance auctionInstance = new SingleItemAuctionInstance(bids);
-        AuctionResult auctionResult = new FirstPriceAuction(auctionInstance).getAuctionResult();
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+        AuctionResult auctionResult = new FirstPriceAuction(singleItemBids).getAuctionResult();
         checkResult(auctionResult, bidder1, bid2B);
     }
 

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg;
 
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
@@ -24,20 +24,20 @@ import java.util.Set;
 public class CCGAuction implements AuctionMechanism {
     private static final Logger LOGGER = LoggerFactory.getLogger(CCGAuction.class);
     private AuctionResult result = null;
-    private final AuctionInstance auctionInstance;
+    private final Bids bids;
     private final CorePaymentRule paymentRule;
     private final Allocation allocation;
     private final BlockingAllocationFinder blockingCoalitionFactory;
     private final Set<ConstraintGenerationAlgorithm> cgAlgorithms;
 
-    public CCGAuction(AuctionInstance auctionInstance, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
+    public CCGAuction(Bids bids, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
                       ConstraintGenerationAlgorithm... cgAlgorithms) {
-        this(auctionInstance, allocation, paymentRule, blockingCoalitionFactory, EnumSet.copyOf(Arrays.asList(cgAlgorithms)));
+        this(bids, allocation, paymentRule, blockingCoalitionFactory, EnumSet.copyOf(Arrays.asList(cgAlgorithms)));
     }
 
-    public CCGAuction(AuctionInstance auctionInstance, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
+    public CCGAuction(Bids bids, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
                       Set<ConstraintGenerationAlgorithm> cgAlgorithms) {
-        this.auctionInstance = auctionInstance;
+        this.bids = bids;
         this.allocation = allocation;
         this.paymentRule = paymentRule;
         this.blockingCoalitionFactory = Objects.requireNonNull(blockingCoalitionFactory);
@@ -56,7 +56,7 @@ public class CCGAuction implements AuctionMechanism {
         long start = System.currentTimeMillis();
         MetaInfo metaInfo = new MetaInfo();
         Payment lastPayment = paymentRule.getPayment();
-        ConstraintGenerator constraintGenerator = ConstraintGenerationAlgorithm.getInstance(cgAlgorithms, auctionInstance, new AuctionResult(lastPayment, allocation), paymentRule);
+        ConstraintGenerator constraintGenerator = ConstraintGenerationAlgorithm.getInstance(cgAlgorithms, bids, new AuctionResult(lastPayment, allocation), paymentRule);
         BigDecimal totalWinnersPayments = lastPayment.getTotalPayments();
         BlockingAllocation blockingAllocation = null;
         AuctionResult lastResult = null;
@@ -79,7 +79,7 @@ public class CCGAuction implements AuctionMechanism {
             }
             lastResult = new AuctionResult(lastPayment, allocation);
             LOGGER.debug("Total winners payments {}", totalWinnersPayments);
-            blockingAllocation = blockingCoalitionFactory.findBlockingAllocation(auctionInstance, lastResult);
+            blockingAllocation = blockingCoalitionFactory.findBlockingAllocation(bids, lastResult);
             metaInfo = metaInfo.join(blockingAllocation.getMostBlockingAllocation().getMetaInfo());
             LOGGER.debug("Blocking coalition found with value {}", blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue());
         } while (PrecisionUtils.fuzzyCompare(blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue(), totalWinnersPayments,
@@ -93,10 +93,6 @@ public class CCGAuction implements AuctionMechanism {
         Payment payment = new Payment(lastPayment.getPaymentMap(), metaInfo);
 
         return new AuctionResult(payment, allocation);
-    }
-
-    public AuctionInstance getAuction() {
-        return auctionInstance;
     }
 
     @Override

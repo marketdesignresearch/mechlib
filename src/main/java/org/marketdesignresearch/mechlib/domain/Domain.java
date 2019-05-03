@@ -25,19 +25,18 @@ public final class Domain {
      * Assuming agents play truthful
      *
      */
-    public AuctionInstance toAuction() {
-        Bids bids = Bids.fromSimpleBidders(bidders);
-        return new AuctionInstance(bids);
+    public Bids toAuction() {
+        return Bids.fromSimpleBidders(bidders);
     }
 
-    public AuctionInstance toAuction(StrategySpace<?, ?> strategySpace) {
+    public Bids toAuction(StrategySpace<?, ?> strategySpace) {
         return toAuction(strategySpace, null, null);
     }
 
-    public AuctionInstance toAuction(StrategySpace<?, ?> strategySpace, SimpleBidder bidder, Strategy specificStrategy) {
+    public Bids toAuction(StrategySpace<?, ?> strategySpace, SimpleBidder bidder, Strategy specificStrategy) {
         Bids bids = Bids.fromSimpleBidders(bidders, strategySpace::applyStrategyTo);
         if (bidder != null && specificStrategy != null) bids.setBid(bidder, specificStrategy.apply(bidder.getValue()));
-        return new AuctionInstance(bids);
+        return bids;
     }
 
     public int size() {

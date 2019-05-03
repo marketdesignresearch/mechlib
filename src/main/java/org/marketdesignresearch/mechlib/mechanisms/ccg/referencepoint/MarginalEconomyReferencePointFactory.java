@@ -12,9 +12,8 @@ import java.util.Map;
 public class MarginalEconomyReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(AuctionInstance auctionInstance, Allocation allocation) {
+    public Payment computeReferencePoint(Bids bids, Allocation allocation) {
         // TODO: .keySet() assumes availability of 1
-        Bids bids = auctionInstance.getBids();
         Map<Good, Bidder> winnerMap = new HashMap<>();
         for (Bidder bidder : allocation.getWinners()) {
             allocation.allocationOf(bidder).getBundle().keySet().forEach(g -> winnerMap.put(g, bidder));

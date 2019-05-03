@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint;
 
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 
 public interface ReferencePointFactory {
 
-    Payment computeReferencePoint(AuctionInstance auctionInstance, Allocation allocation);
+    Payment computeReferencePoint(Bids bids, Allocation allocation);
 
     String getName();
 

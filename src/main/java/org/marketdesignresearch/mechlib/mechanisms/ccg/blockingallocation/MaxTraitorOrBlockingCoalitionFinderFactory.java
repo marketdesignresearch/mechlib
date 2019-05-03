@@ -1,15 +1,15 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public class MaxTraitorOrBlockingCoalitionFinderFactory implements BlockingAllocationFinder {
 
     @Override
-    public BlockingAllocation findBlockingAllocation(AuctionInstance auctionInstance, AuctionResult priorResult) {
-        WinnerDetermination blockingCoalitionFinder = new OrMaxTraitorBlockingCoalitionDetermination(auctionInstance, priorResult);
+    public BlockingAllocation findBlockingAllocation(Bids bids, AuctionResult priorResult) {
+        WinnerDetermination blockingCoalitionFinder = new OrMaxTraitorBlockingCoalitionDetermination(bids, priorResult);
         blockingCoalitionFinder.setLowerBound(priorResult.getPayment().getTotalPayments().subtract(PrecisionUtils.EPSILON).doubleValue());
         return BlockingAllocation.of(blockingCoalitionFinder.getAllocation());
     }

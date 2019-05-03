@@ -73,9 +73,8 @@ public class CCAuction implements AuctionMechanism {
                 nextSupplementaryRound();
             }
             log.info("Collected all bids. Running CCG Auction to determine allocation & payments.");
-            AuctionInstance auctionInstance = new AuctionInstance(getLatestBids());
             MechanismFactory quadraticCCG = new VariableAlgorithmCCGFactory(new XORBlockingCoalitionFinderFactory(), ConstraintGenerationAlgorithm.STANDARD_CCG);
-            AuctionMechanism mechanism = quadraticCCG.getMechanism(auctionInstance);
+            AuctionMechanism mechanism = quadraticCCG.getMechanism(getLatestBids());
             result = mechanism.getAuctionResult();
         }
         return result;

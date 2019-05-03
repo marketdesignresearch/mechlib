@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.mechanisms.cca;
 
 import org.marketdesignresearch.mechlib.demandquery.DiscreteDemandQuery;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
@@ -66,14 +65,14 @@ public class CCATest {
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
         while (!cca.isClockPhaseCompleted()) {
             cca.nextClockRound();
-            Allocation allocation = new XORWinnerDetermination(new AuctionInstance(cca.getLatestBids())).getAllocation();
+            Allocation allocation = new XORWinnerDetermination(cca.getLatestBids()).getAllocation();
             assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
             assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
             previousAllocation = allocation;
         }
         while (cca.hasNextSupplementaryRound()) {
             cca.nextSupplementaryRound();
-            Allocation allocation = new XORWinnerDetermination(new AuctionInstance(cca.getLatestBids())).getAllocation();
+            Allocation allocation = new XORWinnerDetermination(cca.getLatestBids()).getAllocation();
             assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
             assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
             previousAllocation = allocation;
@@ -102,7 +101,7 @@ public class CCATest {
         assertThat(cca.isClockPhaseCompleted()).isFalse();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
 
-        VCGAuction vcgAuction = new XORVCGAuction(new AuctionInstance(cca.getLatestBids()));
+        VCGAuction vcgAuction = new XORVCGAuction(cca.getLatestBids());
         AuctionResult intermediate = vcgAuction.getAuctionResult();
         assertThat(intermediate.getAllocation().getTotalAllocationValue())
                 .isLessThan(first.getAllocation().getTotalAllocationValue());

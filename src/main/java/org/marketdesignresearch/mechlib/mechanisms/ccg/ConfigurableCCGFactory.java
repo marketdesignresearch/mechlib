@@ -3,7 +3,7 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockingAllocationFinder;
@@ -49,22 +49,22 @@ public class ConfigurableCCGFactory implements CCGMechanismFactory, Parameteriza
 
 
     @Override
-    public CCGAuction getMechanism(AuctionInstance auctionInstance) {
+    public CCGAuction getMechanism(Bids bids) {
         AuctionResult referencePoint = fixedReferencePoint;
         if (referencePoint == null) {
-            Allocation allocation = new XORWinnerDetermination(auctionInstance).getAllocation();
-            Payment payment = rpFactory.computeReferencePoint(auctionInstance, allocation);
+            Allocation allocation = new XORWinnerDetermination(bids).getAllocation();
+            Payment payment = rpFactory.computeReferencePoint(bids, allocation);
             referencePoint = new AuctionResult(payment, allocation);
         }
         // Important to use supplier because otherwise vcgAuction is invoked
-        return buildCCGAuction(auctionInstance, referencePoint);
+        return buildCCGAuction(bids, referencePoint);
     }
 
-    protected CCGAuction buildCCGAuction(AuctionInstance auctionInstance, AuctionResult referencePoint) {
+    protected CCGAuction buildCCGAuction(Bids bids, AuctionResult referencePoint) {
         List<CorePaymentNorm> objectiveNorms = normFactories.stream().map(pnf -> pnf.getPaymentNorm(referencePoint)).collect(Collectors.toList());
 
         ParameterizedCorePaymentRule paymentRule = new ParameterizedCorePaymentRule(objectiveNorms);
-        return new CCGAuction(auctionInstance, referencePoint.getAllocation(), paymentRule, blockingAllocationFinder, algorithms);
+        return new CCGAuction(bids, referencePoint.getAllocation(), paymentRule, blockingAllocationFinder, algorithms);
     }
 
     @Override

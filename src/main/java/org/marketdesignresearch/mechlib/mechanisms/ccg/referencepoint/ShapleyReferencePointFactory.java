@@ -16,21 +16,21 @@ import java.util.Set;
 public class ShapleyReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(AuctionInstance auctionInstance, Allocation allocation) {
+    public Payment computeReferencePoint(Bids bids, Allocation allocation) {
         Map<Bidder, BidderPayment> referencePointMap = new HashMap<>(allocation.getWinners().size());
         for (Bidder bidder : allocation.getWinners()) {
-            Set<Bidder> biddersWithout = new HashSet<>(auctionInstance.getBidders());
+            Set<Bidder> biddersWithout = new HashSet<>(bids.getBidders());
             biddersWithout.remove(bidder);
             double shapleyValue = 0;
-            int n = auctionInstance.getBidders().size() + 1;
+            int n = bids.getBidders().size() + 1;
             Set<Bidder> singeltonSet= ImmutableSet.of(bidder);
             for (Set<Bidder> biddersWithoutSubset : Sets.powerSet(biddersWithout)) {
-                AuctionInstance s = auctionInstance.of(Sets.union(singeltonSet,biddersWithoutSubset));
+                Bids s = bids.of(Sets.union(singeltonSet,biddersWithoutSubset));
 
                 Allocation subsetAllocation = new XORWinnerDetermination(s).getAllocation();
                 if (subsetAllocation.getWinners().contains(bidder)) {
-                    AuctionInstance auctionWithoutSAndBidder = s.without(bidder);
-                    Allocation withoutBidder = new XORWinnerDetermination(auctionWithoutSAndBidder).getAllocation();
+                    Bids bidsWithoutSAndBidder = s.without(bidder);
+                    Allocation withoutBidder = new XORWinnerDetermination(bidsWithoutSAndBidder).getAllocation();
                     double allocationDiff = subsetAllocation.getTotalAllocationValue().subtract(withoutBidder.getTotalAllocationValue()).doubleValue();
                     int sizeS = s.getBidders().size();
                     long numerator = CombinatoricsUtils.factorial(sizeS) * CombinatoricsUtils.factorial(n - sizeS - 1);

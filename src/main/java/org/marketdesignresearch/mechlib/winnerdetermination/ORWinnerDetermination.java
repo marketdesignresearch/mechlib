@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
 import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
@@ -22,18 +22,18 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     protected final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     protected final MIPWrapper winnerDeterminationProgram;
 
-    public ORWinnerDetermination(AuctionInstance auctionInstance) {
-        super(auctionInstance);
-        winnerDeterminationProgram = createWinnerDeterminationMIP(auctionInstance);
+    public ORWinnerDetermination(Bids bids) {
+        super(bids);
+        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
 
     }
 
-    protected MIPWrapper createWinnerDeterminationMIP(AuctionInstance auctionInstance) {
+    protected MIPWrapper createWinnerDeterminationMIP(Bids bids) {
         MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
 
         // Add decision variables and objective terms:
-        for (Bidder bidder : auctionInstance.getBidders()) {
-            for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
+        for (Bidder bidder : bids.getBidders()) {
+            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
                 Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
                 winnerDeterminationProgram.addObjectiveTerm(bundleBid.getAmount().doubleValue(), bidI);
                 bidVariables.put(bundleBid, bidI);
@@ -41,8 +41,8 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
         }
         Map<Good, Constraint> goods = new HashMap<>();
 
-        for (Bidder bidder : auctionInstance.getBidders()) {
-            for (BundleBid bundleBid : auctionInstance.getBid(bidder).getBundleBids()) {
+        for (Bidder bidder : bids.getBidders()) {
+            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
                 for (Map.Entry<Good, Integer> entry : bundleBid.getBundle().entrySet()) {
                     Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
                     noDoubleAssignment.addTerm(entry.getValue(), bidVariables.get(bundleBid));

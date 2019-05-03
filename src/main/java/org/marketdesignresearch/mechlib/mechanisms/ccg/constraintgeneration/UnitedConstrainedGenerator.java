@@ -5,7 +5,7 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
@@ -19,7 +19,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Map<Good, PotentialCoalition> goodToCoalitionMap = new HashMap<>();
     private final CorePaymentRule corePaymentRule;
 
-    public UnitedConstrainedGenerator(AuctionInstance auctionInstance, AuctionResult referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
+    public UnitedConstrainedGenerator(Bids bids, AuctionResult referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
         this.generatorAlgorithms = generatorAlgorithms;
         this.corePaymentRule = corePaymentRule;
 
@@ -30,7 +30,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
             }
         }
         for (PartialConstraintGenerator particalConstraintGenerator : generatorAlgorithms) {
-            particalConstraintGenerator.generateFirstRoundConstraints(auctionInstance, referencePoint, goodToCoalitionMap, corePaymentRule);
+            particalConstraintGenerator.generateFirstRoundConstraints(bids, referencePoint, goodToCoalitionMap, corePaymentRule);
         }
 
     }

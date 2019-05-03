@@ -1,18 +1,18 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.AuctionInstance;
+import org.marketdesignresearch.mechlib.domain.Bids;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public class ORVCGAuction extends BidBasedVCGAuction {
 
-    public ORVCGAuction(AuctionInstance auctionInstance) {
-        super(auctionInstance);
+    public ORVCGAuction(Bids bids) {
+        super(bids);
     }
 
     @Override
-    protected final WinnerDetermination getWinnerDetermination(AuctionInstance auctionInstance) {
-        return new ORWinnerDetermination(auctionInstance);
+    protected final WinnerDetermination getWinnerDetermination(Bids bids) {
+        return new ORWinnerDetermination(bids);
     }
 
 }
