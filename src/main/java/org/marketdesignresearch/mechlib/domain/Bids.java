@@ -37,6 +37,12 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         return bidMap.values();
     }
 
+    public Collection<Good> getGoods() {
+        Set<Good> goods = new HashSet<>();
+        getBids().forEach(bid -> bid.getBundleBids().forEach(bbid -> goods.addAll(bbid.getBundle().keySet())));
+        return goods;
+    }
+
     /**
      *
      * @param bidder to be removed
@@ -82,14 +88,18 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     /**
      * Gives truthful bids
      */
-    public static Bids fromSimpleBidders(Set<SimpleBidder> bidders) {
+    public static Bids fromSimpleBidders(Set<Bidder> bidders) {
         return fromSimpleBidders(bidders, Strategy.TRUTHFUL::apply);
     }
 
-    public static Bids fromSimpleBidders(Set<SimpleBidder> bidders, Function<Value, Bid> operator) {
+    public static Bids fromSimpleBidders(Set<Bidder> bidders, Function<Value, Bid> operator) {
         Map<Bidder, Bid> bidMap = new HashMap<>();
-        for (SimpleBidder simpleBidder : bidders) {
-            bidMap.put(simpleBidder, operator.apply(simpleBidder.getValue()));
+        for (Bidder bidder : bidders) {
+            if (bidder instanceof SimpleBidder) {
+                bidMap.put(bidder, operator.apply(((SimpleBidder) bidder).getValue()));
+            } else {
+                throw new UnsupportedOperationException("This shortcut method is only possible for SimpleBidders.");
+            }
         }
         return new Bids(bidMap);
     }

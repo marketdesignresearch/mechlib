@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class BidderPayment implements Comparable<BidderPayment> {
+public final class BidderPayment implements Comparable<BidderPayment> {
     public static final BidderPayment ZERO_PAYMENT = new BidderPayment(BigDecimal.ZERO);
     @Getter
     private final BigDecimal amount;

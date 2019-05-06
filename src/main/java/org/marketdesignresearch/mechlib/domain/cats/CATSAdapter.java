@@ -1,9 +1,6 @@
 package org.marketdesignresearch.mechlib.domain.cats;
 
-import org.marketdesignresearch.mechlib.domain.Bids;
-import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.SimpleGood;
+import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bidder.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.Value;
@@ -48,7 +45,7 @@ public class CATSAdapter {
             }
             values.get(bidderId).addBundleValue(bundleValue);
         }
-        Set<SimpleBidder> bidders = new HashSet<>();
+        Set<Bidder> bidders = new HashSet<>();
         values.forEach((k, v) -> bidders.add(new SimpleBidder(k, v)));
         return new Domain(bidders, new HashSet<>(goods));
 

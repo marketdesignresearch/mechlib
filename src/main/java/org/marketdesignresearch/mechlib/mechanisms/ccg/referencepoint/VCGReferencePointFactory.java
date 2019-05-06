@@ -14,7 +14,7 @@ public class VCGReferencePointFactory implements ReferencePointFactory {
 
     @Override
     public String getName() {
-        return "VCG";
+        return "Mechanism";
     }
 
     @Override

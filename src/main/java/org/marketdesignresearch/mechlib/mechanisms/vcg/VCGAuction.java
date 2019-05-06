@@ -57,8 +57,4 @@ public abstract class VCGAuction implements AuctionMechanism {
     protected abstract WinnerDetermination getWinnerDetermination();
     protected abstract WinnerDetermination getWinnerDeterminationWithout(Bidder bidder);
 
-    @Override
-    public Allocation getAllocation() {
-        return getAuctionResult().getAllocation();
-    }
 }

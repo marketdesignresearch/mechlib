@@ -1,8 +1,5 @@
 package org.marketdesignresearch.mechlib.demandquery;
 
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Prices;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -12,16 +9,21 @@ import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.domain.*;
+import org.marketdesignresearch.mechlib.mechanisms.cca.Prices;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class DiscreteDemandQuery implements DemandQuery {
 
     private final Bids bids;
 
-    public DiscreteDemandQuery(Set<SimpleBidder> simpleBidders) {
+    public DiscreteDemandQuery(Set<Bidder> simpleBidders) {
         this.bids = Bids.fromSimpleBidders(simpleBidders);
     }
 

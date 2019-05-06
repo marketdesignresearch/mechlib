@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WinnerDeterminationTest {
-    private Bids bids;
     private Good A;
     private Good B;
     private Good C;
@@ -52,11 +51,10 @@ public class WinnerDeterminationTest {
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2,bid6)));
         Bidder bidder3 = new SimpleBidder("B" + 3);
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
-        this.bids = bids;
         VCGReferencePointFactory rpFacory = new VCGReferencePointFactory();
         CCGMechanismFactory quadratic = new VariableNormCCGFactory(rpFacory, Norm.MANHATTAN, Norm.EUCLIDEAN);
 
-        CCGAuction ccgAuction = quadratic.getMechanism(this.bids);
+        CCGAuction ccgAuction = quadratic.getMechanism(bids);
         AuctionResult outcome = ccgAuction.getAuctionResult();
         assertThat(outcome.getAllocation().getTotalAllocationValue()).isEqualByComparingTo("46");
         assertThat(outcome.getPayment().getTotalPayments()).isEqualByComparingTo("6");
@@ -75,8 +73,7 @@ public class WinnerDeterminationTest {
         bids.setBid(new SimpleBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
         bids.setBid(new SimpleBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
         bids.setBid(new SimpleBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        this.bids = bids;
-        Allocator wd = new ORWinnerDetermination(this.bids);
+        Allocator wd = new ORWinnerDetermination(bids);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4);
@@ -110,8 +107,7 @@ public class WinnerDeterminationTest {
         bids.setBid(new SimpleBidder("B" + 7), new Bid(Sets.newHashSet(bid7)));
         bids.setBid(new SimpleBidder("B" + 8), new Bid(Sets.newHashSet(bid8)));
         bids.setBid(new SimpleBidder("B" + 9), new Bid(Sets.newHashSet(bid9)));
-        this.bids = bids;
-        Allocator wd = new ORWinnerDetermination(this.bids);
+        Allocator wd = new ORWinnerDetermination(bids);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);

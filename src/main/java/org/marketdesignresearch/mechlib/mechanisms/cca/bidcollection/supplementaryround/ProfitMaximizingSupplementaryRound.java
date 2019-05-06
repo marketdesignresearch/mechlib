@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanisms.cca.round.supplementaryround;
+package org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround;
 
 import org.marketdesignresearch.mechlib.domain.Bid;
 import org.marketdesignresearch.mechlib.domain.Bidder;

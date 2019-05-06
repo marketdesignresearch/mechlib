@@ -1,15 +1,15 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca;
 
 import org.marketdesignresearch.mechlib.demandquery.DiscreteDemandQuery;
-import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
-import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.mechanisms.cca.round.supplementaryround.ProfitMaximizingSupplementaryRound;
+import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.ProfitMaximizingSupplementaryRound;
 import org.marketdesignresearch.mechlib.mechanisms.vcg.VCGAuction;
 import org.marketdesignresearch.mechlib.mechanisms.vcg.XORVCGAuction;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
@@ -42,7 +42,18 @@ public class CCATest {
 
     @Test
     public void testCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
+        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
+        cca.setPriceUpdater(priceUpdater);
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        AuctionResult auctionResult = cca.getAuctionResult();
+        assertThat(auctionResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8025.6928, Offset.offset(1e-4));
+        log.info(auctionResult.toString());
+    }
+
+    @Test
+    public void testCCAWithCATSAuctionAndVCG() {
+        CCAuction cca = new CCAuction(domain, Mechanism.VCG_XOR, new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
@@ -53,10 +64,10 @@ public class CCATest {
 
     @Test
     public void testRoundAfterRoundCCAWithCATSAuction() {
-        VCGAuction vcgAuction = new XORVCGAuction(domain.toAuction());
-        AuctionResult resultIncludingAllBids = vcgAuction.getAuctionResult();
+        VCGAuction auction = new XORVCGAuction(domain.toAuction());
+        AuctionResult resultIncludingAllBids = auction.getAuctionResult();
 
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
@@ -85,7 +96,7 @@ public class CCATest {
 
     @Test
     public void testResettingCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain.getGoods(), domain.getBidders(), new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
@@ -101,8 +112,8 @@ public class CCATest {
         assertThat(cca.isClockPhaseCompleted()).isFalse();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
 
-        VCGAuction vcgAuction = new XORVCGAuction(cca.getLatestBids());
-        AuctionResult intermediate = vcgAuction.getAuctionResult();
+        VCGAuction auction = new XORVCGAuction(cca.getLatestBids());
+        AuctionResult intermediate = auction.getAuctionResult();
         assertThat(intermediate.getAllocation().getTotalAllocationValue())
                 .isLessThan(first.getAllocation().getTotalAllocationValue());
 
@@ -113,4 +124,6 @@ public class CCATest {
                 .isEqualTo(first.getAllocation().getTotalAllocationValue());
 
     }
+
+
 }
