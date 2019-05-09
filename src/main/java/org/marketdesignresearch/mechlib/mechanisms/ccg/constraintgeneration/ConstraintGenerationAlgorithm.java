@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
 import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
 

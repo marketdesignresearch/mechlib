@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.strategy;
 
-import org.marketdesignresearch.mechlib.domain.Bid;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.bidder.Value;
 import com.google.common.collect.ImmutableSet;
+import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

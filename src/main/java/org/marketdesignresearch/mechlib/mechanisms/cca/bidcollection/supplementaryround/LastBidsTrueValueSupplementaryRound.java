@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround;
 
-import org.marketdesignresearch.mechlib.domain.Bid;
-import org.marketdesignresearch.mechlib.domain.Bidder;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.mechanisms.cca.CCAuction;
 import lombok.Setter;

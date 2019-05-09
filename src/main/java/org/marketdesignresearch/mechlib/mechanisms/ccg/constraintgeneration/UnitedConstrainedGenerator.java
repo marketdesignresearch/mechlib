@@ -5,7 +5,7 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;

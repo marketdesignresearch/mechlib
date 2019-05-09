@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg;
 
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;

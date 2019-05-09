@@ -1,8 +1,10 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate;
 
+import com.google.common.base.Preconditions;
+import org.marketdesignresearch.mechlib.domain.price.Price;
+import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Price;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Prices;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -20,9 +22,10 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
 
     @Override
     public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
-
+        Preconditions.checkArgument(oldPrices instanceof LinearPrices, "Demand dependent price updater only works with linear prices.");
+        LinearPrices oldLinearPrices = (LinearPrices) oldPrices;
         Map<Good, Price> newPrices = new HashMap<>();
-        for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
+        for (Map.Entry<Good, Price> oldPriceEntry : oldLinearPrices.entrySet()) {
             Good good = oldPriceEntry.getKey();
             BigDecimal diff = BigDecimal.valueOf(demand.getOrDefault(good, 0) - good.available());
             BigDecimal factor = constant.divide(BigDecimal.valueOf(Math.sqrt(round)), RoundingMode.HALF_UP);
@@ -31,6 +34,6 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
         }
 
         round++;
-        return new Prices(newPrices);
+        return new LinearPrices(newPrices);
     }
 }

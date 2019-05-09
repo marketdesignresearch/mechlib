@@ -8,6 +8,8 @@ import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.domain.*;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;

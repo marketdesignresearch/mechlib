@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanisms.cca;
+package org.marketdesignresearch.mechlib.domain.price;
 
 import lombok.Value;
 

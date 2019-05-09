@@ -1,6 +1,6 @@
-package org.marketdesignresearch.mechlib.domain.singleitem;
+package org.marketdesignresearch.mechlib.domain.bid;
 
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import lombok.Value;
 

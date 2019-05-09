@@ -1,0 +1,31 @@
+package org.marketdesignresearch.mechlib.domain.bidder;
+
+
+import org.marketdesignresearch.mechlib.domain.Bundle;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+
+public interface Bidder {
+
+    String getId();
+
+    BigDecimal getValue(Bundle bundle);
+
+    default Bundle getBestBundle(Prices prices) {
+        List<Bundle> results = getBestBundles(prices, 1);
+        if (results.size() > 1) System.err.println("Requested one solution, got " + results.size() + ".");
+        if (results.size() == 0) results.add(Bundle.EMPTY);
+        return results.get(0);
+    }
+
+    default List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
+        List<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
+        if (results.size() < 1) results.add(Bundle.EMPTY);
+        return results;
+    }
+
+    List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
+}

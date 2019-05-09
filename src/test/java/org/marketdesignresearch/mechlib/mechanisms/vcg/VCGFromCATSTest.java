@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
+import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
@@ -49,11 +49,11 @@ public class VCGFromCATSTest {
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
         Offset<Double> offset = Offset.offset(0.001);
-        assertThat(payment.paymentOf(new SimpleBidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(798.446, offset);
-        assertThat(payment.paymentOf(new SimpleBidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(907.544, offset);
-        assertThat(payment.paymentOf(new SimpleBidder("SB" + 5)).getAmount().doubleValue()).isEqualTo(1656.076, offset);
-        assertThat(payment.paymentOf(new SimpleBidder("SB" + 6)).getAmount().doubleValue()).isEqualTo(754.196, offset);
-        assertThat(payment.paymentOf(new SimpleBidder("SB" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new XORBidder("SB" + 1)).getAmount().doubleValue()).isEqualTo(798.446, offset);
+        assertThat(payment.paymentOf(new XORBidder("SB" + 3)).getAmount().doubleValue()).isEqualTo(907.544, offset);
+        assertThat(payment.paymentOf(new XORBidder("SB" + 5)).getAmount().doubleValue()).isEqualTo(1656.076, offset);
+        assertThat(payment.paymentOf(new XORBidder("SB" + 6)).getAmount().doubleValue()).isEqualTo(754.196, offset);
+        assertThat(payment.paymentOf(new XORBidder("SB" + 2)).getAmount()).isZero();
         LOGGER.info(payment.toString());
 
     }

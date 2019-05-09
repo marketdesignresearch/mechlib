@@ -5,9 +5,14 @@ import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
+import org.marketdesignresearch.mechlib.domain.auction.Auction;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -25,9 +30,9 @@ public class SecondPriceAuctionTest {
     @Before
     public void setUp() {
         item = new SimpleGood("item");
-        bidder1 = new SimpleBidder("B" + 1);
-        bidder2 = new SimpleBidder("B" + 2);
-        bidder3 = new SimpleBidder("B" + 3);
+        bidder1 = new XORBidder("B" + 1);
+        bidder2 = new XORBidder("B" + 2);
+        bidder3 = new XORBidder("B" + 3);
     }
 
     @Test
@@ -45,6 +50,29 @@ public class SecondPriceAuctionTest {
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         AuctionResult auctionResult = new SecondPriceAuction(singleItemBids).getAuctionResult();
+        checkResult(auctionResult, bidder2, bid2B, BigDecimal.valueOf(8));
+    }
+
+    @Test
+    public void testSimpleSecondPriceAuctionWithWrapper() {
+        Domain domain = new Domain(Sets.newHashSet(bidder1, bidder2, bidder3), Sets.newHashSet(item));
+        Auction auction = new Auction(domain, MechanismType.SINGLE_ITEM_SECOND_PRICE);
+
+        BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
+        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1B");
+        BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
+        BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
+        BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
+        BundleBid bid3B = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
+        BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
+        Bids bids = new Bids();
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
+        SingleItemBids singleItemBids = new SingleItemBids(bids);
+
+        auction.addRound(singleItemBids);
+        AuctionResult auctionResult = auction.getAuctionResult();
         checkResult(auctionResult, bidder2, bid2B, BigDecimal.valueOf(8));
     }
 

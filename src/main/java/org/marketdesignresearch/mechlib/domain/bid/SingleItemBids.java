@@ -1,12 +1,13 @@
-package org.marketdesignresearch.mechlib.domain.singleitem;
+package org.marketdesignresearch.mechlib.domain.bid;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.marketdesignresearch.mechlib.domain.*;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 
 import java.util.*;
 
-public class SingleItemBids extends Bids {
+public final class SingleItemBids extends Bids {
 
     @Getter
     private Good item;
@@ -36,6 +37,6 @@ public class SingleItemBids extends Bids {
     @Override
     public boolean setBid(Bidder bidder, Bid bid) {
         // FIXME: This should not be set anymore -> breaks sorting
-        throw new RuntimeException("Not allowed");
+        throw new UnsupportedOperationException("Not allowed");
     }
 }

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import org.marketdesignresearch.mechlib.domain.Bidder;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;

@@ -1,14 +1,19 @@
 package org.marketdesignresearch.mechlib.mechanisms.singleitem;
 
 import org.marketdesignresearch.mechlib.domain.BidderPayment;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBid;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBid;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
 
 import java.util.Iterator;
 
 public class FirstPriceAuction extends SingleItemAuction {
 
     public FirstPriceAuction(SingleItemBids bids) {
+        super(bids);
+    }
+
+    public FirstPriceAuction(Bids bids) {
         super(bids);
     }
 

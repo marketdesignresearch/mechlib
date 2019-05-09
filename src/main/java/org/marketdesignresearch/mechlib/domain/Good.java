@@ -19,4 +19,8 @@ public interface Good {
         return 1;
     }
 
+    default boolean isFractional() {
+        return false;
+    }
+
 }

@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.strategy;
 
+import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 import org.marketdesignresearch.mechlib.strategy.buckets.StrategyBucket;
-import org.marketdesignresearch.mechlib.domain.Bid;
-import org.marketdesignresearch.mechlib.domain.bidder.Value;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
 
 import java.util.Set;
 
-public interface StrategySpace<B extends StrategyBucket,S extends Strategy> {
+public interface StrategySpace<B extends StrategyBucket, S extends Strategy> {
 
     S strategyOf(B bucket);
 

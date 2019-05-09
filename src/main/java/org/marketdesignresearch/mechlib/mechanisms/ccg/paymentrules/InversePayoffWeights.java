@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 
 import java.math.BigDecimal;

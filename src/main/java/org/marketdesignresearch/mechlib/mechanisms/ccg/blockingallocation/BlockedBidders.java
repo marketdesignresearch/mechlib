@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.BidderPayment;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.PotentialCoalition;

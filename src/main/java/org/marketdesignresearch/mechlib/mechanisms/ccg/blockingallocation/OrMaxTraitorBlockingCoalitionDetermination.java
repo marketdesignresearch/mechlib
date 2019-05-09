@@ -3,8 +3,8 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bidder;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 

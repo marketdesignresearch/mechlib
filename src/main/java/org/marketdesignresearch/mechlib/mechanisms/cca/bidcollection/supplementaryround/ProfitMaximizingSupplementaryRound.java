@@ -1,12 +1,14 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround;
 
-import org.marketdesignresearch.mechlib.domain.Bid;
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.mechanisms.cca.CCAuction;
 import com.google.common.collect.Sets;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
@@ -23,7 +25,13 @@ public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
 
     @Override
     public Bid getSupplementaryBids(String id, Bidder bidder) {
-        List<BundleBid> bestBundleBids = cca.getDemandQuery().getBestBundleBids(id, bidder, cca.getLatestPrices(), numberOfSupplementaryBids);
+        List<Bundle> bestBundles = bidder.getBestBundles(cca.getLatestPrices(), numberOfSupplementaryBids, true);
+        List<BundleBid> bestBundleBids = new ArrayList<>();
+        // Add with true value for now
+        int count = 0;
+        for (Bundle bundle : bestBundles) {
+            bestBundleBids.add(new BundleBid(bidder.getValue(bundle), bundle, "DQ_" + id + "-" + ++count + "_Bidder_" + bidder));
+        }
         return new Bid(Sets.newHashSet(bestBundleBids));
     }
 

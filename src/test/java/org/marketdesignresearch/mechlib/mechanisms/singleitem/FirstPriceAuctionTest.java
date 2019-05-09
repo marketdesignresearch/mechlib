@@ -4,8 +4,11 @@ import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 
 import java.math.BigDecimal;
@@ -23,9 +26,9 @@ public class FirstPriceAuctionTest {
     @Before
     public void setUp() {
         item = new SimpleGood("item");
-        bidder1 = new SimpleBidder("B" + 1);
-        bidder2 = new SimpleBidder("B" + 2);
-        bidder3 = new SimpleBidder("B" + 3);
+        bidder1 = new XORBidder("B" + 1);
+        bidder2 = new XORBidder("B" + 2);
+        bidder3 = new XORBidder("B" + 3);
     }
 
     @Test

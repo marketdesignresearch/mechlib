@@ -1,6 +1,5 @@
-package org.marketdesignresearch.mechlib.domain.bidder;
+package org.marketdesignresearch.mechlib.domain.bidder.value;
 
-import org.marketdesignresearch.mechlib.domain.Bidder;
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
@@ -8,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * Class that represents a Value of one {@link Bidder} on one bundle of
+ * Class that represents an XORValue of one {@link Bidder} on one bundle of
  * {@link Good}s in a Mechanism.</p> The object is immutable compareTo, equals
  * and hashCode are all based on the id.
  * 

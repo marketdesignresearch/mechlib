@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import lombok.EqualsAndHashCode;

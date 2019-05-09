@@ -1,17 +1,18 @@
 package org.marketdesignresearch.mechlib.domain.cats;
 
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bidder.BundleValue;
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.bidder.Value;
-import org.marketdesignresearch.mechlib.domain.bidder.ValueType;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
+import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
 
 import java.util.*;
 
 public class CATSAdapter {
 
     public Bids adaptCATSAuction(CATSAuction catsAuction) {
-        return adaptToDomain(catsAuction).toAuction();
+        return adaptToDomain(catsAuction).toXORBidderAuction();
 
     }
 
@@ -29,7 +30,7 @@ public class CATSAdapter {
 
     public Domain adaptToDomain(CATSAuction catsAuction) {
         List<Good> goods = adaptGoods(catsAuction);
-        Map<String, Value> values = new HashMap<>();
+        Map<String, XORValue> values = new HashMap<>();
         for (CATSBid catsBid : catsAuction.getCatsBids()) {
             Set<Good> goodsPerBid = new HashSet<>();
             String bidderId = "SB" + catsBid.getId();
@@ -41,12 +42,12 @@ public class CATSAdapter {
             }
             BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, String.valueOf(catsBid.getId()));
             if (!values.containsKey(bidderId)) {
-                values.put(bidderId, new Value(ValueType.CATS));
+                values.put(bidderId, new XORValue());
             }
             values.get(bidderId).addBundleValue(bundleValue);
         }
         Set<Bidder> bidders = new HashSet<>();
-        values.forEach((k, v) -> bidders.add(new SimpleBidder(k, v)));
+        values.forEach((k, v) -> bidders.add(new XORBidder(k, v)));
         return new Domain(bidders, new HashSet<>(goods));
 
     }

@@ -3,10 +3,10 @@ package org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.domain.Bidder;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Prices;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.SupplementaryRound;
 
 import java.util.HashMap;

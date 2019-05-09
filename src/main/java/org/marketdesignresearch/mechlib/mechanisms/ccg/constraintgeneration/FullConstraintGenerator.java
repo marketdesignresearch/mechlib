@@ -6,7 +6,7 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.graph.DefaultEdge;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBiddersBuilder;

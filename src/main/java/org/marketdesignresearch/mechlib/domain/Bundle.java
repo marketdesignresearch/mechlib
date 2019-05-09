@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Bundle extends HashMap<Good, Integer> {
 
+    public static Bundle EMPTY = new Bundle(new HashMap<>());
+
     public Bundle(Map<Good, Integer> map) {
         super(map);
     }

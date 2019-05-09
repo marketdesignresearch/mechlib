@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.strategy;
 
-import org.marketdesignresearch.mechlib.domain.Bid;
-import org.marketdesignresearch.mechlib.domain.bidder.Value;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
+import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 
 import java.math.BigDecimal;
 import java.util.function.UnaryOperator;

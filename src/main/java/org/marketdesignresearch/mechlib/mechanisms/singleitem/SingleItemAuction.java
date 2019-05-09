@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBid;
-import org.marketdesignresearch.mechlib.domain.singleitem.SingleItemBids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBid;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
@@ -16,6 +18,10 @@ import java.util.Iterator;
 public abstract class SingleItemAuction implements AuctionMechanism {
 
     protected final SingleItemBids bids;
+
+    public SingleItemAuction(Bids bids) {
+        this.bids = new SingleItemBids(bids);
+    }
 
     @Override
     public final AuctionResult getAuctionResult() {

@@ -4,22 +4,19 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.demandquery.DemandQuery;
-import org.marketdesignresearch.mechlib.domain.Auction;
 import org.marketdesignresearch.mechlib.domain.Domain;
+import org.marketdesignresearch.mechlib.domain.auction.Auction;
+import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.ClockPhaseBidCollector;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.SupplementaryBidCollector;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.ProfitMaximizingSupplementaryRound;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.SupplementaryRound;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.VariableAlgorithmCCGFactory;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,8 +28,6 @@ public class CCAuction extends Auction {
 
     private AuctionResult result;
     private List<Prices> prices = new ArrayList<>();
-    @Getter
-    private final DemandQuery demandQuery;
 
     @Setter
     private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
@@ -44,22 +39,21 @@ public class CCAuction extends Auction {
     @Getter
     private boolean clockPhaseCompleted = false;
 
-    public CCAuction(Domain domain, DemandQuery demandQuery) {
-        this(domain, Mechanism.CCG, demandQuery);
+    public CCAuction(Domain domain) {
+        this(domain, MechanismType.CCG);
     }
 
-    public CCAuction(Domain domain, Mechanism mechanism, DemandQuery demandQuery) {
-        this(domain, new Prices(domain.getGoods()), mechanism, demandQuery);
+    public CCAuction(Domain domain, MechanismType mechanismType) {
+        this(domain, new LinearPrices(domain.getGoods()), mechanismType);
     }
 
-    public CCAuction(Domain domain, Prices prices, DemandQuery demandQuery) {
-        this(domain, prices, Mechanism.CCG, demandQuery);
+    public CCAuction(Domain domain, Prices prices) {
+        this(domain, prices, MechanismType.CCG);
     }
 
-    public CCAuction(Domain domain, Prices prices, Mechanism mechanism, DemandQuery demandQuery) {
-        super(domain, mechanism);
+    public CCAuction(Domain domain, Prices prices, MechanismType mechanismType) {
+        super(domain, mechanismType);
         this.prices.add(prices);
-        this.demandQuery = demandQuery;
     }
 
     public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
@@ -79,8 +73,8 @@ public class CCAuction extends Auction {
             while (hasNextSupplementaryRound()) {
                 nextSupplementaryRound();
             }
-            log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanism());
-            AuctionMechanism mechanism = getMechanism().create(getLatestBids());
+            log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanismType());
+            AuctionMechanism mechanism = getMechanismType().getMechanism(getLatestBids());
             result = mechanism.getAuctionResult();
         }
         return result;
@@ -93,7 +87,7 @@ public class CCAuction extends Auction {
         }
         int roundCounter = getRounds() + 1;
         log.debug("Starting clock round {}...", roundCounter);
-        ClockPhaseBidCollector collector = new ClockPhaseBidCollector(roundCounter, getLatestPrices(), getDomain().getBidders(), demandQuery);
+        ClockPhaseBidCollector collector = new ClockPhaseBidCollector(roundCounter, getLatestPrices(), getDomain().getBidders());
         addRound(collector.collectBids());
         Prices updatedPrices = priceUpdater.updatePrices(getLatestPrices(), collector.getDemand());
         if (getLatestPrices().equals(updatedPrices) || roundCounter >= maxRounds) {
@@ -131,12 +125,13 @@ public class CCAuction extends Auction {
         return getPricesAt(prices.size() - 1);
     }
 
-    public void resetToRound(int round) {
-        Preconditions.checkArgument(round < prices.size());
+    public void resetToRound(int index) {
+        Preconditions.checkArgument(index < prices.size());
+        prices = prices.subList(0, index);
         clockPhaseCompleted = false;
         supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         result = null;
-        super.resetToRound(round);
+        super.resetToRound(index);
     }
 
 }

@@ -3,7 +3,7 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockingAllocationFinder;

@@ -1,14 +1,16 @@
-package org.marketdesignresearch.mechlib.domain;
+package org.marketdesignresearch.mechlib.domain.bid;
 
-import org.marketdesignresearch.mechlib.domain.bidder.SimpleBidder;
-import org.marketdesignresearch.mechlib.domain.bidder.Value;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.strategy.Strategy;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
+import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.strategy.Strategy;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -88,18 +90,14 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     /**
      * Gives truthful bids
      */
-    public static Bids fromSimpleBidders(Set<Bidder> bidders) {
-        return fromSimpleBidders(bidders, Strategy.TRUTHFUL::apply);
+    public static Bids fromXORBidders(Set<XORBidder> bidders) {
+        return fromXORBidders(bidders, Strategy.TRUTHFUL::apply);
     }
 
-    public static Bids fromSimpleBidders(Set<Bidder> bidders, Function<Value, Bid> operator) {
+    public static Bids fromXORBidders(Set<XORBidder> bidders, Function<Value, Bid> operator) {
         Map<Bidder, Bid> bidMap = new HashMap<>();
-        for (Bidder bidder : bidders) {
-            if (bidder instanceof SimpleBidder) {
-                bidMap.put(bidder, operator.apply(((SimpleBidder) bidder).getValue()));
-            } else {
-                throw new UnsupportedOperationException("This shortcut method is only possible for SimpleBidders.");
-            }
+        for (XORBidder bidder : bidders) {
+            bidMap.put(bidder, operator.apply(bidder.getValue()));
         }
         return new Bids(bidMap);
     }

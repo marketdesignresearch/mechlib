@@ -1,9 +1,11 @@
-package org.marketdesignresearch.mechlib.domain;
+package org.marketdesignresearch.mechlib.domain.bid;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.domain.BundleBid;
+import org.marketdesignresearch.mechlib.domain.Good;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @ToString
-public class Bid {
+public class Bid { // FIXME: Have it abstract enough to support all kind of bids
     @Getter
     private final Set<BundleBid> bundleBids;
 

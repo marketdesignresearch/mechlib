@@ -1,12 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca;
 
-import org.marketdesignresearch.mechlib.demandquery.DiscreteDemandQuery;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate.SimpleRelativePriceUpdate;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.ProfitMaximizingSupplementaryRound;
@@ -42,32 +41,32 @@ public class CCATest {
 
     @Test
     public void testCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         AuctionResult auctionResult = cca.getAuctionResult();
-        assertThat(auctionResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8025.6928, Offset.offset(1e-4));
+        assertThat(auctionResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(auctionResult.toString());
     }
 
     @Test
     public void testCCAWithCATSAuctionAndVCG() {
-        CCAuction cca = new CCAuction(domain, Mechanism.VCG_XOR, new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         AuctionResult auctionResult = cca.getAuctionResult();
-        assertThat(auctionResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8025.6928, Offset.offset(1e-4));
+        assertThat(auctionResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(auctionResult.toString());
     }
 
     @Test
     public void testRoundAfterRoundCCAWithCATSAuction() {
-        VCGAuction auction = new XORVCGAuction(domain.toAuction());
+        VCGAuction auction = new XORVCGAuction(domain.toXORBidderAuction());
         AuctionResult resultIncludingAllBids = auction.getAuctionResult();
 
-        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
@@ -96,7 +95,7 @@ public class CCATest {
 
     @Test
     public void testResettingCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain, new DiscreteDemandQuery(domain.getBidders()));
+        CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));

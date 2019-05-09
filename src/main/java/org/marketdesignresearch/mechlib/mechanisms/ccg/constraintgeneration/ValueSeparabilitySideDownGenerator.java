@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.jgrapht.Graph;

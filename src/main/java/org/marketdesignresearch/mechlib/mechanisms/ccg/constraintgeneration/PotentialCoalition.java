@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.domain.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.Good;
 

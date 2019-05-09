@@ -1,8 +1,10 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca.priceupdate;
 
+import com.google.common.base.Preconditions;
+import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Price;
-import org.marketdesignresearch.mechlib.mechanisms.cca.Prices;
+import org.marketdesignresearch.mechlib.domain.price.Price;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -21,10 +23,12 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
 
     @Override
     public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
+        Preconditions.checkArgument(oldPrices instanceof LinearPrices, "Simple relative price updater only works with linear prices.");
+        LinearPrices oldLinearPrices = (LinearPrices) oldPrices;
 
         Map<Good, Price> newPrices = new HashMap<>();
 
-        for (Map.Entry<Good, Price> oldPriceEntry : oldPrices.entrySet()) {
+        for (Map.Entry<Good, Price> oldPriceEntry : oldLinearPrices.entrySet()) {
             Good good = oldPriceEntry.getKey();
             if (good.available() < demand.getOrDefault(good, 0)) {
                 if (oldPriceEntry.getValue().equals(Price.ZERO))
@@ -37,7 +41,7 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
 
         }
 
-        return new Prices(newPrices);
+        return new LinearPrices(newPrices);
     }
 
     public SimpleRelativePriceUpdate withPriceUpdate(BigDecimal priceUpdate) {
