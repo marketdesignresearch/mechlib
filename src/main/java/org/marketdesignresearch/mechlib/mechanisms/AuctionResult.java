@@ -13,6 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public final class AuctionResult implements MechanismResult {
+    public static AuctionResult NONE = new AuctionResult(Payment.ZERO, Allocation.EMPTY_ALLOCATION);
     @Getter
     private final Payment payment;
     @Getter

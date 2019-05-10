@@ -46,6 +46,7 @@ public class Auction implements AuctionMechanism {
     }
 
     public Bids getLatestBids() {
+        if (rounds.size() == 0) return new Bids();
         return getBidsAt(rounds.size() - 1);
     }
 
@@ -56,11 +57,6 @@ public class Auction implements AuctionMechanism {
     public AuctionRound getRound(int index) {
         Preconditions.checkArgument(index >= 0 && index < rounds.size());
         return rounds.get(index);
-    }
-
-    public AuctionRound getLastRound() {
-        Preconditions.checkArgument(rounds.size() > 0);
-        return rounds.get(rounds.size() - 1);
     }
 
     public int getRounds() {
@@ -81,6 +77,7 @@ public class Auction implements AuctionMechanism {
 
     @Override
     public AuctionResult getAuctionResult() {
+        if (rounds.size() == 0) return AuctionResult.NONE;
         return getAuctionResultAtRound(rounds.size() - 1);
     }
 }
