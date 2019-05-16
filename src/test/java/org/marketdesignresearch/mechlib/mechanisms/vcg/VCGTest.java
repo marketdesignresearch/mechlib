@@ -1,5 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
@@ -73,7 +75,7 @@ public class VCGTest {
     }
 
     @Test
-    public void testAuctionWrapper() {
+    public void testAuctionWrapper() throws JsonProcessingException {
         Bidder bidder1 = new XORBidder("B" + 1);
         Bidder bidder2 = new XORBidder("B" + 2);
         Bidder bidder3 = new XORBidder("B" + 3);
@@ -91,6 +93,11 @@ public class VCGTest {
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonResult = mapper.writerWithDefaultPrettyPrinter()
+                .writeValueAsString(bids);
+        System.out.println(jsonResult);
 
         auction.addRound(bids);
 

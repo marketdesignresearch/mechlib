@@ -28,12 +28,11 @@ public class ClockPhaseBidCollector {
 
         for (Bidder bidder : bidders) {
             Bundle bundle = bidder.getBestBundle(prices); // We ignore the value here
-            int totalQuantities = bundle.values().stream().mapToInt(i -> i).sum();
+            int totalQuantities = bundle.getBundleEntries().stream().mapToInt(BundleEntry::getAmount).sum();
             if (totalQuantities > 0) {
                 BigDecimal bidAmount = prices.getPrice(bundle).getAmount();
-                for (Map.Entry<Good, Integer> entry : bundle.entrySet()) {
-                    Good good = entry.getKey();
-                    demand.put(good, demand.getOrDefault(good, 0) + entry.getValue());
+                for (BundleEntry entry : bundle.getBundleEntries()) {
+                    demand.put(entry.getGood(), demand.getOrDefault(entry.getGood(), 0) + entry.getAmount());
                 }
 
                 Bid bid = new Bid();

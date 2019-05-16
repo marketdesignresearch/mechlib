@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @ToString
@@ -41,7 +43,7 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
 
     public Collection<Good> getGoods() {
         Set<Good> goods = new HashSet<>();
-        getBids().forEach(bid -> bid.getBundleBids().forEach(bbid -> goods.addAll(bbid.getBundle().keySet())));
+        getBids().forEach(bid -> bid.getBundleBids().forEach(bbid -> goods.addAll(bbid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()))));
         return goods;
     }
 

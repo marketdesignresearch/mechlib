@@ -5,6 +5,7 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
@@ -13,6 +14,7 @@ import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentR
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Set<PartialConstraintGenerator> generatorAlgorithms;
@@ -24,8 +26,8 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         this.corePaymentRule = corePaymentRule;
 
         for (PotentialCoalition coalition : referencePoint.getAllocation().getPotentialCoalitions()) {
-            // TODO: Using keySet assumes that there are only single-availability goods
-            for (Good good : coalition.getBundle().keySet()) {
+            // TODO: assumes that there are only single-availability goods
+            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
                 goodToCoalitionMap.put(good, coalition);
             }
         }
@@ -43,8 +45,8 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         priorResult.getAllocation().getPotentialCoalitions().forEach(tempGraph::addVertex);
         for (PotentialCoalition coalition : blockingCoalition.getPotentialCoalitions()) {
             tempGraph.addVertex(coalition);
-            // TODO: Using keySet assumes that there are only single-availability goods
-            for (Good good : coalition.getBundle().keySet()) {
+            // TODO: assumes that there are only single-availability goods
+            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
                 PotentialCoalition blockedCoalition = goodToCoalitionMap.get(good);
 
                 if (blockedCoalition != null) {

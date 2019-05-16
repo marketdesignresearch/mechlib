@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
@@ -43,9 +44,9 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
 
         for (Bidder bidder : bids.getBidders()) {
             for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
-                for (Map.Entry<Good, Integer> entry : bundleBid.getBundle().entrySet()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
-                    noDoubleAssignment.addTerm(entry.getValue(), bidVariables.get(bundleBid));
+                for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
+                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.available()));
+                    noDoubleAssignment.addTerm(entry.getAmount(), bidVariables.get(bundleBid));
                 }
             }
         }

@@ -4,6 +4,7 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
@@ -41,9 +42,9 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
                 double bidAmount = bundleBid.getAmount().doubleValue();
                 winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
                 exclusiveBids.addTerm(1, bidI);
-                for (Map.Entry<Good, Integer> entry : bundleBid.getBundle().entrySet()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getKey(), g -> new Constraint(CompareType.LEQ, g.available()));
-                    noDoubleAssignment.addTerm(entry.getValue(), bidI);
+                for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
+                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.available()));
+                    noDoubleAssignment.addTerm(entry.getAmount(), bidI);
                 }
             }
             winnerDeterminationProgram.add(exclusiveBids);

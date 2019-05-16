@@ -11,7 +11,9 @@ import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
@@ -38,18 +40,17 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
         for (Bidder bidder : bids.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
-            ImmutableMap.Builder<Good, Integer> goodsBuilder = ImmutableMap.builder();
+            HashSet<BundleEntry> bundleEntries = new HashSet<>();
             ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
             for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    goodsBuilder.putAll(bundleBid.getBundle());
+                    bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
                     bundleBids.add(bundleBid);
                     totalValue = totalValue.add(bundleBid.getAmount());
                 }
             }
-            Map<Good, Integer> goods = goodsBuilder.build();
-            if (!goods.isEmpty()) {
-                trades.put(bidder, new BidderAllocation(totalValue, new Bundle(goods), bundleBids.build()));
+            if (!bundleEntries.isEmpty()) {
+                trades.put(bidder, new BidderAllocation(totalValue, new Bundle(bundleEntries), bundleBids.build()));
             }
         }
 

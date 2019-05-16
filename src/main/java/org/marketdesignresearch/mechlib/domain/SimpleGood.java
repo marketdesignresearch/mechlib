@@ -15,7 +15,7 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString(of = "id")
-public final class SimpleGood implements Good, Serializable {
+public final class SimpleGood implements Good {
     private static final long serialVersionUID = 6681285736188564800L;
 
     @Getter

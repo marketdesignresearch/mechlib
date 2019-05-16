@@ -85,7 +85,7 @@ public class FirstPriceAuctionTest {
         for (Bidder bidder : losers) {
             assertThat(allocation.allocationOf(bidder).getAcceptedBids()).isEmpty();
             assertThat(allocation.allocationOf(bidder).getValue()).isZero();
-            assertThat(allocation.allocationOf(bidder).getBundle()).isEmpty();
+            assertThat(allocation.allocationOf(bidder).getBundle().getBundleEntries()).isEmpty();
             assertThat(payment.paymentOf(bidder).getAmount()).isZero();
         }
 
@@ -94,8 +94,8 @@ public class FirstPriceAuctionTest {
         assertThat(winningBid.getId()).isEqualTo(expectedWinningBid.getId());
         assertThat(winningBid.getAmount()).isEqualTo(expectedWinningBid.getAmount());
         assertThat(winningBid.getBundle().getSingleGood()).isEqualTo(item);
-        assertThat(allocation.allocationOf(expectedWinner).getBundle()).hasSize(1);
-        assertThat(allocation.allocationOf(expectedWinner).getBundle().keySet().iterator().next()).isEqualTo(item);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle().getBundleEntries()).hasSize(1);
+        assertThat(allocation.allocationOf(expectedWinner).getBundle().getBundleEntries().iterator().next().getGood()).isEqualTo(item);
         assertThat(allocation.allocationOf(expectedWinner).getValue()).isEqualTo(BigDecimal.TEN);
 
         assertThat(payment.getTotalPayments()).isEqualTo(BigDecimal.TEN);

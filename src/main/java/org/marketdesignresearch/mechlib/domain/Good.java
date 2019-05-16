@@ -1,13 +1,15 @@
 package org.marketdesignresearch.mechlib.domain;
 
 
+import java.io.Serializable;
+
 /**
  * Class representing a Good that is sold in a Combinatorial Auction
  *
  * @author Benedikt Bünz
  * 
  */
-public interface Good {
+public interface Good extends Serializable {
 
     default boolean isDummyGood() {
         return false;

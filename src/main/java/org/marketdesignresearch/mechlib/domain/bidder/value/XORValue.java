@@ -6,6 +6,7 @@ import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.UnaryOperator;

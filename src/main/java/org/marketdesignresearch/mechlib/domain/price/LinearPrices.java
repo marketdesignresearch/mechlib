@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.domain.price;
 
 import org.marketdesignresearch.mechlib.domain.Bundle;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.Good;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,8 +32,8 @@ public class LinearPrices implements Prices {
     @Override
     public Price getPrice(Bundle bundle) {
         BigDecimal price = BigDecimal.ZERO;
-        for (Map.Entry<Good, Integer> entry : bundle.entrySet()) {
-            price = price.add(get(entry.getKey()).getAmount().multiply(BigDecimal.valueOf(entry.getValue())));
+        for (BundleEntry entry : bundle.getBundleEntries()) {
+            price = price.add(get(entry.getGood()).getAmount().multiply(BigDecimal.valueOf(entry.getAmount())));
         }
         return new Price(price);
     }

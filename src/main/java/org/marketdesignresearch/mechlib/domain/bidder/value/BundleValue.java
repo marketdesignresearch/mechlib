@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.domain.bidder.value;
 
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.Good;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
 
     public long nonDummySize() {
         Predicate<Good> isDummy = Good::isDummyGood;
-        return bundle.keySet().stream().filter(isDummy.negate()).count();
+        return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();
     }
 
     public BundleBid toBid(UnaryOperator<BigDecimal> valueToBidFunction) {

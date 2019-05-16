@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.domain.auction;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
@@ -13,6 +14,7 @@ import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public class Auction implements AuctionMechanism {
@@ -22,6 +24,14 @@ public class Auction implements AuctionMechanism {
     @Getter
     private final MechanismType mechanismType;
     private List<AuctionRound> rounds = new ArrayList<>();
+
+    public Bidder getBidder(String id) {
+        return domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
+    }
+
+    public Good getGood(String id) {
+        return domain.getGoods().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
+    }
 
     public void addRound(Bids bids) {
         Preconditions.checkArgument(domain.getBidders().containsAll(bids.getBidders()));

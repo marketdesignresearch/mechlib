@@ -32,8 +32,8 @@ class PerBidConstraintGenerator implements PartialConstraintGenerator {
         Payment lowerBound = referencePoint.getPayment();
         for (Entry<Bidder, Bid> bid : bids) {
             for (BundleBid bundleBid : bid.getValue().getBundleBids()) {
-                // TODO: .keySet() assumes availability of 1
-                Set<Bidder> blockedBiddersSet = bundleBid.getBundle().keySet().stream().filter(goodToBidderMap::containsKey).map(good -> goodToBidderMap.get(good).getBidder()).collect(Collectors.toSet());
+                // TODO: assumes availability of 1
+                Set<Bidder> blockedBiddersSet = bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(goodToBidderMap::containsKey).map(good -> goodToBidderMap.get(good).getBidder()).collect(Collectors.toSet());
                 BigDecimal currentValue = allocation.allocationOf(bid.getKey()) == null ? BigDecimal.ZERO : allocation.allocationOf(bid.getKey()).getValue();
                 BigDecimal currentPayment = lowerBound.paymentOf(bid.getKey()) == null ? BigDecimal.ZERO : lowerBound.paymentOf(bid.getKey()).getAmount();
                 BigDecimal blockingValue = bundleBid.getAmount().subtract(currentValue).add(currentPayment);
