@@ -1,7 +1,5 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
@@ -75,7 +73,7 @@ public class VCGTest {
     }
 
     @Test
-    public void testAuctionWrapper() throws JsonProcessingException {
+    public void testAuctionWrapper() {
         Bidder bidder1 = new XORBidder("B" + 1);
         Bidder bidder2 = new XORBidder("B" + 2);
         Bidder bidder3 = new XORBidder("B" + 3);
@@ -94,11 +92,6 @@ public class VCGTest {
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonResult = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(bids);
-        System.out.println(jsonResult);
-
         auction.addRound(bids);
 
         Allocation allocation = auction.getAllocation();
@@ -107,8 +100,36 @@ public class VCGTest {
         assertThat(allocation.getTotalAllocationValue().doubleValue()).isEqualTo(4);
         assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
         assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount()).isOne();
         assertThat(payment.paymentOf(new XORBidder("B" + 4)).getAmount()).isZero();
+    }
+
+    @Test
+    public void testAuctionWrapperSingleGood() {
+        Bidder bidder1 = new XORBidder("B" + 1);
+        Bidder bidder2 = new XORBidder("B" + 2);
+        Bidder bidder3 = new XORBidder("B" + 3);
+
+        Domain domain = new Domain(Sets.newHashSet(bidder1, bidder2, bidder3), Sets.newHashSet(A));
+        Auction auction = new Auction(domain, MechanismType.VCG_XOR);
+
+        BundleBid bid1 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(A), "1");
+        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(20), Sets.newHashSet(A), "2");
+        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(30), Sets.newHashSet(A), "3");
+        Bids bids = new Bids();
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
+
+        auction.addRound(bids);
+
+        Allocation allocation = auction.getAllocation();
+        Payment payment = auction.getPayment();
+
+        assertThat(allocation.getTotalAllocationValue().doubleValue()).isEqualTo(30);
+        assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(20);
     }
 
 }

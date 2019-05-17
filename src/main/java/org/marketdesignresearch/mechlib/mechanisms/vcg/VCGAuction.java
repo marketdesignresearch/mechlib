@@ -32,9 +32,7 @@ public abstract class VCGAuction implements AuctionMechanism {
 
         Map<Bidder, BidderPayment> payments = new HashMap<>(allocation.getWinners().size());
         MetaInfo metaInfo = allocation.getMetaInfo();
-        if (allocation.getWinners().size() <= 1) {
-            allocation.getWinners().forEach(b -> payments.put(b, new BidderPayment(BigDecimal.ZERO)));
-        } else {
+        if (allocation.getWinners().size() > 0) {
             for (Bidder bidder : allocation.getWinners()) {
 
                 BigDecimal valueWithoutBidder = allocation.getTotalAllocationValue().subtract(allocation.allocationOf(bidder).getValue());
@@ -45,7 +43,6 @@ public abstract class VCGAuction implements AuctionMechanism {
                 BigDecimal valueWDWithoutBidder = allocationWithoutBidder.getTotalAllocationValue();
                 BigDecimal paymentAmount = valueWDWithoutBidder.subtract(valueWithoutBidder);
                 payments.put(bidder, new BidderPayment(paymentAmount));
-
             }
         }
         long end = System.currentTimeMillis();
