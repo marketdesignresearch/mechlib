@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
+import com.google.common.collect.Lists;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import com.google.common.collect.Sets;
@@ -18,10 +18,10 @@ import static org.assertj.core.api.Assertions.*;
 
 public class VCGTest {
 
-    private Good A;
-    private Good B;
-    private Good C;
-    private Good D;
+    private SimpleGood A;
+    private SimpleGood B;
+    private SimpleGood C;
+    private SimpleGood D;
 
     @Before
     public void setUp() {
@@ -74,12 +74,12 @@ public class VCGTest {
 
     @Test
     public void testAuctionWrapper() {
-        Bidder bidder1 = new XORBidder("B" + 1);
-        Bidder bidder2 = new XORBidder("B" + 2);
-        Bidder bidder3 = new XORBidder("B" + 3);
-        Bidder bidder4 = new XORBidder("B" + 4);
+        XORBidder bidder1 = new XORBidder("B" + 1);
+        XORBidder bidder2 = new XORBidder("B" + 2);
+        XORBidder bidder3 = new XORBidder("B" + 3);
+        XORBidder bidder4 = new XORBidder("B" + 4);
 
-        Domain domain = new Domain(Sets.newHashSet(bidder1, bidder2, bidder3, bidder4), Sets.newHashSet(A, B, C, D));
+        SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3, bidder4), Lists.newArrayList(A, B, C, D));
         Auction auction = new Auction(domain, MechanismType.VCG_XOR);
 
         BundleBid bid1 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(A), "1");
@@ -106,11 +106,11 @@ public class VCGTest {
 
     @Test
     public void testAuctionWrapperSingleGood() {
-        Bidder bidder1 = new XORBidder("B" + 1);
-        Bidder bidder2 = new XORBidder("B" + 2);
-        Bidder bidder3 = new XORBidder("B" + 3);
+        XORBidder bidder1 = new XORBidder("B" + 1);
+        XORBidder bidder2 = new XORBidder("B" + 2);
+        XORBidder bidder3 = new XORBidder("B" + 3);
 
-        Domain domain = new Domain(Sets.newHashSet(bidder1, bidder2, bidder3), Sets.newHashSet(A));
+        SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(A));
         Auction auction = new Auction(domain, MechanismType.VCG_XOR);
 
         BundleBid bid1 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(A), "1");
@@ -127,9 +127,9 @@ public class VCGTest {
         Payment payment = auction.getPayment();
 
         assertThat(allocation.getTotalAllocationValue().doubleValue()).isEqualTo(30);
-        assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(20);
+        assertThat(payment.paymentOf(bidder1).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder2).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder3).getAmount().doubleValue()).isEqualTo(20);
     }
 
 }

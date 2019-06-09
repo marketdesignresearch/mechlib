@@ -6,8 +6,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.Domain;
+import org.marketdesignresearch.mechlib.domain.SimpleXORDomain;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
@@ -77,8 +78,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
         Bidder bidder0 = new XORBidder("SB" + 0);
@@ -102,8 +103,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
         Bidder bidder1 = new XORBidder("DB" + 3);
@@ -127,8 +128,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(0.00001);
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(7751.4898, offset);
@@ -140,8 +141,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         MechanismResult result = wd.getPayment();
         System.out.println(result.getMetaInfo());
 
@@ -153,8 +154,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(26, offset);
@@ -171,8 +172,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(10, offset);
@@ -185,8 +186,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
 
@@ -200,8 +201,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(20, offset);
@@ -214,8 +215,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(1e-6);
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(3.3853760, offset);
@@ -228,8 +229,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         Bidder bidder0 = new XORBidder("DB" + 4);
         Bidder bidder1 = new XORBidder("DB" + 5);
@@ -250,8 +251,8 @@ public class CCGMechanismTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
-        Domain domain = adapter.adaptToDomain(catsAuction);
-        AuctionMechanism wd = factory.getMechanism(domain.toXORBidderAuction());
+        SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
+        AuctionMechanism wd = factory.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         Bidder bidder0 = new XORBidder("SB" + 0);
         Bidder bidder1 = new XORBidder("SB" + 1);

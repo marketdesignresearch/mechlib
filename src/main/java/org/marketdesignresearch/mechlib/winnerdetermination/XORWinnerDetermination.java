@@ -10,6 +10,7 @@ import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Good;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,5 +64,10 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     @Override
     public Variable getBidVariable(BundleBid bundleBid) {
         return bidVariables.get(bundleBid);
+    }
+
+    @Override
+    protected Collection<Variable> getBidVariables() {
+        return bidVariables.values();
     }
 }

@@ -2,8 +2,10 @@ package org.marketdesignresearch.mechlib.winnerdetermination;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.ISolution;
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
@@ -11,9 +13,7 @@ import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
@@ -33,6 +33,17 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
             return Allocation.EMPTY_ALLOCATION;
         }
         return super.solveWinnerDetermination();
+    }
+
+    @Override
+    public List<Allocation> getBestAllocations(int k) {
+        if (k == 1) return Lists.newArrayList(getAllocation());
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_CAPACITY, k);
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 4);
+        getMIP().setVariablesOfInterest(getBidVariables());
+        List<Allocation> allocations = getIntermediateSolutions();
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 0);
+        return allocations;
     }
 
     @Override
@@ -61,4 +72,5 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     }
 
     protected abstract Variable getBidVariable(BundleBid bundleBid);
+    protected abstract Collection<Variable> getBidVariables();
 }

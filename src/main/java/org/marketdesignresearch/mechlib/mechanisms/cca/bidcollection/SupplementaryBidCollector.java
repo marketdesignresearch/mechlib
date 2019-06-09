@@ -10,6 +10,7 @@ import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.mechanisms.cca.bidcollection.supplementaryround.SupplementaryRound;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class SupplementaryBidCollector {
     @Getter
     private final Map<Good, Integer> demand = new HashMap<>();
     private final Prices prices;
-    private final Set<? extends Bidder> bidders;
+    private final List<? extends Bidder> bidders;
     private final SupplementaryRound supplementaryRound;
 
     public Bids collectBids() {

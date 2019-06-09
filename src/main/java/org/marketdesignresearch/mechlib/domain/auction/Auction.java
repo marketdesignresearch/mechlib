@@ -3,11 +3,11 @@ package org.marketdesignresearch.mechlib.domain.auction;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
@@ -15,6 +15,7 @@ import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class Auction implements AuctionMechanism {
@@ -25,7 +26,7 @@ public class Auction implements AuctionMechanism {
     private final MechanismType mechanismType;
     private List<AuctionRound> rounds = new ArrayList<>();
 
-    public Bidder getBidder(String id) {
+    public Bidder getBidder(UUID id) {
         return domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
@@ -33,11 +34,17 @@ public class Auction implements AuctionMechanism {
         return domain.getGoods().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
-    public void addRound(Bids bids) {
-        Preconditions.checkArgument(domain.getBidders().containsAll(bids.getBidders()));
-        Preconditions.checkArgument(domain.getGoods().containsAll(bids.getGoods()));
-        AuctionRound round = new AuctionRound(rounds.size() + 1, bids);
+    public int addRound(Bids bids) {
+        return addRound(new AuctionRound(rounds.size() + 1, bids));
+    }
+
+    public int addRound(AuctionRound round) {
+        int roundNumber = rounds.size() + 1;
+        Preconditions.checkArgument(round.getRoundNumber() == roundNumber);
+        Preconditions.checkArgument(domain.getBidders().containsAll(round.getBids().getBidders()));
+        Preconditions.checkArgument(domain.getGoods().containsAll(round.getBids().getGoods()));
         rounds.add(round);
+        return roundNumber;
     }
 
     public Bids getBidsAt(int round) {

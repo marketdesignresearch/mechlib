@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
+import com.google.common.collect.Maps;
 import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
@@ -9,9 +10,13 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.domain.price.Prices;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Wraps an OR or OR* winner determination
@@ -63,5 +68,10 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     @Override
     protected Variable getBidVariable(BundleBid bundleBid) {
         return bidVariables.get(bundleBid);
+    }
+
+    @Override
+    protected Collection<Variable> getBidVariables() {
+        return bidVariables.values();
     }
 }

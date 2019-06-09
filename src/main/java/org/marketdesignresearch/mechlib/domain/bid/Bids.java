@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
@@ -92,13 +93,25 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     /**
      * Gives truthful bids
      */
-    public static Bids fromXORBidders(Set<XORBidder> bidders) {
+    public static Bids fromXORBidders(List<XORBidder> bidders) {
         return fromXORBidders(bidders, Strategy.TRUTHFUL::apply);
     }
 
-    public static Bids fromXORBidders(Set<XORBidder> bidders, Function<Value, Bid> operator) {
+    public static Bids fromXORBidders(List<XORBidder> bidders, Function<Value, Bid> operator) {
         Map<Bidder, Bid> bidMap = new HashMap<>();
         for (XORBidder bidder : bidders) {
+            bidMap.put(bidder, operator.apply(bidder.getValue()));
+        }
+        return new Bids(bidMap);
+    }
+
+    public static Bids fromOBidders(List<ORBidder> bidders) {
+        return fromORBidders(bidders, Strategy.TRUTHFUL::apply);
+    }
+
+    public static Bids fromORBidders(List<ORBidder> bidders, Function<Value, Bid> operator) {
+        Map<Bidder, Bid> bidMap = new HashMap<>();
+        for (ORBidder bidder : bidders) {
             bidMap.put(bidder, operator.apply(bidder.getValue()));
         }
         return new Bids(bidMap);

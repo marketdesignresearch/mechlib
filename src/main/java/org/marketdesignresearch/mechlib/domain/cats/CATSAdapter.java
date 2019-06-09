@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.domain.cats;
 
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
@@ -12,12 +11,13 @@ import java.util.*;
 public class CATSAdapter {
 
     public Bids adaptCATSAuction(CATSAuction catsAuction) {
-        return adaptToDomain(catsAuction).toXORBidderAuction();
+        SimpleXORDomain domain = adaptToDomain(catsAuction);
+        return Bids.fromXORBidders(domain.getBidders());
 
     }
 
-    private List<Good> adaptGoods(CATSAuction catsAuction) {
-        List<Good> goods = new ArrayList<>();
+    private List<SimpleGood> adaptGoods(CATSAuction catsAuction) {
+        List<SimpleGood> goods = new ArrayList<>();
         for (int i = 0; i < catsAuction.getNumberOfGoods() + catsAuction.getNumberOfDummyGoods(); ++i) {
             if (i < catsAuction.getNumberOfGoods()) {
                 goods.add(new SimpleGood(String.valueOf(i), false));
@@ -28,8 +28,8 @@ public class CATSAdapter {
         return goods;
     }
 
-    public Domain adaptToDomain(CATSAuction catsAuction) {
-        List<Good> goods = adaptGoods(catsAuction);
+    public SimpleXORDomain adaptToDomain(CATSAuction catsAuction) {
+        List<SimpleGood> goods = adaptGoods(catsAuction);
         Map<String, XORValue> values = new HashMap<>();
         for (CATSBid catsBid : catsAuction.getCatsBids()) {
             Set<Good> goodsPerBid = new HashSet<>();
@@ -46,9 +46,9 @@ public class CATSAdapter {
             }
             values.get(bidderId).addBundleValue(bundleValue);
         }
-        Set<Bidder> bidders = new HashSet<>();
+        List<XORBidder> bidders = new ArrayList<>();
         values.forEach((k, v) -> bidders.add(new XORBidder(k, v)));
-        return new Domain(bidders, new HashSet<>(goods));
+        return new SimpleXORDomain(bidders, new ArrayList<>(goods));
 
     }
 }

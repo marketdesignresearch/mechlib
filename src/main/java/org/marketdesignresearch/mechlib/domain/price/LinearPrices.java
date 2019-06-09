@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 public class LinearPrices implements Prices {
     private Map<Good, Price> priceMap;
 
-    public LinearPrices(Set<Good> goods) {
+    public LinearPrices(List<? extends Good> goods) {
         priceMap = new HashMap<>();
         goods.forEach(g -> priceMap.put(g, Price.ZERO));
     }

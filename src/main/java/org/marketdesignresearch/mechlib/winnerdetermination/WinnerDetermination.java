@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.winnerdetermination;
 
 import edu.harvard.econcs.jopt.solver.*;
 import edu.harvard.econcs.jopt.solver.client.SolverClient;
+import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.mechanisms.Allocator;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -18,7 +20,7 @@ public abstract class WinnerDetermination implements Allocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
-    private double lowerBound = 0;
+    private double lowerBound = -MIP.MAX_VALUE;
     private double epsilon = 1e-6;
     private boolean displayOutput = false;
 
@@ -31,6 +33,8 @@ public abstract class WinnerDetermination implements Allocator {
         }
         return result;
     }
+
+    public abstract List<Allocation> getBestAllocations(int k);
 
     protected Allocation solveWinnerDetermination() {
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
@@ -49,9 +53,13 @@ public abstract class WinnerDetermination implements Allocator {
     private List<Allocation> solveIntermediateSolutions(IMIPResult result) {
         if (result.getPoolSolutions() != null && !result.getPoolSolutions().isEmpty()) {
             LOGGER.debug("Found {} intermediate solutions candidates", result.getPoolSolutions().size());
-            Stream<PoolSolution> blockingStream = result.getPoolSolutions().stream().filter(sol -> sol.getObjectiveValue() > lowerBound)
-                    .filter(Predicate.isEqual(result).negate());
-            return blockingStream.distinct().map(this::adaptMIPResult).collect(Collectors.toList());
+            return result.getPoolSolutions().stream()
+                    .filter(sol -> sol.getObjectiveValue() > lowerBound)
+                    .filter(Predicate.isEqual(result).negate())
+                    .distinct()
+                    .sorted(Comparator.comparingDouble(PoolSolution::getObjectiveValue).reversed())
+                    .map(this::adaptMIPResult)
+                    .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }

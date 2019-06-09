@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.domain.Bundle;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -16,19 +17,27 @@ import java.util.stream.Collectors;
 @ToString(exclude = "value")
 public final class XORBidder implements Bidder, Serializable {
     private static final long serialVersionUID = -4896848195956099257L;
-    
+
     @Getter
-    private final String id;
+    private final UUID id;
+
+    @Getter
+    private final String name;
     @Getter
     private final XORValue value;
 
-    public XORBidder(String id) {
-        this(id, new XORValue());
+    public XORBidder(String name) {
+        this(UUID.randomUUID(), name, new XORValue());
+    }
+
+    public XORBidder(String name, XORValue value) {
+        this(UUID.randomUUID(), name, value);
     }
 
     @Override
     public BigDecimal getValue(Bundle bundle) {
-        return value.getValueFor(bundle);
+        BigDecimal result = value.getValueFor(bundle);
+        return result;
     }
 
     @Override

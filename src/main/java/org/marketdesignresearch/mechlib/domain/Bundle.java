@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -12,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@ToString
+@ToString @EqualsAndHashCode
 @Slf4j
 public final class Bundle {
     public static Bundle EMPTY = new Bundle(new HashMap<>());
@@ -20,12 +21,12 @@ public final class Bundle {
     @Getter
     private final HashSet<BundleEntry> bundleEntries;
 
-    public Bundle(Map<Good, Integer> map) {
+    public Bundle(Map<? extends Good, Integer> map) {
         bundleEntries = new HashSet<>();
         map.forEach((k, v) -> bundleEntries.add(new BundleEntry(k, v)));
     }
 
-    public static Bundle singleGoods(Set<Good> bundle) {
+    public static Bundle singleGoods(Set<? extends Good> bundle) {
         return new Bundle(bundle.stream().collect(Collectors.toMap(g -> g, g -> 1)));
     }
 

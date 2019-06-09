@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
@@ -24,8 +25,8 @@ public class PaymentRuleTests {
     @Test
     public void testEqualRule() {
         CPLEXUtils.SOLVER.initializeSolveParams();
-        Good west = new SimpleGood("west");
-        Good east = new SimpleGood("east");
+        SimpleGood west = new SimpleGood("west");
+        SimpleGood east = new SimpleGood("east");
 
         BundleValue westBundle = new BundleValue(BigDecimal.valueOf(1), ImmutableSet.of(west), "west");
         XORBidder westBidder = new XORBidder("west", new XORValue(ImmutableSet.of(westBundle)));
@@ -36,10 +37,10 @@ public class PaymentRuleTests {
         BundleValue globalBundle = new BundleValue(BigDecimal.valueOf(2), ImmutableSet.of(west, east), "global");
         XORBidder globalBidder = new XORBidder("global", new XORValue(ImmutableSet.of(globalBundle)));
 
-        Domain domain = new Domain(ImmutableSet.of(westBidder, eastBidder, globalBidder), ImmutableSet.of(west, east));
+        SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder, eastBidder, globalBidder), ImmutableList.of(west, east));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
-        AuctionMechanism mechanism = equalNorm.getMechanism(domain.toXORBidderAuction());
+        AuctionMechanism mechanism = equalNorm.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = mechanism.getPayment();
         assertThat(payment.paymentOf(eastBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(1.75));
         assertThat(payment.paymentOf(westBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));
@@ -56,7 +57,7 @@ public class PaymentRuleTests {
     @Test
     public void paperExample() throws IOException {
         CPLEXUtils.SOLVER.initializeSolveParams();
-        Bids bids = Domain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).toXORBidderAuction();
+        Bids bids = Bids.fromXORBidders(SimpleXORDomain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).getBidders());
         MechanismFactory quadratic = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         MechanismFactory large = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN), new NormFactory(Norm.MANHATTAN,

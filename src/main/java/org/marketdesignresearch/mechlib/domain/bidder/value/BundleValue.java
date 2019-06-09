@@ -45,6 +45,10 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
         this(amount, new Bundle(bundle.stream().collect(Collectors.toMap(good -> good, good -> 1))), id);
     }
 
+    public BundleValue(BigDecimal amount, Bundle bundle) {
+        this(amount, bundle, UUID.randomUUID().toString());
+    }
+
     public long nonDummySize() {
         Predicate<Good> isDummy = Good::isDummyGood;
         return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();

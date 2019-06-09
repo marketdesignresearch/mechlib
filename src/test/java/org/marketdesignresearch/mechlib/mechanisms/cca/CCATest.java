@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.cca;
 
 import org.marketdesignresearch.mechlib.domain.*;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @Slf4j
 public class CCATest {
 
-    private static Domain domain;
+    private static SimpleXORDomain domain;
 
     @BeforeClass
     public static void setUp() throws IOException {
@@ -63,7 +64,7 @@ public class CCATest {
 
     @Test
     public void testRoundAfterRoundCCAWithCATSAuction() {
-        VCGAuction auction = new XORVCGAuction(domain.toXORBidderAuction());
+        VCGAuction auction = new XORVCGAuction(Bids.fromXORBidders(domain.getBidders()));
         AuctionResult resultIncludingAllBids = auction.getAuctionResult();
 
         CCAuction cca = new CCAuction(domain);

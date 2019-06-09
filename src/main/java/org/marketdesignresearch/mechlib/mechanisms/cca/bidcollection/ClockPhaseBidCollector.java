@@ -10,6 +10,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class ClockPhaseBidCollector {
     @Getter
     private final Map<Good, Integer> demand = new HashMap<>();
     private final Prices prices;
-    private final Set<? extends Bidder> bidders;
+    private final List<? extends Bidder> bidders;
 
     public Bids collectBids() {
 

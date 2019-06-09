@@ -12,4 +12,8 @@ public interface Value extends Serializable {
     BigDecimal getValueFor(Bundle bundle);
 
     Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator);
+
+    default Bid toBid() {
+        return toBid(UnaryOperator.identity());
+    }
 }
