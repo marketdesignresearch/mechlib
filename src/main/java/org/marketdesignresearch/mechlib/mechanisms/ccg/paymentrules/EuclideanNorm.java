@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
@@ -14,10 +14,10 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 import java.math.BigDecimal;
 
 public class EuclideanNorm extends PaymentNorm implements CorePaymentNorm {
-    private final AuctionResult referencePoint;
+    private final MechanismResult referencePoint;
     private final CorePaymentWeights weights;
 
-    public EuclideanNorm(AuctionResult referencePoint, CorePaymentWeights weights) {
+    public EuclideanNorm(MechanismResult referencePoint, CorePaymentWeights weights) {
         this.referencePoint = referencePoint;
         this.weights = weights;
     }
@@ -47,7 +47,7 @@ public class EuclideanNorm extends PaymentNorm implements CorePaymentNorm {
     }
 
     @Override
-    public AuctionResult getReferencePoint() {
+    public MechanismResult getReferencePoint() {
         return referencePoint;
     }
 

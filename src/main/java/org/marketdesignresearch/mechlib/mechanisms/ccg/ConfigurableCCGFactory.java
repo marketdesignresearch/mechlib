@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockingAllocationFinder;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.*;
@@ -23,7 +23,7 @@ public class ConfigurableCCGFactory implements CCGMechanismFactory, Parameteriza
      *
      */
     private final Set<ConstraintGenerationAlgorithm> algorithms;
-    private AuctionResult fixedReferencePoint = null;
+    private MechanismResult fixedReferencePoint = null;
 
     private final List<NormFactory> normFactories;
     private final BlockingAllocationFinder blockingAllocationFinder;
@@ -49,26 +49,26 @@ public class ConfigurableCCGFactory implements CCGMechanismFactory, Parameteriza
 
 
     @Override
-    public CCGAuction getMechanism(Bids bids) {
-        AuctionResult referencePoint = fixedReferencePoint;
+    public CCGMechanism getMechanism(Bids bids) {
+        MechanismResult referencePoint = fixedReferencePoint;
         if (referencePoint == null) {
             Allocation allocation = new XORWinnerDetermination(bids).getAllocation();
             Payment payment = rpFactory.computeReferencePoint(bids, allocation);
-            referencePoint = new AuctionResult(payment, allocation);
+            referencePoint = new MechanismResult(payment, allocation);
         }
         // Important to use supplier because otherwise vcgAuction is invoked
         return buildCCGAuction(bids, referencePoint);
     }
 
-    protected CCGAuction buildCCGAuction(Bids bids, AuctionResult referencePoint) {
+    protected CCGMechanism buildCCGAuction(Bids bids, MechanismResult referencePoint) {
         List<CorePaymentNorm> objectiveNorms = normFactories.stream().map(pnf -> pnf.getPaymentNorm(referencePoint)).collect(Collectors.toList());
 
         ParameterizedCorePaymentRule paymentRule = new ParameterizedCorePaymentRule(objectiveNorms);
-        return new CCGAuction(bids, referencePoint.getAllocation(), paymentRule, blockingAllocationFinder, algorithms);
+        return new CCGMechanism(bids, referencePoint.getAllocation(), paymentRule, blockingAllocationFinder, algorithms);
     }
 
     @Override
-    public void setReferencePoint(AuctionResult cachedReferencePoint) {
+    public void setReferencePoint(MechanismResult cachedReferencePoint) {
         fixedReferencePoint = cachedReferencePoint;
     }
 

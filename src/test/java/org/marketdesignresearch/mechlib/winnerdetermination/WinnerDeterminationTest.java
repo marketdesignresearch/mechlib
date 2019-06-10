@@ -8,9 +8,9 @@ import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.mechanisms.Allocator;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.CCGAuction;
+import org.marketdesignresearch.mechlib.mechanisms.AllocationRule;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
+import org.marketdesignresearch.mechlib.mechanisms.ccg.CCGMechanism;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.CCGMechanismFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.Norm;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.VariableNormCCGFactory;
@@ -57,8 +57,8 @@ public class WinnerDeterminationTest {
         VCGReferencePointFactory rpFacory = new VCGReferencePointFactory();
         CCGMechanismFactory quadratic = new VariableNormCCGFactory(rpFacory, Norm.MANHATTAN, Norm.EUCLIDEAN);
 
-        CCGAuction ccgAuction = quadratic.getMechanism(bids);
-        AuctionResult outcome = ccgAuction.getAuctionResult();
+        CCGMechanism ccgAuction = quadratic.getMechanism(bids);
+        MechanismResult outcome = ccgAuction.getMechanismResult();
         assertThat(outcome.getAllocation().getTotalAllocationValue()).isEqualByComparingTo("46");
         assertThat(outcome.getPayment().getTotalPayments()).isEqualByComparingTo("6");
 
@@ -70,20 +70,24 @@ public class WinnerDeterminationTest {
         BundleBid bid2 = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(A, B, D), "2");
         BundleBid bid3 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
+        Bidder bidder1 = new XORBidder("B" + 1);
+        Bidder bidder2 = new XORBidder("B" + 2);
+        Bidder bidder3 = new XORBidder("B" + 3);
+        Bidder bidder4 = new XORBidder("B" + 4);
 
         Bids bids = new Bids();
-        bids.setBid(new XORBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new XORBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new XORBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new XORBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        Allocator wd = new ORWinnerDetermination(bids);
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
+        AllocationRule wd = new ORWinnerDetermination(bids);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(result.allocationOf(new XORBidder("B" + 1)).getValue().doubleValue()).isEqualTo(2);
-        assertThat(result.allocationOf(new XORBidder("B" + 3)).getValue().doubleValue()).isEqualTo(2);
-        assertThat(result.allocationOf(new XORBidder("B" + 2)).getValue()).isZero();
-        assertThat(result.allocationOf(new XORBidder("B" + 4)).getValue()).isZero();
+        assertThat(result.allocationOf(bidder1).getValue().doubleValue()).isEqualTo(2);
+        assertThat(result.allocationOf(bidder3).getValue().doubleValue()).isEqualTo(2);
+        assertThat(result.allocationOf(bidder2).getValue()).isZero();
+        assertThat(result.allocationOf(bidder4).getValue()).isZero();
     }
 
 
@@ -99,25 +103,35 @@ public class WinnerDeterminationTest {
         BundleBid bid7 = new BundleBid(BigDecimal.valueOf(762.093), Sets.newHashSet(E), "7");
         BundleBid bid8 = new BundleBid(BigDecimal.valueOf(893.983), Sets.newHashSet(A), "8");
         BundleBid bid9 = new BundleBid(BigDecimal.valueOf(1816.69), Sets.newHashSet(A, C), "9");
+        Bidder bidder0 = new XORBidder("B" + 0);
+        Bidder bidder1 = new XORBidder("B" + 1);
+        Bidder bidder2 = new XORBidder("B" + 2);
+        Bidder bidder3 = new XORBidder("B" + 3);
+        Bidder bidder4 = new XORBidder("B" + 4);
+        Bidder bidder5 = new XORBidder("B" + 5);
+        Bidder bidder6 = new XORBidder("B" + 6);
+        Bidder bidder7 = new XORBidder("B" + 7);
+        Bidder bidder8 = new XORBidder("B" + 8);
+        Bidder bidder9 = new XORBidder("B" + 9);
         Bids bids = new Bids();
-        bids.setBid(new XORBidder("B" + 0), new Bid(Sets.newHashSet(bid0)));
-        bids.setBid(new XORBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new XORBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new XORBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new XORBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        bids.setBid(new XORBidder("B" + 5), new Bid(Sets.newHashSet(bid5)));
-        bids.setBid(new XORBidder("B" + 6), new Bid(Sets.newHashSet(bid6)));
-        bids.setBid(new XORBidder("B" + 7), new Bid(Sets.newHashSet(bid7)));
-        bids.setBid(new XORBidder("B" + 8), new Bid(Sets.newHashSet(bid8)));
-        bids.setBid(new XORBidder("B" + 9), new Bid(Sets.newHashSet(bid9)));
-        Allocator wd = new ORWinnerDetermination(bids);
+        bids.setBid(bidder0, new Bid(Sets.newHashSet(bid0)));
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
+        bids.setBid(bidder5, new Bid(Sets.newHashSet(bid5)));
+        bids.setBid(bidder6, new Bid(Sets.newHashSet(bid6)));
+        bids.setBid(bidder7, new Bid(Sets.newHashSet(bid7)));
+        bids.setBid(bidder8, new Bid(Sets.newHashSet(bid8)));
+        bids.setBid(bidder9, new Bid(Sets.newHashSet(bid9)));
+        AllocationRule wd = new ORWinnerDetermination(bids);
 
         Allocation result = wd.getAllocation();
         assertThat(result.getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
-        assertThat(result.allocationOf(new XORBidder("B" + 1)).getValue().doubleValue()).isEqualTo(894.644);
-        assertThat(result.allocationOf(new XORBidder("B" + 2)).getValue()).isZero();
-        assertThat(result.allocationOf(new XORBidder("B" + 4)).getValue()).isZero();
-        assertThat(result.allocationOf(new XORBidder("B" + 0)).getValue()).isZero();
+        assertThat(result.allocationOf(bidder1).getValue().doubleValue()).isEqualTo(894.644);
+        assertThat(result.allocationOf(bidder2).getValue()).isZero();
+        assertThat(result.allocationOf(bidder4).getValue()).isZero();
+        assertThat(result.allocationOf(bidder0).getValue()).isZero();
 
     }
 }

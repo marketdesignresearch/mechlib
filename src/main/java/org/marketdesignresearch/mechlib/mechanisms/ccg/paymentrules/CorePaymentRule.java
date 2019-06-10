@@ -2,9 +2,9 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.mechanisms.PaymentMechanism;
+import org.marketdesignresearch.mechlib.mechanisms.PaymentRule;
 
-public interface CorePaymentRule extends PaymentMechanism {
+public interface CorePaymentRule extends PaymentRule {
 
     void resetResult();
 

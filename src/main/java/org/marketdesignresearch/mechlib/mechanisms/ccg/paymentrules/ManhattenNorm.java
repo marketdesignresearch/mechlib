@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 
 public class ManhattenNorm extends PaymentNorm implements CorePaymentNorm {
     private final CorePaymentWeights weigths;
-    private final AuctionResult referencePoint;
+    private final MechanismResult referencePoint;
 
-    public ManhattenNorm(AuctionResult referencePoint, CorePaymentWeights weights) {
+    public ManhattenNorm(MechanismResult referencePoint, CorePaymentWeights weights) {
         this.referencePoint = referencePoint;
         this.weigths = weights;
     }
@@ -64,7 +64,7 @@ public class ManhattenNorm extends PaymentNorm implements CorePaymentNorm {
     }
 
     @Override
-    public AuctionResult getReferencePoint() {
+    public MechanismResult getReferencePoint() {
         return referencePoint;
     }
 

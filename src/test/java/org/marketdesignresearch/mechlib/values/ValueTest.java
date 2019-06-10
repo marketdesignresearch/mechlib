@@ -83,7 +83,7 @@ public class ValueTest {
         checkValue(bidder, 10, A);
         checkValue(bidder, 11, B);
         checkValue(bidder, 12, C);
-        checkValue(bidder, 13, new BundleEntry(D, 2));
+        checkValue(bidder, 13, new BundleEntry(D, 2)); // FIXME
 
         checkValue(bidder, 10, new BundleEntry(A, 2));
         checkValue(bidder, 11, new BundleEntry(B, 2));

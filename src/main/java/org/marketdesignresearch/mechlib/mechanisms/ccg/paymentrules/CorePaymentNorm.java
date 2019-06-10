@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import edu.harvard.econcs.jopt.solver.IMIP;
 
@@ -29,5 +29,5 @@ public interface CorePaymentNorm {
      * 
      * @return the reference point for this norm
      */
-    AuctionResult getReferencePoint();
+    MechanismResult getReferencePoint();
 }

@@ -1,7 +1,8 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
+import org.marketdesignresearch.mechlib.mechanisms.MetaInfoResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,7 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "paymentMap")
 @ToString
-public final class Payment implements MechanismResult {
+public final class Payment implements MetaInfoResult {
     public static final Payment ZERO = new Payment(Collections.emptyMap(), new MetaInfo());
 
     @Getter
@@ -40,4 +42,11 @@ public final class Payment implements MechanismResult {
         return paymentMap.getOrDefault(bidder, BidderPayment.ZERO_PAYMENT);
     }
 
+    public Payment merge(Payment other) {
+        Map<Bidder, BidderPayment> paymentMap = new HashMap<>();
+        for (Bidder bidder : Sets.union(getPaymentMap().keySet(), other.getPaymentMap().keySet())) {
+            paymentMap.put(bidder, new BidderPayment(paymentOf(bidder).getAmount().add(other.paymentOf(bidder).getAmount())));
+        }
+        return new Payment(paymentMap, metaInfo.join(other.metaInfo));
+    }
 }

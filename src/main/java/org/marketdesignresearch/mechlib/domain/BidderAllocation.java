@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import lombok.EqualsAndHashCode;
@@ -40,4 +41,8 @@ public final class BidderAllocation {
         return new PotentialCoalition(bundle, bidder, value);
     }
 
+    public BidderAllocation merge(BidderAllocation other) {
+        // Note: This assumes linear value
+        return new BidderAllocation(getValue().add(other.getValue()), getBundle().merge(other.getBundle()), Sets.union(getAcceptedBids(), other.getAcceptedBids()));
+    }
 }

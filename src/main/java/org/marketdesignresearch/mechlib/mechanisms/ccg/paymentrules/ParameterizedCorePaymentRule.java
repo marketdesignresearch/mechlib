@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
@@ -27,7 +27,7 @@ public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements
     }
 
     public ParameterizedCorePaymentRule(List<CorePaymentNorm> objectiveNorms) {
-        AuctionResult referencePoint = objectiveNorms.get(0).getReferencePoint();
+        MechanismResult referencePoint = objectiveNorms.get(0).getReferencePoint();
         this.objectiveNorms = objectiveNorms;
         this.result = referencePoint.getPayment();
         program = createProgram(referencePoint.getAllocation(), referencePoint.getPayment());

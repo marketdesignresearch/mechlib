@@ -7,7 +7,7 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
 
@@ -22,13 +22,13 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
     private final Map<Bidder, BigDecimal> previousPayoff = new HashMap<>();
     protected static final String TRAITOR = "TRAITOR_";
 
-    public BlockingCoalitionDetermination(Bids bids, AuctionResult previousAuctionResult) {
+    public BlockingCoalitionDetermination(Bids bids, MechanismResult previousMechanismResult) {
         super(bids);
         MIPWrapper mip = getMIP();
-        for (Bidder winningBidder : previousAuctionResult.getWinners()) {
+        for (Bidder winningBidder : previousMechanismResult.getWinners()) {
             Variable traitor = mip.makeNewBooleanVar(TRAITOR + winningBidder.getId());
-            BidderAllocation bidderAllocation = previousAuctionResult.getAllocation().allocationOf(winningBidder);
-            BigDecimal payoff = bidderAllocation.getValue().subtract(previousAuctionResult.getPayment().paymentOf(winningBidder).getAmount());
+            BidderAllocation bidderAllocation = previousMechanismResult.getAllocation().allocationOf(winningBidder);
+            BigDecimal payoff = bidderAllocation.getValue().subtract(previousMechanismResult.getPayment().paymentOf(winningBidder).getAmount());
             mip.addObjectiveTerm(payoff.negate().doubleValue(), traitor);
 
             // traitor is 1 if at least one bundleBid of the bidder was

@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaximumsNorm extends PaymentNorm implements CorePaymentNorm {
-    private final AuctionResult referencePoint;
+    private final MechanismResult referencePoint;
 
-    public MaximumsNorm(AuctionResult referencePoint) {
+    public MaximumsNorm(MechanismResult referencePoint) {
         this.referencePoint = referencePoint;
     }
 
@@ -54,7 +54,7 @@ public class MaximumsNorm extends PaymentNorm implements CorePaymentNorm {
     }
 
     @Override
-    public AuctionResult getReferencePoint() {
+    public MechanismResult getReferencePoint() {
         return referencePoint;
     }
 

@@ -5,14 +5,15 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
-import org.marketdesignresearch.mechlib.strategy.Strategy;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
+import org.marketdesignresearch.mechlib.domain.strategy.Strategy;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -46,6 +47,16 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         Set<Good> goods = new HashSet<>();
         getBids().forEach(bid -> bid.getBundleBids().forEach(bbid -> goods.addAll(bbid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()))));
         return goods;
+    }
+
+    public SingleItemBids getBidsPerSingleGood(Good good) {
+        if (!getGoods().contains(good)) return new SingleItemBids(new Bids());
+        Map<Bidder, Bid> bidsPerGood = new HashMap<>();
+        for (Entry<Bidder, Bid> entry : bidMap.entrySet()) {
+            Set<BundleBid> bundleBids = entry.getValue().getBundleBids().stream().filter(bbid -> bbid.getBundle().isSingleGood()).filter(bbid -> bbid.getBundle().getSingleGood().equals(good)).collect(Collectors.toSet());
+            if (!bundleBids.isEmpty()) bidsPerGood.put(entry.getKey(), new Bid(bundleBids));
+        }
+        return new SingleItemBids(new Bids(bidsPerGood));
     }
 
     /**
@@ -121,12 +132,12 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     /**
      *
      * @return New bids, but reduced by the payoff of
-     *         auctionResult
+     *         mechanismResult
      */
-    public Bids reducedBy(AuctionResult auctionResult) {
+    public Bids reducedBy(MechanismResult mechanismResult) {
         Bids newBids = new Bids();
         for (Map.Entry<Bidder, Bid> entry : getBidMap().entrySet()) {
-            BigDecimal payoff = auctionResult.payoffOf(entry.getKey());
+            BigDecimal payoff = mechanismResult.payoffOf(entry.getKey());
             newBids.setBid(entry.getKey(), entry.getValue().reducedBy(payoff));
         }
         return newBids;

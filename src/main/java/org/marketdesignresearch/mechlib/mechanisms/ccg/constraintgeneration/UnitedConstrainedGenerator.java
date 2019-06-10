@@ -8,7 +8,7 @@ import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.domain.BundleEntry;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Map<Good, PotentialCoalition> goodToCoalitionMap = new HashMap<>();
     private final CorePaymentRule corePaymentRule;
 
-    public UnitedConstrainedGenerator(Bids bids, AuctionResult referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
+    public UnitedConstrainedGenerator(Bids bids, MechanismResult referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
         this.generatorAlgorithms = generatorAlgorithms;
         this.corePaymentRule = corePaymentRule;
 
@@ -38,7 +38,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
     }
 
     @Override
-    public void addConstraint(Allocation blockingCoalition, AuctionResult priorResult) {
+    public void addConstraint(Allocation blockingCoalition, MechanismResult priorResult) {
 
         corePaymentRule.resetResult();
         Graph<PotentialCoalition, DefaultEdge> tempGraph = new SimpleGraph<>(DefaultEdge.class);

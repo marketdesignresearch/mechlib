@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.ReferencePointFactory;
 
@@ -21,8 +21,8 @@ public class NormFactory {
         this.fixedPayments = Optional.ofNullable(payment);
     }
 
-    public CorePaymentNorm getPaymentNorm(AuctionResult referencePoint) {
-        AuctionResult actualRefencePoint = fixedPayments.map(p -> new AuctionResult(p, referencePoint.getAllocation())).orElse(referencePoint);
+    public CorePaymentNorm getPaymentNorm(MechanismResult referencePoint) {
+        MechanismResult actualRefencePoint = fixedPayments.map(p -> new MechanismResult(p, referencePoint.getAllocation())).orElse(referencePoint);
         return norm.asSecondaryNorm(actualRefencePoint, weightsFactory);
     }
 

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
 import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.Payment;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockedBidders;
@@ -32,7 +32,7 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
     private Payment result;
     private final Allocation allocation;
 
-    public MultiNormCorePaymentRule(AuctionResult referencePoint, PaymentNorm primaryNorm, PaymentNorm... additionalNorms) {
+    public MultiNormCorePaymentRule(MechanismResult referencePoint, PaymentNorm primaryNorm, PaymentNorm... additionalNorms) {
         this.primaryNorm = primaryNorm;
         this.additionalNorms = additionalNorms;
         this.result = referencePoint.getPayment();

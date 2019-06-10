@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.ReferencePointFactory;
 
 public class InversePaymentWeightsFactory implements CorePaymentWeightsFactory {
 
     @Override
-    public CorePaymentWeights createWeights(AuctionResult referencePoint) {
+    public CorePaymentWeights createWeights(MechanismResult referencePoint) {
         return new InversePaymentWeights(referencePoint.getAllocation(),referencePoint.getPayment());
     }
 

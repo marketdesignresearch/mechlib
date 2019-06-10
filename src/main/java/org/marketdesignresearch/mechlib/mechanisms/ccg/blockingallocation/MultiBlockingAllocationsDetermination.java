@@ -2,15 +2,15 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 
 public class MultiBlockingAllocationsDetermination extends BlockingCoalitionDetermination {
     public enum Mode {
         JUST_ASK, POOL_5, POOl_10, POOl_15, POOL_30, POOl_50
     }
 
-    public MultiBlockingAllocationsDetermination(Bids bids, AuctionResult previousAuctionResult, Mode mode) {
-        super(bids, previousAuctionResult);
+    public MultiBlockingAllocationsDetermination(Bids bids, MechanismResult previousMechanismResult, Mode mode) {
+        super(bids, previousMechanismResult);
         switch (mode) {
         case JUST_ASK:
             getMIP().setSolveParam(SolveParam.POPULATE_LIMIT, 100000);

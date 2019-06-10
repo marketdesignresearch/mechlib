@@ -1,5 +1,7 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +44,18 @@ public final class Bundle {
                     "you can't treat it as a single good bundle.", toString());
             return null;
         }
+    }
+
+    public Bundle merge(Bundle other) {
+        Set<Good> goods = Sets.union(getBundleEntries(), other.getBundleEntries()).stream()
+                .map(BundleEntry::getGood).collect(Collectors.toSet());
+        Map<Good, Integer> map = new HashMap<>();
+        for (Good good : goods) {
+            Set<BundleEntry> first = getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
+            Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
+            map.put(good, first.stream().mapToInt(BundleEntry::getAmount).sum() + second.stream().mapToInt(BundleEntry::getAmount).sum());
+        }
+        map.forEach((k, v) -> Preconditions.checkArgument(v <= k.available()));
+        return new Bundle(map);
     }
 }

@@ -3,7 +3,7 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.ReferencePointFactory;
 
 public class InverseReferencePointPayoffWeightsFactory implements CorePaymentWeightsFactory {
@@ -14,11 +14,11 @@ public class InverseReferencePointPayoffWeightsFactory implements CorePaymentWei
     }
 
     @Override
-    public CorePaymentWeights createWeights(AuctionResult referencePoint) {
+    public CorePaymentWeights createWeights(MechanismResult referencePoint) {
         Allocation allocation = referencePoint.getAllocation();
         Bids bids = allocation.getBids();
         Payment referencePayments = rpFactory.computeReferencePoint(bids, allocation);
-        AuctionResult payoffReferencePoint = new AuctionResult(referencePayments, allocation);
+        MechanismResult payoffReferencePoint = new MechanismResult(referencePayments, allocation);
         return new InversePayoffWeights(payoffReferencePoint);
     }
 

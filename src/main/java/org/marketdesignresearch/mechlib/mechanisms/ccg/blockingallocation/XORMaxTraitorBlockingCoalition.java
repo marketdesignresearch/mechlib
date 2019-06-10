@@ -7,16 +7,16 @@ import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
 public class XORMaxTraitorBlockingCoalition extends XORWinnerDetermination {
 
-    public XORMaxTraitorBlockingCoalition(Bids bids, AuctionResult previousAuctionResult) {
+    public XORMaxTraitorBlockingCoalition(Bids bids, MechanismResult previousMechanismResult) {
         super(bids);
         MIPWrapper mip = getMIP();
-        Allocation previousAllocation = previousAuctionResult.getAllocation();
+        Allocation previousAllocation = previousMechanismResult.getAllocation();
         for (Bidder winningBidder : previousAllocation.getWinners()) {
             Variable traitor = mip.makeNewBooleanVar("Traitor_" + winningBidder.getId());
             // EPSILON adds Secondary Objective

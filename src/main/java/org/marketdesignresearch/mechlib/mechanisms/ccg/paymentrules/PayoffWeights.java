@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 
 public class PayoffWeights implements CorePaymentWeights {
-    private final AuctionResult referencePoint;
+    private final MechanismResult referencePoint;
 
-    public PayoffWeights(AuctionResult referencePoint) {
+    public PayoffWeights(MechanismResult referencePoint) {
         this.referencePoint = referencePoint;
     }
 

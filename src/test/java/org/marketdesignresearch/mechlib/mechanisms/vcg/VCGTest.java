@@ -2,11 +2,12 @@ package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
 import com.google.common.collect.Lists;
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.auction.Auction;
+import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
+import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,17 +40,21 @@ public class VCGTest {
         BundleBid bid3 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
         Bids bids = new Bids();
-        bids.setBid(new XORBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new XORBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new XORBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new XORBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionMechanism am = new ORVCGAuction(bids);
+        Bidder bidder1 = new XORBidder("B" + 1);
+        Bidder bidder2 = new XORBidder("B" + 2);
+        Bidder bidder3 = new XORBidder("B" + 3);
+        Bidder bidder4 = new XORBidder("B" + 4);
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
+        Mechanism am = new ORVCGMechanism(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new XORBidder("B" + 4)).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder1).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(bidder2).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder3).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(bidder4).getAmount()).isZero();
     }
 
     @Test
@@ -59,17 +64,21 @@ public class VCGTest {
         BundleBid bid3 = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleBid bid4 = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
         Bids bids = new Bids();
-        bids.setBid(new XORBidder("B" + 1), new Bid(Sets.newHashSet(bid1)));
-        bids.setBid(new XORBidder("B" + 2), new Bid(Sets.newHashSet(bid2)));
-        bids.setBid(new XORBidder("B" + 3), new Bid(Sets.newHashSet(bid3)));
-        bids.setBid(new XORBidder("B" + 4), new Bid(Sets.newHashSet(bid4)));
-        AuctionMechanism am = new XORVCGAuction(bids);
+        Bidder bidder1 = new XORBidder("B" + 1);
+        Bidder bidder2 = new XORBidder("B" + 2);
+        Bidder bidder3 = new XORBidder("B" + 3);
+        Bidder bidder4 = new XORBidder("B" + 4);
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
+        Mechanism am = new XORVCGMechanism(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new XORBidder("B" + 4)).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder1).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(bidder2).getAmount()).isZero();
+        assertThat(payment.paymentOf(bidder3).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(bidder4).getAmount()).isZero();
     }
 
     @Test
@@ -98,10 +107,10 @@ public class VCGTest {
         Payment payment = auction.getPayment();
 
         assertThat(allocation.getTotalAllocationValue().doubleValue()).isEqualTo(4);
-        assertThat(payment.paymentOf(new XORBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
-        assertThat(payment.paymentOf(new XORBidder("B" + 2)).getAmount()).isZero();
-        assertThat(payment.paymentOf(new XORBidder("B" + 3)).getAmount()).isOne();
-        assertThat(payment.paymentOf(new XORBidder("B" + 4)).getAmount()).isZero();
+        assertThat(payment.paymentOf(domain.getBidder("B" + 1)).getAmount().doubleValue()).isEqualTo(1);
+        assertThat(payment.paymentOf(domain.getBidder("B" + 2)).getAmount()).isZero();
+        assertThat(payment.paymentOf(domain.getBidder("B" + 3)).getAmount()).isOne();
+        assertThat(payment.paymentOf(domain.getBidder("B" + 4)).getAmount()).isZero();
     }
 
     @Test

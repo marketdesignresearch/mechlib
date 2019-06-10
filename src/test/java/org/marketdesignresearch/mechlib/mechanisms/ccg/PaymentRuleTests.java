@@ -8,11 +8,11 @@ import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionMechanism;
+import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.*;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.BidsReferencePointFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.VCGReferencePointFactory;
-import org.marketdesignresearch.mechlib.mechanisms.vcg.ORVCGAuction;
+import org.marketdesignresearch.mechlib.mechanisms.vcg.ORVCGMechanism;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class PaymentRuleTests {
         SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder, eastBidder, globalBidder), ImmutableList.of(west, east));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
-        AuctionMechanism mechanism = equalNorm.getMechanism(Bids.fromXORBidders(domain.getBidders()));
+        Mechanism mechanism = equalNorm.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = mechanism.getPayment();
         assertThat(payment.paymentOf(eastBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(1.75));
         assertThat(payment.paymentOf(westBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));
@@ -70,7 +70,7 @@ public class PaymentRuleTests {
         System.out.println(fractional.getMechanism(bids).getPayment());
         System.out.println(small.getMechanism(bids).getPayment());
         System.out.println(large.getMechanism(bids).getPayment());
-        System.out.println(new ORVCGAuction(bids).getPayment());
+        System.out.println(new ORVCGMechanism(bids).getPayment());
 
     }
 }

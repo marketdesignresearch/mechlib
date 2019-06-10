@@ -1,8 +1,9 @@
 package org.marketdesignresearch.mechlib.domain;
 
+import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
+import org.marketdesignresearch.mechlib.mechanisms.MetaInfoResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration.PotentialCoalition;
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "tradesMap")
 @ToString
-public class Allocation implements MechanismResult {
+public class Allocation implements MetaInfoResult {
     public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new Bids(new HashMap<>()), new MetaInfo());
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
@@ -74,5 +75,13 @@ public class Allocation implements MechanismResult {
             this.coalitions = coalitions;
         }
         return this.coalitions;
+    }
+
+    public Allocation merge(Allocation other) {
+        Map<Bidder, BidderAllocation> tradesMap = new HashMap<>();
+        for (Bidder bidder : Sets.union(getWinners(), other.getWinners())) {
+            tradesMap.put(bidder, allocationOf(bidder).merge(other.allocationOf(bidder)));
+        }
+        return new Allocation(tradesMap, getBids().join(other.getBids()), getMetaInfo().join(other.getMetaInfo()));
     }
 }

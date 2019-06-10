@@ -2,7 +2,7 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.CorePaymentRule;
 
 import java.util.HashSet;
@@ -24,13 +24,13 @@ public enum ConstraintGenerationAlgorithm {
     VALUE_SEPARABILITY,
     /** VS DOWN */
     VALUE_SEPARABILITY_DOWN, FULL;
-    public static ConstraintGenerator getInstance(Bids bids, AuctionResult referencePoint, CorePaymentRule corePaymentRule, ConstraintGenerationAlgorithm... algorithms) {
+    public static ConstraintGenerator getInstance(Bids bids, MechanismResult referencePoint, CorePaymentRule corePaymentRule, ConstraintGenerationAlgorithm... algorithms) {
         Set<ConstraintGenerationAlgorithm> algorithmSet = Sets.newHashSet(algorithms);
         return getInstance(algorithmSet, bids, referencePoint, corePaymentRule);
 
     }
 
-    public static ConstraintGenerator getInstance(Set<ConstraintGenerationAlgorithm> algorithms, Bids bids, AuctionResult referencePoint, CorePaymentRule corePaymentRule) {
+    public static ConstraintGenerator getInstance(Set<ConstraintGenerationAlgorithm> algorithms, Bids bids, MechanismResult referencePoint, CorePaymentRule corePaymentRule) {
         Set<PartialConstraintGenerator> constraintGenerators = new HashSet<>(algorithms.size());
         constraintGenerators.addAll(algorithms.stream().map(ConstraintGenerationAlgorithm::getConstraintGenerator).collect(Collectors.toList()));
         return new UnitedConstrainedGenerator(bids, referencePoint, constraintGenerators, corePaymentRule);

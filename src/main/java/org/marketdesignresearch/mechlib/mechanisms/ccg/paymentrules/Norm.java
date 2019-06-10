@@ -1,11 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 
 public enum Norm {
     MANHATTAN, EUCLIDEAN, MAXIMUM, ITERATIVE_MAXIMUM;
 
-    public CorePaymentNorm asSecondaryNorm(AuctionResult referencePoint, CorePaymentWeightsFactory weightsFactory) {
+    public CorePaymentNorm asSecondaryNorm(MechanismResult referencePoint, CorePaymentWeightsFactory weightsFactory) {
         PaymentNorm paymentNorm = getNorm(referencePoint, weightsFactory.createWeights(referencePoint));
         if (paymentNorm instanceof CorePaymentNorm) {
             return (CorePaymentNorm) paymentNorm;
@@ -14,7 +14,7 @@ public enum Norm {
         }
     }
 
-    private PaymentNorm getNorm(AuctionResult referencePoint, CorePaymentWeights weights) {
+    private PaymentNorm getNorm(MechanismResult referencePoint, CorePaymentWeights weights) {
         switch (this) {
         case EUCLIDEAN:
             return new EuclideanNorm(referencePoint, weights);

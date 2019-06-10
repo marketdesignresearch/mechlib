@@ -1,13 +1,13 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.mechanisms.AuctionResult;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.BidsReferencePointFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.ReferencePointFactory;
 
 public class EqualWeightsFactory implements CorePaymentWeightsFactory {
 
     @Override
-    public CorePaymentWeights createWeights(AuctionResult referencepoint) {
+    public CorePaymentWeights createWeights(MechanismResult referencepoint) {
         return CorePaymentWeights.EQUAL_WEIGHTS;
     }
 
