@@ -12,33 +12,36 @@ public enum AuctionFactory {
     SEQUENTIAL_SECOND_PRICE,
     SIMULTANEOUS_FIRST_PRICE,
     SIMULTANEOUS_SECOND_PRICE,
+    VCG_XOR,
+    VCG_OR,
     CCA_VCG,
     CCA_CCG,
     PVM;
 
-    // TODO: Find the right enum usage to have all common auction formats
     public Auction getAuction(Domain domain) {
         switch (this) {
-            case SINGLE_ITEM_FIRST_PRICE:                                                       // Single Item --- First Price
-            case SIMULTANEOUS_FIRST_PRICE:                                                      // Multi Item  --- Simultaneous --- First Price
+            case SINGLE_ITEM_FIRST_PRICE:
+            case SIMULTANEOUS_FIRST_PRICE:
                 return new Auction(domain, MechanismType.FIRST_PRICE);
-            case SINGLE_ITEM_SECOND_PRICE:                                                      // Single Item --- Second Price
-            case SIMULTANEOUS_SECOND_PRICE:                                                     // Multi Item  --- Simultaneous --- Second Price
+            case SINGLE_ITEM_SECOND_PRICE:
+            case SIMULTANEOUS_SECOND_PRICE:
                 return new Auction(domain, MechanismType.SECOND_PRICE);
-            case SEQUENTIAL_FIRST_PRICE:                                                        // Multi Item  --- Sequential --- First Price
+            case SEQUENTIAL_FIRST_PRICE:
                 return new SequentialAuction(domain, MechanismType.FIRST_PRICE);
-            case SEQUENTIAL_SECOND_PRICE:                                                       // Multi Item  --- Sequential --- Second Price
+            case SEQUENTIAL_SECOND_PRICE:
                 return new SequentialAuction(domain, MechanismType.SECOND_PRICE);
-            case CCA_VCG:                                                                           // Multi Item  --- CCA --- VCG/CCG
+            case VCG_XOR:
+                return new Auction(domain, MechanismType.VCG_XOR);
+            case VCG_OR:
+                return new Auction(domain, MechanismType.VCG_OR);
+            case CCA_VCG:
                 return new CCAuction(domain, MechanismType.VCG_XOR);
-            case CCA_CCG:                                                                           // Multi Item  --- CCA --- VCG/CCG
+            case CCA_CCG:
                 return new CCAuction(domain, MechanismType.CCG);
-            case PVM:                                                                           // Multi Item  --- PVM --- VCG/CCG
+            case PVM:
                 throw new UnsupportedOperationException("PVM is yet to be implemented!");
             default:
                 throw new UnsupportedOperationException();
-
-
         }
     }
 }
