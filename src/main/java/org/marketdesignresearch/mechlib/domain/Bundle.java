@@ -58,4 +58,12 @@ public final class Bundle {
         map.forEach((k, v) -> Preconditions.checkArgument(v <= k.available()));
         return new Bundle(map);
     }
+
+    public boolean contains(Good good) {
+        return bundleEntries.stream().anyMatch(be -> be.getGood().equals(good));
+    }
+
+    public int countGood(Good good) {
+        return contains(good) ? bundleEntries.stream().filter(be -> be.getGood().equals(good)).mapToInt(BundleEntry::getAmount).sum() : 0;
+    }
 }

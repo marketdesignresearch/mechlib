@@ -1,14 +1,12 @@
 package org.marketdesignresearch.mechlib.auction.sequential;
 
 import com.google.common.collect.Lists;
+import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.auction.Auction;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +20,12 @@ public class SequentialAuction extends Auction {
 
     @Override
     public List<? extends Good> nextGoods() {
-        return Lists.newArrayList(getDomain().getGoods().get(getRounds()));
+        return Lists.newArrayList(getDomain().getGoods().get(getNumberOfRounds()));
+    }
+
+    @Override
+    public int allowedNumberOfBids() {
+        return 1;
     }
 
     /**
@@ -39,7 +42,7 @@ public class SequentialAuction extends Auction {
     @Override
     public MechanismResult getMechanismResult() {
         MechanismResult result = MechanismResult.NONE;
-        for (int i = 0; i < getRounds(); i++) {
+        for (int i = 0; i < getNumberOfRounds(); i++) {
             result = result.merge(getAuctionResultAtRound(i));
         }
         return result;

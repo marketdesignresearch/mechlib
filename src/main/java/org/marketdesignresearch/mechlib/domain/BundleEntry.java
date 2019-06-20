@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.domain;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import lombok.Value;
 
 @Value

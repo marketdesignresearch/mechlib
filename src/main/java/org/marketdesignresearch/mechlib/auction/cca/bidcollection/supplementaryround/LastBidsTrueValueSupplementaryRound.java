@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryround;
 
+import lombok.Getter;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
@@ -13,7 +14,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
 
     private static final int DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS = 500;
 
-    @Setter
+    @Setter @Getter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
     private final Bids bids;
 

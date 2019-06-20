@@ -5,6 +5,7 @@ import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 
 public interface SupplementaryRound {
     Bid getSupplementaryBids(String id, Bidder bidder);
+    int getNumberOfSupplementaryBids();
 
     default String getDescription() {
         return "(no description provided)";

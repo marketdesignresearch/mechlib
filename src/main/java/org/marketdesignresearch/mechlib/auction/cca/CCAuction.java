@@ -1,11 +1,13 @@
 package org.marketdesignresearch.mechlib.auction.cca;
 
-import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.marketdesignresearch.mechlib.auction.AuctionRound;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.auction.Auction;
+import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
 import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
@@ -17,17 +19,15 @@ import org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryr
 import org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryround.SupplementaryRound;
 import org.marketdesignresearch.mechlib.auction.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.auction.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 @Slf4j
 public class CCAuction extends Auction {
 
     private MechanismResult result;
-    private List<Prices> prices = new ArrayList<>();
+    private Prices currentPrices;
 
     @Setter
     private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
@@ -43,17 +43,25 @@ public class CCAuction extends Auction {
         this(domain, MechanismType.CCG);
     }
 
-    public CCAuction(Domain domain, MechanismType mechanismType) {
-        this(domain, new LinearPrices(domain.getGoods()), mechanismType);
+    public CCAuction(Domain domain, MechanismFactory mechanismType) {
+        this(domain, mechanismType, new LinearPrices(domain.getGoods()));
     }
 
-    public CCAuction(Domain domain, Prices prices) {
-        this(domain, prices, MechanismType.CCG);
-    }
-
-    public CCAuction(Domain domain, Prices prices, MechanismType mechanismType) {
+    public CCAuction(Domain domain, MechanismFactory mechanismType, Prices currentPrices) {
         super(domain, mechanismType);
-        this.prices.add(prices);
+        this.currentPrices = currentPrices;
+    }
+
+    @Override
+    public int allowedNumberOfBids() {
+        if (!clockPhaseCompleted) return 1;
+        SupplementaryRound next = supplementaryRoundQueue.peek();
+        return next == null ? 0 : next.getNumberOfSupplementaryBids();
+    }
+
+    @Override
+    public Prices getCurrentPrices() {
+        return currentPrices;
     }
 
     public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
@@ -80,21 +88,33 @@ public class CCAuction extends Auction {
         return result;
     }
 
+    @Override
+    public void closeRound() {
+        super.closeRound();
+        updatePrices();
+    }
+
+    private void updatePrices() {
+        Map<Good, Integer> demand = new HashMap<>();
+        domain.getGoods().forEach(good -> demand.put(good, getLatestBids().getDemand(good)));
+        Prices updatedPrices = priceUpdater.updatePrices(getCurrentPrices(), demand);
+        if (getCurrentPrices().equals(updatedPrices) || getNumberOfRounds() >= maxRounds) {
+            clockPhaseCompleted = true;
+            return;
+        }
+        currentPrices = updatedPrices;
+    }
+
     public void nextClockRound() {
         if (clockPhaseCompleted) {
             log.warn("The clock phase is completed, there is no next clock round.");
             return;
         }
-        int roundCounter = getRounds() + 1;
-        log.debug("Starting clock round {}...", roundCounter);
-        ClockPhaseBidCollector collector = new ClockPhaseBidCollector(roundCounter, getLatestPrices(), getDomain().getBidders());
-        addRound(collector.collectBids());
-        Prices updatedPrices = priceUpdater.updatePrices(getLatestPrices(), collector.getDemand());
-        if (getLatestPrices().equals(updatedPrices) || roundCounter >= maxRounds) {
-            clockPhaseCompleted = true;
-            return;
-        }
-        prices.add(updatedPrices);
+        log.debug("Starting clock round {}...", getNumberOfRounds() + 1);
+        ClockPhaseBidCollector collector = new ClockPhaseBidCollector(getNumberOfRounds() + 1, getCurrentPrices(), getDomain().getBidders());
+        Bids bids = collector.collectBids();
+        addRound(bids);
+        updatePrices();
     }
 
     public void nextSupplementaryRound() {
@@ -106,28 +126,23 @@ public class CCAuction extends Auction {
             log.warn("No supplementary round found to run");
             return;
         }
-        SupplementaryRound supplementaryRound = supplementaryRoundQueue.poll();
-        SupplementaryBidCollector collector = new SupplementaryBidCollector(getRounds() + 1, getLatestPrices(), getDomain().getBidders(), supplementaryRound);
+        SupplementaryRound supplementaryRound = supplementaryRoundQueue.peek();
+        SupplementaryBidCollector collector = new SupplementaryBidCollector(getNumberOfRounds() + 1, getDomain().getBidders(), supplementaryRound);
         log.debug("Starting supplementary round '{}'...", collector);
         addRound(collector.collectBids());
+        // TODO: To know at what supplementary round we are when adding the bids, we have this workaround
+        //  of peek-poll. Later, it may make sense to have the current round noted somewhere (clock round 55? supplementary round 2? etc.)
+        supplementaryRoundQueue.poll();
     }
 
     public boolean hasNextSupplementaryRound() {
         return !supplementaryRoundQueue.isEmpty();
     }
 
-    public Prices getPricesAt(int round) {
-        Preconditions.checkArgument(round >= 0 && round < prices.size());
-        return prices.get(round);
-    }
-
-    public Prices getLatestPrices() {
-        return getPricesAt(prices.size() - 1);
-    }
-
+    @Override
     public void resetToRound(int index) {
-        Preconditions.checkArgument(index < prices.size());
-        prices = prices.subList(0, index);
+        AuctionRound nextRound = getRound(index + 1);
+        currentPrices = nextRound.getPrices();
         clockPhaseCompleted = false;
         supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         result = null;

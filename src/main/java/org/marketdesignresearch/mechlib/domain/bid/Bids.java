@@ -49,6 +49,15 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         return goods;
     }
 
+    // TODO: This counts every bid. This may not make much sense if multiple bids per round per bidder are allowed.
+    public int getDemand(Good good) {
+        int demand = 0;
+        for (Bid bid : bidMap.values()) {
+            demand += bid.getBundleBids().stream().mapToInt(bb -> bb.countGood(good)).sum();
+        }
+        return demand;
+    }
+
     public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new Bids());
         Map<Bidder, Bid> bidsPerGood = new HashMap<>();

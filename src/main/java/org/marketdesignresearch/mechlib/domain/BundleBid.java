@@ -66,4 +66,8 @@ public class BundleBid {
         return new PotentialCoalition(getGoods(), bidder, amount);
     }
 
+    public int countGood(Good good) {
+        return bundle.countGood(good);
+    }
+
 }
