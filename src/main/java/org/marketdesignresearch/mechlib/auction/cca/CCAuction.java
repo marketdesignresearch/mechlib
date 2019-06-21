@@ -1,14 +1,18 @@
 package org.marketdesignresearch.mechlib.auction.cca;
 
+import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.auction.AuctionRound;
+import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
+import org.marketdesignresearch.mechlib.domain.price.Price;
 import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
@@ -21,6 +25,8 @@ import org.marketdesignresearch.mechlib.auction.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.auction.cca.priceupdate.SimpleRelativePriceUpdate;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Slf4j
@@ -44,12 +50,19 @@ public class CCAuction extends Auction {
     }
 
     public CCAuction(Domain domain, MechanismFactory mechanismType) {
-        this(domain, mechanismType, new LinearPrices(domain.getGoods()));
+        this(domain, mechanismType, true);
     }
 
     public CCAuction(Domain domain, MechanismFactory mechanismType, Prices currentPrices) {
-        super(domain, mechanismType);
+        super(domain, mechanismType, false);
         this.currentPrices = currentPrices;
+    }
+
+    public CCAuction(Domain domain, MechanismFactory mechanismType, boolean proposeStartingPrices) {
+        super(domain, mechanismType, proposeStartingPrices);
+        if (!proposeStartingPrices) {
+            this.currentPrices = new LinearPrices(getDomain().getGoods());
+        }
     }
 
     @Override
@@ -62,6 +75,30 @@ public class CCAuction extends Auction {
     @Override
     public Prices getCurrentPrices() {
         return currentPrices;
+    }
+
+    /**
+     * In the base form of the CCA, we cannot assume much about any bidder.
+     * So here, we pretend to know about the valuation of the bidder, taking 10 % of the average
+     * of the bidders' values for the single goods as linear prices.
+     * Note that in more sophisticated domains, you may want to override this and propose prices
+     * based on what an auctioneer might know about the bidders / the market.
+     */
+    @Override
+    protected void proposeStartingPrices() {
+        Map<Good, Price> priceMap = new HashMap<>();
+        getDomain().getGoods().forEach(good -> {
+            BigDecimal price = BigDecimal.ZERO;
+            for (Bidder bidder : getDomain().getBidders()) {
+                price = price.add(bidder.getValue(Bundle.singleGoods(Sets.newHashSet(good))));
+            }
+            price = price.setScale(4, RoundingMode.HALF_UP)
+                    .divide(BigDecimal.valueOf(getDomain().getBidders().size()), RoundingMode.HALF_UP) // Average
+                    .divide(BigDecimal.TEN, RoundingMode.HALF_UP) // 10%
+                    .setScale(2, RoundingMode.HALF_UP);
+            priceMap.put(good, new Price(price));
+        });
+        currentPrices = new LinearPrices(priceMap);
     }
 
     public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
@@ -96,7 +133,7 @@ public class CCAuction extends Auction {
 
     private void updatePrices() {
         Map<Good, Integer> demand = new HashMap<>();
-        domain.getGoods().forEach(good -> demand.put(good, getLatestBids().getDemand(good)));
+        getDomain().getGoods().forEach(good -> demand.put(good, getLatestBids().getDemand(good)));
         Prices updatedPrices = priceUpdater.updatePrices(getCurrentPrices(), demand);
         if (getCurrentPrices().equals(updatedPrices) || getNumberOfRounds() >= maxRounds) {
             clockPhaseCompleted = true;

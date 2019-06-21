@@ -136,6 +136,39 @@ public class CCATest {
     }
 
     @Test
+    public void testProposeStartingPrices() {
+        SimpleGood goodA = new SimpleGood("A");
+        SimpleGood goodB = new SimpleGood("B");
+        Bundle A = Bundle.singleGoods(Sets.newHashSet(goodA));
+        Bundle B = Bundle.singleGoods(Sets.newHashSet(goodB));
+        Bundle AB = Bundle.singleGoods(Sets.newHashSet(goodA, goodB));
+
+        ORValue value1 = new ORValue();
+        value1.addBundleValue(new BundleValue(BigDecimal.valueOf(28), A));
+        value1.addBundleValue(new BundleValue(BigDecimal.valueOf(16), B));
+        ORValue value2 = new ORValue();
+        value2.addBundleValue(new BundleValue(BigDecimal.valueOf(7), A));
+        value2.addBundleValue(new BundleValue(BigDecimal.valueOf(28), B));
+        ORValue value3 = new ORValue();
+        value3.addBundleValue(new BundleValue(BigDecimal.valueOf(14), A));
+        value3.addBundleValue(new BundleValue(BigDecimal.valueOf(14), B));
+        ORBidder bidder1 = new ORBidder("1", value1);
+        ORBidder bidder2 = new ORBidder("2", value2);
+        ORBidder bidder3 = new ORBidder("3", value3);
+        Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
+        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR);
+        cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());
+        assertThat(cca.allowedNumberOfBids()).isOne();
+        assertThat(cca.hasNextSupplementaryRound()).isTrue();
+        assertThat(cca.isClockPhaseCompleted()).isFalse();
+        assertThat(cca.getCurrentPrices().getPrice(A).getAmount()).isEqualTo(BigDecimal.valueOf(1.63));
+        assertThat(cca.getCurrentPrices().getPrice(B).getAmount()).isEqualTo(BigDecimal.valueOf(1.93));
+        assertThat(cca.getCurrentPrices().getPrice(AB).getAmount()).isEqualTo(BigDecimal.valueOf(3.56));
+    }
+
+    @Test
     public void testStepByStepCCA() {
         SimpleGood goodA = new SimpleGood("A");
         SimpleGood goodB = new SimpleGood("B");
@@ -156,7 +189,7 @@ public class CCATest {
         ORBidder bidder2 = new ORBidder("2", value2);
         ORBidder bidder3 = new ORBidder("3", value3);
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
-        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR);
+        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, false);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());

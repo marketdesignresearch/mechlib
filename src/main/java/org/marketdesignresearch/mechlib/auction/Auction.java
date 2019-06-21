@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.auction;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
@@ -13,19 +14,25 @@ import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 
 import java.util.*;
 
+@Slf4j
 public class Auction implements Mechanism {
 
     @Getter
-    protected final Domain domain;
+    private final Domain domain;
     @Getter
-    protected final MechanismFactory mechanismType;
+    private final MechanismFactory mechanismType;
     protected List<AuctionRound> rounds = new ArrayList<>();
 
     protected AuctionRoundBuilder current;
 
     public Auction(Domain domain, MechanismFactory mechanismType) {
+        this(domain, mechanismType, false);
+    }
+
+    public Auction(Domain domain, MechanismFactory mechanismType, boolean proposeStartingPrices) {
         this.domain = domain;
         this.mechanismType = mechanismType;
+        if (proposeStartingPrices) proposeStartingPrices();
         current = new AuctionRoundBuilder(mechanismType);
     }
 
@@ -39,6 +46,10 @@ public class Auction implements Mechanism {
 
     protected Prices getCurrentPrices() {
         return Prices.NONE;
+    }
+
+    protected void proposeStartingPrices() {
+        log.debug("In its base form, an Auction is not capable of proposing starting prices");
     }
 
     /**
