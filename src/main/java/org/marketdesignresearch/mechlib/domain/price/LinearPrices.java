@@ -27,7 +27,7 @@ public class LinearPrices implements Prices {
     }
 
     public Price get(Good good) {
-        return priceMap.get(good);
+        return priceMap.getOrDefault(good, Price.ZERO);
     }
 
     @Override
