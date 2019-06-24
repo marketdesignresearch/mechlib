@@ -40,11 +40,15 @@ public class ORValue implements Value {
     @Override
     public BigDecimal getValueFor(Bundle bundle) {
         // For now, this assumes that the values are defined per item and availability (additive values)
-        bundleValues.forEach(bv -> Preconditions.checkArgument(bv.getBundle().getBundleEntries().size() == 1, "OR bidders with bundle values are not supported yet..."));
+        bundleValues.forEach(bv -> Preconditions.checkArgument(bv.getBundle().getBundleEntries().size() == 1
+                && bv.getBundle().getBundleEntries().iterator().next().getAmount() == 1, "OR bidders with bundle values are not supported yet..."));
         BigDecimal value = BigDecimal.ZERO;
         for (BundleEntry entry : bundle.getBundleEntries()) {
             BigDecimal v = bundleValues.stream()
-                    .filter(bv -> entry.equals(bv.getBundle().getBundleEntries().iterator().next()))
+                    .filter(bv -> {
+                        BundleEntry b = bv.getBundle().getBundleEntries().iterator().next();
+                        return entry.getGood().equals(b.getGood()) && b.getAmount() <= entry.getAmount();
+                    })
                     .max(BundleValue::compareTo).orElse(BundleValue.ZERO).getAmount();
             value = value.add(v);
         }

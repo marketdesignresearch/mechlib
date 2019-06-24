@@ -26,13 +26,8 @@ public class Auction implements Mechanism {
     protected AuctionRoundBuilder current;
 
     public Auction(Domain domain, MechanismFactory mechanismType) {
-        this(domain, mechanismType, false);
-    }
-
-    public Auction(Domain domain, MechanismFactory mechanismType, boolean proposeStartingPrices) {
         this.domain = domain;
         this.mechanismType = mechanismType;
-        if (proposeStartingPrices) proposeStartingPrices();
         current = new AuctionRoundBuilder(mechanismType);
     }
 
@@ -46,10 +41,6 @@ public class Auction implements Mechanism {
 
     protected Prices getCurrentPrices() {
         return Prices.NONE;
-    }
-
-    protected void proposeStartingPrices() {
-        log.debug("In its base form, an Auction is not capable of proposing starting prices");
     }
 
     /**

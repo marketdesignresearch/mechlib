@@ -83,7 +83,6 @@ public class CCATest {
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(4));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
         while (!cca.isClockPhaseCompleted()) {
             cca.nextClockRound();
@@ -156,7 +155,7 @@ public class CCATest {
         ORBidder bidder2 = new ORBidder("2", value2);
         ORBidder bidder3 = new ORBidder("3", value3);
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
-        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR);
+        CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, true);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());

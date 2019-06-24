@@ -11,10 +11,10 @@ import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
+import org.marketdesignresearch.mechlib.mechanisms.itemlevel.tiebreaker.AlphabeticTieBreaker;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class ItemLevelMechanism implements Mechanism {
@@ -35,7 +35,18 @@ public abstract class ItemLevelMechanism implements Mechanism {
             if (!iterator.hasNext()) {
                 return new MechanismResult(Payment.ZERO, Allocation.EMPTY_ALLOCATION);
             }
-            SingleItemBid firstBid = iterator.next();
+            List<SingleItemBid> firstBids = new ArrayList<>();
+            firstBids.add(iterator.next());
+            while(iterator.hasNext()) {
+                SingleItemBid next = iterator.next();
+                if (next.getBundleBid().getAmount().equals(firstBids.get(0).getBundleBid().getAmount())) {
+                    firstBids.add(next);
+                } else {
+                    break;
+                }
+            }
+            SingleItemBid firstBid = firstBids.stream()
+                    .sorted((a, b) -> new AlphabeticTieBreaker().compare(a, b)).collect(Collectors.toList()).get(0);
             BundleBid winningBid = firstBid.getBundleBid();
             Bidder winner = firstBid.getBidder();
             BidderAllocation bidderAllocation = new BidderAllocation(winningBid.getAmount(), Sets.newHashSet(bids.getItem()), Sets.newHashSet(winningBid));
