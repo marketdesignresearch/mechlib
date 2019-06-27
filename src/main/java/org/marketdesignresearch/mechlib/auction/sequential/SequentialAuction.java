@@ -1,13 +1,19 @@
 package org.marketdesignresearch.mechlib.auction.sequential;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.auction.Auction;
+import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a sequential auction where for each round, there are only bids placed for a specific good
@@ -19,8 +25,11 @@ public class SequentialAuction extends Auction {
     }
 
     @Override
-    public List<? extends Good> nextGoods() {
-        return Lists.newArrayList(getDomain().getGoods().get(getNumberOfRounds()));
+    public Map<Bidder, List<Bundle>> restrictedBids() {
+        Bundle bundle = Bundle.singleGoods(Sets.newHashSet(getDomain().getGoods().get(getNumberOfRounds())));
+        Map<Bidder, List<Bundle>> map = new HashMap<>();
+        getDomain().getBidders().forEach(bidder -> map.put(bidder, Lists.newArrayList(bundle)));
+        return map;
     }
 
     @Override

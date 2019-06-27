@@ -33,10 +33,6 @@ public class Bid { // FIXME: Have it abstract enough to support all kind of bids
         return bundleBids.add(bundleBid);
     }
 
-    public BundleBid getBundleBid(Map<Good, Integer> bundleBid) {
-        return bundleBids.stream().filter(b -> b.getBundle().equals(bundleBid)).findFirst().orElse(null);
-    }
-
     public Bid reducedBy(BigDecimal payoff) {
         LinkedHashSet<BundleBid> newBids = getBundleBids().stream().map(bid -> bid.reducedBy(payoff)).collect(Collectors.toCollection(LinkedHashSet::new));
         return new Bid(newBids);

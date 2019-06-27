@@ -158,7 +158,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, true);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());
+        assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
         assertThat(cca.isClockPhaseCompleted()).isFalse();
@@ -191,7 +191,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, false);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());
+        assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
         assertThat(cca.isClockPhaseCompleted()).isFalse();

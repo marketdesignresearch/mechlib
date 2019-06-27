@@ -13,6 +13,7 @@ import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class Auction implements Mechanism {
@@ -46,8 +47,8 @@ public class Auction implements Mechanism {
     /**
      * Per default, bidders can bid on all goods
      */
-    public List<? extends Good> nextGoods() {
-        return domain.getGoods();
+    public Map<Bidder, List<Bundle>> restrictedBids() {
+        return new HashMap<>();
     }
 
     /**
@@ -62,7 +63,7 @@ public class Auction implements Mechanism {
         Preconditions.checkArgument(domain.getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(domain.getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
-        AuctionRound round = new AuctionRound(roundNumber, bids, getCurrentPrices());
+        DefaultAuctionRound round = new DefaultAuctionRound(roundNumber, bids, getCurrentPrices());
         if (current.hasMechanismResult()) {
             round.setMechanismResult(current.getMechanismResult());
         }
@@ -82,8 +83,9 @@ public class Auction implements Mechanism {
 
     public void submitBid(Bidder bidder, Bid bid) {
         Preconditions.checkArgument(domain.getBidders().contains(bidder));
-        Preconditions.checkArgument(nextGoods().containsAll(bid.getGoods()),
-                "The bid of bidder " + bidder.getName() + " contains at least one good on which you are not allowed to bid!");
+        Preconditions.checkArgument(restrictedBids().get(bidder) == null
+                        || restrictedBids().get(bidder).containsAll(bid.getBundleBids().stream().map(BundleBid::getBundle).collect(Collectors.toSet())),
+                "The bid of bidder " + bidder.getName() + " contains at least one bundle on which you are not allowed to bid!");
         Preconditions.checkArgument(bid.getBundleBids().size() <= allowedNumberOfBids(),
                 "Bidder " + bidder.getName() + " tried to submit more bids than allowed. Max: " + allowedNumberOfBids());
         current.setBid(bidder, bid);
@@ -101,7 +103,7 @@ public class Auction implements Mechanism {
 
     public Bids getAggregatedBidsAt(int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());
-        return rounds.stream()
+        return rounds.subList(0, round + 1).stream()
                 .map(AuctionRound::getBids)
                 .reduce(new Bids(), Bids::join);
     }
@@ -118,7 +120,7 @@ public class Auction implements Mechanism {
 
     public Bid getAggregatedBidsAt(Bidder bidder, int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());
-        return rounds.stream()
+        return rounds.subList(0, round + 1).stream()
                 .map(AuctionRound::getBids)
                 .map(bids -> bids.getBid(bidder))
                 .reduce(new Bid(), Bid::join);

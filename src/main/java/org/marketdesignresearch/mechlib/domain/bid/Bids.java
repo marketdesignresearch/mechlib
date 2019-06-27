@@ -90,7 +90,7 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     }
 
     public Bid getBid(Bidder bidder) {
-        return bidMap.get(bidder);
+        return bidMap.getOrDefault(bidder, new Bid());
     }
 
     @Override
