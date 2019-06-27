@@ -5,7 +5,6 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.value.ORValue;
@@ -13,7 +12,6 @@ import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,15 +71,7 @@ public class PVMTest {
         PVMAuction auction = new PVMAuction(domain, MechanismType.VCG_XOR, 5);
         while(!auction.finished()) {
             assertThat(auction.getDomain().getBidders().size()).isEqualTo(auction.restrictedBids().keySet().size());
-            auction.restrictedBids().forEach((bidder, bundles) -> {
-                if (bundles.size() > 0) {
-                    assertThat(bundles).hasSize(1);
-                    Bid bid = new Bid();
-                    bid.addBundleBid(new BundleBid(bidder.getValue(bundles.get(0)), bundles.get(0), UUID.randomUUID().toString()));
-                    auction.submitBid(bidder, bid);
-                }
-            });
-            auction.closeRound();
+            auction.nextRound();
         }
         log.info("PVM terminated.");
         MechanismResult mechanismResult = auction.getMechanismResult();

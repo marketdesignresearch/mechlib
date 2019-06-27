@@ -44,6 +44,30 @@ public class Auction implements Mechanism {
         return Prices.NONE;
     }
 
+    public boolean finished() {
+        return false;
+    }
+
+    /**
+     * For all the bidders that did not submit a bid yet, this method collects some reasonable (currently truthful)
+     * bids, submits them and closes the round.
+     */
+    public void nextRound() {
+        List<Bidder> biddersToQuery = getDomain().getBidders().stream().filter(b -> !current.getBids().getBidders().contains(b)).collect(Collectors.toList());
+        for (Bidder bidder : biddersToQuery) {
+            Bid bid = new Bid();
+            List<Bundle> bundlesToBidOn;
+            if (restrictedBids().get(bidder) == null) {
+                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids());
+            } else {
+                bundlesToBidOn = restrictedBids().get(bidder);
+            }
+            bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
+            submitBid(bidder, bid);
+        }
+        closeRound();
+    }
+
     /**
      * Per default, bidders can bid on all goods
      */

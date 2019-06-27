@@ -84,15 +84,8 @@ public class CCATest {
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
-        while (!cca.isClockPhaseCompleted()) {
-            cca.nextClockRound();
-            Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
-            assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
-            assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
-            previousAllocation = allocation;
-        }
-        while (cca.hasNextSupplementaryRound()) {
-            cca.nextSupplementaryRound();
+        while (!cca.finished()) {
+            cca.nextRound();
             Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
             assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
             assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());

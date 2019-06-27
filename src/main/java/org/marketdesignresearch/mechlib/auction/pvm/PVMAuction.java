@@ -70,6 +70,7 @@ public class PVMAuction extends Auction {
         else return 1;
     }
 
+    @Override
     public boolean finished() {
         return getDomain().getBidders().stream()
                 .noneMatch(bidder -> restrictedBids().get(bidder) == null || !restrictedBids().get(bidder).isEmpty());
