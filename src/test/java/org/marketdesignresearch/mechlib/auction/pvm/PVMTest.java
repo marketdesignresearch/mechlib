@@ -68,7 +68,9 @@ public class PVMTest {
         Domain domain = new SimpleORDomain(
                 Lists.newArrayList(bidder1, bidder2, bidder3, bidder4),
                 Lists.newArrayList(goodA, goodB, goodC, goodD));
-        PVMAuction auction = new PVMAuction(domain, MechanismType.VCG_XOR, 5);
+        PVMAuction auction = new PVMAuction(domain, MechanismType.VCG_XOR);
+        assertThat(auction.restrictedBids()).isEmpty();
+        auction.nextRound();
         while(!auction.finished()) {
             assertThat(auction.getDomain().getBidders().size()).isEqualTo(auction.restrictedBids().keySet().size());
             auction.nextRound();

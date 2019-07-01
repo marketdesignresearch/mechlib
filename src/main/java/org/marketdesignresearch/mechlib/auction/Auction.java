@@ -107,11 +107,13 @@ public class Auction implements Mechanism {
 
     public void submitBid(Bidder bidder, Bid bid) {
         Preconditions.checkArgument(domain.getBidders().contains(bidder));
-        Preconditions.checkArgument(restrictedBids().get(bidder) == null
-                        || restrictedBids().get(bidder).containsAll(bid.getBundleBids().stream().map(BundleBid::getBundle).collect(Collectors.toSet())),
-                "The bid of bidder " + bidder.getName() + " contains at least one bundle on which you are not allowed to bid!");
-        Preconditions.checkArgument(bid.getBundleBids().size() <= allowedNumberOfBids(),
-                "Bidder " + bidder.getName() + " tried to submit more bids than allowed. Max: " + allowedNumberOfBids());
+        if (restrictedBids().get(bidder) != null
+                        && !restrictedBids().get(bidder).containsAll(bid.getBundleBids().stream().map(BundleBid::getBundle).collect(Collectors.toSet()))) {
+            throw new IllegalBidException("The bid of bidder " + bidder.getName() + " contains at least one bundle on which you are not allowed to bid!");
+        }
+        if (bid.getBundleBids().size() > allowedNumberOfBids()) {
+            throw new IllegalBidException("Bidder " + bidder.getName() + " tried to submit more bids than allowed. Max: " + allowedNumberOfBids());
+        }
         current.setBid(bidder, bid);
     }
 

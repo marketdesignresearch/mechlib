@@ -10,13 +10,14 @@ import org.marketdesignresearch.mechlib.domain.Allocation;
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class PVMAuction extends Auction {
 
@@ -27,29 +28,12 @@ public class PVMAuction extends Auction {
     }
 
     public PVMAuction(Domain domain, MechanismType mechanismType) {
-        this(domain, mechanismType, 20);
-    }
-
-    public PVMAuction(Domain domain, MechanismType mechanismType, int numberOfInitialBundles) {
         super(domain, mechanismType);
         Map<Bidder, MLAlgorithm> algorithms = new HashMap<>();
         for (Bidder bidder : getDomain().getBidders()) {
             algorithms.put(bidder, new DummyMLAlgorithm(bidder, getDomain().getGoods()));
         }
         metaElicitation = new MetaElicitation(algorithms);
-        getInitialValues(numberOfInitialBundles);
-    }
-
-    private void getInitialValues(int numberOfBundles) {
-        Map<Bidder, Bid> bids = new HashMap<>();
-        Prices prices = getDomain().proposeStartingPrices();
-        for (Bidder bidder : getDomain().getBidders()) {
-            Bid bid = new Bid();
-            List<Bundle> bestBundles = bidder.getBestBundles(prices, numberOfBundles);
-            bestBundles.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
-            bids.put(bidder, bid);
-        }
-        addRound(new Bids(bids));
     }
 
     @Override
@@ -66,7 +50,7 @@ public class PVMAuction extends Auction {
 
     @Override
     public int allowedNumberOfBids() {
-        if (rounds.size() == 0) return 20;
+        if (rounds.size() == 0) return 5;
         else return 1;
     }
 
