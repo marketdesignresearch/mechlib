@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.domain.strategy;
+package org.marketdesignresearch.mechlib.domain.bidder.strategy;
 
 import java.math.BigDecimal;
 

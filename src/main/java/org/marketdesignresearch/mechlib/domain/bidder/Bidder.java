@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.domain.bidder;
 
 
 import org.marketdesignresearch.mechlib.domain.Bundle;
+import org.marketdesignresearch.mechlib.domain.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.domain.price.Prices;
 
 import java.math.BigDecimal;
@@ -37,5 +38,9 @@ public interface Bidder {
 
     default BigDecimal getUtility(Bundle bundle, Prices prices) {
         return getValue(bundle).subtract(prices.getPrice(bundle).getAmount());
+    }
+
+    default Strategy getDefaultStrategy() {
+        return Strategy.TRUTHFUL;
     }
 }

@@ -1,5 +1,7 @@
-package org.marketdesignresearch.mechlib.domain.strategy;
+package org.marketdesignresearch.mechlib.domain.bidder.strategy;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
@@ -8,6 +10,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+@ToString
+@EqualsAndHashCode
 public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveStrategy> {
     public static final AdditiveShaveStrategy TRUTHFUL = new AdditiveShaveStrategy(BigDecimal.ZERO);
     private final BigDecimal additiveShave;
@@ -32,15 +36,9 @@ public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveSt
     }
 
 
-
     @Override
     public double getStrategyFactor() {
         return additiveShave.doubleValue();
-    }
-
-    @Override
-    public String toString() {
-        return "AdditiveShave[" + additiveShave + "]";
     }
 
     @Override
@@ -54,11 +52,7 @@ public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveSt
     }
 
     public static AdditiveShaveStrategy from(double shaveFactor) {
-        if (shaveFactor == 0) {
-            return TRUTHFUL;
-        } else {
-            return new AdditiveShaveStrategy(BigDecimal.valueOf(shaveFactor).round(MathContext.DECIMAL32));
-        }
+        return from(BigDecimal.valueOf(shaveFactor).round(MathContext.DECIMAL32));
     }
 
 
