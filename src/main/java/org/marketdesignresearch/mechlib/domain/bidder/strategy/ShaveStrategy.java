@@ -1,5 +1,6 @@
-package org.marketdesignresearch.mechlib.domain.strategy;
+package org.marketdesignresearch.mechlib.domain.bidder.strategy;
 
+import lombok.EqualsAndHashCode;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+@EqualsAndHashCode
 public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
     public static final ShaveStrategy TRUTHFUL = new ShaveStrategy(BigDecimal.ONE);
     public static final ShaveStrategy ZERO = new ShaveStrategy(BigDecimal.ZERO);
@@ -44,22 +46,6 @@ public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
     }
 
     @Override
-    public int hashCode() {
-        return Double.hashCode(shaveFactor.doubleValue());
-    }
-
-
-    @Override
-    public boolean equals(Object other) {
-
-        if (shaveFactor.compareTo(BigDecimal.ONE) == 0 && other.equals(Strategy.TRUTHFUL)) {
-            return true;
-        }
-        ShaveStrategy otherStrategy = (ShaveStrategy) other;
-        return shaveFactor.compareTo(otherStrategy.shaveFactor) == 0;
-    }
-
-    @Override
     public String toString() {
         return "ShaveStrategy[" + shaveFactor.stripTrailingZeros() + "]";
     }
@@ -71,13 +57,7 @@ public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
     }
 
     public static ShaveStrategy from(double shaveFactor) {
-        if (shaveFactor == 1) {
-            return TRUTHFUL;
-        } else if (shaveFactor == 0) {
-            return ZERO;
-        } else {
-            return new ShaveStrategy(BigDecimal.valueOf(shaveFactor).round(MathContext.DECIMAL32));
-        }
+        return from(BigDecimal.valueOf(shaveFactor).round(MathContext.DECIMAL32));
     }
 
     public static ShaveStrategy from(BigDecimal shaveFactor) {

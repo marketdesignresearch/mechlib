@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.auction;
 
+import org.marketdesignresearch.mechlib.auction.pvm.PVMAuction;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 import org.marketdesignresearch.mechlib.auction.cca.CCAuction;
@@ -16,7 +17,8 @@ public enum AuctionFactory {
     VCG_OR,
     CCA_VCG,
     CCA_CCG,
-    PVM;
+    PVM_VCG,
+    PVM_CCG;
 
     public Auction getAuction(Domain domain) {
         switch (this) {
@@ -38,8 +40,10 @@ public enum AuctionFactory {
                 return new CCAuction(domain, MechanismType.VCG_XOR);
             case CCA_CCG:
                 return new CCAuction(domain, MechanismType.CCG);
-            case PVM:
-                throw new UnsupportedOperationException("PVM is yet to be implemented!");
+            case PVM_VCG:
+                return new PVMAuction(domain, MechanismType.VCG_XOR);
+            case PVM_CCG:
+                return new PVMAuction(domain, MechanismType.CCG);
             default:
                 throw new UnsupportedOperationException();
         }

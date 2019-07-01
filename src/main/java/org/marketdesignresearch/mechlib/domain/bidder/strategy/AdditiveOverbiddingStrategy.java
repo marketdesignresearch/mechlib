@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.domain.strategy;
+package org.marketdesignresearch.mechlib.domain.bidder.strategy;
 
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.BundleBid;

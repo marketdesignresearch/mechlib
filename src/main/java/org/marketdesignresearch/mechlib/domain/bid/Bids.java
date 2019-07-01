@@ -13,7 +13,7 @@ import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.Value;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
-import org.marketdesignresearch.mechlib.domain.strategy.Strategy;
+import org.marketdesignresearch.mechlib.domain.bidder.strategy.Strategy;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -90,7 +90,7 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     }
 
     public Bid getBid(Bidder bidder) {
-        return bidMap.get(bidder);
+        return bidMap.getOrDefault(bidder, new Bid());
     }
 
     @Override

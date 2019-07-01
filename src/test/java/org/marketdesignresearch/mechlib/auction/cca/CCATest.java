@@ -84,15 +84,8 @@ public class CCATest {
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
-        while (!cca.isClockPhaseCompleted()) {
-            cca.nextClockRound();
-            Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
-            assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
-            assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
-            previousAllocation = allocation;
-        }
-        while (cca.hasNextSupplementaryRound()) {
-            cca.nextSupplementaryRound();
+        while (!cca.finished()) {
+            cca.nextRound();
             Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
             assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
             assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
@@ -158,7 +151,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, true);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());
+        assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
         assertThat(cca.isClockPhaseCompleted()).isFalse();
@@ -191,7 +184,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain, MechanismType.VCG_XOR, false);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        assertThat(cca.nextGoods()).isEqualTo(domain.getGoods());
+        assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
         assertThat(cca.isClockPhaseCompleted()).isFalse();
