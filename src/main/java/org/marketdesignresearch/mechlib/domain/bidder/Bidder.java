@@ -40,7 +40,8 @@ public interface Bidder {
         return getValue(bundle).subtract(prices.getPrice(bundle).getAmount());
     }
 
+    /* TODO: Include default strategy with bidder
     default Strategy getDefaultStrategy() {
         return Strategy.TRUTHFUL;
-    }
+    }*/
 }
