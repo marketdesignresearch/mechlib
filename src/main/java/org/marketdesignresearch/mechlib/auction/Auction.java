@@ -40,7 +40,7 @@ public class Auction implements Mechanism {
         return domain.getGoods().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
-    protected Prices getCurrentPrices() {
+    public Prices getCurrentPrices() {
         return Prices.NONE;
     }
 
