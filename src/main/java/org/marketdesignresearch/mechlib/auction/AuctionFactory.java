@@ -37,9 +37,9 @@ public enum AuctionFactory {
             case VCG_OR:
                 return new Auction(domain, MechanismType.VCG_OR);
             case CCA_VCG:
-                return new CCAuction(domain, MechanismType.VCG_XOR);
+                return new CCAuction(domain, MechanismType.VCG_XOR, true);
             case CCA_CCG:
-                return new CCAuction(domain, MechanismType.CCG);
+                return new CCAuction(domain, MechanismType.CCG, true);
             case PVM_VCG:
                 return new PVMAuction(domain, MechanismType.VCG_XOR);
             case PVM_CCG:
