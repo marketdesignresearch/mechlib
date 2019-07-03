@@ -8,24 +8,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-@ToString @EqualsAndHashCode
+@EqualsAndHashCode
 @Slf4j
 public final class Bundle {
     public static Bundle EMPTY = new Bundle(new HashMap<>());
 
     @Getter
-    private final HashSet<BundleEntry> bundleEntries;
+    private final List<BundleEntry> bundleEntries;
+
+    public Bundle(Set<BundleEntry> bundleEntries) {
+        Preconditions.checkArgument(
+                bundleEntries.stream().map(BundleEntry::getGood).collect(Collectors.toSet()).size() == bundleEntries.size(),
+                "Invalid bundle: multiple bundle entries for a good detected.");
+        this.bundleEntries = bundleEntries.stream().sorted(Comparator.comparing(be -> be.getGood().getId())).collect(Collectors.toList());
+    }
 
     public Bundle(Map<? extends Good, Integer> map) {
-        bundleEntries = new HashSet<>();
-        map.forEach((k, v) -> bundleEntries.add(new BundleEntry(k, v)));
+        this(map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue())).collect(Collectors.toSet()));
+    }
+
+    public static Bundle singleGoods(List<? extends Good> bundle) {
+        return singleGoods(Sets.newHashSet(bundle));
     }
 
     public static Bundle singleGoods(Set<? extends Good> bundle) {
@@ -36,18 +42,26 @@ public final class Bundle {
         return bundleEntries.size() == 1 && bundleEntries.iterator().next().getAmount() == 1;
     }
 
+    public boolean areSingleAvailabilityGoods() {
+        return bundleEntries.stream().allMatch(be -> be.getGood().available() == 1);
+    }
+
     public Good getSingleGood() {
-        if (isSingleGood()) {
-            return bundleEntries.iterator().next().getGood();
-        } else {
-            log.warn("Bundle {} does not only contain one good, thus" +
-                    "you can't treat it as a single good bundle.", toString());
-            return null;
-        }
+        Preconditions.checkState(isSingleGood(),
+                "Bundle does not only contain one good, thus you can't treat it as a single good bundle.");
+        return bundleEntries.iterator().next().getGood();
+    }
+
+    public List<? extends Good> getSingleAvailabilityGoods() {
+        Preconditions.checkState(areSingleAvailabilityGoods(), "At least one good in the bundle is not a single availability good.");
+        return bundleEntries.stream()
+                .map(BundleEntry::getGood)
+                .sorted(Comparator.comparing(Good::getId))
+                .collect(Collectors.toList());
     }
 
     public Bundle merge(Bundle other) {
-        Set<Good> goods = Sets.union(getBundleEntries(), other.getBundleEntries()).stream()
+        Set<Good> goods = Sets.union(Sets.newHashSet(getBundleEntries()), Sets.newHashSet(other.getBundleEntries())).stream()
                 .map(BundleEntry::getGood).collect(Collectors.toSet());
         Map<Good, Integer> map = new HashMap<>();
         for (Good good : goods) {
@@ -55,7 +69,6 @@ public final class Bundle {
             Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
             map.put(good, first.stream().mapToInt(BundleEntry::getAmount).sum() + second.stream().mapToInt(BundleEntry::getAmount).sum());
         }
-        map.forEach((k, v) -> Preconditions.checkArgument(v <= k.available()));
         return new Bundle(map);
     }
 
@@ -66,4 +79,37 @@ public final class Bundle {
     public int countGood(Good good) {
         return contains(good) ? bundleEntries.stream().filter(be -> be.getGood().equals(good)).mapToInt(BundleEntry::getAmount).sum() : 0;
     }
+
+    public int getTotalAmount() {
+        return bundleEntries.stream().mapToInt(BundleEntry::getAmount).sum();
+    }
+
+    @Override
+    public String toString() {
+        if (areSingleAvailabilityGoods()) {
+            List<? extends Good> goods = getSingleAvailabilityGoods();
+            StringBuilder ids = new StringBuilder();
+            boolean first = true;
+            for (Good good : goods) {
+                if (!first) {
+                    ids.append(",");
+                }
+                first = false;
+                ids.append(good.getId());
+            }
+            return ids.toString();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (BundleEntry entry : bundleEntries) {
+                if (!first) {
+                    sb.append(",");
+                }
+                first = false;
+                sb.append(entry.getGood().getId()).append(":").append(entry.getAmount());
+            }
+            return sb.toString();
+        }
+    }
+
 }

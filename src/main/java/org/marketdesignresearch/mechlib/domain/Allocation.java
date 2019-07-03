@@ -35,21 +35,21 @@ public class Allocation implements MetaInfoResult {
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
     @Getter
-    private final Map<Bidder, BidderAllocation> tradesMap; // The Map only includes winning bidders
+    private final Map<? extends Bidder, BidderAllocation> tradesMap; // The Map only includes winning bidders
     @Getter
     private final Bids bids;
     @Getter
     private final MetaInfo metaInfo;
     private Set<PotentialCoalition> coalitions;
 
-    public Allocation(Map<Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
+    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
         this(tradesMap, bids, metaInfo, null);
     }
-    public Allocation(BigDecimal totalAllocationValue, Map<Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
+    public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
         this(totalAllocationValue, tradesMap, bids, metaInfo, null);
     }
 
-    public Allocation(Map<Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> potentialCoalitions) {
+    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> potentialCoalitions) {
         this(tradesMap.values().stream().map(BidderAllocation::getValue).reduce(BigDecimal.ZERO, BigDecimal::add), tradesMap, bids, metaInfo, potentialCoalitions);
     }
 
@@ -57,7 +57,7 @@ public class Allocation implements MetaInfoResult {
         return tradesMap.getOrDefault(bidder, BidderAllocation.ZERO_ALLOCATION);
     }
 
-    public Set<Bidder> getWinners() {
+    public Set<? extends Bidder> getWinners() {
         return tradesMap.keySet();
     }
 

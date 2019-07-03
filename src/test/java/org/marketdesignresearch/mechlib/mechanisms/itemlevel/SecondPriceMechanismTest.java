@@ -4,14 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.auction.AuctionFactory;
-import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.auction.Auction;
+import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
@@ -57,7 +56,7 @@ public class SecondPriceMechanismTest {
     @Test
     public void testSimpleSecondPriceAuctionWithWrapper() {
         SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(item));
-        Auction auction = AuctionFactory.SINGLE_ITEM_SECOND_PRICE.getAuction(domain);
+        Auction auction = new Auction(domain, MechanismType.SECOND_PRICE);
 
         BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
         BundleBid bid1B = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1B");

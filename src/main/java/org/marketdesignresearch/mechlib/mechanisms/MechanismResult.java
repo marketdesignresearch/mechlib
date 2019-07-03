@@ -32,7 +32,7 @@ public final class MechanismResult implements MetaInfoResult {
         return allocation.allocationOf(winner).getValue().subtract(payment.paymentOf(winner).getAmount());
     }
 
-    public Set<Bidder> getWinners() {
+    public Set<? extends Bidder> getWinners() {
         return allocation.getWinners();
     }
 

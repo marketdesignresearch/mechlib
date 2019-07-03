@@ -12,14 +12,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BlockedBidders {
-    private final Set<Bidder> blockedBidders;
+    private final Set<? extends Bidder> blockedBidders;
     private final Set<PotentialCoalition> blockingCoalition;
-    private final Set<Bidder> nonTraitors;
+    private final Set<? extends Bidder> nonTraitors;
     private final BigDecimal blockingCoalitionValue;
 
     private static final BlockedBidders EMPTY_BLOCKED_BIDDERS = new BlockedBidders(Collections.emptySet(), Collections.emptySet(), BigDecimal.ZERO);
 
-    public BlockedBidders(Set<Bidder> blockedBidders, Set<PotentialCoalition> blockingBidders, BigDecimal blockingCoalitionValue) {
+    public BlockedBidders(Set<? extends Bidder> blockedBidders, Set<PotentialCoalition> blockingBidders, BigDecimal blockingCoalitionValue) {
         this.blockedBidders = ImmutableSet.copyOf(blockedBidders);
         this.blockingCoalitionValue = blockingCoalitionValue;
         this.blockingCoalition = blockingBidders;
@@ -33,11 +33,11 @@ public class BlockedBidders {
         return blockingCoalitionValue;
     }
 
-    public Set<Bidder> getBlockedBidders() {
+    public Set<? extends Bidder> getBlockedBidders() {
         return blockedBidders;
     }
 
-    public Set<Bidder> getNonTraitors() {
+    public Set<? extends Bidder> getNonTraitors() {
         return nonTraitors;
     }
 

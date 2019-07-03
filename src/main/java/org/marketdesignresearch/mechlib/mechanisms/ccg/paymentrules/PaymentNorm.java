@@ -25,7 +25,7 @@ public abstract class PaymentNorm {
         return CPLEXUtils.SOLVER.solve(program);
     }
 
-    public final Payment adaptProgram(Set<Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
+    public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
         Map<Bidder, BidderPayment> newBidderPayments = new HashMap<>();
         for (Bidder winningBidder : winners) {
             String variableId = BIDDER + winningBidder.getId();

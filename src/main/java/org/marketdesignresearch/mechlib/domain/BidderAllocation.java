@@ -33,7 +33,7 @@ public final class BidderAllocation {
     @Getter @EqualsAndHashCode.Exclude
     private final Set<BundleBid> acceptedBids; // TODO: Check if this is needed
 
-    public BidderAllocation(BigDecimal value, Set<Good> bundle, Set<BundleBid> acceptedBids) {
+    public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleBid> acceptedBids) {
         this(value, Bundle.singleGoods(bundle), acceptedBids);
     }
 

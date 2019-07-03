@@ -90,7 +90,7 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
         return newGraph;
     }
 
-    protected AverageDistanceFromReference calcAdr(BlockedBidders blockedBidders, Payment priorPayment, Set<Bidder> superAllocationBlockedBidders) {
+    protected AverageDistanceFromReference calcAdr(BlockedBidders blockedBidders, Payment priorPayment, Set<? extends Bidder> superAllocationBlockedBidders) {
         BigDecimal constraintValue = blockedBidders.getBlockedAmount(priorPayment);
         BigDecimal totalReferencePayments = blockedBidders.getNonTraitors().stream().map(referencePayments::paymentOf).map(BidderPayment::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
