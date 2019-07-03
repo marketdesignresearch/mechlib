@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.auction.cca;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ import static org.marketdesignresearch.mechlib.auction.cca.CCARound.Type.SUPPLEM
 public class CCAuction extends Auction {
 
     private MechanismResult result;
+    @Getter
     private Prices currentPrices;
 
     @Setter
@@ -76,9 +78,8 @@ public class CCAuction extends Auction {
         return next == null ? 0 : next.getNumberOfSupplementaryBids();
     }
 
-    @Override
-    public Prices getCurrentPrices() {
-        return currentPrices;
+    public ImmutableList<SupplementaryRound> getSupplementaryRounds() {
+        return ImmutableList.copyOf(supplementaryRounds);
     }
 
     public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
@@ -100,13 +101,23 @@ public class CCAuction extends Auction {
         return result;
     }
 
+    public CCARound.Type getCurrentRoundType() {
+        if (clockPhaseCompleted) return SUPPLEMENTARY;
+        return CLOCK;
+    }
+
     @Override
     public void closeRound() {
         Bids bids = current.getBids();
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
-        CCARound round = new CCARound(roundNumber, bids, getCurrentPrices());
+        CCARound round;
+        if (clockPhaseCompleted) {
+            round = new CCARound(roundNumber, bids, getCurrentPrices(), SUPPLEMENTARY);
+        } else {
+            round = new CCARound(roundNumber, bids, getCurrentPrices());
+        }
         if (current.hasMechanismResult()) {
             round.setMechanismResult(current.getMechanismResult());
         }
@@ -117,7 +128,7 @@ public class CCAuction extends Auction {
 
     @Override
     public boolean finished() {
-        return supplementaryRoundQueue.isEmpty();
+        return clockPhaseCompleted && !hasNextSupplementaryRound();
     }
 
     private void updatePrices() {
