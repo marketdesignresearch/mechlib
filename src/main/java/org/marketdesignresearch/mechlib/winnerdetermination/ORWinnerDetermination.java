@@ -1,22 +1,18 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import com.google.common.collect.Maps;
-import org.marketdesignresearch.mechlib.domain.BundleEntry;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.BundleBid;
-import org.marketdesignresearch.mechlib.domain.Good;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
+import org.marketdesignresearch.mechlib.domain.BundleBid;
+import org.marketdesignresearch.mechlib.domain.BundleEntry;
+import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Wraps an OR or OR* winner determination
@@ -25,6 +21,7 @@ import java.util.Set;
  * 
  */
 public class ORWinnerDetermination extends BidBasedWinnerDetermination {
+    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
     protected final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     protected final MIPWrapper winnerDeterminationProgram;
 

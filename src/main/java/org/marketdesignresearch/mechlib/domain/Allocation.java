@@ -84,4 +84,10 @@ public class Allocation implements MetaInfoResult {
         }
         return new Allocation(tradesMap, getBids().join(other.getBids()), getMetaInfo().join(other.getMetaInfo()));
     }
+
+    public Allocation getAllocationWithTrueValues() {
+        Map<Bidder, BidderAllocation> map = new HashMap<>();
+        tradesMap.forEach((k, v) -> map.put(k, new BidderAllocation(k.getValue(v.getBundle()), v.getBundle(), new HashSet<>())));
+        return new Allocation(map, new Bids(), new MetaInfo());
+    }
 }

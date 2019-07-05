@@ -21,6 +21,7 @@ import java.util.Map;
  * 
  */
 public class XORWinnerDetermination extends BidBasedWinnerDetermination {
+    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
     private final Map<BundleBid, Variable> bidVariables = new HashMap<>();
     private final MIPWrapper winnerDeterminationProgram;
 

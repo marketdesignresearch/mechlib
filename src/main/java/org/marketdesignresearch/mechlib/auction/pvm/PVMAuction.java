@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.auction.pvm;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.auction.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.auction.pvm.ml.DummyMLAlgorithm;
@@ -12,6 +13,7 @@ import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 public class PVMAuction extends Auction {
 
     private MetaElicitation metaElicitation;
@@ -78,5 +81,18 @@ public class PVMAuction extends Auction {
             }
         });
         return map;
+    }
+
+    /**
+     * This is a shortcut to finish all rounds & calculate the final result
+     */
+    @Override
+    public MechanismResult getMechanismResult() {
+        log.info("Finishing all rounds...");
+        while (!finished()) {
+            nextRound();
+        }
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanismType());
+        return getAuctionResultAtRound(rounds.size() - 1);
     }
 }

@@ -87,18 +87,17 @@ public class CCAuction extends Auction {
         supplementaryRoundQueue.add(supplementaryRound);
     }
 
+    /**
+     * This is a shortcut to finish all rounds & calculate the final result
+     */
     @Override
     public MechanismResult getMechanismResult() {
-        if (result == null) {
-            log.info("Running all clock rounds...");
-            while (!finished()) {
-                nextRound();
-            }
-            log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanismType());
-            Mechanism mechanism = getMechanismType().getMechanism(getLatestAggregatedBids());
-            result = mechanism.getMechanismResult();
+        log.info("Finishing all rounds...");
+        while (!finished()) {
+            nextRound();
         }
-        return result;
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanismType());
+        return getAuctionResultAtRound(rounds.size() - 1);
     }
 
     public CCARound.Type getCurrentRoundType() {

@@ -50,7 +50,7 @@ public abstract class WinnerDetermination implements AllocationRule {
             return adaptMIPResult(mipResult);
         } catch (MIPException ex) {
             LOGGER.warn("WD failed", ex);
-            throw new MIPException("MIP infeasible", ex);
+            throw ex;
         }
     }
 
