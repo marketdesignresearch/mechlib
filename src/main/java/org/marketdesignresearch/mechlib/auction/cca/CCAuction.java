@@ -35,7 +35,6 @@ import static org.marketdesignresearch.mechlib.auction.cca.CCARound.Type.SUPPLEM
 @Slf4j
 public class CCAuction extends Auction {
 
-    private MechanismResult result;
     @Getter
     private Prices currentPrices;
 
@@ -106,7 +105,19 @@ public class CCAuction extends Auction {
     }
 
     @Override
+    public boolean currentPhaseFinished() {
+        if (rounds.isEmpty()) return false;
+        CCARound lastRound = (CCARound) rounds.get(rounds.size() - 1);
+        if (CLOCK.equals(lastRound.getType()) && clockPhaseCompleted) {
+            return true;
+        } else {
+            return finished();
+        }
+    }
+
+    @Override
     public void closeRound() {
+        Preconditions.checkState(!finished());
         Bids bids = current.getBids();
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
@@ -114,12 +125,13 @@ public class CCAuction extends Auction {
         CCARound round;
         if (clockPhaseCompleted) {
             round = new CCARound(roundNumber, bids, getCurrentPrices(), SUPPLEMENTARY);
+            supplementaryRoundQueue.poll();
         } else {
             round = new CCARound(roundNumber, bids, getCurrentPrices());
         }
-        if (current.hasMechanismResult()) {
-            round.setMechanismResult(current.getMechanismResult());
-        }
+        // if (current.hasMechanismResult()) {
+        //     round.setMechanismResult(current.getMechanismResult());
+        // }
         rounds.add(round);
         current = new AuctionRoundBuilder(getMechanismType());
         updatePrices();
@@ -157,9 +169,6 @@ public class CCAuction extends Auction {
             SupplementaryBidCollector collector = new SupplementaryBidCollector(getNumberOfRounds() + 1, biddersToQuery, supplementaryRound);
             log.debug("Starting supplementary round '{}'...", collector);
             submitBids(collector.collectBids());
-            // TODO: To know at what supplementary round we are when adding the bids, we have this workaround
-            //  of peek-poll. Later, it may make sense to have the current round noted somewhere (clock round 55? supplementary round 2? etc.)
-            supplementaryRoundQueue.poll();
         }
         closeRound();
     }
@@ -182,7 +191,6 @@ public class CCAuction extends Auction {
             clockPhaseCompleted = false;
             supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         }
-        result = null;
         super.resetToRound(index);
     }
 

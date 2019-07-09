@@ -98,6 +98,41 @@ public class CCATest {
     }
 
     @Test
+    public void testFinishPhase() {
+        VCGMechanism auction = new XORVCGMechanism(Bids.fromXORBidders(domain.getBidders()));
+        MechanismResult resultIncludingAllBids = auction.getMechanismResult();
+
+        CCAuction cca = new CCAuction(domain);
+        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
+        cca.setPriceUpdater(priceUpdater);
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
+        while (!cca.currentPhaseFinished()) {
+            cca.nextRound();
+            Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
+            assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
+            assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
+            previousAllocation = allocation;
+        }
+        assertThat(cca.isClockPhaseCompleted()).isTrue();
+        assertThat(cca.hasNextSupplementaryRound()).isTrue();
+        while (!cca.finished()) {
+            cca.nextRound();
+            Allocation allocation = new XORWinnerDetermination(cca.getLatestAggregatedBids()).getAllocation();
+            assertThat(allocation.getTotalAllocationValue()).isLessThanOrEqualTo(resultIncludingAllBids.getAllocation().getTotalAllocationValue());
+            assertThat(allocation.getTotalAllocationValue()).isGreaterThanOrEqualTo(previousAllocation.getTotalAllocationValue());
+            previousAllocation = allocation;
+        }
+        assertThat(cca.isClockPhaseCompleted()).isTrue();
+        assertThat(cca.hasNextSupplementaryRound()).isFalse();
+        MechanismResult mechanismResult = cca.getMechanismResult();
+        assertThat(mechanismResult.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
+        assertThat(mechanismResult.getAllocation()).isEqualTo(previousAllocation);
+        log.info(mechanismResult.toString());
+    }
+
+    @Test
     public void testResettingCCAWithCATSAuction() {
         CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
@@ -246,7 +281,7 @@ public class CCATest {
         bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
         cca.submitBid(bidder3, new Bid(Sets.newHashSet(bundleBid)));
 
-        assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
+        assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2,bidder3);
 
         bestBundle = bidder1.getBestBundle(cca.getCurrentPrices());
         bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount().add(BigDecimal.ONE), bestBundle, UUID.randomUUID().toString());
@@ -297,7 +332,6 @@ public class CCATest {
         assertThat(cca.getCurrentPrices().getPrice(A).getAmount()).isEqualTo(BigDecimal.valueOf(27));
         assertThat(cca.getCurrentPrices().getPrice(B).getAmount()).isEqualTo(BigDecimal.valueOf(3));
         assertThat(cca.getCurrentPrices().getPrice(AB).getAmount()).isEqualTo(BigDecimal.valueOf(30));
-        assertThat(cca.getAuctionResultAtRound(4)).isEqualTo(temp);
 
         assertThat(cca.isClockPhaseCompleted()).isTrue();
         MechanismResult aggregated = cca.getMechanismType().getMechanism(cca.getLatestAggregatedBids()).getMechanismResult();

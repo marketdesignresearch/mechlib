@@ -52,6 +52,9 @@ public class Auction implements Mechanism {
         return false;
     }
 
+    public boolean currentPhaseFinished() {
+        return finished();
+    }
 
     /**
      * This fills up the not-yet-submitted bids and closes the round
@@ -106,9 +109,9 @@ public class Auction implements Mechanism {
         Preconditions.checkArgument(domain.getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
         DefaultAuctionRound round = new DefaultAuctionRound(roundNumber, bids, getCurrentPrices());
-        if (current.hasMechanismResult()) {
-            round.setMechanismResult(current.getMechanismResult());
-        }
+        // if (current.hasMechanismResult()) { TODO: This would not work if also previous rounds' bids are considered in a mechanism result
+        //     round.setMechanismResult(current.getMechanismResult());
+        // }
         rounds.add(round);
         current = new AuctionRoundBuilder(mechanismType);
     }
