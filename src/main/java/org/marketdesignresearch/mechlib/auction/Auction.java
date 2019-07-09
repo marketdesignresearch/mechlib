@@ -36,8 +36,12 @@ public class Auction implements Mechanism {
         return domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
-    public Good getGood(String id) {
-        return domain.getGoods().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
+    public Good getGood(String name) {
+        return domain.getGoods().stream().filter(b -> b.getName().equals(name)).findFirst().orElseThrow(NoSuchElementException::new);
+    }
+
+    public Good getGood(UUID id) {
+        return domain.getGoods().stream().filter(b -> b.getUuid().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     public Prices getCurrentPrices() {

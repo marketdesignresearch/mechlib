@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.domain;
 
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Class representing a Good that is sold in a Combinatorial Auction
@@ -15,7 +16,9 @@ public interface Good extends Serializable {
         return false;
     }
 
-    String getId();
+    String getName();
+
+    UUID getUuid();
 
     default int available() {
         return 1;

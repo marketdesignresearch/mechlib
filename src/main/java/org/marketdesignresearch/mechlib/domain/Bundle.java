@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -23,7 +21,7 @@ public final class Bundle {
         Preconditions.checkArgument(
                 bundleEntries.stream().map(BundleEntry::getGood).collect(Collectors.toSet()).size() == bundleEntries.size(),
                 "Invalid bundle: multiple bundle entries for a good detected.");
-        this.bundleEntries = bundleEntries.stream().sorted(Comparator.comparing(be -> be.getGood().getId())).collect(Collectors.toList());
+        this.bundleEntries = bundleEntries.stream().sorted(Comparator.comparing(be -> be.getGood().getName())).collect(Collectors.toList());
     }
 
     public Bundle(Map<? extends Good, Integer> map) {
@@ -56,7 +54,7 @@ public final class Bundle {
         Preconditions.checkState(areSingleAvailabilityGoods(), "At least one good in the bundle is not a single availability good.");
         return bundleEntries.stream()
                 .map(BundleEntry::getGood)
-                .sorted(Comparator.comparing(Good::getId))
+                .sorted(Comparator.comparing(Good::getName))
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +93,7 @@ public final class Bundle {
                     ids.append(",");
                 }
                 first = false;
-                ids.append(good.getId());
+                ids.append(good.getName());
             }
             return ids.toString();
         } else {
@@ -106,7 +104,7 @@ public final class Bundle {
                     sb.append(",");
                 }
                 first = false;
-                sb.append(entry.getGood().getId()).append(":").append(entry.getAmount());
+                sb.append(entry.getGood().getName()).append(":").append(entry.getAmount());
             }
             return sb.toString();
         }
