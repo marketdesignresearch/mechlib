@@ -52,24 +52,38 @@ public class Auction implements Mechanism {
         return false;
     }
 
+
     /**
-     * For all the bidders that did not submit a bid yet, this method collects some reasonable (currently truthful)
-     * bids, submits them and closes the round.
+     * This fills up the not-yet-submitted bids and closes the round
      */
     public void nextRound() {
+        proposeBids();
+        closeRound();
+    }
+
+    /**
+     *  Proposes a reasonable (currently truthful) bid for this bidder
+     */
+    public Bid proposeBid(Bidder bidder) {
+        Bid bid = new Bid();
+        List<Bundle> bundlesToBidOn;
+        if (restrictedBids().get(bidder) == null) {
+            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids());
+        } else {
+            bundlesToBidOn = restrictedBids().get(bidder);
+        }
+        bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
+        return bid;
+    }
+
+    /**
+     * For all the bidders that did not submit a bid yet, this method collects proposed and submits a bid
+     */
+    public void proposeBids() {
         List<Bidder> biddersToQuery = getDomain().getBidders().stream().filter(b -> !current.getBids().getBidders().contains(b)).collect(Collectors.toList());
         for (Bidder bidder : biddersToQuery) {
-            Bid bid = new Bid();
-            List<Bundle> bundlesToBidOn;
-            if (restrictedBids().get(bidder) == null) {
-                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids());
-            } else {
-                bundlesToBidOn = restrictedBids().get(bidder);
-            }
-            bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
-            submitBid(bidder, bid);
+            submitBid(bidder, proposeBid(bidder));
         }
-        closeRound();
     }
 
     /**
