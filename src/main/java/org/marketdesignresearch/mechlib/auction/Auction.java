@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.auction;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.domain.*;
 import org.marketdesignresearch.mechlib.domain.bid.Bid;
@@ -18,10 +19,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class Auction implements Mechanism {
 
+    private static int DEFAULT_MAX_BIDS = 100;
+    private static int DEFAULT_MAX_ROUNDS = 1;
+
     @Getter
     private final Domain domain;
     @Getter
     private final MechanismFactory mechanismType;
+
+    @Getter @Setter
+    private int maxBids = DEFAULT_MAX_BIDS;
+    @Getter @Setter
+    private int maxRounds = DEFAULT_MAX_ROUNDS;
+
     protected List<AuctionRound> rounds = new ArrayList<>();
 
     protected AuctionRoundBuilder current;
@@ -49,7 +59,7 @@ public class Auction implements Mechanism {
     }
 
     public boolean finished() {
-        return false;
+        return getNumberOfRounds() >= maxRounds;
     }
 
     public boolean currentPhaseFinished() {
@@ -97,10 +107,15 @@ public class Auction implements Mechanism {
     }
 
     /**
-     * Per default, bidders can bid as many bids as they'd like to
+     * Per default, in a single item domain, only one bid is allowed.
+     * In other domains, the fallback allowance is defined by the maxBids variable.
      */
     public int allowedNumberOfBids() {
-        return Integer.MAX_VALUE;
+        if (finished()) return 0;
+        if (domain.getGoods().size() == 1) {
+            return domain.getGoods().iterator().next().available();
+        }
+        return maxBids;
     }
 
     public void closeRound() {

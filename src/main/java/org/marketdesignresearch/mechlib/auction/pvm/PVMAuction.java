@@ -32,6 +32,7 @@ public class PVMAuction extends Auction {
 
     public PVMAuction(Domain domain, MechanismType mechanismType) {
         super(domain, mechanismType);
+        setMaxRounds(100);
         Map<Bidder, MLAlgorithm> algorithms = new HashMap<>();
         for (Bidder bidder : getDomain().getBidders()) {
             algorithms.put(bidder, new DummyMLAlgorithm(bidder, getDomain().getGoods()));
@@ -59,7 +60,7 @@ public class PVMAuction extends Auction {
 
     @Override
     public boolean finished() {
-        return getDomain().getBidders().stream()
+        return super.finished() || getDomain().getBidders().stream()
                 .noneMatch(bidder -> restrictedBids().get(bidder) == null || !restrictedBids().get(bidder).isEmpty());
     }
 

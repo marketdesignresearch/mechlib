@@ -65,6 +65,7 @@ public class CCAuction extends Auction {
 
     public CCAuction(Domain domain, MechanismFactory mechanismType, boolean proposeStartingPrices) {
         super(domain, mechanismType);
+        setMaxRounds(100);
         if (proposeStartingPrices) {
             this.currentPrices = getDomain().proposeStartingPrices();
         } else {
@@ -141,7 +142,7 @@ public class CCAuction extends Auction {
 
     @Override
     public boolean finished() {
-        return clockPhaseCompleted && !hasNextSupplementaryRound();
+        return super.finished() || clockPhaseCompleted && !hasNextSupplementaryRound();
     }
 
     @Override

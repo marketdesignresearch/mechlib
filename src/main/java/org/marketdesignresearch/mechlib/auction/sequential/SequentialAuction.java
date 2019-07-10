@@ -20,6 +20,7 @@ public class SequentialAuction extends Auction {
 
     public SequentialAuction(Domain domain, MechanismType mechanismType) {
         super(domain, mechanismType);
+        setMaxRounds(domain.getGoods().size());
     }
 
     @Override

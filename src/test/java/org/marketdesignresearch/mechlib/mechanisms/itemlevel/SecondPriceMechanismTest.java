@@ -37,20 +37,16 @@ public class SecondPriceMechanismTest {
 
     @Test
     public void testSimpleSecondPriceAuction() {
-        BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1B");
-        BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
-        BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleBid bid3B = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
+        BundleBid bid1 = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1");
+        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2");
+        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3");
         Bids bids = new Bids();
-        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
-        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
-        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         MechanismResult mechanismResult = new SecondPriceMechanism(singleItemBids).getMechanismResult();
-        checkResult(mechanismResult, bidder2, bid2B, BigDecimal.valueOf(8));
+        checkResult(mechanismResult, bidder2, bid2, BigDecimal.valueOf(8));
     }
 
     @Test
@@ -58,40 +54,32 @@ public class SecondPriceMechanismTest {
         SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(item));
         Auction auction = new Auction(domain, MechanismType.SECOND_PRICE);
 
-        BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1B");
-        BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
-        BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleBid bid3B = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
+        BundleBid bid1 = new BundleBid(BigDecimal.valueOf(7), Sets.newHashSet(item), "1");
+        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2");
+        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3");
         Bids bids = new Bids();
-        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
-        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
-        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
 
         auction.addRound(singleItemBids);
         MechanismResult mechanismResult = auction.getMechanismResult();
-        checkResult(mechanismResult, bidder2, bid2B, BigDecimal.valueOf(8));
+        checkResult(mechanismResult, bidder2, bid2, BigDecimal.valueOf(8));
     }
 
     @Test
     public void testSecondPriceAuctionTwoWinningBids() {
-        BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "1B");
-        BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
-        BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleBid bid3B = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
+        BundleBid bid1 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "1");
+        BundleBid bid2 = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2");
+        BundleBid bid3 = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3");
         Bids bids = new Bids();
-        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B)));
-        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2A, bid2B)));
-        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3A, bid3B, bid3C)));
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         MechanismResult mechanismResult = new SecondPriceMechanism(singleItemBids).getMechanismResult();
-        checkResult(mechanismResult, bidder1, bid1B, BigDecimal.TEN);
+        checkResult(mechanismResult, bidder1, bid1, BigDecimal.TEN);
     }
 
     @Test
@@ -107,18 +95,13 @@ public class SecondPriceMechanismTest {
 
     @Test
     public void testSecondPriceAuctionSingleBidder() {
-        BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "1B");
-        BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
-        BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleBid bid3B = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleBid bid3C = new BundleBid(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
+        BundleBid bid = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "1");
+
         Bids bids = new Bids();
-        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid1A, bid1B, bid2A, bid2B, bid3A, bid3B, bid3C)));
+        bids.setBid(bidder1, new Bid(Sets.newHashSet(bid)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         MechanismResult mechanismResult = new SecondPriceMechanism(singleItemBids).getMechanismResult();
-        checkResult(mechanismResult, bidder1, bid2B, BigDecimal.ZERO); // FIXME: Had accepted bid
+        checkResult(mechanismResult, bidder1, bid, BigDecimal.ZERO); // FIXME: Had accepted bid
     }
 
     @Test
