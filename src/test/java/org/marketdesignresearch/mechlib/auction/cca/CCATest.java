@@ -233,7 +233,9 @@ public class CCATest {
         for (Bidder bidder : domain.getBidders()) {
             Bundle bestBundle = bidder.getBestBundle(cca.getCurrentPrices());
             BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-            bids.setBid(bidder, new Bid(Sets.newHashSet(bundleBid)));
+            Bid bid = new Bid(Sets.newHashSet(bundleBid));
+            checkBidEquality(bid, cca.proposeBid(bidder));
+            bids.setBid(bidder, bid);
         }
         // Set all bids
         cca.submitBids(bids);
@@ -257,8 +259,10 @@ public class CCATest {
         for (Bidder bidder : domain.getBidders()) {
             Bundle bestBundle = bidder.getBestBundle(cca.getCurrentPrices());
             BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+            Bid bid = new Bid(Sets.newHashSet(bundleBid));
+            checkBidEquality(bid, cca.proposeBid(bidder));
             // Submit bids one by one
-            cca.submitBid(bidder, new Bid(Sets.newHashSet(bundleBid)));
+            cca.submitBid(bidder, bid);
         }
 
         temp = cca.getTemporaryResult();
@@ -275,21 +279,27 @@ public class CCATest {
         // Third round
         Bundle bestBundle = bidder2.getBestBundle(cca.getCurrentPrices());
         BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-        cca.submitBid(bidder2, new Bid(Sets.newHashSet(bundleBid)));
+        Bid bid = new Bid(Sets.newHashSet(bundleBid));
+        checkBidEquality(bid, cca.proposeBid(bidder2));
+        cca.submitBid(bidder2, bid);
 
         bestBundle = bidder3.getBestBundle(cca.getCurrentPrices());
         bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-        cca.submitBid(bidder3, new Bid(Sets.newHashSet(bundleBid)));
+        bid = new Bid(Sets.newHashSet(bundleBid));
+        checkBidEquality(bid, cca.proposeBid(bidder3));
+        cca.submitBid(bidder3, bid);
 
         assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2,bidder3);
 
         bestBundle = bidder1.getBestBundle(cca.getCurrentPrices());
-        bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount().add(BigDecimal.ONE), bestBundle, UUID.randomUUID().toString());
-        cca.submitBid(bidder1, new Bid(Sets.newHashSet(bundleBid)));
+        bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+        bid = new Bid(Sets.newHashSet(bundleBid));
+        checkBidEquality(bid, cca.proposeBid(bidder1));
+        cca.submitBid(bidder1, bid);
 
         temp = cca.getTemporaryResult();
         assertThat(temp.getWinners()).containsExactlyInAnyOrder(bidder1, bidder2);
-        assertThat(temp.getAllocation().getTotalAllocationValue()).isEqualTo(BigDecimal.valueOf(7));
+        assertThat(temp.getAllocation().getTotalAllocationValue()).isEqualTo(BigDecimal.valueOf(6));
         assertThat(temp.getPayment().getTotalPayments()).isEqualTo(BigDecimal.valueOf(3));
 
         cca.closeRound();
@@ -301,8 +311,10 @@ public class CCATest {
         // Fourth round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bid = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
-            cca.submitBid(bidder, new Bid(Sets.newHashSet(bid)));
+            BundleBid bb = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
+            bid = new Bid(Sets.newHashSet(bb));
+            checkBidEquality(bid, cca.proposeBid(bidder));
+            cca.submitBid(bidder, bid);
         }
 
         temp = cca.getTemporaryResult();
@@ -319,8 +331,10 @@ public class CCATest {
         // Fifth round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bid = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
-            cca.submitBid(bidder, new Bid(Sets.newHashSet(bid)));
+            BundleBid bb = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
+            bid = new Bid(Sets.newHashSet(bb));
+            checkBidEquality(bid, cca.proposeBid(bidder));
+            cca.submitBid(bidder, bid);
         }
 
         temp = cca.getTemporaryResult();
@@ -348,5 +362,11 @@ public class CCATest {
         // TODO: Test supplementary round as well
     }
 
+    private void checkBidEquality(Bid bid, Bid proposedBid) {
+        assertThat(bid.getBundleBids().size()).isOne();
+        assertThat(proposedBid.getBundleBids().size()).isOne();
+        assertThat(bid.getBundleBids().iterator().next().getBundle()).isEqualTo(proposedBid.getBundleBids().iterator().next().getBundle());
+        assertThat(bid.getBundleBids().iterator().next().getAmount()).isEqualTo(proposedBid.getBundleBids().iterator().next().getAmount());
+    }
 
 }

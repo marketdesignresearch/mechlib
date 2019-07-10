@@ -15,8 +15,10 @@ import org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryr
 import org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryround.SupplementaryRound;
 import org.marketdesignresearch.mechlib.auction.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.auction.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.domain.BundleBid;
 import org.marketdesignresearch.mechlib.domain.Domain;
 import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
@@ -140,6 +142,18 @@ public class CCAuction extends Auction {
     @Override
     public boolean finished() {
         return clockPhaseCompleted && !hasNextSupplementaryRound();
+    }
+
+    @Override
+    public Bid proposeBid(Bidder bidder) {
+        Bid bid = super.proposeBid(bidder);
+        if (CLOCK.equals(getCurrentRoundType())) {
+            Set<BundleBid> bundleBids = bid.getBundleBids().stream()
+                    .map(bb -> new BundleBid(getCurrentPrices().getPrice(bb.getBundle()).getAmount(), bb.getBundle(), bb.getId()))
+                    .collect(Collectors.toSet());
+            bid = new Bid(bundleBids);
+        }
+        return bid;
     }
 
     private void updatePrices() {
