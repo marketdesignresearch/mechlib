@@ -21,7 +21,7 @@ public class PotentialCoalition {
     private final BigDecimal value;
 
     public PotentialCoalition(Set<Good> goods, Bidder bidder, BigDecimal value) {
-        this(Bundle.singleGoods(goods), bidder, value);
+        this(Bundle.of(goods), bidder, value);
     }
 
     public PotentialCoalition(Bundle goods, Bidder bidder, BigDecimal value) {

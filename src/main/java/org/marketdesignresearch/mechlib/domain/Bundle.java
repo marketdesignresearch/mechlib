@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.domain;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,12 +29,23 @@ public final class Bundle {
         this(map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue())).collect(Collectors.toSet()));
     }
 
-    public static Bundle singleGoods(List<? extends Good> bundle) {
-        return singleGoods(Sets.newHashSet(bundle));
+    /**
+     * This shortcut creates a bundle with goods at quantity 1, because this is a very frequent use case.
+     * To create bundles with more complex goods, use the constructors.
+     *
+     * @param bundle A list of goods
+     * @return A bundle consisting of the goods at quantity 1
+     */
+    public static Bundle of(List<? extends Good> bundle) {
+        return new Bundle(bundle.stream().collect(Collectors.toMap(g -> g, g -> 1)));
     }
 
-    public static Bundle singleGoods(Set<? extends Good> bundle) {
-        return new Bundle(bundle.stream().collect(Collectors.toMap(g -> g, g -> 1)));
+    public static Bundle of(Good... goods) {
+        return of(Lists.newArrayList(goods));
+    }
+
+    public static Bundle of(Set<? extends Good> bundle) {
+        return of(Lists.newArrayList(bundle));
     }
 
     public boolean isSingleGood() {

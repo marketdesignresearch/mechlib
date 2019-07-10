@@ -34,7 +34,7 @@ public final class BidderAllocation {
     private final Set<BundleBid> acceptedBids; // TODO: Check if this is needed
 
     public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleBid> acceptedBids) {
-        this(value, Bundle.singleGoods(bundle), acceptedBids);
+        this(value, Bundle.of(bundle), acceptedBids);
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {

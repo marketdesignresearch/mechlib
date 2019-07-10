@@ -3,21 +3,15 @@ package org.marketdesignresearch.mechlib.domain;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
 import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
 import org.marketdesignresearch.mechlib.domain.price.Price;
 import org.marketdesignresearch.mechlib.domain.price.Prices;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface Domain {
@@ -43,7 +37,7 @@ public interface Domain {
         getGoods().forEach(good -> {
             BigDecimal price = BigDecimal.ZERO;
             for (Bidder bidder : getBidders()) {
-                price = price.add(bidder.getValue(Bundle.singleGoods(Sets.newHashSet(good))));
+                price = price.add(bidder.getValue(Bundle.of(Sets.newHashSet(good))));
             }
             price = price.setScale(4, RoundingMode.HALF_UP)
                     .divide(BigDecimal.valueOf(getBidders().size()), RoundingMode.HALF_UP) // Average

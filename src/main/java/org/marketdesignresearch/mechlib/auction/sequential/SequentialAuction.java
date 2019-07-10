@@ -1,12 +1,10 @@
 package org.marketdesignresearch.mechlib.auction.sequential;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.domain.Bundle;
 import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.Good;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
@@ -26,7 +24,7 @@ public class SequentialAuction extends Auction {
 
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {
-        Bundle bundle = Bundle.singleGoods(Sets.newHashSet(getDomain().getGoods().get(getNumberOfRounds())));
+        Bundle bundle = Bundle.of(Sets.newHashSet(getDomain().getGoods().get(getNumberOfRounds())));
         Map<Bidder, List<Bundle>> map = new HashMap<>();
         getDomain().getBidders().forEach(bidder -> map.put(bidder, Lists.newArrayList(bundle)));
         return map;

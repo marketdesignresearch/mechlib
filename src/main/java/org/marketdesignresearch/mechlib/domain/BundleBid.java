@@ -40,7 +40,7 @@ public class BundleBid {
      * @param id Same id as BundleValue
      */
     public BundleBid(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, Bundle.singleGoods(bundle), id);
+        this(amount, Bundle.of(bundle), id);
     }
 
     /**

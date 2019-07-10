@@ -44,7 +44,7 @@ public class DummyMLAlgorithm implements MLAlgorithm {
         Set<Good> goodSet = Sets.newHashSet(goods);
         Set<Set<Good>> powerSet = Sets.powerSet(goodSet);
         for (Set<Good> combination : powerSet) {
-            Bundle bundle = Bundle.singleGoods(combination);
+            Bundle bundle = Bundle.of(combination);
             if (bid.getBundleBids().stream().noneMatch(bb -> bb.getBundle().equals(bundle))) {
                 return bundle;
             }

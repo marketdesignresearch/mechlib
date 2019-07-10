@@ -7,10 +7,8 @@ import org.marketdesignresearch.mechlib.domain.bid.Bid;
 import org.marketdesignresearch.mechlib.domain.bid.Bids;
 import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
 import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
 import org.marketdesignresearch.mechlib.domain.bidder.value.ORValue;
-import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
@@ -31,7 +29,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -166,9 +163,9 @@ public class CCATest {
     public void testProposeStartingPrices() {
         SimpleGood goodA = new SimpleGood("A");
         SimpleGood goodB = new SimpleGood("B");
-        Bundle A = Bundle.singleGoods(Sets.newHashSet(goodA));
-        Bundle B = Bundle.singleGoods(Sets.newHashSet(goodB));
-        Bundle AB = Bundle.singleGoods(Sets.newHashSet(goodA, goodB));
+        Bundle A = Bundle.of(Sets.newHashSet(goodA));
+        Bundle B = Bundle.of(Sets.newHashSet(goodB));
+        Bundle AB = Bundle.of(Sets.newHashSet(goodA, goodB));
 
         ORValue value1 = new ORValue();
         value1.addBundleValue(new BundleValue(BigDecimal.valueOf(28), A));
@@ -199,9 +196,9 @@ public class CCATest {
     public void testStepByStepCCA() {
         SimpleGood goodA = new SimpleGood("A");
         SimpleGood goodB = new SimpleGood("B");
-        Bundle A = Bundle.singleGoods(Sets.newHashSet(goodA));
-        Bundle B = Bundle.singleGoods(Sets.newHashSet(goodB));
-        Bundle AB = Bundle.singleGoods(Sets.newHashSet(goodA, goodB));
+        Bundle A = Bundle.of(Sets.newHashSet(goodA));
+        Bundle B = Bundle.of(Sets.newHashSet(goodB));
+        Bundle AB = Bundle.of(Sets.newHashSet(goodA, goodB));
 
         ORValue value1 = new ORValue();
         value1.addBundleValue(new BundleValue(BigDecimal.valueOf(28), A));
