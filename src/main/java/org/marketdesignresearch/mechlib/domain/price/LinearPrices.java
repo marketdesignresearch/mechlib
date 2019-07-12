@@ -15,7 +15,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode
 public class LinearPrices implements Prices {
-    private Map<Good, Price> priceMap;
+    private final Map<Good, Price> priceMap;
 
     public LinearPrices(List<? extends Good> goods) {
         priceMap = new HashMap<>();

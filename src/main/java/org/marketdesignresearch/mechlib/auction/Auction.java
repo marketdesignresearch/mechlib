@@ -81,7 +81,7 @@ public class Auction implements Mechanism {
         Bid bid = new Bid();
         List<Bundle> bundlesToBidOn;
         if (restrictedBids().get(bidder) == null) {
-            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids());
+            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids(), true);
         } else {
             bundlesToBidOn = restrictedBids().get(bidder);
         }
