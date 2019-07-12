@@ -25,6 +25,7 @@ public class SequentialAuction extends Auction {
 
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {
+        if (finished()) return new HashMap<>();
         Bundle bundle = Bundle.of(Sets.newHashSet(getDomain().getGoods().get(getNumberOfRounds())));
         Map<Bidder, List<Bundle>> map = new HashMap<>();
         getDomain().getBidders().forEach(bidder -> map.put(bidder, Lists.newArrayList(bundle)));
@@ -33,6 +34,7 @@ public class SequentialAuction extends Auction {
 
     @Override
     public int allowedNumberOfBids() {
+        if (finished()) return 0;
         return 1;
     }
 

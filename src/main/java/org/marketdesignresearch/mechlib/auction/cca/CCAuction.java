@@ -45,8 +45,6 @@ public class CCAuction extends Auction {
     private final List<SupplementaryRound> supplementaryRounds = new ArrayList<>();
     private Queue<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
 
-    @Setter
-    private int maxRounds = 1000;
     @Getter
     private boolean clockPhaseCompleted = false;
 
@@ -161,7 +159,7 @@ public class CCAuction extends Auction {
         Map<Good, Integer> demand = new HashMap<>();
         getDomain().getGoods().forEach(good -> demand.put(good, getLatestBids().getDemand(good)));
         Prices updatedPrices = priceUpdater.updatePrices(getCurrentPrices(), demand);
-        if (getCurrentPrices().equals(updatedPrices) || getNumberOfRounds() >= maxRounds) {
+        if (getCurrentPrices().equals(updatedPrices) || getNumberOfRounds() >= getMaxRounds()) {
             clockPhaseCompleted = true;
             return;
         }

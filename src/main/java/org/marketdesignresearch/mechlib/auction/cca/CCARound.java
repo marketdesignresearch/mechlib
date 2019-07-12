@@ -27,7 +27,7 @@ public class CCARound extends DefaultAuctionRound {
             case CLOCK:
                 return "Clock Round " + getRoundNumber();
             case SUPPLEMENTARY:
-                return "Supplementary Round " + getRoundNumber();
+                return "Supplementary Round";
             default:
                 return "Auction Round " + getRoundNumber();
         }
