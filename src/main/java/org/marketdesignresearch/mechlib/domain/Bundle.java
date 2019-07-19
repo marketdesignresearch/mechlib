@@ -22,6 +22,9 @@ public final class Bundle {
         Preconditions.checkArgument(
                 bundleEntries.stream().map(BundleEntry::getGood).collect(Collectors.toSet()).size() == bundleEntries.size(),
                 "Invalid bundle: multiple bundle entries for a good detected.");
+        Preconditions.checkArgument(
+                bundleEntries.stream().map(be -> be.getGood().getName()).collect(Collectors.toSet()).size() == bundleEntries.size(),
+                "Invalid bundle: Some included goods have the same name.");
         this.bundleEntries = bundleEntries.stream().sorted(Comparator.comparing(be -> be.getGood().getName())).collect(Collectors.toList());
     }
 

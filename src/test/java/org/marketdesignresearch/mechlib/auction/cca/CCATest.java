@@ -286,7 +286,7 @@ public class CCATest {
         checkBidEquality(bid, cca.proposeBid(bidder3));
         cca.submitBid(bidder3, bid);
 
-        assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2,bidder3);
+        assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
 
         bestBundle = bidder1.getBestBundle(cca.getCurrentPrices());
         bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
@@ -295,7 +295,6 @@ public class CCATest {
         cca.submitBid(bidder1, bid);
 
         temp = cca.getTemporaryResult();
-        assertThat(temp.getWinners()).containsExactlyInAnyOrder(bidder1, bidder2);
         assertThat(temp.getAllocation().getTotalAllocationValue()).isEqualTo(BigDecimal.valueOf(6));
         assertThat(temp.getPayment().getTotalPayments()).isEqualTo(BigDecimal.valueOf(3));
 
