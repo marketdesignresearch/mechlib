@@ -14,7 +14,11 @@ public interface Bidder {
 
     UUID getId();
     BigDecimal getValue(Bundle bundle);
-    List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
+    List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit);
+
+    default List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+        return getBestBundles(prices, maxNumberOfBundles, allowNegative, 0.0, 0.0, -1);
+    }
 
     default String getName() {
         return getId().toString();

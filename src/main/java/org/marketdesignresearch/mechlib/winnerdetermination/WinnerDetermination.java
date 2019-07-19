@@ -24,9 +24,17 @@ public abstract class WinnerDetermination implements AllocationRule {
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
     @Setter
+    private int timeLimit = -1;
+    @Setter
     private double lowerBound = -MIP.MAX_VALUE;
     @Setter
     private double epsilon = 1e-6;
+    @Setter
+    private double relativePoolMode4Tolerance = 0;
+    @Setter
+    private double absolutePoolMode4Tolerance = 0;
+    @Setter
+    private double timeLimitPoolMode4 = -1;
     @Setter
     private boolean displayOutput = false;
 
@@ -42,6 +50,7 @@ public abstract class WinnerDetermination implements AllocationRule {
 
     protected Allocation solveWinnerDetermination() {
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
+        getMIP().setSolveParam(SolveParam.TIME_LIMIT, timeLimit);
         getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
         try {
@@ -72,7 +81,7 @@ public abstract class WinnerDetermination implements AllocationRule {
     protected abstract Allocation adaptMIPResult(ISolution mipResult);
 
     public List<Allocation> getIntermediateSolutions() {
-        getAllocation();
+        getAllocation(); // FIXME: This does not work if the result has been calculated before
         return intermediateSolutions;
     }
 
@@ -95,6 +104,9 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.SOLUTION_POOL_CAPACITY, k);
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, cut);
         getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, getSolutionPoolMode().get());
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE_4_ABSOLUTE_GAP_TOLERANCE, absolutePoolMode4Tolerance);
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE_4_RELATIVE_GAP_TOLERANCE, relativePoolMode4Tolerance);
+        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE_4_TIME_LIMIT, timeLimitPoolMode4);
         getMIP().setAdvancedVariablesOfInterest(getVariablesOfInterest());
         List<Allocation> allocations = getIntermediateSolutions();
         getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 0);

@@ -20,11 +20,22 @@ public interface Domain {
     List<? extends Good> getGoods();
     Allocation getEfficientAllocation();
 
+    default boolean hasEfficientAllocationCalculated() {
+        return true;
+    };
+
     default Bidder getBidder(String name) {
         List<Bidder> bidders = getBidders().stream().filter(bidder -> bidder.getName().equals(name)).collect(Collectors.toList());
         Preconditions.checkArgument(bidders.size() == 1);
         return bidders.get(0);
     }
+
+    default Good getGood(String name) {
+        List<Good> goods = getGoods().stream().filter(bidder -> bidder.getName().equals(name)).collect(Collectors.toList());
+        Preconditions.checkArgument(goods.size() == 1);
+        return goods.get(0);
+    }
+
      /**
      * By default, we cannot assume much about any bidder.
      * So here, we pretend to know about the valuation of the bidder, taking 10 % of the average

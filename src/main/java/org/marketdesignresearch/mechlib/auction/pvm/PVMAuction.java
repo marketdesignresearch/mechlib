@@ -26,13 +26,20 @@ public class PVMAuction extends Auction {
 
     private MetaElicitation metaElicitation;
 
+    private final int initialBids;
+
     public PVMAuction(Domain domain) {
         this(domain, MechanismType.VCG_XOR);
     }
 
     public PVMAuction(Domain domain, MechanismType mechanismType) {
+        this(domain, mechanismType, 5);
+    }
+
+    public PVMAuction(Domain domain, MechanismType mechanismType, int initialBids) {
         super(domain, mechanismType);
         setMaxRounds(100);
+        this.initialBids = initialBids;
         Map<Bidder, MLAlgorithm> algorithms = new HashMap<>();
         for (Bidder bidder : getDomain().getBidders()) {
             algorithms.put(bidder, new DummyMLAlgorithm(bidder, getDomain().getGoods()));
@@ -54,7 +61,7 @@ public class PVMAuction extends Auction {
 
     @Override
     public int allowedNumberOfBids() {
-        if (rounds.size() == 0) return 5;
+        if (rounds.size() == 0) return initialBids;
         else return 1;
     }
 

@@ -31,6 +31,12 @@ public class Auction implements Mechanism {
     private int maxBids = DEFAULT_MAX_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
+    @Setter
+    private double relativeDemandQueryTolerance = 0;
+    @Setter
+    private double absoluteDemandQueryTolerance = 0;
+    @Setter
+    private double demandQueryTimeLimit = -1;
 
     protected List<AuctionRound> rounds = new ArrayList<>();
 
@@ -81,7 +87,7 @@ public class Auction implements Mechanism {
         Bid bid = new Bid();
         List<Bundle> bundlesToBidOn;
         if (restrictedBids().get(bidder) == null) {
-            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids(), true);
+            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids(), true, relativeDemandQueryTolerance, absoluteDemandQueryTolerance, demandQueryTimeLimit);
         } else {
             bundlesToBidOn = restrictedBids().get(bidder);
         }
