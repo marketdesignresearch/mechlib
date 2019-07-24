@@ -88,6 +88,18 @@ public class CCAuction extends Auction {
     }
 
     /**
+     * Overrides the default method to have mechanism results only based on each round's bids
+     */
+    @Override
+    public MechanismResult getAuctionResultAtRound(int index) {
+        if (getBidsAt(index).isEmpty()) return MechanismResult.NONE;
+        if (getRound(index).getMechanismResult() == null) {
+            getRound(index).setMechanismResult(getMechanismType().getMechanism(getBidsAt(index)).getMechanismResult());
+        }
+        return getRound(index).getMechanismResult();
+    }
+
+    /**
      * This is a shortcut to finish all rounds & calculate the final result
      */
     @Override
@@ -97,7 +109,7 @@ public class CCAuction extends Auction {
             nextRound();
         }
         log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getMechanismType());
-        return getAuctionResultAtRound(rounds.size() - 1);
+        return getMechanismType().getMechanism(getAggregatedBidsAt(rounds.size() - 1)).getMechanismResult();
     }
 
     public CCARound.Type getCurrentRoundType() {

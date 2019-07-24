@@ -151,4 +151,8 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         }
         return newBids;
     }
+
+    public boolean isEmpty() {
+        return bidMap.isEmpty() || bidMap.values().stream().allMatch(bid -> bid.getBundleBids().isEmpty());
+    }
 }
