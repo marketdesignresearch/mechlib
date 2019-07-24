@@ -23,8 +23,24 @@ public abstract class WinnerDetermination implements AllocationRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
+
+    /**
+     * Defines the time limit for the solver.
+     * What happens after the time limit is defined via {@link #setAcceptSuboptimal(boolean)}.
+     *
+     * @param timeLimit the time limit in seconds
+     */
     @Setter
-    private int timeLimit = -1;
+    private double timeLimit = -1.0;
+
+    /**
+     * Defines the behaviour in case the solver hits the defined timeout.
+     *
+     * @param acceptSuboptimal true: accept a suboptimal solution at timeout; false: throw an exception at timeout
+     */
+    @Setter
+    private boolean acceptSuboptimal = true;
+
     @Setter
     private double lowerBound = -MIP.MAX_VALUE;
     @Setter
@@ -50,9 +66,10 @@ public abstract class WinnerDetermination implements AllocationRule {
 
     protected Allocation solveWinnerDetermination() {
         getMIP().setSolveParam(SolveParam.MIN_OBJ_VALUE, lowerBound);
-        getMIP().setSolveParam(SolveParam.TIME_LIMIT, timeLimit);
+        if (timeLimit > 0) getMIP().setSolveParam(SolveParam.TIME_LIMIT, timeLimit);
         getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
+        getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
         try {
             IMIPResult mipResult = new SolverClient().solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
