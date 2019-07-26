@@ -38,4 +38,9 @@ public class UnitDemandBidder extends XORBidder {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String getShortDescription() {
+        return "Unit Demand Bidder: " + getName();
+    }
 }

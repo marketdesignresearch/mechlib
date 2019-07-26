@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class XORBidder implements Bidder, Serializable {
@@ -68,5 +69,10 @@ public class XORBidder implements Bidder, Serializable {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "XOR-Bidder: " + getName();
     }
 }

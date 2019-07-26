@@ -33,4 +33,9 @@ public class AdditiveValueBidder extends ORBidder {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String getShortDescription() {
+        return "Additive Value Bidder: " + getName();
+    }
 }

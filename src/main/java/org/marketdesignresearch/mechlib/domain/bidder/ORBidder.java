@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class ORBidder implements Bidder, Serializable {
@@ -91,5 +92,10 @@ public class ORBidder implements Bidder, Serializable {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "OR-Bidder: " + getName();
     }
 }

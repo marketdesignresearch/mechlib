@@ -24,8 +24,12 @@ public interface Bidder {
         return getId().toString();
     }
 
+    default String getShortDescription() {
+        return getName();
+    }
+
     default String getDescription() {
-        return "Description of Bidder " + getName();
+        return getName();
     }
 
     default Bundle getBestBundle(Prices prices) {
