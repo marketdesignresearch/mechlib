@@ -12,9 +12,9 @@ import java.util.List;
 public final class SimpleORDomain implements Domain {
 
     @Getter
-    private final List<ORBidder> bidders;
+    private final List<? extends ORBidder> bidders;
     @Getter
-    private final List<SimpleGood> goods;
+    private final List<? extends SimpleGood> goods;
 
     private Allocation efficientAllocation;
 

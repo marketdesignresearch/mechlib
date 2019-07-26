@@ -22,7 +22,7 @@ public interface Domain {
 
     default boolean hasEfficientAllocationCalculated() {
         return true;
-    };
+    }
 
     default Bidder getBidder(String name) {
         List<Bidder> bidders = getBidders().stream().filter(bidder -> bidder.getName().equals(name)).collect(Collectors.toList());

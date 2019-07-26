@@ -113,11 +113,11 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     /**
      * Gives truthful bids
      */
-    public static Bids fromXORBidders(List<XORBidder> bidders) {
+    public static Bids fromXORBidders(List<? extends XORBidder> bidders) {
         return fromXORBidders(bidders, Strategy.TRUTHFUL::apply);
     }
 
-    public static Bids fromXORBidders(List<XORBidder> bidders, Function<Value, Bid> operator) {
+    public static Bids fromXORBidders(List<? extends XORBidder> bidders, Function<Value, Bid> operator) {
         Map<Bidder, Bid> bidMap = new HashMap<>();
         for (XORBidder bidder : bidders) {
             bidMap.put(bidder, operator.apply(bidder.getValue()));
@@ -125,11 +125,11 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
         return new Bids(bidMap);
     }
 
-    public static Bids fromOBidders(List<ORBidder> bidders) {
+    public static Bids fromOBidders(List<? extends ORBidder> bidders) {
         return fromORBidders(bidders, Strategy.TRUTHFUL::apply);
     }
 
-    public static Bids fromORBidders(List<ORBidder> bidders, Function<Value, Bid> operator) {
+    public static Bids fromORBidders(List<? extends ORBidder> bidders, Function<Value, Bid> operator) {
         Map<Bidder, Bid> bidMap = new HashMap<>();
         for (ORBidder bidder : bidders) {
             bidMap.put(bidder, operator.apply(bidder.getValue()));

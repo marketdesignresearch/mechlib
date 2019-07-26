@@ -17,9 +17,9 @@ import java.util.List;
 public final class SimpleXORDomain implements Domain {
 
     @Getter
-    private final List<XORBidder> bidders;
+    private final List<? extends XORBidder> bidders;
     @Getter
-    private final List<SimpleGood> goods;
+    private final List<? extends SimpleGood> goods;
 
     private Allocation efficientAllocation;
 

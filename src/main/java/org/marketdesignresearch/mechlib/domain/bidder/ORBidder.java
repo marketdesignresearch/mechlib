@@ -23,29 +23,40 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-@EqualsAndHashCode(of = "id")
-@ToString(exclude = "value")
-public final class ORBidder implements Bidder, Serializable {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
+public class ORBidder implements Bidder, Serializable {
     private static final long serialVersionUID = -4896848195956099257L;
 
     @Getter
+    @EqualsAndHashCode.Include
     private final UUID id;
     @Getter
     private final String name;
     @Getter
+    @ToString.Exclude
     private final ORValue value;
+    @ToString.Exclude
+    private final String description;
 
     public ORBidder(String name) {
-        this(UUID.randomUUID(), name, new ORValue());
+        this(name, new ORValue());
     }
 
     public ORBidder(String name, ORValue value) {
-        this(UUID.randomUUID(), name, value);
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.value = value;
+        StringBuilder sb = new StringBuilder("Bidder with an OR-based value function with the following values (rounded):");
+        for (BundleValue bundleValue : value.getBundleValues()) {
+            sb.append("\n\t- ").append(bundleValue.getBundle()).append(": ").append(bundleValue.getAmount().setScale(2, RoundingMode.HALF_UP));
+        }
+        this.description = sb.toString();
     }
 
     @Override
@@ -75,5 +86,10 @@ public final class ORBidder implements Bidder, Serializable {
                 .collect(Collectors.toList());
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 }
