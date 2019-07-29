@@ -3,9 +3,9 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.commons.math3.util.CombinatoricsUtils;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 

@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 public class FixedCorePaymentWeights implements CorePaymentWeights {
     private final double constant;

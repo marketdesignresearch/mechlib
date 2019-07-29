@@ -4,11 +4,11 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.domain.BundleEntry;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.BundleBid;
-import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.Good;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
                 winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
                 exclusiveBids.addTerm(1, bidI);
                 for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.available()));
+                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.getQuantity()));
                     noDoubleAssignment.addTerm(entry.getAmount(), bidI);
                 }
             }

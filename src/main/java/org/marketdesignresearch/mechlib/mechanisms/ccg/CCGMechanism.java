@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.BlockingAllocation;
@@ -21,7 +21,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class CCGMechanism implements Mechanism {
+public class CCGMechanism implements OutputRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(CCGMechanism.class);
     private MechanismResult result = null;
     private final Bids bids;

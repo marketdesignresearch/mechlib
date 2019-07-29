@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms;
 
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Payment;
 
 public interface PaymentRule {
 

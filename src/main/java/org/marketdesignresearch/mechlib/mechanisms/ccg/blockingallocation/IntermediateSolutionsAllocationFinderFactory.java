@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
 
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;

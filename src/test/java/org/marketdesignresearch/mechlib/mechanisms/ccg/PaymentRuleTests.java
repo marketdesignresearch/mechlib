@@ -3,12 +3,12 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
-import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.*;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.BidsReferencePointFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.VCGReferencePointFactory;
@@ -29,18 +29,18 @@ public class PaymentRuleTests {
         SimpleGood east = new SimpleGood("east");
 
         BundleValue westBundle = new BundleValue(BigDecimal.valueOf(1), ImmutableSet.of(west), "west");
-        XORBidder westBidder = new XORBidder("west", new XORValue(ImmutableSet.of(westBundle)));
+        XORBidder westBidder = new XORBidder("west", new XORValueFunction(ImmutableSet.of(westBundle)));
 
         BundleValue eastBundle = new BundleValue(BigDecimal.valueOf(2.5), ImmutableSet.of(east), "east");
-        XORBidder eastBidder = new XORBidder("east", new XORValue(ImmutableSet.of(eastBundle)));
+        XORBidder eastBidder = new XORBidder("east", new XORValueFunction(ImmutableSet.of(eastBundle)));
 
         BundleValue globalBundle = new BundleValue(BigDecimal.valueOf(2), ImmutableSet.of(west, east), "global");
-        XORBidder globalBidder = new XORBidder("global", new XORValue(ImmutableSet.of(globalBundle)));
+        XORBidder globalBidder = new XORBidder("global", new XORValueFunction(ImmutableSet.of(globalBundle)));
 
         SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder, eastBidder, globalBidder), ImmutableList.of(west, east));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
-        Mechanism mechanism = equalNorm.getMechanism(Bids.fromXORBidders(domain.getBidders()));
+        OutputRule mechanism = equalNorm.getMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = mechanism.getPayment();
         assertThat(payment.paymentOf(eastBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(1.75));
         assertThat(payment.paymentOf(westBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));

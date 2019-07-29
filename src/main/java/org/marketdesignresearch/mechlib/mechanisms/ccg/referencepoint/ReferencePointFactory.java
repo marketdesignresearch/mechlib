@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.Payment;
 
 public interface ReferencePointFactory {
 

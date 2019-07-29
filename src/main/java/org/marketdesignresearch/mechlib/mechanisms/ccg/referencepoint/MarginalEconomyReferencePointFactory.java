@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint;
 
 import com.google.common.base.Objects;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 
 import java.math.BigDecimal;

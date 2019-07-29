@@ -2,9 +2,9 @@ package org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 
 import java.util.Map;

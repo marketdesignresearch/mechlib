@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms;
 
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.VariableAlgorithmCCGFactory;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
@@ -19,7 +19,7 @@ public enum MechanismType implements MechanismFactory {
     FIRST_PRICE;
 
     @Override
-    public Mechanism getMechanism(Bids bids) {
+    public OutputRule getMechanism(Bids bids) {
         switch (this) {
             case VCG_OR:
                 return new ORVCGMechanism(bids);

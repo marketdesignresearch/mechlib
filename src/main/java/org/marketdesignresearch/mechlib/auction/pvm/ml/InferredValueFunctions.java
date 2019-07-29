@@ -1,14 +1,14 @@
 package org.marketdesignresearch.mechlib.auction.pvm.ml;
 
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InferredValueFunctions extends HashMap<Bidder, XORValue> {
+public class InferredValueFunctions extends HashMap<Bidder, XORValueFunction> {
 
-    public InferredValueFunctions(Map<Bidder, XORValue> inferredValues) {
+    public InferredValueFunctions(Map<Bidder, XORValueFunction> inferredValues) {
         super(inferredValues);
     }
 }

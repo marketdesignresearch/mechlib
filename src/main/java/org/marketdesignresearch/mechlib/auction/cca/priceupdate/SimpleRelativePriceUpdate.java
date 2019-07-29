@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.auction.cca.priceupdate;
 
 import com.google.common.base.Preconditions;
-import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
-import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.price.Price;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.price.Price;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
 
         for (Map.Entry<Good, Price> oldPriceEntry : oldLinearPrices.entrySet()) {
             Good good = oldPriceEntry.getKey();
-            if (good.available() < demand.getOrDefault(good, 0)) {
+            if (good.getQuantity() < demand.getOrDefault(good, 0)) {
                 if (oldPriceEntry.getValue().equals(Price.ZERO))
                     newPrices.put(good, new Price(initialUpdate));
                 else

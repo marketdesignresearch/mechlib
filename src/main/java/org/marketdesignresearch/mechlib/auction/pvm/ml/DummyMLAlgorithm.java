@@ -1,14 +1,15 @@
 package org.marketdesignresearch.mechlib.auction.pvm.ml;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
-import org.marketdesignresearch.mechlib.domain.Bundle;
-import org.marketdesignresearch.mechlib.domain.BundleEntry;
-import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
-import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -28,18 +29,18 @@ public class DummyMLAlgorithm implements MLAlgorithm {
         bid = bid.join(report);
     }
 
-    public XORValue inferValueFunction() {
+    public XORValueFunction inferValueFunction() {
         Bundle additionalBundle = getNewBundle();
-        XORValue value = new XORValue();
+        Set<BundleValue> value = new HashSet<>();
         if (additionalBundle != null) {
-            value.addBundleValue(new BundleValue(bidder.getValue(additionalBundle).add(BigDecimal.valueOf(10000000)), additionalBundle));
+            value.add(new BundleValue(bidder.getValue(additionalBundle).add(BigDecimal.valueOf(10000000)), additionalBundle));
         }
-        bid.getBundleBids().forEach(bb -> value.addBundleValue(new BundleValue(bb.getAmount(), bb.getBundle())));
-        return value;
+        bid.getBundleBids().forEach(bb -> value.add(new BundleValue(bb.getAmount(), bb.getBundle())));
+        return new XORValueFunction(ImmutableSet.copyOf(value));
     }
 
     private Bundle getNewBundle() {
-        if (goods.size() < 30 && goods.stream().allMatch(good -> (good.available() == 1))) {
+        if (goods.size() < 30 && goods.stream().allMatch(good -> (good.getQuantity() == 1))) {
             Set<Good> goodSet = Sets.newHashSet(goods);
             Set<Set<Good>> powerSet = Sets.powerSet(goodSet);
             for (Set<Good> combination : powerSet) {
@@ -55,7 +56,7 @@ public class DummyMLAlgorithm implements MLAlgorithm {
             while (iterator.hasNext()) {
                 Good good = iterator.next();
                 if (random.nextBoolean()) {
-                    bundleEntries.add(new BundleEntry(good, random.nextInt(good.available()) + 1));
+                    bundleEntries.add(new BundleEntry(good, random.nextInt(good.getQuantity()) + 1));
                 }
             }
             Bundle bundle = new Bundle(bundleEntries);

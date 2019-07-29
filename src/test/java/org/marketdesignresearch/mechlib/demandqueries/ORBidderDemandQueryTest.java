@@ -3,17 +3,17 @@ package org.marketdesignresearch.mechlib.demandqueries;
 import com.google.common.collect.Sets;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.domain.Bundle;
-import org.marketdesignresearch.mechlib.domain.BundleEntry;
-import org.marketdesignresearch.mechlib.domain.Good;
-import org.marketdesignresearch.mechlib.domain.SimpleGood;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.domain.bidder.value.BundleValue;
-import org.marketdesignresearch.mechlib.domain.bidder.value.ORValue;
-import org.marketdesignresearch.mechlib.domain.price.LinearPrices;
-import org.marketdesignresearch.mechlib.domain.price.Price;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Price;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -45,18 +45,18 @@ public class ORBidderDemandQueryTest {
 
     @Test
     public void testDemandQuery() {
-        ORValue value = new ORValue();
-        value.addBundleValue(new BundleValue(BigDecimal.valueOf(10),
+        Set<BundleValue> value = new HashSet<>();
+        value.add(new BundleValue(BigDecimal.valueOf(10),
                 new Bundle(Sets.newHashSet(new BundleEntry(A, 1)))));
-        value.addBundleValue(new BundleValue(BigDecimal.valueOf(11),
+        value.add(new BundleValue(BigDecimal.valueOf(11),
                 new Bundle(Sets.newHashSet(new BundleEntry(B, 1)))));
-        value.addBundleValue(new BundleValue(BigDecimal.valueOf(12),
+        value.add(new BundleValue(BigDecimal.valueOf(12),
                 new Bundle(Sets.newHashSet(new BundleEntry(C, 1)))));
-        value.addBundleValue(new BundleValue(BigDecimal.valueOf(9),
+        value.add(new BundleValue(BigDecimal.valueOf(9),
                 new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
-        value.addBundleValue(new BundleValue(BigDecimal.valueOf(13),
+        value.add(new BundleValue(BigDecimal.valueOf(13),
                 new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
-        Bidder bidder = new ORBidder("bidder", value);
+        Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
 
         Bundle bestBundle = bidder.getBestBundle(prices);
         List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);

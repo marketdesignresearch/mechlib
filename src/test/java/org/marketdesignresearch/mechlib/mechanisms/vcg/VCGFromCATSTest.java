@@ -1,13 +1,12 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.SimpleXORDomain;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.domain.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.domain.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.domain.cats.CATSParser;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.core.cats.CATSParser;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class VCGFromCATSTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         Bids bids = adapter.adaptCATSAuction(catsAuction);
-        Mechanism ar = new ORVCGMechanism(bids);
+        OutputRule ar = new ORVCGMechanism(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(1787.8971);
         LOGGER.info(ar.getAllocation().toString());
@@ -45,7 +44,7 @@ public class VCGFromCATSTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        Mechanism ar = new ORVCGMechanism(Bids.fromXORBidders(domain.getBidders()));
+        OutputRule ar = new ORVCGMechanism(Bids.fromXORBidders(domain.getBidders()));
         Payment payment = ar.getPayment();
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4514.844);
@@ -66,7 +65,7 @@ public class VCGFromCATSTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         Bids bids = adapter.adaptCATSAuction(catsAuction);
-        Mechanism ar = new ORVCGMechanism(bids);
+        OutputRule ar = new ORVCGMechanism(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8.4188562000e003, Offset.offset(0.00001));
         LOGGER.info(ar.getAllocation().toString());
@@ -79,7 +78,7 @@ public class VCGFromCATSTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         Bids bids = adapter.adaptCATSAuction(catsAuction);
-        Mechanism ar = new ORVCGMechanism(bids);
+        OutputRule ar = new ORVCGMechanism(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(3.2847555000e+004, Offset.offset(0.00001));
         LOGGER.info(ar.getAllocation().toString());

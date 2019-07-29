@@ -2,9 +2,9 @@ package org.marketdesignresearch.mechlib.auction.pvm;
 
 import lombok.RequiredArgsConstructor;
 import org.marketdesignresearch.mechlib.auction.pvm.ml.MLAlgorithm;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.value.XORValue;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +13,8 @@ import java.util.Map;
 public class MetaElicitation {
     private final Map<Bidder, MLAlgorithm> algorithms;
 
-    public Map<Bidder, XORValue> process(Bids bids) {
-        Map<Bidder, XORValue> inferredValues = new HashMap<>();
+    public Map<Bidder, XORValueFunction> process(Bids bids) {
+        Map<Bidder, XORValueFunction> inferredValues = new HashMap<>();
         for (Map.Entry<Bidder, MLAlgorithm> entry : algorithms.entrySet()) {
             if (bids.getBid(entry.getKey()) != null) {
                 entry.getValue().addReport(bids.getBid(entry.getKey()));

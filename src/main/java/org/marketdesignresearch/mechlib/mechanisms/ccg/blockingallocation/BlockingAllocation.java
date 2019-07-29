@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.core.Allocation;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 

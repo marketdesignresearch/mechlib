@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.BidderPayment;
-import org.marketdesignresearch.mechlib.domain.Payment;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class VCGMechanism implements Mechanism {
+public abstract class VCGMechanism implements OutputRule {
 
     private MechanismResult result;
 

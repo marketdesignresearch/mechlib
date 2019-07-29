@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanisms.itemlevel;
 
-import org.marketdesignresearch.mechlib.domain.BidderPayment;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBid;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
+import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
 
 import java.util.Iterator;
 

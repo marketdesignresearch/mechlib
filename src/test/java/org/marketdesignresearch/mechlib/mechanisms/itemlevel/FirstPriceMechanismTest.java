@@ -3,12 +3,12 @@ package org.marketdesignresearch.mechlib.mechanisms.itemlevel;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 
 import java.math.BigDecimal;

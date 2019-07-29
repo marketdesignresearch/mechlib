@@ -3,9 +3,9 @@ package org.marketdesignresearch.mechlib.auction.sequential;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.auction.Auction;
-import org.marketdesignresearch.mechlib.domain.Bundle;
-import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 

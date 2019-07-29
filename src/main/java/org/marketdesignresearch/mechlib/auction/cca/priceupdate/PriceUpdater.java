@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.auction.cca.priceupdate;
 
-import org.marketdesignresearch.mechlib.domain.price.Prices;
-import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.core.Good;
 
 import java.util.Map;
 

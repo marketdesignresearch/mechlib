@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.auction.cca.bidcollection.supplementaryround;
 
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 public interface SupplementaryRound {
     Bid getSupplementaryBids(String id, Bidder bidder);

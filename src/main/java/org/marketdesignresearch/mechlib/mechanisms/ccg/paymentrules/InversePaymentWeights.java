@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Payment;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 
 public class InversePaymentWeights implements CorePaymentWeights {

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Good;
 
 /**
  * This interface represents a Mechanism that produces an {@link Allocation} of

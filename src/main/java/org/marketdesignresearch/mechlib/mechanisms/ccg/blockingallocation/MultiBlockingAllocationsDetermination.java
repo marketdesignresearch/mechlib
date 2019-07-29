@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.blockingallocation;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 
 public class MultiBlockingAllocationsDetermination extends BlockingCoalitionDetermination {

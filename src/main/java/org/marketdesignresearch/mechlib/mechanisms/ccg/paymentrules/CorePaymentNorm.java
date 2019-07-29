@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Payment;
 import edu.harvard.econcs.jopt.solver.IMIP;
 
 public interface CorePaymentNorm {

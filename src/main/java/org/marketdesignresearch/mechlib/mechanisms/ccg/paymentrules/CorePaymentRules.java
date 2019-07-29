@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Payment;
 
 public final class CorePaymentRules {
     private CorePaymentRules() {

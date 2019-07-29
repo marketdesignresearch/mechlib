@@ -3,8 +3,8 @@ package org.marketdesignresearch.mechlib.auction.cca;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.auction.DefaultAuctionRound;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 
 @Slf4j
 public class CCARound extends DefaultAuctionRound {

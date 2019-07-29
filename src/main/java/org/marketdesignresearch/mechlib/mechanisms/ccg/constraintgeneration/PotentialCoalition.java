@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.Bundle;
-import org.marketdesignresearch.mechlib.domain.Good;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Good;
 
 import java.math.BigDecimal;
 import java.util.Set;

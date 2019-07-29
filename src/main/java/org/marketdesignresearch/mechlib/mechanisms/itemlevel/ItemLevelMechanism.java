@@ -3,12 +3,12 @@ package org.marketdesignresearch.mechlib.mechanisms.itemlevel;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBid;
-import org.marketdesignresearch.mechlib.domain.bid.SingleItemBids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
+import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
 import org.marketdesignresearch.mechlib.mechanisms.itemlevel.tiebreaker.AlphabeticTieBreaker;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public abstract class ItemLevelMechanism implements Mechanism {
+public abstract class ItemLevelMechanism implements OutputRule {
 
     protected final Set<SingleItemBids> bidsPerGood = new HashSet<>();
 

@@ -1,13 +1,13 @@
 package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
 import com.google.common.collect.Lists;
-import org.marketdesignresearch.mechlib.domain.*;
+import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.auction.Auction;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class VCGTest {
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
-        Mechanism am = new ORVCGMechanism(bids);
+        OutputRule am = new ORVCGMechanism(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
         assertThat(payment.paymentOf(bidder1).getAmount().doubleValue()).isEqualTo(1);
@@ -72,7 +72,7 @@ public class VCGTest {
         bids.setBid(bidder2, new Bid(Sets.newHashSet(bid2)));
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         bids.setBid(bidder4, new Bid(Sets.newHashSet(bid4)));
-        Mechanism am = new XORVCGMechanism(bids);
+        OutputRule am = new XORVCGMechanism(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
         assertThat(payment.paymentOf(bidder1).getAmount().doubleValue()).isEqualTo(1);

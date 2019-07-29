@@ -1,11 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg;
 
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 
 public interface MechanismFactory {
 
-    Mechanism getMechanism(Bids bids);
+    OutputRule getMechanism(Bids bids);
 
     String getMechanismName();
 }

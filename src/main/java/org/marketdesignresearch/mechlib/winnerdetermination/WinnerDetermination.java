@@ -7,15 +7,12 @@ import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Setter;
-import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.mechanisms.AllocationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -45,6 +42,9 @@ public abstract class WinnerDetermination implements AllocationRule {
     private double lowerBound = -MIP.MAX_VALUE;
     @Setter
     private double epsilon = 1e-6;
+    // TODO: private Map<SolveParam, Object> solveParams;
+    // TODO: restoreDefaults()
+    // TODO: Factory pattern?
     @Setter
     private double relativePoolMode4Tolerance = 0;
     @Setter
@@ -134,8 +134,12 @@ public abstract class WinnerDetermination implements AllocationRule {
         return null;
     }
 
+    /**
+     * @see SolveParam#SOLUTION_POOL_MODE
+     */
     public enum PoolMode {
-        MODE_3, MODE_4;
+        MODE_3,
+        MODE_4;
 
         public int get() {
             switch (this) {

@@ -2,8 +2,8 @@ package org.marketdesignresearch.mechlib.mechanisms.vcg;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public abstract class BidBasedVCGMechanism extends VCGMechanism { // FIXME: Naming consistently

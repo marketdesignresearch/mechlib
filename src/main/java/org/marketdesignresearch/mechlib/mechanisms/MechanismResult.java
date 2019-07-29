@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanisms;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.Payment;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Payment;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

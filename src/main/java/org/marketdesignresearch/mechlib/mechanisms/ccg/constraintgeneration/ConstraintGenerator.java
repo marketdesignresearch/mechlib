@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanisms.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.domain.Allocation;
+import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 
 public interface ConstraintGenerator {

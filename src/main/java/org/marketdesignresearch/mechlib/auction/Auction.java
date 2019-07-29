@@ -4,12 +4,12 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.domain.*;
-import org.marketdesignresearch.mechlib.domain.bid.Bid;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
-import org.marketdesignresearch.mechlib.domain.price.Prices;
-import org.marketdesignresearch.mechlib.mechanisms.Mechanism;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.mechanisms.OutputRule;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.ccg.MechanismFactory;
 
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class Auction implements Mechanism {
+public class Auction implements OutputRule {
 
     private static int DEFAULT_MAX_BIDS = 100;
     private static int DEFAULT_MAX_ROUNDS = 1;
@@ -119,7 +119,7 @@ public class Auction implements Mechanism {
     public int allowedNumberOfBids() {
         if (finished()) return 0;
         if (domain.getGoods().size() == 1) {
-            return domain.getGoods().iterator().next().available();
+            return domain.getGoods().iterator().next().getQuantity();
         }
         return maxBids;
     }
@@ -227,7 +227,7 @@ public class Auction implements Mechanism {
     public Map<Good, Integer> getOverDemandAt(int index) {
         Map<Good, Integer> result = new HashMap<>();
         Bids bids = getBidsAt(index);
-        domain.getGoods().forEach(good -> result.put(good, bids.getDemand(good) - good.available()));
+        domain.getGoods().forEach(good -> result.put(good, bids.getDemand(good) - good.getQuantity()));
         return result;
     }
 

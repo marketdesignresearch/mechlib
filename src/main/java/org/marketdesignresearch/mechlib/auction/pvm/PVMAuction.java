@@ -7,12 +7,12 @@ import org.marketdesignresearch.mechlib.auction.Auction;
 import org.marketdesignresearch.mechlib.auction.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.auction.pvm.ml.DummyMLAlgorithm;
 import org.marketdesignresearch.mechlib.auction.pvm.ml.MLAlgorithm;
-import org.marketdesignresearch.mechlib.domain.Allocation;
-import org.marketdesignresearch.mechlib.domain.Bundle;
-import org.marketdesignresearch.mechlib.domain.BundleBid;
-import org.marketdesignresearch.mechlib.domain.Domain;
-import org.marketdesignresearch.mechlib.domain.bid.Bids;
-import org.marketdesignresearch.mechlib.domain.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
 import org.marketdesignresearch.mechlib.mechanisms.MechanismType;
 
