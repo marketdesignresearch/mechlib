@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,7 +29,11 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     public ORWinnerDetermination(Bids bids) {
         super(bids);
         winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
+    }
 
+    public ORWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
+        super(bids, purpose, mipInstrumentation);
+        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
     }
 
     protected MIPWrapper createWinnerDeterminationMIP(Bids bids) {

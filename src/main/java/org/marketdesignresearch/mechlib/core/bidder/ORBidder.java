@@ -2,10 +2,7 @@ package org.marketdesignresearch.mechlib.core.bidder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
@@ -14,6 +11,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
@@ -72,7 +70,7 @@ public class ORBidder implements Bidder, Serializable {
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new Bids(ImmutableMap.of(this, valueMinusPrice)));
+        WinnerDetermination orWdp = new ORWinnerDetermination(new Bids(ImmutableMap.of(this, valueMinusPrice)), MipInstrumentation.MipPurpose.DEMAND_QUERY, getMipInstrumentation());
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
         orWdp.setAbsolutePoolMode4Tolerance(absPoolTolerance);
         orWdp.setTimeLimitPoolMode4(poolTimeLimit);
@@ -88,4 +86,14 @@ public class ORBidder implements Bidder, Serializable {
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }
+
+    // region instrumentation
+    @Getter
+    private MipInstrumentation mipInstrumentation = new MipInstrumentation();
+
+    @Override
+    public void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {
+        this.mipInstrumentation = mipInstrumentation;
+    }
+    // endregion
 }

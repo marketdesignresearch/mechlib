@@ -6,6 +6,8 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import java.math.BigDecimal;
@@ -14,7 +16,7 @@ import java.util.UUID;
 
 
 /**
- * A bidder represents an agent in a mechanism / an auction.
+ * A bidder represents an agent in a mechanism.
  * <br>
  * A bidder at least has an ID, and can be given a name, a short description, and a description.
  * <br>
@@ -29,7 +31,7 @@ import java.util.UUID;
  * <br>
  * Lastly, a bidder has a default {@link Strategy} based on which she would turn her true valuations into bids.
  */
-public interface Bidder {
+public interface Bidder extends MipInstrumentationable {
 
     /**
      * Gets the bidder's id.
@@ -139,4 +141,7 @@ public interface Bidder {
     default Strategy getDefaultStrategy() {
         return Strategy.TRUTHFUL;
     }
+
+    default void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {}
+
 }

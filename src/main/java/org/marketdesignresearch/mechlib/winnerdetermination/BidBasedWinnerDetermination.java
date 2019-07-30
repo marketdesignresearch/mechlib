@@ -2,15 +2,14 @@ package org.marketdesignresearch.mechlib.winnerdetermination;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.ISolution;
-import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -20,6 +19,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     private final Bids bids;
 
     public BidBasedWinnerDetermination(Bids bids) {
+        this(bids, MipInstrumentation.MipPurpose.ALLOCATION, new MipInstrumentation());
+    }
+
+    public BidBasedWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
+        super(purpose, mipInstrumentation);
         this.bids = bids;
     }
 
@@ -35,16 +39,16 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         return super.solveWinnerDetermination();
     }
 
-    @Override
-    public List<Allocation> getBestAllocations(int k) {
-        if (k == 1) return Lists.newArrayList(getAllocation());
-        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_CAPACITY, k);
-        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 4);
-        getMIP().setVariablesOfInterest(getBidVariables());
-        List<Allocation> allocations = getIntermediateSolutions();
-        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 0);
-        return allocations;
-    }
+//    @Override
+//    public List<Allocation> getBestAllocations(int k) {
+//        if (k == 1) return Lists.newArrayList(getAllocation());
+//        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_CAPACITY, k);
+//        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 4);
+//        getMIP().setVariablesOfInterest(getBidVariables());
+//        List<Allocation> allocations = getIntermediateSolutions();
+//        getMIP().setSolveParam(SolveParam.SOLUTION_POOL_MODE, 0);
+//        return allocations;
+//    }
 
     @Override
     public Allocation adaptMIPResult(ISolution mipResult) {

@@ -2,12 +2,12 @@ package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanisms.MetaInfoResult;
-import org.marketdesignresearch.mechlib.mechanisms.MetaInfo;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
 
 import java.math.BigDecimal;
 import java.util.Collections;

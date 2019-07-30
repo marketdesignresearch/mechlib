@@ -12,7 +12,7 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
-import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
+import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 
 import java.math.BigDecimal;
@@ -139,13 +139,13 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     // TODO: Does not work with OR*
     /**
      *
-     * @return New bids, but reduced by the payoff of
-     *         mechanismResult
+     * @return New bids, but reduced by the payoff of outcome
+     *
      */
-    public Bids reducedBy(MechanismResult mechanismResult) {
+    public Bids reducedBy(Outcome outcome) {
         Bids newBids = new Bids();
         for (Map.Entry<Bidder, Bid> entry : getBidMap().entrySet()) {
-            BigDecimal payoff = mechanismResult.payoffOf(entry.getKey());
+            BigDecimal payoff = outcome.payoffOf(entry.getKey());
             newBids.setBid(entry.getKey(), entry.getValue().reducedBy(payoff));
         }
         return newBids;

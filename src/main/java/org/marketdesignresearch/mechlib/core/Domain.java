@@ -2,11 +2,13 @@ package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.auction.Auction;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
  * Its main purpose is to serve as a starting point for an {@link Auction} of any kind of format.
  * It also includes a getter for the efficient allocation in this domain.
  */
-public interface Domain {
+public interface Domain extends MipInstrumentationable {
 
     /**
      * Gets the list of bidders.
@@ -108,5 +110,7 @@ public interface Domain {
         });
         return new LinearPrices(priceMap);
     }
+
+    default void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {}
 
 }

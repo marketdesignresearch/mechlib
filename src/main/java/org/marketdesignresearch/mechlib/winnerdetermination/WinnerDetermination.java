@@ -8,11 +8,15 @@ import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Setter;
 import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.mechanisms.AllocationRule;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,21 @@ public abstract class WinnerDetermination implements AllocationRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
+    private MipInstrumentation mipInstrumentation;
+    private MipInstrumentation.MipPurpose purpose;
+
+    protected WinnerDetermination() {
+        this(MipInstrumentation.MipPurpose.ALLOCATION, new MipInstrumentation());
+    }
+
+    protected WinnerDetermination(MipInstrumentation.MipPurpose purpose) {
+        this(purpose, new MipInstrumentation());
+    }
+
+    protected WinnerDetermination(MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
+        this.purpose = purpose;
+        this.mipInstrumentation = mipInstrumentation;
+    }
 
     /**
      * Defines the time limit for the solver.
@@ -73,7 +92,9 @@ public abstract class WinnerDetermination implements AllocationRule {
         try {
             IMIPResult mipResult = new SolverClient().solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
-            return adaptMIPResult(mipResult);
+            Allocation bestAllocation = adaptMIPResult(mipResult);
+            mipInstrumentation.postMIP(purpose, getMIP(), mipResult, bestAllocation, intermediateSolutions);
+            return bestAllocation;
         } catch (MIPException ex) {
             LOGGER.warn("WD failed", ex);
             throw ex;

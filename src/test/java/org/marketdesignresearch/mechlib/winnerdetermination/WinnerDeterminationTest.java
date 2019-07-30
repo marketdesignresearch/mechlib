@@ -8,13 +8,13 @@ import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.mechanisms.AllocationRule;
-import org.marketdesignresearch.mechlib.mechanisms.MechanismResult;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.CCGMechanism;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.CCGMechanismFactory;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.Norm;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.paymentrules.VariableNormCCGFactory;
-import org.marketdesignresearch.mechlib.mechanisms.ccg.referencepoint.VCGReferencePointFactory;
+import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGOutcomeRule;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.VariableNormCCGFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.VCGReferencePointFactory;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import java.math.BigDecimal;
@@ -55,10 +55,10 @@ public class WinnerDeterminationTest {
         Bidder bidder3 = new XORBidder("B" + 3);
         bids.setBid(bidder3, new Bid(Sets.newHashSet(bid3)));
         VCGReferencePointFactory rpFacory = new VCGReferencePointFactory();
-        CCGMechanismFactory quadratic = new VariableNormCCGFactory(rpFacory, Norm.MANHATTAN, Norm.EUCLIDEAN);
+        CCGFactory quadratic = new VariableNormCCGFactory(rpFacory, Norm.MANHATTAN, Norm.EUCLIDEAN);
 
-        CCGMechanism ccgAuction = quadratic.getMechanism(bids);
-        MechanismResult outcome = ccgAuction.getMechanismResult();
+        CCGOutcomeRule ccgAuction = quadratic.getOutcomeRule(bids);
+        Outcome outcome = ccgAuction.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue()).isEqualByComparingTo("46");
         assertThat(outcome.getPayment().getTotalPayments()).isEqualByComparingTo("6");
 

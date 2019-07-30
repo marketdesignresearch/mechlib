@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class that represents an XORValue of one {@link Bidder} on one bundle of
- * {@link Good}s in a Mechanism.</p> The object is immutable compareTo, equals
+ * {@link Good}s in a mechanism. The object is immutable. compareTo, equals
  * and hashCode are all based on the id.
  * 
  * @author Benedikt Buenz
