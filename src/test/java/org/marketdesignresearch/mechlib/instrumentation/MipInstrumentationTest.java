@@ -2,9 +2,6 @@ package org.marketdesignresearch.mechlib.instrumentation;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
@@ -30,7 +27,6 @@ import org.marketdesignresearch.mechlib.outcomerules.vcg.ORVCGRule;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -39,28 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class MipInstrumentationTest {
-    private static MipInstrumentation loggerInstrumentation = new MipInstrumentation() {
-        @Override
-        public void postMIP(MipPurpose mipPurpose, IMIP mip, IMIPResult result, Allocation bestAllocation, List<Allocation> poolAllocations) {
-            log.info("MIP Purpose: {}", mipPurpose);
-            log.info("MIP -> # Variables: {}", mip.getNumVars());
-            log.info("MIP -> # Constraints: {}", mip.getNumConstraints());
-            log.info("MIP Result -> Objective value: {}", result.getObjectiveValue());
-            log.info("MIP Result -> Relative gap: {}%", BigDecimal.valueOf(result.getRelativeGap() * 100).setScale(4, RoundingMode.HALF_UP));
-            log.info("MIP Result -> Absolute gap: {}", result.getAbsoluteGap());
-            log.info("MIP Result -> Solve time: {}ms", result.getSolveTime());
-            Queue<PoolSolution> poolSolutions = result.getPoolSolutions();
-            log.info("# Pool Solutions: {}", poolSolutions.size());
-            if (poolSolutions.size() > 0) {
-                PoolSolution worst = poolSolutions.stream().min(Comparator.comparingDouble(PoolSolution::getObjectiveValue)).orElseThrow(NoSuchElementException::new);
-                log.info("Worst Pool Solution -> Objective value: {}", worst.getObjectiveValue());
-                log.info("Worst Pool Solution -> Relative pool gap: {}%", BigDecimal.valueOf(worst.getPoolRelativeGap() * 100).setScale(4, RoundingMode.HALF_UP));
-                log.info("Worst Pool Solution -> Absolute pool gap: {}", worst.getPoolAbsoluteGap());
-            }
-            log.info("Best Allocation -> Total value: {}", bestAllocation.getTotalAllocationValue().setScale(4, RoundingMode.HALF_UP));
-            log.info("# Pool Allocations: {}", poolAllocations.size());
-        }
-    };
 
     @Test
     public void testVCGInstrumentation() throws IOException {
@@ -70,7 +44,7 @@ public class MipInstrumentationTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         Bids bids = adapter.adaptCATSAuction(catsAuction);
-        OutcomeRule vcgRule = new ORVCGRule(bids, loggerInstrumentation);
+        OutcomeRule vcgRule = new ORVCGRule(bids, new MipLoggingInstrumentation());
         vcgRule.getOutcome();
     }
 
@@ -99,7 +73,7 @@ public class MipInstrumentationTest {
         value.add(new BundleValue(BigDecimal.valueOf(13),
                 new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
-        bidder.attachMipInstrumentation(loggerInstrumentation);
+        bidder.attachMipInstrumentation(new MipLoggingInstrumentation());
         Bundle bestBundle = bidder.getBestBundle(prices);
         List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
     }
@@ -112,7 +86,7 @@ public class MipInstrumentationTest {
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, loggerInstrumentation);
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
@@ -123,7 +97,7 @@ public class MipInstrumentationTest {
     }
 
     @Test
-    public void testSimpleCustomAuctionMIPInstrumentation() throws IOException {
+    public void testSimpleCustomAuctionMIPInstrumentation() {
         SimpleGood goodA = new SimpleGood("A");
         SimpleGood goodB = new SimpleGood("B");
         Bundle A = Bundle.of(Sets.newHashSet(goodA));
@@ -144,7 +118,7 @@ public class MipInstrumentationTest {
         ORBidder bidder3 = new ORBidder("3", new ORValueFunction(value3));
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, loggerInstrumentation);
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();

@@ -34,7 +34,7 @@ public final class SimpleORDomain implements Domain {
     @Override
     public void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {
         this.mipInstrumentation = mipInstrumentation;
-        bidders.forEach(bidder -> bidder.attachMipInstrumentation(mipInstrumentation));
+        getBidders().forEach(bidder -> bidder.attachMipInstrumentation(mipInstrumentation));
     }
 
     // endregion

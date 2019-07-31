@@ -6,6 +6,7 @@ import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.Getter;
 import lombok.Setter;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
@@ -24,7 +25,9 @@ public abstract class WinnerDetermination implements AllocationRule {
     private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
+    @Getter
     private MipInstrumentation mipInstrumentation;
+    @Getter
     private MipInstrumentation.MipPurpose purpose;
 
     protected WinnerDetermination() {
