@@ -15,7 +15,7 @@ public final class SimpleORDomain implements Domain {
     @Getter
     private final List<? extends ORBidder> bidders;
     @Getter
-    private final List<? extends SimpleGood> goods;
+    private final List<? extends Good> goods;
 
     private Allocation efficientAllocation;
 

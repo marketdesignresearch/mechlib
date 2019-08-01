@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.values;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,12 +10,14 @@ import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.SimpleGood;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.UnitDemandBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +52,8 @@ public class ValueTest {
                 new Bundle(Sets.newHashSet(new BundleEntry(B, 1), new BundleEntry(C, 1)))));
         Bidder bidder = new XORBidder("bidder", new XORValueFunction(value));
 
+        checkValue(bidder, 0, new Good[] {});
+
         checkValue(bidder, 10, A);
         checkValue(bidder, 11, B);
         checkValue(bidder, 12, C);
@@ -80,6 +85,8 @@ public class ValueTest {
                 new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
 
+        checkValue(bidder, 0, new Good[] {});
+
         checkValue(bidder, 10, A);
         checkValue(bidder, 11, B);
         checkValue(bidder, 12, C);
@@ -101,6 +108,45 @@ public class ValueTest {
         checkValue(bidder, 35, A, C, D);
         checkValue(bidder, 36, B, C, D);
         checkValue(bidder, 46, A, B, C, D);
+    }
+
+    @Test
+    public void testUnitDemandValue() {
+        Set<BundleValue> value = new HashSet<>();
+        value.add(new BundleValue(BigDecimal.valueOf(10),
+                new Bundle(Sets.newHashSet(new BundleEntry(A, 1)))));
+        value.add(new BundleValue(BigDecimal.valueOf(11),
+                new Bundle(Sets.newHashSet(new BundleEntry(B, 1)))));
+        value.add(new BundleValue(BigDecimal.valueOf(12),
+                new Bundle(Sets.newHashSet(new BundleEntry(C, 1)))));
+        value.add(new BundleValue(BigDecimal.valueOf(9),
+                new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
+        value.add(new BundleValue(BigDecimal.valueOf(13),
+                new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
+        Bidder bidder = new UnitDemandBidder("bidder", BigDecimal.TEN, ImmutableList.of(A, B, C, D));
+
+        checkValue(bidder, 0, new Good[] {});
+
+        checkValue(bidder, 10, A);
+        checkValue(bidder, 10, B);
+        checkValue(bidder, 10, C);
+        checkValue(bidder, 10, D);
+        checkValue(bidder, 10, new BundleEntry(A, 2));
+        checkValue(bidder, 10, new BundleEntry(B, 2));
+        checkValue(bidder, 10, new BundleEntry(C, 2));
+        checkValue(bidder, 10, new BundleEntry(D, 2));
+
+        checkValue(bidder, 10, A, B);
+        checkValue(bidder, 10, A, C);
+        checkValue(bidder, 10, A, D);
+        checkValue(bidder, 10, B, C);
+        checkValue(bidder, 10, B, D);
+        checkValue(bidder, 10, C, D);
+        checkValue(bidder, 10, A, B, C);
+        checkValue(bidder, 10, A, B, D);
+        checkValue(bidder, 10, A, C, D);
+        checkValue(bidder, 10, B, C, D);
+        checkValue(bidder, 10, A, B, C, D);
     }
 
     private void checkValue(Bidder bidder, int amount, BundleEntry... bundleEntries) {

@@ -19,7 +19,7 @@ public final class SimpleXORDomain implements Domain {
     @Getter
     private final List<? extends XORBidder> bidders;
     @Getter
-    private final List<? extends SimpleGood> goods;
+    private final List<? extends Good> goods;
 
     private Allocation efficientAllocation;
 
