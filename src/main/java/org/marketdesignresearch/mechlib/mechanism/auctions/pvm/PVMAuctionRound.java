@@ -13,6 +13,7 @@ import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDeterminati
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PVMAuctionRound extends DefaultAuctionRound {
 

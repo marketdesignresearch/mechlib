@@ -1,21 +1,20 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import com.google.common.collect.Lists;
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.MIPException;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 
 import java.util.List;
 
+@Slf4j
 public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParameterizedCorePaymentRule.class);
 
     private final List<CorePaymentNorm> objectiveNorms;
     private final IMIP program;
@@ -50,7 +49,7 @@ public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements
                 result = objectiveNorms.get(objectiveNorms.size() - 1).minimizeDistance(programCopy);
                 metaInfo = metaInfo.join(result.getMetaInfo());
             } catch (MIPException ex) {
-                LOGGER.warn("Failed to compute Payments. Base Program: {}", program);
+                log.warn("Failed to compute Payments. Base Program: {}", program);
                 throw new MIPException("BPO infeasible", ex);
             }
 

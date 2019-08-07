@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Payment;
@@ -12,8 +13,6 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.Co
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerator;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -21,8 +20,8 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Slf4j
 public class CCGOutcomeRule implements OutcomeRule {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CCGOutcomeRule.class);
     private Outcome result = null;
     private final Bids bids;
     private final CorePaymentRule paymentRule;
@@ -64,30 +63,30 @@ public class CCGOutcomeRule implements OutcomeRule {
 
             if (blockingAllocation != null) {
                 // Omit first run
-                LOGGER.debug("adding constraints");
+                log.debug("adding constraints");
                 for (Allocation allo : blockingAllocation) {
                     constraintGenerator.addConstraint(allo, lastResult);
 
                 }
-                LOGGER.debug("constraints added");
-                LOGGER.debug("minimizing payment");
+                log.debug("constraints added");
+                log.debug("minimizing payment");
 
                 lastPayment = paymentRule.getPayment();
-                LOGGER.debug("payment minimized");
+                log.debug("payment minimized");
 
                 totalWinnersPayments = lastPayment.getTotalPayments();
             }
             lastResult = new Outcome(lastPayment, allocation);
-            LOGGER.debug("Total winners payments {}", totalWinnersPayments);
+            log.debug("Total winners payments {}", totalWinnersPayments);
             blockingAllocation = blockingCoalitionFactory.findBlockingAllocation(bids, lastResult);
             metaInfo = metaInfo.join(blockingAllocation.getMostBlockingAllocation().getMetaInfo());
-            LOGGER.debug("Blocking coalition found with value {}", blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue());
+            log.debug("Blocking coalition found with value {}", blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue());
         } while (PrecisionUtils.fuzzyCompare(blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue(), totalWinnersPayments,
                 PrecisionUtils.EPSILON.scaleByPowerOfTen(1)) > 0
                 && !blockingAllocation.getMostBlockingAllocation().getWinners().equals(allocation.getWinners()));
 
         long end = System.currentTimeMillis();
-        LOGGER.debug("Finished CCG running time: {}ms", end - start);
+        log.debug("Finished CCG running time: {}ms", end - start);
         metaInfo.setJavaRuntime(end - start);
         metaInfo = metaInfo.join(lastPayment.getMetaInfo());
         Payment payment = new Payment(lastPayment.getPaymentMap(), metaInfo);

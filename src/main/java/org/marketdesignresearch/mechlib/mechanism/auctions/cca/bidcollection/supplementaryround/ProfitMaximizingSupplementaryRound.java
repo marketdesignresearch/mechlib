@@ -5,6 +5,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 import com.google.common.collect.Sets;
 import lombok.Setter;
@@ -18,15 +19,10 @@ public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
 
     @Setter @Getter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-    private CCAuction cca;
-
-    public ProfitMaximizingSupplementaryRound(CCAuction cca) {
-        this.cca = cca;
-    }
-
+    
     @Override
-    public Bid getSupplementaryBids(String id, Bidder bidder) {
-        List<Bundle> bestBundles = bidder.getBestBundles(cca.getCurrentPrices(), numberOfSupplementaryBids, true);
+    public Bid getSupplementaryBids(String id, Bidder bidder, Prices prices) {
+        List<Bundle> bestBundles = bidder.getBestBundles(prices, numberOfSupplementaryBids, true);
         List<BundleBid> bestBundleBids = new ArrayList<>();
         // Add with true value for now
         int count = 0;

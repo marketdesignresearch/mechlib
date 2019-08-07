@@ -1,19 +1,18 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
-import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.MIPException;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 /**
  * Creates a payment norm that is the sum of all the provided norms The program
@@ -23,8 +22,8 @@ import org.slf4j.LoggerFactory;
  * @author Benedikt
  *
  */
+@Slf4j
 public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MultiNormCorePaymentRule.class);
     private final PaymentNorm primaryNorm;
     private final PaymentNorm[] additionalNorms;
     private final IMIP program;
@@ -60,12 +59,12 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
                     for (LinearTerm term : constraint.getLinearTerms()) {
                         sumOfUpperBounds += program.getVar(term.getVarName()).getUpperBound();
                     }
-                    LOGGER.debug("Upper Bounds " + sumOfUpperBounds + " Constraint " + constraint.getConstant());
+                    log.debug("Upper Bounds " + sumOfUpperBounds + " Constraint " + constraint.getConstant());
                     if (sumOfUpperBounds - constraint.getConstant() < 1e-4) {
-                        LOGGER.error("Constraint is invalid {}", constraint);
+                        log.error("Constraint is invalid {}", constraint);
                     }
                 }
-                LOGGER.error("BPO infeasible", ex);
+                log.error("BPO infeasible", ex);
                 throw new MIPException("BPO infeasible", ex);
             }
 

@@ -1,27 +1,25 @@
 package org.marketdesignresearch.mechlib.outcomerules.vcg;
 
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
+import org.junit.Test;
+import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.core.cats.CATSParser;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 public class VCGFromCATSTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(VCGFromCATSTest.class);
 
     @Test
     public void testNormalWinnerDetermination() throws IOException {
@@ -33,7 +31,7 @@ public class VCGFromCATSTest {
         OutcomeRule ar = new ORVCGRule(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(1787.8971);
-        LOGGER.info(ar.getAllocation().toString());
+        log.info(ar.getAllocation().toString());
 
     }
 
@@ -54,7 +52,7 @@ public class VCGFromCATSTest {
         assertThat(payment.paymentOf(domain.getBidder("SB" + 5)).getAmount().doubleValue()).isEqualTo(1656.076, offset);
         assertThat(payment.paymentOf(domain.getBidder("SB" + 6)).getAmount().doubleValue()).isEqualTo(754.196, offset);
         assertThat(payment.paymentOf(domain.getBidder("SB" + 2)).getAmount()).isZero();
-        LOGGER.info(payment.toString());
+        log.info(payment.toString());
 
     }
 
@@ -68,7 +66,7 @@ public class VCGFromCATSTest {
         OutcomeRule ar = new ORVCGRule(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8.4188562000e003, Offset.offset(0.00001));
-        LOGGER.info(ar.getAllocation().toString());
+        log.info(ar.getAllocation().toString());
     }
 
     @Test
@@ -81,6 +79,6 @@ public class VCGFromCATSTest {
         OutcomeRule ar = new ORVCGRule(bids);
         // Compare to direct CPLEX result
         Assertions.assertThat(ar.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(3.2847555000e+004, Offset.offset(0.00001));
-        LOGGER.info(ar.getAllocation().toString());
+        log.info(ar.getAllocation().toString());
     }
 }

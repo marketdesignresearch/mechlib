@@ -55,7 +55,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(outcome.toString());
@@ -66,7 +66,7 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(outcome.toString());
@@ -80,8 +80,8 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(2));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
         while (!cca.finished()) {
             cca.advanceRound();
@@ -104,8 +104,8 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(2));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
         while (!cca.currentPhaseFinished()) {
             cca.advanceRound();
@@ -136,10 +136,10 @@ public class CCATest {
         CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(2));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(4));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(2));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(4));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome first = cca.getOutcome();
         assertThat(cca.isClockPhaseCompleted()).isTrue();
         assertThat(cca.hasNextSupplementaryRound()).isFalse();
@@ -184,7 +184,7 @@ public class CCATest {
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, true);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
@@ -218,7 +218,7 @@ public class CCATest {
 
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         assertThat(cca.restrictedBids()).isEmpty();
         assertThat(cca.allowedNumberOfBids()).isOne();
         assertThat(cca.hasNextSupplementaryRound()).isTrue();

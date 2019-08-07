@@ -37,10 +37,10 @@ public class ORBidder implements Bidder, Serializable {
     private final String name;
     @Getter
     private final ORValueFunction value;
-    @Getter
-    private final String description;
-    @Getter
-    private final String shortDescription;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private String description;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private String shortDescription;
 
     public ORBidder(String name) {
         this(name, new ORValueFunction());

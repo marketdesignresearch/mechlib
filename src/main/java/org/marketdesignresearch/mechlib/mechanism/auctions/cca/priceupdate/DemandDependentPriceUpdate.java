@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
 import com.google.common.base.Preconditions;
+import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -23,13 +24,12 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
     @Override
     public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
         Preconditions.checkArgument(oldPrices instanceof LinearPrices, "Demand dependent price updater only works with linear prices.");
-        LinearPrices oldLinearPrices = (LinearPrices) oldPrices;
         Map<Good, Price> newPrices = new HashMap<>();
-        for (Map.Entry<Good, Price> oldPriceEntry : oldLinearPrices.entrySet()) {
-            Good good = oldPriceEntry.getKey();
+        for (Map.Entry<Good, Integer> entry : demand.entrySet()) {
+            Good good = entry.getKey();
             BigDecimal diff = BigDecimal.valueOf(demand.getOrDefault(good, 0) - good.getQuantity());
             BigDecimal factor = constant.divide(BigDecimal.valueOf(Math.sqrt(round)), RoundingMode.HALF_UP);
-            BigDecimal price = oldPriceEntry.getValue().getAmount().add(factor.multiply(diff));
+            BigDecimal price = oldPrices.getPrice(Bundle.of(good)).getAmount().add(factor.multiply(diff));
             newPrices.put(good, new Price(price));
         }
 

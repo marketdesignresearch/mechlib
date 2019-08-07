@@ -1,5 +1,7 @@
 package org.marketdesignresearch.mechlib.core;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
@@ -10,9 +12,7 @@ import lombok.ToString;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The payment has exactly the same bidder Set as its corresponding Allocation
@@ -23,23 +23,36 @@ import java.util.Map;
  * @author Benedikt
  * 
  */
-@RequiredArgsConstructor
 @EqualsAndHashCode(of = "paymentMap")
 @ToString
 public final class Payment implements MetaInfoResult {
     public static final Payment ZERO = new Payment(Collections.emptyMap(), new MetaInfo());
 
-    @Getter
-    private final Map<Bidder, BidderPayment> paymentMap;
+    private final ImmutableSet<Bidder> bidders;
+    private final ImmutableMap<UUID, BidderPayment> paymentMap;
     @Getter
     private final MetaInfo metaInfo;
 
+    public Payment(Map<Bidder, BidderPayment> bidderPaymentMap, MetaInfo metaInfo) {
+        this.bidders = ImmutableSet.copyOf(bidderPaymentMap.keySet());
+        Map<UUID, BidderPayment> map = new HashMap<>();
+        bidderPaymentMap.forEach((k, v) -> map.put(k.getId(), v));
+        this.paymentMap = ImmutableMap.copyOf(map);
+        this.metaInfo = metaInfo;
+    }
+
     public BigDecimal getTotalPayments() {
-        return getPaymentMap().values().stream().map(BidderPayment::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return paymentMap.values().stream().map(BidderPayment::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Map<Bidder, BidderPayment> getPaymentMap() {
+        Map<Bidder, BidderPayment> map = new HashMap<>();
+        paymentMap.forEach((k, v) -> map.put(getBidder(k), v));
+        return map;
     }
 
     public BidderPayment paymentOf(Bidder bidder) {
-        return paymentMap.getOrDefault(bidder, BidderPayment.ZERO_PAYMENT);
+        return paymentMap.getOrDefault(bidder.getId(), BidderPayment.ZERO_PAYMENT);
     }
 
     public Payment merge(Payment other) {
@@ -48,5 +61,9 @@ public final class Payment implements MetaInfoResult {
             paymentMap.put(bidder, new BidderPayment(paymentOf(bidder).getAmount().add(other.paymentOf(bidder).getAmount())));
         }
         return new Payment(paymentMap, metaInfo.join(other.metaInfo));
+    }
+
+    private Bidder getBidder(UUID id) {
+        return bidders.stream().filter(b -> b.getId().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
     }
 }

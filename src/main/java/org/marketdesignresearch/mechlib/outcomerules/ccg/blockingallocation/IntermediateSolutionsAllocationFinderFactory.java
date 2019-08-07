@@ -1,17 +1,17 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
+@Slf4j
 public class IntermediateSolutionsAllocationFinderFactory implements BlockingAllocationFinder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IntermediateSolutionsAllocationFinderFactory.class);
+
     /**
      * 
      */
@@ -31,7 +31,7 @@ public class IntermediateSolutionsAllocationFinderFactory implements BlockingAll
     public BlockingAllocation findBlockingAllocation(Bids bids, Outcome priorResult) {
         WinnerDetermination blockingCoalitionFinder = new MultiBlockingAllocationsDetermination(bids, priorResult, mode);
         blockingCoalitionFinder.setLowerBound(priorResult.getPayment().getTotalPayments().subtract(epsilon).doubleValue());
-        LOGGER.debug("Found {} intermediate solutions", blockingCoalitionFinder.getIntermediateSolutions().size());
+        log.debug("Found {} intermediate solutions", blockingCoalitionFinder.getIntermediateSolutions().size());
         return new BlockingAllocation(blockingCoalitionFinder.getAllocation(), blockingCoalitionFinder.getIntermediateSolutions());
     }
 

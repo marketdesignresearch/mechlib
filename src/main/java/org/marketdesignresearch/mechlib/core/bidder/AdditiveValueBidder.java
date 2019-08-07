@@ -13,11 +13,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class AdditiveValueBidder extends ORBidder {
 
-    @Getter
-    private final String description;
-    @Getter
-    private final String shortDescription;
-
     public AdditiveValueBidder(String name, ORValueFunction orValue) {
         super(name, orValue);
         for (BundleValue bundleValue : orValue.getBundleValues()) {
@@ -30,7 +25,7 @@ public class AdditiveValueBidder extends ORBidder {
         for (BundleValue bundleValue : getValue().getBundleValues()) {
             sb.append("\n\t- ").append(bundleValue.getBundle()).append(": ").append(bundleValue.getAmount().setScale(2, RoundingMode.HALF_UP));
         }
-        this.description = sb.toString();
-        this.shortDescription = "Additive Value Bidder: " + getName();
+        setDescription(sb.toString());
+        setShortDescription("Additive Value Bidder: " + getName());
     }
 }

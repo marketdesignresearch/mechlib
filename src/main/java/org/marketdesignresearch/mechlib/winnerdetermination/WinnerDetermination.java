@@ -8,11 +8,10 @@ import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,8 +20,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class WinnerDetermination implements AllocationRule {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WinnerDetermination.class);
+
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
     @Getter
@@ -99,14 +99,14 @@ public abstract class WinnerDetermination implements AllocationRule {
             mipInstrumentation.postMIP(purpose, getMIP(), mipResult, bestAllocation, intermediateSolutions);
             return bestAllocation;
         } catch (MIPException ex) {
-            LOGGER.warn("WD failed", ex);
+            log.warn("WD failed", ex);
             throw ex;
         }
     }
 
     private List<Allocation> solveIntermediateSolutions(IMIPResult result) {
         if (result.getPoolSolutions() != null && !result.getPoolSolutions().isEmpty()) {
-            LOGGER.debug("Found {} intermediate solutions candidates", result.getPoolSolutions().size());
+            log.debug("Found {} intermediate solutions candidates", result.getPoolSolutions().size());
             return result.getPoolSolutions().stream()
                     .filter(sol -> sol.getObjectiveValue() > lowerBound)
                     .filter(Predicate.isEqual(result).negate())

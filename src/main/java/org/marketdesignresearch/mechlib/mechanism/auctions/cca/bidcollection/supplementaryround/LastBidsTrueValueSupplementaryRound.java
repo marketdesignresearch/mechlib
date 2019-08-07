@@ -5,6 +5,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 import lombok.Setter;
 
@@ -23,7 +24,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
     }
 
     @Override
-    public Bid getSupplementaryBids(String id, Bidder bidder) {
+    public Bid getSupplementaryBids(String id, Bidder bidder, Prices prices) {
         Bid bid = bids.getBid(bidder);
         if (bid == null) return new Bid();
         Bid result = new Bid();

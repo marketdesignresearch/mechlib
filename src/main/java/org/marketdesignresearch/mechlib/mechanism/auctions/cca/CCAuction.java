@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
@@ -198,7 +199,7 @@ public class CCAuction extends Auction {
                 return;
             }
             SupplementaryRound supplementaryRound = supplementaryRoundQueue.peek();
-            SupplementaryBidCollector collector = new SupplementaryBidCollector(getNumberOfRounds() + 1, biddersToQuery, supplementaryRound);
+            SupplementaryBidCollector collector = new SupplementaryBidCollector(getNumberOfRounds() + 1, biddersToQuery, supplementaryRound, getCurrentPrices());
             log.debug("Starting supplementary round '{}'...", collector);
             submitBids(collector.collectBids());
         }

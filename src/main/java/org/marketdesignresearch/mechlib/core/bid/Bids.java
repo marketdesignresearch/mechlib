@@ -1,19 +1,17 @@
 package org.marketdesignresearch.mechlib.core.bid;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,26 +19,33 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @ToString
-public class Bids implements Iterable<Entry<Bidder, Bid>> {
-    @Getter
-    private final Map<Bidder, Bid> bidMap;
+public class Bids {
 
-    public Bids() {
-        this(new LinkedHashMap<>());
+    private final Map<UUID, Bid> bidMap = new HashMap<>();
+    @Getter
+    private final Set<Bidder> bidders = new HashSet<>();
+
+    public Bids() {}
+
+    public Bids(Map<Bidder, Bid> bidderBidMap) {
+        bidders.addAll(bidderBidMap.keySet());
+        bidderBidMap.forEach((k, v) -> this.bidMap.put(k.getId(), v));
     }
 
     public boolean setBid(Bidder bidder, Bid bid) {
-        return bidMap.put(bidder, bid) == null;
-    }
-
-    public Set<Bidder> getBidders() {
-        return bidMap.keySet();
+        bidders.add(bidder);
+        return bidMap.put(bidder.getId(), bid) == null;
     }
 
     public Collection<Bid> getBids() {
         return bidMap.values();
+    }
+
+    public Map<Bidder, Bid> getBidMap() {
+        HashMap<Bidder, Bid> map = new HashMap<>();
+        bidMap.forEach((k, v) -> map.put(getBidder(k), v));
+        return map;
     }
 
     public Collection<Good> getGoods() {
@@ -60,11 +65,15 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
     public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new Bids());
         Map<Bidder, Bid> bidsPerGood = new HashMap<>();
-        for (Entry<Bidder, Bid> entry : bidMap.entrySet()) {
+        for (Entry<UUID, Bid> entry : bidMap.entrySet()) {
             Set<BundleBid> bundleBids = entry.getValue().getBundleBids().stream().filter(bbid -> bbid.getBundle().isSingleGood()).filter(bbid -> bbid.getBundle().getSingleGood().equals(good)).collect(Collectors.toSet());
-            if (!bundleBids.isEmpty()) bidsPerGood.put(entry.getKey(), new Bid(bundleBids));
+            if (!bundleBids.isEmpty()) bidsPerGood.put(getBidder(entry.getKey()), new Bid(bundleBids));
         }
         return new SingleItemBids(new Bids(bidsPerGood));
+    }
+
+    private Bidder getBidder(UUID id) {
+        return getBidders().stream().filter(b -> b.getId().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
     }
 
     /**
@@ -73,8 +82,11 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
      * @return New bids not including the bid of the specified bidder
      */
     public Bids without(Bidder bidder) {
-        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(bidMap);
-        newBidderBidMap.remove(bidder);
+        Map<Bidder, Bid> newBidderBidMap = new HashMap<>();
+        bidMap.forEach((k, v) -> {
+            Bidder b = getBidder(k);
+            if (!b.equals(bidder)) newBidderBidMap.put(b, v);
+        });
         return new Bids(newBidderBidMap);
     }
 
@@ -84,17 +96,16 @@ public class Bids implements Iterable<Entry<Bidder, Bid>> {
      * @return New bids consisting only of the bids of the specified bidders
      */
     public Bids of(Set<Bidder> bidders) {
-        Map<Bidder, Bid> newBidderBidMap = new HashMap<>(Maps.filterKeys(bidMap, bidders::contains));
+        Map<Bidder, Bid> newBidderBidMap = new HashMap<>();
+        bidMap.forEach((k, v) -> {
+            Bidder b = getBidder(k);
+            if (bidders.contains(b)) newBidderBidMap.put(b, v);
+        });
         return new Bids(newBidderBidMap);
     }
 
     public Bid getBid(Bidder bidder) {
-        return bidMap.getOrDefault(bidder, new Bid());
-    }
-
-    @Override
-    public Iterator<Entry<Bidder, Bid>> iterator() {
-        return bidMap.entrySet().iterator();
+        return bidMap.getOrDefault(bidder.getId(), new Bid());
     }
 
     public Bids join(Bids other) {

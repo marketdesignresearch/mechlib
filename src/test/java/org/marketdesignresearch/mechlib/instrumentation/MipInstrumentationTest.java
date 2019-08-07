@@ -89,7 +89,7 @@ public class MipInstrumentationTest {
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(outcome.toString());
@@ -120,7 +120,7 @@ public class MipInstrumentationTest {
 
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound(cca).withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(56.0, Offset.offset(1e-4));
         log.info(outcome.toString());
