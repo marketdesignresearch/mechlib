@@ -2,10 +2,17 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -15,17 +22,8 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.Sup
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.SupplementaryRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.MechanismFactory;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
 import static org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCARound.Type.CLOCK;
 import static org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCARound.Type.SUPPLEMENTARY;
 
+@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 @Slf4j
 public class CCAuction extends Auction {
 
@@ -41,14 +40,14 @@ public class CCAuction extends Auction {
 
     @Setter
     private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
-    private final List<SupplementaryRound> supplementaryRounds = new ArrayList<>();
-    private Queue<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
+    private final List<SupplementaryRound> supplementaryRounds;
+    private LinkedList<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
 
     @Getter
     private boolean clockPhaseCompleted = false;
 
     public CCAuction(Domain domain) {
-        this(domain, org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator.CCG);
+        this(domain, OutcomeRuleGenerator.CCG);
     }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
@@ -70,12 +69,23 @@ public class CCAuction extends Auction {
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
         super(domain, mechanismType, mipInstrumentation, auctionInstrumentation);
+        this.supplementaryRounds = new ArrayList<>();
         setMaxRounds(100);
         if (proposeStartingPrices) {
             this.currentPrices = getDomain().proposeStartingPrices();
         } else {
             this.currentPrices = new LinearPrices(getDomain().getGoods());
         }
+    }
+
+    @PersistenceConstructor
+    private CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, Prices currentPrices, PriceUpdater priceUpdater, List<SupplementaryRound> supplementaryRounds, LinkedList<SupplementaryRound> supplementaryRoundQueue, boolean clockPhaseCompleted) {
+        super(domain, outcomeRuleGenerator);
+        this.currentPrices = currentPrices;
+        this.priceUpdater = priceUpdater;
+        this.supplementaryRounds = supplementaryRounds;
+        this.supplementaryRoundQueue = supplementaryRoundQueue;
+        this.clockPhaseCompleted = clockPhaseCompleted;
     }
 
     @Override
@@ -101,7 +111,7 @@ public class CCAuction extends Auction {
     public Outcome getOutcomeAtRound(int index) {
         if (getBidsAt(index).isEmpty()) return Outcome.NONE;
         if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(getOutcomeRuleType().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
+            getRound(index).setOutcome(getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
         }
         return getRound(index).getOutcome();
     }
@@ -115,8 +125,8 @@ public class CCAuction extends Auction {
         while (!finished()) {
             advanceRound();
         }
-        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleType());
-        return getOutcomeRuleType().getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
+        return getOutcomeRuleGenerator().getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
     }
 
     public CCARound.Type getCurrentRoundType() {
@@ -154,7 +164,7 @@ public class CCAuction extends Auction {
         // }
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleType(), getMipInstrumentation());
+        current = new AuctionRoundBuilder(getOutcomeRuleGenerator(), getMipInstrumentation());
         updatePrices();
     }
 

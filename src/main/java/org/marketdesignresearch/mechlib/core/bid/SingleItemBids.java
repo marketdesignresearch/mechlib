@@ -1,14 +1,17 @@
 package org.marketdesignresearch.mechlib.core.bid;
 
 import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 import java.util.*;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public final class SingleItemBids extends Bids {
-
     @Getter
     private Good item;
 

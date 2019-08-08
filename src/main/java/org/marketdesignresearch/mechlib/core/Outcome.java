@@ -1,15 +1,15 @@
 package org.marketdesignresearch.mechlib.core;
 
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
 @ToString
 public final class Outcome implements MetaInfoResult {

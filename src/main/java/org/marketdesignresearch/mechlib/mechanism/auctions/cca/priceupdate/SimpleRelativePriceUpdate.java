@@ -1,6 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
 import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -12,6 +14,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+@ToString
+@EqualsAndHashCode
 public class SimpleRelativePriceUpdate implements PriceUpdater {
 
     private static final BigDecimal DEFAULT_PRICE_UPDATE = BigDecimal.valueOf(0.1);

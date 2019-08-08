@@ -2,12 +2,15 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.sequential;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +19,10 @@ import java.util.Map;
 /**
  * This class represents a sequential auction where for each round, there are only bids placed for a specific good
  */
+@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 public class SequentialAuction extends Auction {
 
+    @PersistenceConstructor
     public SequentialAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
         super(domain, outcomeRuleGenerator);
         setMaxRounds(domain.getGoods().size());
@@ -44,7 +49,7 @@ public class SequentialAuction extends Auction {
     @Override
     public Outcome getOutcomeAtRound(int index) {
         if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(getOutcomeRuleType().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
+            getRound(index).setOutcome(getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
         }
         return getRound(index).getOutcome();
     }

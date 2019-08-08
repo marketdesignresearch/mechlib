@@ -2,18 +2,21 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import lombok.Getter;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@ToString @EqualsAndHashCode
 public class InferredValueFunctions {
 
     @Getter
-    private final ImmutableMap<UUID, XORValueFunction> map;
-    private final ImmutableSet<Bidder> bidders;
+    private final Map<UUID, XORValueFunction> map;
+    private final Set<Bidder> bidders;
 
     public InferredValueFunctions(Map<Bidder, XORValueFunction> inferredValues) {
         this.bidders = ImmutableSet.copyOf(inferredValues.keySet());

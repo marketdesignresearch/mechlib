@@ -1,7 +1,9 @@
 package org.marketdesignresearch.mechlib.core;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.UnitDemandBidder;
@@ -17,6 +19,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public final class SimpleUnitDemandDomain implements Domain {
 

@@ -2,16 +2,14 @@ package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
 import com.google.common.collect.ImmutableMap;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,20 +23,21 @@ import java.util.stream.Collectors;
  *
  * @author Benedikt Buenz
  */
-@EqualsAndHashCode(of = "tradesMap")
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@EqualsAndHashCode
 @ToString
 public class Allocation implements MetaInfoResult {
     public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new Bids(new HashMap<>()), new MetaInfo());
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
 
-    private final ImmutableMap<UUID, BidderAllocation> tradesMap; // The Map only includes winning bidders
+    private final Map<UUID, BidderAllocation> tradesMap; // The Map only includes winning bidders
     @Getter
     private final Bids bids;
     @Getter
     private final MetaInfo metaInfo;
     @Getter
-    private final ImmutableSet<? extends Bidder> winners;
+    private final Set<? extends Bidder> winners;
     private Set<PotentialCoalition> coalitions;
 
     public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {

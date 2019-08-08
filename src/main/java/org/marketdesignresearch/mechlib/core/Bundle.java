@@ -4,9 +4,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
  * Often, in simpler domains, all quantities are equal to one. For that case, this class introduces many
  * convenience methods to create and retrieve such simple bundles.
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
 @Slf4j
 public final class Bundle {
@@ -25,7 +29,7 @@ public final class Bundle {
     public static Bundle EMPTY = new Bundle(new HashMap<>());
 
     @Getter
-    private final ImmutableList<BundleEntry> bundleEntries;
+    private final List<BundleEntry> bundleEntries;
 
     /**
      * Instantiates a new Bundle.

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -21,9 +22,9 @@ import java.util.stream.Collectors;
  * @author Benedikt Buenz
  * 
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @Slf4j
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @ToString
 public class BundleBid {
 

@@ -1,13 +1,14 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.springframework.data.annotation.PersistenceConstructor;
 
-@RequiredArgsConstructor
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 public class DefaultAuctionRound implements AuctionRound {
 
     @Getter

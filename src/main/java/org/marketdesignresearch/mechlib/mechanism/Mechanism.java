@@ -1,32 +1,16 @@
 package org.marketdesignresearch.mechlib.mechanism;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
+import org.springframework.data.annotation.PersistenceConstructor;
 
+@ToString @EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
 public abstract class Mechanism implements OutcomeRule {
-
-    @Getter
-    private final MipInstrumentation mipInstrumentation;
-    @Getter
-    private final AuctionInstrumentation auctionInstrumentation;
-
-    protected Mechanism() {
-        this(new MipInstrumentation(), new AuctionInstrumentation());
-    }
-
-    protected Mechanism(MipInstrumentation mipInstrumentation) {
-        this(mipInstrumentation, new AuctionInstrumentation());
-    }
-
-    protected Mechanism(AuctionInstrumentation auctionInstrumentation) {
-        this(new MipInstrumentation(), auctionInstrumentation);
-    }
-
-    protected Mechanism(MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
-        this.mipInstrumentation = mipInstrumentation;
-        this.auctionInstrumentation = auctionInstrumentation;
-    }
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation;
+    @Getter @Setter
+    private AuctionInstrumentation auctionInstrumentation;
 }

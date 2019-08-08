@@ -347,7 +347,7 @@ public class CCATest {
         assertThat(cca.getCurrentPrices().getPrice(AB).getAmount()).isEqualTo(BigDecimal.valueOf(30));
 
         assertThat(cca.isClockPhaseCompleted()).isTrue();
-        Outcome aggregated = cca.getOutcomeRuleType().getOutcomeRule(cca.getLatestAggregatedBids()).getOutcome();
+        Outcome aggregated = cca.getOutcomeRuleGenerator().getOutcomeRule(cca.getLatestAggregatedBids()).getOutcome();
 
         assertThat(aggregated.getWinners()).containsExactlyInAnyOrder(bidder1, bidder2);
         assertThat(aggregated.getAllocation().allocationOf(bidder1).getBundle()).isEqualTo(A);

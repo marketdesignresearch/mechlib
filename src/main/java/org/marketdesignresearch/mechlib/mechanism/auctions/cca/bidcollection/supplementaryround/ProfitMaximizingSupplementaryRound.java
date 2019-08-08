@@ -1,6 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -13,6 +15,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
+@EqualsAndHashCode
 public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
 
     private static final int DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS = 10;

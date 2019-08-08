@@ -1,18 +1,27 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@ToString
+@EqualsAndHashCode
 public class MetaElicitation {
-    private final Map<UUID, MLAlgorithm> algorithms = new HashMap<>();
-    private final Set<Bidder> bidders = new HashSet<>();
+    private final Map<UUID, MLAlgorithm> algorithms;
+    private final Set<Bidder> bidders;
 
     public MetaElicitation(Map<Bidder, MLAlgorithm> bidderMLAlgorithmMap) {
-        bidders.addAll(bidderMLAlgorithmMap.keySet());
+        this.bidders = new HashSet<>(bidderMLAlgorithmMap.keySet());
+        this.algorithms = new HashMap<>();
         bidderMLAlgorithmMap.forEach((k, v) -> this.algorithms.put(k.getId(), v));
     }
 

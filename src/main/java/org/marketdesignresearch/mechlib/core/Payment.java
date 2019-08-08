@@ -3,13 +3,11 @@ package org.marketdesignresearch.mechlib.core;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,13 +21,14 @@ import java.util.*;
  * @author Benedikt
  * 
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode(of = "paymentMap")
 @ToString
 public final class Payment implements MetaInfoResult {
     public static final Payment ZERO = new Payment(Collections.emptyMap(), new MetaInfo());
 
-    private final ImmutableSet<Bidder> bidders;
-    private final ImmutableMap<UUID, BidderPayment> paymentMap;
+    private final Set<Bidder> bidders;
+    private final Map<UUID, BidderPayment> paymentMap;
     @Getter
     private final MetaInfo metaInfo;
 

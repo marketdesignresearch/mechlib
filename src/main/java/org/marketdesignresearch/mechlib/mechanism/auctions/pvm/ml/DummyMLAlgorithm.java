@@ -2,6 +2,8 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
@@ -10,6 +12,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -19,6 +22,7 @@ import java.util.*;
  * This only serves to keep PVM from being "wrong" about the bidder's value function, which leads
  * to new queries.
  */
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @RequiredArgsConstructor
 public class DummyMLAlgorithm implements MLAlgorithm {
     private final Bidder bidder;

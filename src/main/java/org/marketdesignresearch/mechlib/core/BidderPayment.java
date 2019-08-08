@@ -4,10 +4,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @ToString
 @EqualsAndHashCode
 public final class BidderPayment implements Comparable<BidderPayment> {

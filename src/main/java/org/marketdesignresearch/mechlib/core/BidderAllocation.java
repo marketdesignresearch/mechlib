@@ -1,13 +1,11 @@
 package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.collect.Sets;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -20,7 +18,7 @@ import static java.util.Collections.emptySet;
  * @author Benedikt Buenz
  * 
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @ToString
 @EqualsAndHashCode
 @Slf4j

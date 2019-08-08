@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.core;
 
 import lombok.*;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  * @author Benedikt Bünz
  *
  */
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
 @ToString(of = "name")
 public final class SimpleGood implements Good {
@@ -21,7 +22,7 @@ public final class SimpleGood implements Good {
     @Getter
     private final String name;
     @Getter @EqualsAndHashCode.Exclude
-    private final UUID uuid = UUID.randomUUID();
+    private final UUID uuid;
     private final int availability;
     @Getter
     private final boolean dummyGood;
@@ -32,6 +33,10 @@ public final class SimpleGood implements Good {
 
     public SimpleGood(String name, boolean dummyGood) {
         this(name, 1, dummyGood);
+    }
+
+    public SimpleGood(String name, int availability, boolean dummyGood) {
+        this(name, UUID.randomUUID(), availability, dummyGood);
     }
 
     @Override

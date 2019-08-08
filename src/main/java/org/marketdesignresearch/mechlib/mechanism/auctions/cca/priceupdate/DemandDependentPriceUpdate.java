@@ -1,6 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
 import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
@@ -13,6 +15,8 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+@ToString
+@EqualsAndHashCode
 public class DemandDependentPriceUpdate implements PriceUpdater {
 
     private static final BigDecimal DEFAULT_CONSTANT = BigDecimal.valueOf(1e6);

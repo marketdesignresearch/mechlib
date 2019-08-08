@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -23,12 +24,13 @@ public class ORValueFunction implements ValueFunction {
     private static final long serialVersionUID = -2661282710326907817L;
 
     @Getter
-    private final ImmutableSet<BundleValue> bundleValues;
+    private final Set<BundleValue> bundleValues;
 
     public ORValueFunction() {
         this(new HashSet<>());
     }
 
+    @PersistenceConstructor
     public ORValueFunction(Set<BundleValue> bundleValues) {
         this.bundleValues = ImmutableSet.copyOf(bundleValues);
     }

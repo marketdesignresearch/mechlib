@@ -1,8 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
 import com.google.common.base.Preconditions;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
@@ -13,13 +12,14 @@ import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.Mechanism;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentationable;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 @Slf4j
 public class Auction extends Mechanism implements AuctionInstrumentationable {
 
@@ -29,7 +29,7 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
     @Getter
     private final Domain domain;
     @Getter
-    private final OutcomeRuleGenerator outcomeRuleType;
+    private final OutcomeRuleGenerator outcomeRuleGenerator;
 
     @Getter @Setter
     private int maxBids = DEFAULT_MAX_BIDS;
@@ -46,24 +46,25 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
 
     protected AuctionRoundBuilder current;
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleType) {
-        this(domain, outcomeRuleType, new MipInstrumentation(), new AuctionInstrumentation());
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
+        this(domain, outcomeRuleGenerator, new MipInstrumentation(), new AuctionInstrumentation());
     }
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleType, MipInstrumentation mipInstrumentation) {
-        this(domain, outcomeRuleType, mipInstrumentation, new AuctionInstrumentation());
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, MipInstrumentation mipInstrumentation) {
+        this(domain, outcomeRuleGenerator, mipInstrumentation, new AuctionInstrumentation());
     }
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleType, AuctionInstrumentation auctionInstrumentation) {
-        this(domain, outcomeRuleType, new MipInstrumentation(), auctionInstrumentation);
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionInstrumentation auctionInstrumentation) {
+        this(domain, outcomeRuleGenerator, new MipInstrumentation(), auctionInstrumentation);
     }
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleType, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
+    @PersistenceConstructor
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
         super(mipInstrumentation, auctionInstrumentation);
         this.domain = domain;
         this.domain.attachMipInstrumentation(getMipInstrumentation());
-        this.outcomeRuleType = outcomeRuleType;
-        current = new AuctionRoundBuilder(outcomeRuleType, getMipInstrumentation());
+        this.outcomeRuleGenerator = outcomeRuleGenerator;
+        current = new AuctionRoundBuilder(outcomeRuleGenerator, getMipInstrumentation());
         getAuctionInstrumentation().preAuction(this);
     }
 
@@ -154,7 +155,7 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
         // }
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(outcomeRuleType, getMipInstrumentation());
+        current = new AuctionRoundBuilder(outcomeRuleGenerator, getMipInstrumentation());
     }
 
     public void resetBid(Bidder bidder) {
@@ -265,7 +266,7 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
      */
     public Outcome getOutcomeAtRound(int index) {
         if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(outcomeRuleType.getOutcomeRule(getAggregatedBidsAt(index), getMipInstrumentation()).getOutcome());
+            getRound(index).setOutcome(outcomeRuleGenerator.getOutcomeRule(getAggregatedBidsAt(index), getMipInstrumentation()).getOutcome());
         }
         return getRound(index).getOutcome();
     }

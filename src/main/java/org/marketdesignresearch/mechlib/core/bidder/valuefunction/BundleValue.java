@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * 
  */
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode(of = "id")
 @ToString
 public class BundleValue implements Comparable<BundleValue>, Serializable {

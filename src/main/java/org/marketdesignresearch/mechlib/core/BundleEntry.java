@@ -1,8 +1,12 @@
 package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 
+@ToString
+@EqualsAndHashCode
 @Value
 public class BundleEntry {
     private Good good;

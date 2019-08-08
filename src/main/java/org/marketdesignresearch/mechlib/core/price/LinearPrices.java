@@ -2,22 +2,23 @@ package org.marketdesignresearch.mechlib.core.price;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.Wither;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @ToString
 @EqualsAndHashCode
 public class LinearPrices implements Prices {
-    private final ImmutableMap<UUID, Price> priceMap;
-    private final ImmutableSet<Good> goods;
+    private final Map<UUID, Price> priceMap;
+    private final Set<Good> goods;
 
     public LinearPrices(List<? extends Good> goods) {
         this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO)));
@@ -29,6 +30,7 @@ public class LinearPrices implements Prices {
         goodPriceMap.forEach((g, p) -> map.put(g.getUuid(), p));
         this.priceMap = ImmutableMap.copyOf(map);
     }
+
 
     public Price get(Good good) {
         return priceMap.getOrDefault(good.getUuid(), Price.ZERO);

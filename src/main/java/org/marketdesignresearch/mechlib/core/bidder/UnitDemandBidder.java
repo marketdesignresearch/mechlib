@@ -1,12 +1,11 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
 import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,13 +16,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
 public class UnitDemandBidder implements Bidder, Serializable {
     private static final long serialVersionUID = -8537482710326907817L;
 
     @Getter
-    @EqualsAndHashCode.Include
     @ToString.Include
     private final UUID id;
     @Getter

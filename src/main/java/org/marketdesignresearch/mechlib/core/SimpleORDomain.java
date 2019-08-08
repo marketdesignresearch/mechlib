@@ -1,7 +1,9 @@
 package org.marketdesignresearch.mechlib.core;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
@@ -9,6 +11,8 @@ import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDeterminatio
 
 import java.util.List;
 
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public final class SimpleORDomain implements Domain {
 

@@ -14,6 +14,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,14 +23,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
 public class ORBidder implements Bidder, Serializable {
     private static final long serialVersionUID = -4896848195956099257L;
 
     @Getter
-    @EqualsAndHashCode.Include
     @ToString.Include
     private final UUID id;
     @Getter

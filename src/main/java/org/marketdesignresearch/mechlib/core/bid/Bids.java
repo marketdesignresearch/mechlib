@@ -1,8 +1,7 @@
 package org.marketdesignresearch.mechlib.core.bid;
 
 import com.google.common.collect.Sets;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
@@ -12,6 +11,7 @@ import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -19,17 +19,21 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@ToString @EqualsAndHashCode
 public class Bids {
 
-    private final Map<UUID, Bid> bidMap = new HashMap<>();
+    private final Map<UUID, Bid> bidMap;
     @Getter
-    private final Set<Bidder> bidders = new HashSet<>();
+    private final Set<Bidder> bidders;
 
-    public Bids() {}
+    public Bids() {
+        this(new HashMap<>());
+    }
 
     public Bids(Map<Bidder, Bid> bidderBidMap) {
-        bidders.addAll(bidderBidMap.keySet());
+        bidMap = new HashMap<>();
+        bidders = new HashSet<>(bidderBidMap.keySet());
         bidderBidMap.forEach((k, v) -> this.bidMap.put(k.getId(), v));
     }
 

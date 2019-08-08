@@ -1,8 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -12,6 +10,8 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class AuctionRoundBuilder implements MipInstrumentationable {
     private final OutcomeRuleGenerator outcomeRuleType;

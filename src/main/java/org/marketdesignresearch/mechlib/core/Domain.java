@@ -12,6 +12,7 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
  * It also includes a getter for the efficient allocation in this domain.
  */
 public interface Domain extends MipInstrumentationable {
+
+    Domain EMPTY = new SimpleXORDomain(new ArrayList<>(), new ArrayList<>());
 
     /**
      * Gets the list of bidders.

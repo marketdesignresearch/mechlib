@@ -6,6 +6,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -18,12 +19,13 @@ public class XORValueFunction implements ValueFunction {
     private static final long serialVersionUID = -2661282710326907817L;
 
     @Getter
-    private final ImmutableSet<BundleValue> bundleValues;
+    private final Set<BundleValue> bundleValues;
 
     public XORValueFunction() {
         this(new HashSet<>());
     }
 
+    @PersistenceConstructor
     public XORValueFunction(Set<BundleValue> bundleValues) {
         this.bundleValues = ImmutableSet.copyOf(bundleValues);
     }

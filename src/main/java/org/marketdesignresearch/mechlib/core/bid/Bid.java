@@ -1,12 +1,14 @@
 package org.marketdesignresearch.mechlib.core.bid;
 
 import com.google.common.collect.ImmutableSet;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -14,8 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-@ToString
+@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@ToString @EqualsAndHashCode
 public class Bid { // FIXME: Have it abstract enough to support all kind of bids
     public static Bid singleBundleBid(BundleBid bundleBid) {
         return new Bid(ImmutableSet.of(bundleBid));

@@ -1,7 +1,9 @@
 package org.marketdesignresearch.mechlib.core;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+@ToString @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class SimpleXORDomain implements Domain {
 

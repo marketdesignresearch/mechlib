@@ -17,6 +17,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ public class PVMAuction extends Auction {
         this(domain, outcomeRuleGenerator, initialBids, mipInstrumentation, new AuctionInstrumentation());
     }
 
+    @PersistenceConstructor
     public PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
         super(domain, outcomeRuleGenerator, mipInstrumentation, auctionInstrumentation);
         setMaxRounds(100);
@@ -57,6 +59,12 @@ public class PVMAuction extends Auction {
         metaElicitation = new MetaElicitation(algorithms);
     }
 
+    private PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation, MetaElicitation metaElicitation) {
+        super(domain, outcomeRuleGenerator, mipInstrumentation, auctionInstrumentation);
+        this.initialBids = initialBids;
+        this.metaElicitation = metaElicitation;
+    }
+
     @Override
     public void closeRound() {
         // TODO: Maybe make sure all the queried valuations came in?
@@ -64,10 +72,10 @@ public class PVMAuction extends Auction {
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
-        PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, metaElicitation.process(bids), getCurrentPrices());
+        PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids));
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleType(), getMipInstrumentation());
+        current = new AuctionRoundBuilder(getOutcomeRuleGenerator(), getMipInstrumentation());
     }
 
     @Override
@@ -111,7 +119,7 @@ public class PVMAuction extends Auction {
         while (!finished()) {
             advanceRound();
         }
-        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleType());
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
         return getOutcomeAtRound(rounds.size() - 1);
     }
 }
