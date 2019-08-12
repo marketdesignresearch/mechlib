@@ -244,14 +244,6 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
         return rounds.get(index);
     }
 
-    // TODO: This counts every bid. This may not make much sense if multiple bids per round per bidder are allowed.
-    public Map<Good, Integer> getOverDemandAt(int index) {
-        Map<Good, Integer> result = new HashMap<>();
-        Bids bids = getBidsAt(index);
-        domain.getGoods().forEach(good -> result.put(good, bids.getDemand(good) - good.getQuantity()));
-        return result;
-    }
-
     public int getNumberOfRounds() {
         return rounds.size();
     }

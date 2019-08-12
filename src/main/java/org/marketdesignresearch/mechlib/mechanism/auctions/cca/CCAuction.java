@@ -16,6 +16,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.ClockPhaseBidCollector;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.SupplementaryBidCollector;
@@ -27,9 +28,6 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCARound.Type.CLOCK;
-import static org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCARound.Type.SUPPLEMENTARY;
 
 @ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 @Slf4j
@@ -129,16 +127,16 @@ public class CCAuction extends Auction {
         return getOutcomeRuleGenerator().getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
     }
 
-    public CCARound.Type getCurrentRoundType() {
-        if (clockPhaseCompleted) return SUPPLEMENTARY;
-        return CLOCK;
+    public String getCurrentRoundType() {
+        if (clockPhaseCompleted) return "SUPPLEMENTARY";
+        return "CLOCK";
     }
 
     @Override
     public boolean currentPhaseFinished() {
         if (rounds.isEmpty()) return false;
-        CCARound lastRound = (CCARound) rounds.get(rounds.size() - 1);
-        if (CLOCK.equals(lastRound.getType()) && clockPhaseCompleted) {
+        AuctionRound lastRound = rounds.get(rounds.size() - 1);
+        if (lastRound instanceof CCAClockRound && clockPhaseCompleted) {
             return true;
         } else {
             return finished();
@@ -152,12 +150,12 @@ public class CCAuction extends Auction {
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
-        CCARound round;
+        AuctionRound round;
         if (clockPhaseCompleted) {
-            round = new CCARound(roundNumber, bids, getCurrentPrices(), SUPPLEMENTARY);
+            round = new CCASupplementaryRound(roundNumber, bids, getCurrentPrices());
             supplementaryRoundQueue.poll();
         } else {
-            round = new CCARound(roundNumber, bids, getCurrentPrices());
+            round = new CCAClockRound(roundNumber, bids, getCurrentPrices(), getDomain().getGoods());
         }
         // if (current.hasOutcome()) {
         //     round.setOutcome(current.getOutcome());
@@ -176,7 +174,7 @@ public class CCAuction extends Auction {
     @Override
     public Bid proposeBid(Bidder bidder) {
         Bid bid = super.proposeBid(bidder);
-        if (CLOCK.equals(getCurrentRoundType())) {
+        if (!clockPhaseCompleted) {
             Set<BundleBid> bundleBids = bid.getBundleBids().stream()
                     .map(bb -> new BundleBid(getCurrentPrices().getPrice(bb.getBundle()).getAmount(), bb.getBundle(), bb.getId()))
                     .collect(Collectors.toSet());
@@ -222,16 +220,15 @@ public class CCAuction extends Auction {
 
     @Override
     public void resetToRound(int index) {
-        CCARound round = (CCARound) getRound(index);
+        AuctionRound round = getRound(index);
         currentPrices = round.getPrices();
-        if (SUPPLEMENTARY.equals(round.getType())) {
-            CCARound previous = (CCARound) getRound(index - 1);
-            Preconditions.checkState(CLOCK.equals(previous.getType()),
+        if (clockPhaseCompleted) {
+            AuctionRound previous = getRound(index - 1);
+            Preconditions.checkState(previous instanceof CCAClockRound,
                     "Currently, the implementation does not allow to reset to another supplementary round than the first one.");
             clockPhaseCompleted = true;
             supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         } else {
-            clockPhaseCompleted = false;
             supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         }
         super.resetToRound(index);

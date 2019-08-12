@@ -63,7 +63,7 @@ public class FirstPriceRuleTest {
     @Test
     public void testFirstPriceAuctionSingleBidder() {
         BundleBid bid1A = new BundleBid(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "1B");
+        BundleBid bid1B = new BundleBid(BigDecimal.valueOf(9), Sets.newHashSet(item), "1B");
         BundleBid bid2A = new BundleBid(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
         BundleBid bid2B = new BundleBid(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
         BundleBid bid3A = new BundleBid(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");

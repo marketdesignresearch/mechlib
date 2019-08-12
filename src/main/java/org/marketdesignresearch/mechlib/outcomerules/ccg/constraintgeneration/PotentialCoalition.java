@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -24,8 +25,9 @@ public class PotentialCoalition {
         this(Bundle.of(goods), bidder, value);
     }
 
-    public PotentialCoalition(Bundle goods, Bidder bidder, BigDecimal value) {
-        this.bundle = goods;
+    @PersistenceConstructor
+    public PotentialCoalition(Bundle bundle, Bidder bidder, BigDecimal value) {
+        this.bundle = bundle;
         this.bidder = bidder;
         this.value = value;
     }
