@@ -35,11 +35,11 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
     private int maxBids = DEFAULT_MAX_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
-    @Setter
+    @Getter @Setter
     private double relativeDemandQueryTolerance = 0;
-    @Setter
+    @Getter @Setter
     private double absoluteDemandQueryTolerance = 0;
-    @Setter
+    @Getter @Setter
     private double demandQueryTimeLimit = -1;
 
     protected List<AuctionRound> rounds = new ArrayList<>();
