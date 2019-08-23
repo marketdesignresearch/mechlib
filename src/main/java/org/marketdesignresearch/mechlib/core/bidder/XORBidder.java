@@ -42,10 +42,10 @@ public class XORBidder implements Bidder, Serializable {
         this.id = UUID.randomUUID();
         this.name = name;
         this.value = value;
-        StringBuilder sb = new StringBuilder("Bidder with an XOR-based value function with the following 5 most-valued bundles (rounded):");
+        StringBuilder sb = new StringBuilder("Bidder with an XOR-based value function with the following most-valued bundles (rounded):");
         for (BundleValue bundleValue : value.getBundleValues()
                 .stream()
-                .sorted(Comparator.comparingDouble(bv -> bv.getAmount().doubleValue()))
+                .sorted(Comparator.comparingDouble(bv -> -bv.getAmount().doubleValue()))
                 .limit(5)
                 .collect(Collectors.toList())) {
             sb.append("\n\t- ").append(bundleValue.getBundle()).append(": ").append(bundleValue.getAmount().setScale(2, RoundingMode.HALF_UP));
