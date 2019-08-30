@@ -2,7 +2,10 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.Domain;
@@ -13,8 +16,6 @@ import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -58,15 +59,7 @@ public class CCAuction extends Auction {
     }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
-        this(domain, mechanismType, proposeStartingPrices, new MipInstrumentation(), new AuctionInstrumentation());
-    }
-
-    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, MipInstrumentation mipInstrumentation) {
-        this(domain, mechanismType, proposeStartingPrices, mipInstrumentation, new AuctionInstrumentation());
-    }
-
-    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
-        super(domain, mechanismType, mipInstrumentation, auctionInstrumentation);
+        super(domain, mechanismType);
         this.supplementaryRounds = new ArrayList<>();
         setMaxRounds(100);
         if (proposeStartingPrices) {
@@ -162,7 +155,8 @@ public class CCAuction extends Auction {
         // }
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleGenerator(), getMipInstrumentation());
+        current = new AuctionRoundBuilder(getOutcomeRuleGenerator());
+        current.setMipInstrumentation(getMipInstrumentation());
         updatePrices();
     }
 
@@ -226,7 +220,9 @@ public class CCAuction extends Auction {
             AuctionRound previous = getRound(index - 1);
             Preconditions.checkState(previous instanceof CCAClockRound,
                     "Currently, the implementation does not allow to reset to another supplementary round than the first one.");
-            clockPhaseCompleted = true;
+            if (round instanceof CCAClockRound) {
+                clockPhaseCompleted = false;
+            }
             supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
         } else {
             supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);

@@ -6,6 +6,5 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 
 @EqualsAndHashCode
 public class AuctionInstrumentation {
-    public void preAuction(Auction auction) {}
     public void postRound(AuctionRound auctionRound) {}
 }

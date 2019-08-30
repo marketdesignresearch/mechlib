@@ -31,11 +31,6 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
         winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
     }
 
-    public ORWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
-        super(bids, purpose, mipInstrumentation);
-        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
-    }
-
     protected MIPWrapper createWinnerDeterminationMIP(Bids bids) {
         MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
 

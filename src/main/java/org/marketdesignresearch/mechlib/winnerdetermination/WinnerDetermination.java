@@ -25,23 +25,6 @@ public abstract class WinnerDetermination implements AllocationRule {
 
     private Allocation result = null;
     private List<Allocation> intermediateSolutions = null;
-    @Getter
-    private MipInstrumentation mipInstrumentation;
-    @Getter
-    private MipInstrumentation.MipPurpose purpose;
-
-    protected WinnerDetermination() {
-        this(MipInstrumentation.MipPurpose.ALLOCATION, new MipInstrumentation());
-    }
-
-    protected WinnerDetermination(MipInstrumentation.MipPurpose purpose) {
-        this(purpose, new MipInstrumentation());
-    }
-
-    protected WinnerDetermination(MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
-        this.purpose = purpose;
-        this.mipInstrumentation = mipInstrumentation;
-    }
 
     /**
      * Defines the time limit for the solver.
@@ -175,5 +158,12 @@ public abstract class WinnerDetermination implements AllocationRule {
             }
         }
     }
+
+    // region instrumentation
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+    @Getter @Setter
+    private MipInstrumentation.MipPurpose purpose = MipInstrumentation.MipPurpose.ALLOCATION;
+    // endregion
 
 }

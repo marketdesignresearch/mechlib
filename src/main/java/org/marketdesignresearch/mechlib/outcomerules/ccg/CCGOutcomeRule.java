@@ -1,9 +1,12 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
@@ -98,4 +101,9 @@ public class CCGOutcomeRule implements OutcomeRule {
     public Allocation getAllocation() {
         return allocation;
     }
+
+    // region instrumentation
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+    // endregion
 }

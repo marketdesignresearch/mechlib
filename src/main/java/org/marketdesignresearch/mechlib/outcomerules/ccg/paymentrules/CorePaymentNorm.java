@@ -3,8 +3,9 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
 import edu.harvard.econcs.jopt.solver.IMIP;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
-public interface CorePaymentNorm {
+public interface CorePaymentNorm extends MipInstrumentationable {
     /**
      * Takes the existing constraints of the program the optional
      * prmaryConstraint</br> The objective terms of the program are ignored and

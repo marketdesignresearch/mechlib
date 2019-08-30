@@ -15,7 +15,8 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 @RequiredArgsConstructor
 public class AuctionRoundBuilder implements MipInstrumentationable {
     private final OutcomeRuleGenerator outcomeRuleType;
-    private final MipInstrumentation mipInstrumentation;
+    @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
     @Getter
     private Bids bids = new Bids();

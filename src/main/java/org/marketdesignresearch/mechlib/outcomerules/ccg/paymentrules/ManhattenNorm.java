@@ -10,7 +10,7 @@ import edu.harvard.econcs.jopt.solver.mip.*;
 
 import java.math.BigDecimal;
 
-public class ManhattenNorm extends PaymentNorm implements CorePaymentNorm {
+public class ManhattenNorm extends PaymentNorm {
     private final CorePaymentWeights weigths;
     private final Outcome referencePoint;
 

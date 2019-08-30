@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.IMIP;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class IterativeMaximumNorm extends PaymentNorm implements CorePaymentNorm {
+public class IterativeMaximumNorm extends PaymentNorm {
     private final Outcome referencePoint;
 
     private class MaxDistanceConstraint {

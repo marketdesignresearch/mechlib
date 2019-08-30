@@ -3,19 +3,13 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.pvm;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.DummyMLAlgorithm;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -27,7 +21,7 @@ import java.util.Optional;
 @Slf4j
 public class PVMAuction extends Auction {
 
-    private MetaElicitation metaElicitation;
+    private final MetaElicitation metaElicitation;
 
     private final int initialBids;
 
@@ -40,16 +34,7 @@ public class PVMAuction extends Auction {
     }
 
     public PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids) {
-        this(domain, outcomeRuleGenerator, initialBids, new MipInstrumentation(), new AuctionInstrumentation());
-    }
-
-    public PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MipInstrumentation mipInstrumentation) {
-        this(domain, outcomeRuleGenerator, initialBids, mipInstrumentation, new AuctionInstrumentation());
-    }
-
-    @PersistenceConstructor
-    public PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
-        super(domain, outcomeRuleGenerator, mipInstrumentation, auctionInstrumentation);
+        super(domain, outcomeRuleGenerator);
         setMaxRounds(100);
         this.initialBids = initialBids;
         Map<Bidder, MLAlgorithm> algorithms = new HashMap<>();
@@ -59,8 +44,10 @@ public class PVMAuction extends Auction {
         metaElicitation = new MetaElicitation(algorithms);
     }
 
-    private PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation, MetaElicitation metaElicitation) {
-        super(domain, outcomeRuleGenerator, mipInstrumentation, auctionInstrumentation);
+    @PersistenceConstructor
+    private PVMAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids, MetaElicitation metaElicitation) {
+        super(domain, outcomeRuleGenerator);
+        setMaxRounds(100);
         this.initialBids = initialBids;
         this.metaElicitation = metaElicitation;
     }
@@ -75,7 +62,8 @@ public class PVMAuction extends Auction {
         PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids));
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleGenerator(), getMipInstrumentation());
+        current = new AuctionRoundBuilder(getOutcomeRuleGenerator());
+        current.setMipInstrumentation(getMipInstrumentation());
     }
 
     @Override

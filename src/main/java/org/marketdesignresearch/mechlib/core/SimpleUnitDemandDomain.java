@@ -11,6 +11,7 @@ import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.core.cats.CATSParser;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
@@ -46,5 +47,13 @@ public final class SimpleUnitDemandDomain implements Domain {
         }
         return efficientAllocation;
     }
+
+    // region instrumentation
+    @Override
+    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
+        // No MIP involved
+        getBidders().forEach(bidder -> bidder.setMipInstrumentation(mipInstrumentation));
+    }
+    // endregion
 
 }

@@ -7,10 +7,10 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 @ToString @EqualsAndHashCode
-@AllArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
 public abstract class Mechanism implements OutcomeRule {
     @Getter @Setter
-    private MipInstrumentation mipInstrumentation;
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
     @Getter @Setter
-    private AuctionInstrumentation auctionInstrumentation;
+    private AuctionInstrumentation auctionInstrumentation = new AuctionInstrumentation();
 }

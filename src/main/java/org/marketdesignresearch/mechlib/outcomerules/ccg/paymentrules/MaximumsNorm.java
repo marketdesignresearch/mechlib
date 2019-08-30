@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaximumsNorm extends PaymentNorm implements CorePaymentNorm {
+public class MaximumsNorm extends PaymentNorm {
     private final Outcome referencePoint;
 
     public MaximumsNorm(Outcome referencePoint) {

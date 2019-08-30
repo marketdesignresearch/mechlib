@@ -31,11 +31,6 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
         winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
     }
 
-    public XORWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
-        super(bids, purpose, mipInstrumentation);
-        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
-    }
-
     private MIPWrapper createWinnerDeterminationMIP(Bids bids) {
         MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
         // Add decision variables and objective terms:

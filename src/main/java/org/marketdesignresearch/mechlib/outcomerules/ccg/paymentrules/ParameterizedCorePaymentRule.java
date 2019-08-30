@@ -46,7 +46,9 @@ public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements
                     }
                     metaInfo = metaInfo.join(primaryObjective.getMetaInfo());
                 }
-                result = objectiveNorms.get(objectiveNorms.size() - 1).minimizeDistance(programCopy);
+                CorePaymentNorm norm = objectiveNorms.get(objectiveNorms.size() - 1);
+                norm.setMipInstrumentation(getMipInstrumentation());
+                result = norm.minimizeDistance(programCopy);
                 metaInfo = metaInfo.join(result.getMetaInfo());
             } catch (MIPException ex) {
                 log.warn("Failed to compute Payments. Base Program: {}", program);

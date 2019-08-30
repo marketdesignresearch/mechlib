@@ -17,18 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class VCGRule implements OutcomeRule {
-    @Getter
-    private MipInstrumentation mipInstrumentation;
 
     private Outcome result;
-
-    protected VCGRule() {
-        this(new MipInstrumentation());
-    }
-
-    protected VCGRule(MipInstrumentation mipInstrumentation) {
-        this.mipInstrumentation = mipInstrumentation;
-    }
 
     @Override
     public final Outcome getOutcome() {
@@ -40,8 +30,10 @@ public abstract class VCGRule implements OutcomeRule {
 
     private Outcome calculateVCGPrices() {
         long start = System.currentTimeMillis();
-
-        Allocation allocation = getWinnerDetermination().getAllocation();
+        WinnerDetermination allocationWdp = getWinnerDetermination();
+        allocationWdp.setMipInstrumentation(getMipInstrumentation());
+        allocationWdp.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+        Allocation allocation = allocationWdp.getAllocation();
 
         Map<Bidder, BidderPayment> payments = new HashMap<>(allocation.getWinners().size());
         MetaInfo metaInfo = allocation.getMetaInfo();
@@ -50,6 +42,8 @@ public abstract class VCGRule implements OutcomeRule {
 
                 BigDecimal valueWithoutBidder = allocation.getTotalAllocationValue().subtract(allocation.allocationOf(bidder).getValue());
                 WinnerDetermination wdWithoutBidder = getWinnerDeterminationWithout(bidder);
+                wdWithoutBidder.setMipInstrumentation(getMipInstrumentation());
+                wdWithoutBidder.setPurpose(MipInstrumentation.MipPurpose.PAYMENT);
                 Allocation allocationWithoutBidder = wdWithoutBidder.getAllocation();
                 metaInfo = metaInfo.join(allocationWithoutBidder.getMetaInfo());
 
@@ -67,4 +61,8 @@ public abstract class VCGRule implements OutcomeRule {
     protected abstract WinnerDetermination getWinnerDetermination();
     protected abstract WinnerDetermination getWinnerDeterminationWithout(Bidder bidder);
 
+    // region instrumentation
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+    // endregion
 }

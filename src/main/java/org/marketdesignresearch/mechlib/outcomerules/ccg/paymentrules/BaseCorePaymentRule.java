@@ -1,7 +1,10 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
@@ -52,5 +55,10 @@ public abstract class BaseCorePaymentRule implements CorePaymentRule {
         }
         return newMetaInfo;
     }
+
+    // region instrumentation
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+    // endregion
 
 }

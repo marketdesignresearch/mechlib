@@ -26,19 +26,22 @@ public final class SimpleORDomain implements Domain {
     @Override
     public Allocation getEfficientAllocation() {
         if (efficientAllocation == null) {
-            efficientAllocation = new ORWinnerDetermination(Bids.fromORBidders(bidders), MipInstrumentation.MipPurpose.ALLOCATION, getMipInstrumentation()).getAllocation();
+            ORWinnerDetermination orWDP = new ORWinnerDetermination(Bids.fromORBidders(bidders));
+            orWDP.setMipInstrumentation(getMipInstrumentation());
+            orWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+            efficientAllocation = orWDP.getAllocation();
         }
         return efficientAllocation;
     }
 
     // region instrumentation
     @Getter
-    private MipInstrumentation mipInstrumentation = new MipInstrumentation();
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
     @Override
-    public void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {
+    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
         this.mipInstrumentation = mipInstrumentation;
-        getBidders().forEach(bidder -> bidder.attachMipInstrumentation(mipInstrumentation));
+        getBidders().forEach(bidder -> bidder.setMipInstrumentation(mipInstrumentation));
     }
 
     // endregion

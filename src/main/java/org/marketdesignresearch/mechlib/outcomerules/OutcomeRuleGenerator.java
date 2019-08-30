@@ -22,10 +22,10 @@ public enum OutcomeRuleGenerator {
         OutcomeRule outcomeRule;
         switch (this) {
             case VCG_OR:
-                outcomeRule = new ORVCGRule(bids, mipInstrumentation);
+                outcomeRule = new ORVCGRule(bids);
                 break;
             case VCG_XOR:
-                outcomeRule = new XORVCGRule(bids, mipInstrumentation);
+                outcomeRule = new XORVCGRule(bids);
                 break;
             case CCG:
                 MechanismFactory quadraticCCG = new VariableAlgorithmCCGFactory(new XORBlockingCoalitionFinderFactory(), ConstraintGenerationAlgorithm.STANDARD_CCG);
@@ -40,10 +40,11 @@ public enum OutcomeRuleGenerator {
             default:
                 throw new UnsupportedOperationException();
         }
+        outcomeRule.setMipInstrumentation(mipInstrumentation);
         return outcomeRule;
     }
 
     public OutcomeRule getOutcomeRule(Bids bids) {
-        return getOutcomeRule(bids, new MipInstrumentation());
+        return getOutcomeRule(bids, MipInstrumentation.NO_OP);
     }
 }

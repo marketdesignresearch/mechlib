@@ -11,13 +11,9 @@ public class ORVCGRule extends BidBasedVCGRule {
         super(bids);
     }
 
-    public ORVCGRule(Bids bids, MipInstrumentation mipInstrumentation) {
-        super(bids, mipInstrumentation);
-    }
-
     @Override
-    protected final WinnerDetermination getWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose) {
-        return new ORWinnerDetermination(bids, purpose, getMipInstrumentation());
+    protected final WinnerDetermination getWinnerDetermination(Bids bids) {
+        return new ORWinnerDetermination(bids);
     }
 
 }

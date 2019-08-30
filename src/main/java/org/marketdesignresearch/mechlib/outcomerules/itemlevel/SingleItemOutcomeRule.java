@@ -8,6 +8,7 @@ import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
 import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
@@ -58,4 +59,9 @@ public abstract class SingleItemOutcomeRule implements OutcomeRule {
     }
 
     protected abstract BidderPayment getSingleItemPayment(SingleItemBids bids);
+
+    @Override
+    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
+        // No MIP is going to be run
+    }
 }

@@ -46,26 +46,13 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
 
     protected AuctionRoundBuilder current;
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
-        this(domain, outcomeRuleGenerator, new MipInstrumentation(), new AuctionInstrumentation());
-    }
-
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, MipInstrumentation mipInstrumentation) {
-        this(domain, outcomeRuleGenerator, mipInstrumentation, new AuctionInstrumentation());
-    }
-
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionInstrumentation auctionInstrumentation) {
-        this(domain, outcomeRuleGenerator, new MipInstrumentation(), auctionInstrumentation);
-    }
-
     @PersistenceConstructor
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, MipInstrumentation mipInstrumentation, AuctionInstrumentation auctionInstrumentation) {
-        super(mipInstrumentation, auctionInstrumentation);
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
+        super();
         this.domain = domain;
-        this.domain.attachMipInstrumentation(getMipInstrumentation());
         this.outcomeRuleGenerator = outcomeRuleGenerator;
-        current = new AuctionRoundBuilder(outcomeRuleGenerator, getMipInstrumentation());
-        getAuctionInstrumentation().preAuction(this);
+        current = new AuctionRoundBuilder(outcomeRuleGenerator);
+        current.setMipInstrumentation(getMipInstrumentation());
     }
 
     public Bidder getBidder(UUID id) {
@@ -155,7 +142,8 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
         // }
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(outcomeRuleGenerator, getMipInstrumentation());
+        current = new AuctionRoundBuilder(outcomeRuleGenerator);
+        current.setMipInstrumentation(getMipInstrumentation());
     }
 
     public void resetBid(Bidder bidder) {
@@ -272,4 +260,12 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
         if (rounds.size() == 0) return Outcome.NONE;
         return getOutcomeAtRound(rounds.size() - 1);
     }
+
+    // region instrumentation
+    @Override
+    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
+        super.setMipInstrumentation(mipInstrumentation);
+        this.domain.setMipInstrumentation(mipInstrumentation);
+    }
+    // endregion
 }

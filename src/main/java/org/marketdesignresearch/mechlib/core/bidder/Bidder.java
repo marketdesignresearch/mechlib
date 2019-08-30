@@ -142,6 +142,4 @@ public interface Bidder extends MipInstrumentationable {
         return Strategy.TRUTHFUL;
     }
 
-    default void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {}
-
 }

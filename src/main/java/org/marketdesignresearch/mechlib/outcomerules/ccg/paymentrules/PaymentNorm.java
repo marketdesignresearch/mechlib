@@ -1,8 +1,11 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.BidderPayment;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import edu.harvard.econcs.jopt.solver.IMIP;
@@ -13,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class PaymentNorm {
+public abstract class PaymentNorm implements CorePaymentNorm {
     protected static final String BIDDER = "bidder_";
 
     protected void setProposedValues(IMIPResult result, IMIP mip) {
@@ -22,7 +25,9 @@ public abstract class PaymentNorm {
     }
 
     protected IMIPResult solveProgram(IMIP program) {
-        return CPLEXUtils.SOLVER.solve(program);
+        IMIPResult result = CPLEXUtils.SOLVER.solve(program);
+        getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, program, result);
+        return result;
     }
 
     public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
@@ -49,4 +54,9 @@ public abstract class PaymentNorm {
      * @return something but mostly nothing really bad solution
      */
     public abstract Object addNormObjective(IMIP program);
+
+    // region instrumentation
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+    // endregion
 }

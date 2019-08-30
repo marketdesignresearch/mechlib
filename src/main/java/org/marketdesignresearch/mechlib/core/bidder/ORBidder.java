@@ -70,7 +70,9 @@ public class ORBidder implements Bidder, Serializable {
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new Bids(ImmutableMap.of(this, valueMinusPrice)), MipInstrumentation.MipPurpose.DEMAND_QUERY, getMipInstrumentation());
+        WinnerDetermination orWdp = new ORWinnerDetermination(new Bids(ImmutableMap.of(this, valueMinusPrice)));
+        orWdp.setMipInstrumentation(getMipInstrumentation());
+        orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
         orWdp.setAbsolutePoolMode4Tolerance(absPoolTolerance);
         orWdp.setTimeLimitPoolMode4(poolTimeLimit);
@@ -88,12 +90,7 @@ public class ORBidder implements Bidder, Serializable {
     }
 
     // region instrumentation
-    @Getter
-    private MipInstrumentation mipInstrumentation = new MipInstrumentation();
-
-    @Override
-    public void attachMipInstrumentation(MipInstrumentation mipInstrumentation) {
-        this.mipInstrumentation = mipInstrumentation;
-    }
+    @Getter @Setter
+    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
     // endregion
 }

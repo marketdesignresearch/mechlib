@@ -4,6 +4,7 @@ import org.marketdesignresearch.mechlib.core.BidderPayment;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
 import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 import java.util.Iterator;
 
@@ -27,4 +28,5 @@ public class SecondPriceRule extends SingleItemOutcomeRule {
         SingleItemBid secondHighestBid = iterator.next();
         return new BidderPayment(secondHighestBid.getBundleBid().getAmount());
     }
+
 }

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
@@ -49,6 +50,7 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
                     paymentNorm.addNormObjective(tempProgram);
                 }
                 IMIPResult mipResult = CPLEXUtils.SOLVER.solve(tempProgram);
+                getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, tempProgram, mipResult);
                 MetaInfo tempMetaInfo = new MetaInfo();
                 tempMetaInfo.setNumberOfQPs(1);
                 result = primaryNorm.adaptProgram(allocation.getWinners(), mipResult, tempMetaInfo);

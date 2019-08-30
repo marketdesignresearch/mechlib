@@ -4,4 +4,5 @@ public interface AuctionInstrumentationable {
     default AuctionInstrumentation getAuctionInstrumentation() {
         return new AuctionInstrumentation();
     }
+    void setAuctionInstrumentation(AuctionInstrumentation auctionInstrumentation);
 }

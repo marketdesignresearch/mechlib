@@ -11,13 +11,9 @@ public class XORVCGRule extends BidBasedVCGRule {
         super(bids);
     }
 
-    public XORVCGRule(Bids bids, MipInstrumentation mipInstrumentation) {
-        super(bids, mipInstrumentation);
-    }
-
     @Override
-    protected final WinnerDetermination getWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose) {
-        return new XORWinnerDetermination(bids, purpose, this.getMipInstrumentation());
+    protected final WinnerDetermination getWinnerDetermination(Bids bids) {
+        return new XORWinnerDetermination(bids);
     }
 
 }

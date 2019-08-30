@@ -5,6 +5,7 @@ import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
@@ -67,4 +68,12 @@ public class XORBidder implements Bidder, Serializable {
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }
+
+    // region instrumentation
+    @Override
+    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
+        // No MIP is going to be run
+    }
+    // endregion
+
 }

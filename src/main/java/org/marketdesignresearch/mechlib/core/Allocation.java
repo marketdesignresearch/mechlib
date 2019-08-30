@@ -32,12 +32,13 @@ public class Allocation implements MetaInfoResult {
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
 
     private final Map<UUID, BidderAllocation> tradesMap; // The Map only includes winning bidders
-    @Getter
+    @Getter @EqualsAndHashCode.Exclude
     private final Bids bids;
-    @Getter
+    @Getter @EqualsAndHashCode.Exclude
     private final MetaInfo metaInfo;
     @Getter
     private final Set<? extends Bidder> winners;
+    @EqualsAndHashCode.Exclude
     private Set<PotentialCoalition> coalitions;
 
     public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {

@@ -19,11 +19,6 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     private final Bids bids;
 
     public BidBasedWinnerDetermination(Bids bids) {
-        this(bids, MipInstrumentation.MipPurpose.ALLOCATION, new MipInstrumentation());
-    }
-
-    public BidBasedWinnerDetermination(Bids bids, MipInstrumentation.MipPurpose purpose, MipInstrumentation mipInstrumentation) {
-        super(purpose, mipInstrumentation);
         this.bids = bids;
     }
 

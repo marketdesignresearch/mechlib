@@ -44,7 +44,8 @@ public class MipInstrumentationTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         Bids bids = adapter.adaptCATSAuction(catsAuction);
-        OutcomeRule vcgRule = new ORVCGRule(bids, new MipLoggingInstrumentation());
+        OutcomeRule vcgRule = new ORVCGRule(bids);
+        vcgRule.setMipInstrumentation(new MipLoggingInstrumentation());
         vcgRule.getOutcome();
     }
 
@@ -73,7 +74,7 @@ public class MipInstrumentationTest {
         value.add(new BundleValue(BigDecimal.valueOf(13),
                 new Bundle(Sets.newHashSet(new BundleEntry(D, 1)))));
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
-        bidder.attachMipInstrumentation(new MipLoggingInstrumentation());
+        bidder.setMipInstrumentation(new MipLoggingInstrumentation());
         Bundle bestBundle = bidder.getBestBundle(prices);
         List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
     }
@@ -86,7 +87,8 @@ public class MipInstrumentationTest {
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
+        cca.setMipInstrumentation(new MipLoggingInstrumentation());
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
@@ -118,7 +120,8 @@ public class MipInstrumentationTest {
         ORBidder bidder3 = new ORBidder("3", new ORValueFunction(value3));
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, new MipLoggingInstrumentation());
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
+        cca.setMipInstrumentation(new MipLoggingInstrumentation());
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
