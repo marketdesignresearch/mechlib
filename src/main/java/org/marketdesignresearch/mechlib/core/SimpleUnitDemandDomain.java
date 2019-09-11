@@ -5,18 +5,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.UnitDemandBidder;
-import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.core.cats.CATSParser;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 

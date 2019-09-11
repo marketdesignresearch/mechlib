@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
