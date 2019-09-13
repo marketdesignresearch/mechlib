@@ -1,17 +1,16 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
+import com.google.common.base.Preconditions;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.core.BundleEntry;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +21,7 @@ import java.util.Map;
  * 
  */
 public class XORWinnerDetermination extends BidBasedWinnerDetermination {
-    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    private final Map<BundleBid, Variable> bidVariables = new HashMap<>();
+
     private final MIPWrapper winnerDeterminationProgram;
 
     public XORWinnerDetermination(Bids bids) {
@@ -59,17 +57,15 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     }
 
     @Override
+    public WinnerDetermination join(WinnerDetermination other) {
+        Preconditions.checkArgument(other instanceof BidBasedWinnerDetermination);
+        BidBasedWinnerDetermination otherBidBased = (BidBasedWinnerDetermination) other;
+        return new XORWinnerDetermination(otherBidBased.getBids().join(getBids()));
+    }
+
+    @Override
     public MIPWrapper getMIP() {
         return winnerDeterminationProgram;
     }
 
-    @Override
-    public Variable getBidVariable(BundleBid bundleBid) {
-        return bidVariables.get(bundleBid);
-    }
-
-    @Override
-    protected Collection<Variable> getBidVariables() {
-        return bidVariables.values();
-    }
 }

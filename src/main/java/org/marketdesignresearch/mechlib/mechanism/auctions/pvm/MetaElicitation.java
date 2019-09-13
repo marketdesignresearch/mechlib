@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -25,8 +25,8 @@ public class MetaElicitation {
         bidderMLAlgorithmMap.forEach((k, v) -> this.algorithms.put(k.getId(), v));
     }
 
-    public Map<Bidder, XORValueFunction> process(Bids bids) {
-        Map<Bidder, XORValueFunction> inferredValues = new HashMap<>();
+    public Map<Bidder, ValueFunction> process(Bids bids) {
+        Map<Bidder, ValueFunction> inferredValues = new HashMap<>();
         for (Map.Entry<UUID, MLAlgorithm> entry : algorithms.entrySet()) {
             if (bids.getBid(getBidder(entry.getKey())) != null) {
                 entry.getValue().addReport(bids.getBid(getBidder(entry.getKey())));

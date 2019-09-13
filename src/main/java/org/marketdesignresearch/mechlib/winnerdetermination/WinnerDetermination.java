@@ -137,6 +137,8 @@ public abstract class WinnerDetermination implements AllocationRule {
         return allocations;
     }
 
+    public abstract WinnerDetermination join(WinnerDetermination other);
+
     protected Collection<Collection<Variable>> getVariablesOfInterest() {
         return null;
     }

@@ -5,14 +5,18 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.*;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,6 +46,7 @@ public class PVMTest {
         Bundle ACD = Bundle.of(Sets.newHashSet(goodA, goodC, goodD));
         Bundle BCD = Bundle.of(Sets.newHashSet(goodB, goodC, goodD));
         Bundle ABCD = Bundle.of(Sets.newHashSet(goodA, goodB, goodC, goodD));
+        List<Bundle> bundles = Lists.newArrayList(A, B, C, D, AB, AC, AD, BC, BD, CD, ABC, ABD, ACD, BCD, ABCD);
 
         Set<BundleValue> value1 = new HashSet<>();
         value1.add(new BundleValue(BigDecimal.valueOf(1), A));
@@ -70,11 +75,20 @@ public class PVMTest {
         Domain domain = new SimpleORDomain(
                 Lists.newArrayList(bidder1, bidder2, bidder3, bidder4),
                 Lists.newArrayList(goodA, goodB, goodC, goodD));
-        PVMAuction auction = new PVMAuction(domain, OutcomeRuleGenerator.VCG_XOR);
-        assertThat(auction.restrictedBids()).isEmpty();
+        PVMAuction auction = new PVMAuction(domain, MLAlgorithm.Type.LINEAR_REGRESSION, OutcomeRuleGenerator.VCG_XOR, 6);
         auction.advanceRound();
         while(!auction.finished()) {
             assertThat(auction.getDomain().getBidders().size()).isEqualTo(auction.restrictedBids().keySet().size());
+            for (Bidder bidder : domain.getBidders()) {
+                log.info("----- Elicitation in round {} for bidder {}", auction.getNumberOfRounds(), bidder.getName());
+                for (Bundle bundle : bundles) {
+                    Optional<BundleBid> reported = auction.getLatestAggregatedBids(bidder).getBundleBids().stream().filter(bbid -> bbid.getBundle().equals(bundle)).findAny();
+                    log.info("- Bundle {}", bundle);
+                    log.info("\t*\tTrue Value: {}", bidder.getValue(bundle).setScale(2, RoundingMode.HALF_UP));
+                    log.info("\t*\tReported Value: {}", reported.isPresent() ? reported.get().getAmount().setScale(2, RoundingMode.HALF_UP) : "-");
+                    log.info("\t*\tInferred Value: {}", auction.getInferredValue(bidder, bundle).setScale(2, RoundingMode.HALF_UP));
+                }
+            }
             auction.advanceRound();
         }
         log.info("PVM terminated.");

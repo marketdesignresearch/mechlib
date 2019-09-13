@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
+import com.google.common.base.Preconditions;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
@@ -9,9 +10,7 @@ import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +21,7 @@ import java.util.Map;
  * 
  */
 public class ORWinnerDetermination extends BidBasedWinnerDetermination {
-    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    protected final Map<BundleBid, Variable> bidVariables = new HashMap<>();
+
     protected final MIPWrapper winnerDeterminationProgram;
 
     public ORWinnerDetermination(Bids bids) {
@@ -58,17 +56,15 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
     }
 
     @Override
+    public WinnerDetermination join(WinnerDetermination other) {
+        Preconditions.checkArgument(other instanceof BidBasedWinnerDetermination);
+        BidBasedWinnerDetermination otherBidBased = (BidBasedWinnerDetermination) other;
+        return new ORWinnerDetermination(otherBidBased.getBids().join(getBids()));
+    }
+
+    @Override
     public MIPWrapper getMIP() {
         return winnerDeterminationProgram;
     }
 
-    @Override
-    protected Variable getBidVariable(BundleBid bundleBid) {
-        return bidVariables.get(bundleBid);
-    }
-
-    @Override
-    protected Collection<Variable> getBidVariables() {
-        return bidVariables.values();
-    }
 }

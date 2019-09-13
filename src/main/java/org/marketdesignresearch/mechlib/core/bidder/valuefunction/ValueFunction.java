@@ -1,8 +1,9 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
-import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -38,4 +39,6 @@ public interface ValueFunction extends Serializable {
     default Bid toBid() {
         return toBid(UnaryOperator.identity());
     }
+
+    WinnerDetermination toWDP(Bidder bidder);
 }

@@ -9,9 +9,14 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -57,6 +62,11 @@ public class ORValueFunction implements ValueFunction {
     public Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
         Set<BundleBid> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
         return new Bid(bundleBids);
+    }
+
+    @Override
+    public WinnerDetermination toWDP(Bidder bidder) {
+        return new ORWinnerDetermination(new Bids(Collections.singletonMap(bidder, toBid())));
     }
 }
 

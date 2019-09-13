@@ -2,10 +2,14 @@ package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.*;
+import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
@@ -52,6 +56,11 @@ public class XORValueFunction implements ValueFunction {
                 })
                 .limit(maxNumberOfBundles)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public WinnerDetermination toWDP(Bidder bidder) {
+        return new XORWinnerDetermination(new Bids(Collections.singletonMap(bidder, toBid())));
     }
 }
 

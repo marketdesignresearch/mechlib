@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.math.DoubleMath;
@@ -16,7 +17,9 @@ import java.util.*;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
-    private final Bids bids;
+    private Bids bids;
+    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
+    protected Map<BundleBid, Variable> bidVariables = new HashMap<>();
 
     public BidBasedWinnerDetermination(Bids bids) {
         this.bids = bids;
@@ -70,6 +73,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         return new Allocation(trades.build(), bids, metaInfo);
     }
 
-    protected abstract Variable getBidVariable(BundleBid bundleBid);
-    protected abstract Collection<Variable> getBidVariables();
+    protected Variable getBidVariable(BundleBid bundleBid) {
+        return bidVariables.get(bundleBid);
+    }
+
+    protected Collection<Variable> getBidVariables() {
+        return bidVariables.values();
+    }
 }
