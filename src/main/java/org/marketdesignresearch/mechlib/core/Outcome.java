@@ -28,6 +28,14 @@ public final class Outcome implements MetaInfoResult {
         this.metaInfo = allocation.getMetaInfo().join(payment.getMetaInfo());
     }
 
+    public BigDecimal getRevenue() {
+        return payment.getTotalPayments();
+    }
+
+    public BigDecimal getSocialWelfare() {
+        return allocation.getTrueSocialWelfare();
+    }
+
     public BigDecimal payoffOf(Bidder winner) {
         return allocation.allocationOf(winner).getValue().subtract(payment.paymentOf(winner).getAmount());
     }

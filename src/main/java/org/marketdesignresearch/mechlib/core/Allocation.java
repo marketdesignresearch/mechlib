@@ -30,6 +30,8 @@ public class Allocation implements MetaInfoResult {
     public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new Bids(new HashMap<>()), new MetaInfo());
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
+    @Getter
+    private final BigDecimal trueSocialWelfare;
 
     private final Map<UUID, BidderAllocation> tradesMap; // The Map only includes winning bidders
     @Getter @EqualsAndHashCode.Exclude
@@ -54,6 +56,7 @@ public class Allocation implements MetaInfoResult {
 
     public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> coalitions) {
         this.totalAllocationValue = totalAllocationValue;
+        this.trueSocialWelfare = tradesMap.values().stream().map(BidderAllocation::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
         HashMap<UUID, BidderAllocation> map = new HashMap<>();
         tradesMap.forEach((bidder, bidderAllocation) -> map.put(bidder.getId(), bidderAllocation));
         this.tradesMap = ImmutableMap.copyOf(map);
