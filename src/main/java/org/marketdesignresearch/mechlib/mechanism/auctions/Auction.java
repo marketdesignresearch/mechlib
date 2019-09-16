@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class Auction extends Mechanism implements AuctionInstrumentationable {
 
     private static int DEFAULT_MAX_BIDS = 100;
+    private static int DEFAULT_MANUAL_BIDS = 0;
     private static int DEFAULT_MAX_ROUNDS = 1;
 
     @Getter
@@ -33,6 +34,8 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
 
     @Getter @Setter
     private int maxBids = DEFAULT_MAX_BIDS;
+    @Getter @Setter
+    private int manualBids = DEFAULT_MANUAL_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
     @Getter @Setter
@@ -92,13 +95,16 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
      */
     public Bid proposeBid(Bidder bidder) {
         Bid bid = new Bid();
-        List<Bundle> bundlesToBidOn;
-        if (restrictedBids().get(bidder) == null) {
-            bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), allowedNumberOfBids(), true, relativeDemandQueryTolerance, absoluteDemandQueryTolerance, demandQueryTimeLimit);
-        } else {
-            bundlesToBidOn = restrictedBids().get(bidder);
+        if (allowedNumberOfBids() > 0) {
+            List<Bundle> bundlesToBidOn;
+            int numberOfBids = Math.max(allowedNumberOfBids() - getManualBids(), 1); // Propose at least one bid
+            if (restrictedBids().get(bidder) == null) {
+                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), numberOfBids, true, relativeDemandQueryTolerance, absoluteDemandQueryTolerance, demandQueryTimeLimit);
+            } else {
+                bundlesToBidOn = restrictedBids().get(bidder);
+            }
+            bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
         }
-        bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleBid(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
         return bid;
     }
 
