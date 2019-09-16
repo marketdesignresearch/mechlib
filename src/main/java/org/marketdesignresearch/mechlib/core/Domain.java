@@ -113,4 +113,8 @@ public interface Domain extends MipInstrumentationable {
         return new LinearPrices(priceMap);
     }
 
+    default String getName() {
+        return "Unnamed Domain";
+    }
+
 }

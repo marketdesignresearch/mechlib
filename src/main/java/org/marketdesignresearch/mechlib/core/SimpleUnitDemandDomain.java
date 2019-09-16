@@ -40,6 +40,11 @@ public final class SimpleUnitDemandDomain implements Domain {
         return efficientAllocation;
     }
 
+    @Override
+    public String getName() {
+        return "Unit Demand Domain";
+    }
+
     // region instrumentation
     @Override
     public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {

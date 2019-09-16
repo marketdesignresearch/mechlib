@@ -72,7 +72,7 @@ public class PVMAuction extends Auction {
 
     public BigDecimal getInferredValue(Bidder bidder, Bundle bundle, int roundIndex) {
         PVMAuctionRound round = (PVMAuctionRound) getRound(roundIndex);
-        return round.getInferredValues().get(bidder).getValueFor(bundle);
+        return round.getInferredValueFunctions().get(bidder).getValueFor(bundle);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class PVMAuction extends Auction {
             getDomain().getBidders().forEach(bidder -> map.put(bidder, findNextBundles(bidder, initialBids)));
         } else {
             PVMAuctionRound round = (PVMAuctionRound) rounds.get(rounds.size() - 1);
-            Allocation allocation = round.getAllocation();
+            Allocation allocation = round.getInferredOptimalAllocation();
             getDomain().getBidders().forEach(bidder -> {
                 Bundle allocated = allocation.allocationOf(bidder).getBundle();
                 Optional<BundleBid> optional = getLatestAggregatedBids(bidder).getBundleBids().stream()

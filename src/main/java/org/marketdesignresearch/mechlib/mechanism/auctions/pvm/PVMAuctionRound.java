@@ -18,28 +18,21 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class PVMAuctionRound extends DefaultAuctionRound {
 
-    /**
-     * Challenge:
-     * - Have general value function based on inferred values that can be turned into bids, or anything that produces an allocation
-     * -
-     *
-     */
-
     @Getter
-    private final InferredValueFunctions inferredValues;
+    private final InferredValueFunctions inferredValueFunctions;
     @Getter
-    private final Allocation allocation;
+    private final Allocation inferredOptimalAllocation;
 
-    public PVMAuctionRound(int roundNumber, Bids bids, Prices prices, Map<Bidder, ValueFunction> inferredValues) {
+    public PVMAuctionRound(int roundNumber, Bids bids, Prices prices, Map<Bidder, ValueFunction> inferredValueFunctions) {
         super(roundNumber, bids, prices);
-        this.inferredValues = new InferredValueFunctions(inferredValues);
-        this.allocation = this.inferredValues.calculateInferredOptimalAllocation();
+        this.inferredValueFunctions = new InferredValueFunctions(inferredValueFunctions);
+        this.inferredOptimalAllocation = this.inferredValueFunctions.calculateInferredOptimalAllocation();
     }
 
     @PersistenceConstructor
-    private PVMAuctionRound(int roundNumber, Bids bids, Prices prices, InferredValueFunctions inferredValues, Allocation allocation) {
+    private PVMAuctionRound(int roundNumber, Bids bids, Prices prices, InferredValueFunctions inferredValueFunctions, Allocation inferredOptimalAllocation) {
         super(roundNumber, bids, prices);
-        this.inferredValues = inferredValues;
-        this.allocation = allocation;
+        this.inferredValueFunctions = inferredValueFunctions;
+        this.inferredOptimalAllocation = inferredOptimalAllocation;
     }
 }

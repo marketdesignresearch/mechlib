@@ -34,6 +34,11 @@ public final class SimpleORDomain implements Domain {
         return efficientAllocation;
     }
 
+    @Override
+    public String getName() {
+        return "OR Domain";
+    }
+
     // region instrumentation
     @Getter
     private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;

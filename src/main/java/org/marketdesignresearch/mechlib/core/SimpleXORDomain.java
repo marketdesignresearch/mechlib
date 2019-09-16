@@ -44,6 +44,11 @@ public final class SimpleXORDomain implements Domain {
         return adapter.adaptToDomain(auction);
     }
 
+    @Override
+    public String getName() {
+        return "XOR Domain";
+    }
+
     // region instrumentation
     @Getter
     private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;

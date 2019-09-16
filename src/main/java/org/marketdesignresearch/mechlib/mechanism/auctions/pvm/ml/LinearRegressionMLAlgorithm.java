@@ -14,6 +14,7 @@ import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunctio
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class LinearRegressionMLAlgorithm implements MLAlgorithm {
+    private static MathContext precision = new MathContext(6);
     private final List<? extends Good> goods;
     private Bid reports = new Bid();
 
@@ -69,7 +71,7 @@ public class LinearRegressionMLAlgorithm implements MLAlgorithm {
 
             Set<BundleValue> bundleValues = new HashSet<>();
             for (int i = 0; i < goods.size(); i++) {
-                bundleValues.add(new BundleValue(BigDecimal.valueOf(betas[i]), Bundle.of(goods.get(i))));
+                bundleValues.add(new BundleValue(BigDecimal.valueOf(betas[i]).round(precision), Bundle.of(goods.get(i))));
             }
 
             return new ORValueFunction(bundleValues);
