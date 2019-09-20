@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Domain;
@@ -15,6 +17,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class represents a sequential auction where for each round, there are only bids placed for a specific good
@@ -41,6 +44,28 @@ public class SequentialAuction extends Auction {
     public int allowedNumberOfBids() {
         if (finished()) return 0;
         return 1;
+    }
+
+    /**
+     * The bidder will take into account previous round's allocations, because they are definitive in a
+     * sequential auction (not interim, as in other auctions).
+     *
+     * @param bidder the bidder that's about to propose a bid
+     * @return A (currently truthful) bid
+     */
+    @Override
+    public Bid proposeBid(Bidder bidder) {
+        Bid bid = new Bid();
+        if (allowedNumberOfBids() > 0 && restrictedBids().containsKey(bidder)) {
+            Bundle alreadyWon = Bundle.EMPTY;
+            for (int i = 0; i < getNumberOfRounds(); i++) {
+                alreadyWon = alreadyWon.merge(getOutcomeAtRound(i).getAllocation().allocationOf(bidder).getBundle());
+            }
+            for (Bundle bundle : restrictedBids().get(bidder)) {
+                bid.addBundleBid(new BundleBid(bidder.getValue(bundle, alreadyWon), bundle, UUID.randomUUID().toString()));
+            }
+        }
+        return bid;
     }
 
     /**

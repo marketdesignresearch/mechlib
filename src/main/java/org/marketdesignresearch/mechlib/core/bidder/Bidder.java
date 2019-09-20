@@ -41,12 +41,24 @@ public interface Bidder extends MipInstrumentationable {
     UUID getId();
 
     /**
-     * Asks the bidder a value query: What is your value for a certain bundle of goods?
+     * Asks the bidder a value query: What is your value for a certain bundle of goods
      *
      * @param bundle the bundle
      * @return the value of this bidder for the bundle of goods
      */
     BigDecimal getValue(Bundle bundle);
+
+    /**
+     * Asks the bidder a value query: What is your value for a certain bundle of goods,
+     * given a bundle that is assured to be already won?
+     *
+     * @param bundle the bundle
+     * @param alreadyWon the bundle which the bidder already won
+     * @return the value of this bidder for the bundle of goods
+     */
+    default BigDecimal getValue(Bundle bundle, Bundle alreadyWon) {
+        return BigDecimal.ZERO.max(getValue(bundle.merge(alreadyWon)).subtract(getValue(alreadyWon)));
+    }
 
     /**
      * Asks the bidder a demand query: What bundles would you choose if you'd have to pay certain prices?
