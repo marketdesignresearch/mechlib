@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+@Slf4j
 @ToString @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class SimpleXORDomain implements Domain {
@@ -29,11 +31,16 @@ public final class SimpleXORDomain implements Domain {
 
     @Override
     public Allocation getEfficientAllocation() {
-        if (efficientAllocation == null) {
-            XORWinnerDetermination xorWDP = new XORWinnerDetermination(Bids.fromXORBidders(bidders));
-            xorWDP.setMipInstrumentation(getMipInstrumentation());
-            xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
-            efficientAllocation = xorWDP.getAllocation();
+        if (bidders.stream().allMatch(bidder -> bidder.getValue().getBundleValues().isEmpty())) {
+            log.warn("Requested efficient allocation for bidders with no values attached!");
+            efficientAllocation = Allocation.EMPTY_ALLOCATION;
+        } else {
+            if (efficientAllocation == null) {
+                XORWinnerDetermination xorWDP = new XORWinnerDetermination(Bids.fromXORBidders(bidders));
+                xorWDP.setMipInstrumentation(getMipInstrumentation());
+                xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+                efficientAllocation = xorWDP.getAllocation();
+            }
         }
         return efficientAllocation;
     }
