@@ -56,7 +56,7 @@ public class Allocation implements MetaInfoResult {
 
     public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> coalitions) {
         this.totalAllocationValue = totalAllocationValue;
-        this.trueSocialWelfare = tradesMap.values().stream().map(BidderAllocation::getValue).reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.trueSocialWelfare = tradesMap.entrySet().stream().map(e -> e.getKey().getValue(e.getValue().getBundle())).reduce(BigDecimal.ZERO, BigDecimal::add);
         HashMap<UUID, BidderAllocation> map = new HashMap<>();
         tradesMap.forEach((bidder, bidderAllocation) -> map.put(bidder.getId(), bidderAllocation));
         this.tradesMap = ImmutableMap.copyOf(map);
