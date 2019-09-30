@@ -40,7 +40,7 @@ public class PVMAuction extends Auction {
 
     public PVMAuction(Domain domain, MLAlgorithm.Type mlType, OutcomeRuleGenerator outcomeRuleGenerator, int initialBids) {
         super(domain, outcomeRuleGenerator);
-        Preconditions.checkArgument(!MLAlgorithm.Type.LINEAR_REGRESSION.equals(mlType) || initialBids > getDomain().getGoods().size() + 1,
+        Preconditions.checkArgument(!MLAlgorithm.Type.LINEAR_REGRESSION.equals(mlType) || initialBids > getDomain().getGoods().size(),
                 "For Linear Regression, at least |goods| + 1 initial bids are needed.");
         setMaxRounds(100);
         this.initialBids = initialBids;
@@ -93,7 +93,7 @@ public class PVMAuction extends Auction {
         }
         Preconditions.checkArgument(missingBids.isEmpty(), "Missing reports!");
         int roundNumber = rounds.size() + 1;
-        PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids));
+        PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids), restrictedBids());
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
         current = new AuctionRoundBuilder(getOutcomeRuleGenerator());
