@@ -77,10 +77,21 @@ public class PVMAuction extends Auction {
 
     @Override
     public void closeRound() {
-        // TODO: Maybe make sure all the queried valuations came in?
         Bids bids = current.getBids();
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
+        Map<Bidder, List<Bundle>> requiredBids = restrictedBids();
+        Map<Bidder, List<Bundle>> missingBids = new HashMap<>();
+        for (Bidder bidder : getDomain().getBidders()) {
+            Bid bid = bids.getBid(bidder);
+            for (Bundle bundle : requiredBids.get(bidder)) {
+                if (bid.getBundleBids().stream().noneMatch(bbid -> bbid.getBundle().equals(bundle))) {
+                    missingBids.putIfAbsent(bidder, new ArrayList<>());
+                    missingBids.get(bidder).add(bundle);
+                }
+            }
+        }
+        Preconditions.checkArgument(missingBids.isEmpty(), "Missing reports!");
         int roundNumber = rounds.size() + 1;
         PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids));
         getAuctionInstrumentation().postRound(round);
