@@ -129,13 +129,29 @@ public final class Bundle {
      * @return the merged bundle
      */
     public Bundle merge(Bundle other) {
+        return merge(other, false);
+    }
+
+    /**
+     * Merges this bundle with another bundle.
+     *
+     * @param other the other bundle
+     * @param cutoff whether or not the bundle entries should be cut off at the available quantity
+     * @return the merged bundle
+     */
+    public Bundle merge(Bundle other, boolean cutoff) {
         Set<Good> goods = Sets.union(Sets.newHashSet(getBundleEntries()), Sets.newHashSet(other.getBundleEntries())).stream()
                 .map(BundleEntry::getGood).collect(Collectors.toSet());
         Map<Good, Integer> map = new HashMap<>();
         for (Good good : goods) {
             Set<BundleEntry> first = getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
             Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
-            map.put(good, first.stream().mapToInt(BundleEntry::getAmount).sum() + second.stream().mapToInt(BundleEntry::getAmount).sum());
+            int total = first.stream().mapToInt(BundleEntry::getAmount).sum() + second.stream().mapToInt(BundleEntry::getAmount).sum();
+            if (cutoff) {
+                map.put(good, Math.min(total, good.getQuantity()));
+            } else {
+                map.put(good, total);
+            }
         }
         return new Bundle(map);
     }

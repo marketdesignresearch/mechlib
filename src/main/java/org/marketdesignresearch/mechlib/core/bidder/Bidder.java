@@ -6,7 +6,6 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
@@ -57,7 +56,7 @@ public interface Bidder extends MipInstrumentationable {
      * @return the value of this bidder for the bundle of goods
      */
     default BigDecimal getValue(Bundle bundle, Bundle alreadyWon) {
-        return BigDecimal.ZERO.max(getValue(bundle.merge(alreadyWon)).subtract(getValue(alreadyWon)));
+        return BigDecimal.ZERO.max(getValue(bundle.merge(alreadyWon, true)).subtract(getValue(alreadyWon)));
     }
 
     /**
