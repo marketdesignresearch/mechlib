@@ -28,7 +28,7 @@ public final class SimpleUnitDemandDomain implements Domain {
     public Allocation getEfficientAllocation() {
         if (efficientAllocation == null) {
             Map<UnitDemandBidder, BidderAllocation> allocationMap = new HashMap<>();
-            Queue<UnitDemandBidder> bidderQueue = bidders.stream().sorted(Comparator.comparing(UnitDemandBidder::getValue)).collect(Collectors.toCollection(LinkedList::new));
+            Queue<UnitDemandBidder> bidderQueue = bidders.stream().sorted((a, b) -> b.getValue().compareTo((a.getValue()))).collect(Collectors.toCollection(LinkedList::new));
             for (Good good : goods) {
                 for (int i = 0; i < good.getQuantity() && !bidderQueue.isEmpty(); i++) {
                     UnitDemandBidder winner = bidderQueue.poll();

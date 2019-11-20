@@ -23,7 +23,6 @@ public class SimultaneousAuction extends Auction {
     @PersistenceConstructor
     public SimultaneousAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
         super(domain, outcomeRuleGenerator);
-        setMaxRounds(domain.getGoods().size());
     }
 
     @Override
