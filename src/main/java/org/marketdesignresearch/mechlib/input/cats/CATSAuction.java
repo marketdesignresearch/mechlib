@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.cats;
+package org.marketdesignresearch.mechlib.input.cats;
 
 import lombok.AccessLevel;
 import lombok.Getter;

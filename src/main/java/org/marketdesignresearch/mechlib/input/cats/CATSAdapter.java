@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.cats;
+package org.marketdesignresearch.mechlib.input.cats;
 
 import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.core.bid.Bids;

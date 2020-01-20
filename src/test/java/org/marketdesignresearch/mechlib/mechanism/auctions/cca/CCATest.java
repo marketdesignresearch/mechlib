@@ -9,9 +9,9 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.core.cats.CATSParser;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
@@ -289,7 +289,11 @@ public class CCATest {
         checkBidEquality(bid, cca.proposeBid(bidder3));
         cca.submitBid(bidder3, bid);
 
-        assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
+        // Workaround for known bug in java compilation if using it directly this way:
+        // assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
+        assertThat(cca.getTemporaryResult().getWinners()).hasSize(2);
+        assertThat(cca.getTemporaryResult().getWinners().contains(bidder2)).isTrue();
+        assertThat(cca.getTemporaryResult().getWinners().contains(bidder3)).isTrue();
 
         bestBundle = bidder1.getBestBundle(cca.getCurrentPrices());
         bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
@@ -349,7 +353,12 @@ public class CCATest {
         assertThat(cca.isClockPhaseCompleted()).isTrue();
         Outcome aggregated = cca.getOutcomeRuleGenerator().getOutcomeRule(cca.getLatestAggregatedBids()).getOutcome();
 
-        assertThat(aggregated.getWinners()).containsExactlyInAnyOrder(bidder1, bidder2);
+        // Workaround for known bug in java compilation if using it directly this way:
+        // assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
+        assertThat(aggregated.getWinners()).hasSize(2);
+        assertThat(aggregated.getWinners().contains(bidder1)).isTrue();
+        assertThat(aggregated.getWinners().contains(bidder2)).isTrue();
+
         assertThat(aggregated.getAllocation().allocationOf(bidder1).getBundle()).isEqualTo(A);
         assertThat(aggregated.getAllocation().allocationOf(bidder1).getValue()).isEqualTo(BigDecimal.valueOf(27));
         assertThat(aggregated.getAllocation().allocationOf(bidder2).getBundle()).isEqualTo(B);

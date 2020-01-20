@@ -7,9 +7,9 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.core.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.core.cats.CATSParser;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 

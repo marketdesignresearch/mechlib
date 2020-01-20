@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.cats;
+package org.marketdesignresearch.mechlib.input.cats;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
