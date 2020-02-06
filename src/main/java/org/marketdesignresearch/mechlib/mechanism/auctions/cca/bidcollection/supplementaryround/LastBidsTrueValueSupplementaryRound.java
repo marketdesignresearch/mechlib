@@ -13,23 +13,22 @@ import lombok.Setter;
 
 import java.util.Iterator;
 
-@ToString
-@EqualsAndHashCode
 public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
 
     private static final int DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS = 500;
 
     @Setter @Getter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-    private final Bids bids;
+
+    private final CCAuction auction;
 
     public LastBidsTrueValueSupplementaryRound(CCAuction auction) {
-        this.bids = auction.getLatestAggregatedBids();
+    	this.auction = auction;
     }
 
     @Override
     public Bid getSupplementaryBids(String id, Bidder bidder, Prices prices) {
-        Bid bid = bids.getBid(bidder);
+        Bid bid = this.auction.getLatestAggregatedBids(bidder);
         if (bid == null) return new Bid();
         Bid result = new Bid();
         int count = 0;
