@@ -201,7 +201,7 @@ public class CCAuction extends Auction {
                 return;
             }
             SupplementaryRound supplementaryRound = supplementaryRoundQueue.peek();
-            SupplementaryBidCollector collector = new SupplementaryBidCollector(getNumberOfRounds() + 1, biddersToQuery, supplementaryRound, getCurrentPrices());
+            SupplementaryBidCollector collector = new SupplementaryBidCollector(this, supplementaryRound);
             log.debug("Starting supplementary round '{}'...", collector);
             submitBids(collector.collectBids());
         }
