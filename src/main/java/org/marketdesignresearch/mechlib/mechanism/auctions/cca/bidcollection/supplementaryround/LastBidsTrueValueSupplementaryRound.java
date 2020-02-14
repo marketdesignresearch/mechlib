@@ -1,19 +1,16 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
-import lombok.Setter;
-
 import java.util.Iterator;
 
-@ToString
+import org.marketdesignresearch.mechlib.core.BundleBid;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 @EqualsAndHashCode
 public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
 
@@ -21,15 +18,13 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
 
     @Setter @Getter
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-    private final Bids bids;
 
-    public LastBidsTrueValueSupplementaryRound(CCAuction auction) {
-        this.bids = auction.getLatestAggregatedBids();
+    public LastBidsTrueValueSupplementaryRound() {
     }
 
     @Override
-    public Bid getSupplementaryBids(String id, Bidder bidder, Prices prices) {
-        Bid bid = bids.getBid(bidder);
+    public Bid getSupplementaryBids(CCAuction auction, Bidder bidder) {
+        Bid bid = auction.getLatestAggregatedBids(bidder);
         if (bid == null) return new Bid();
         Bid result = new Bid();
         int count = 0;
@@ -37,7 +32,7 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
         Iterator<BundleBid> iterator = bid.getBundleBids().iterator();
         while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
             BundleBid bundleBid = iterator.next();
-            BundleBid trueValuedBundleBid = new BundleBid(bidder.getValue(bundleBid.getBundle()), bundleBid.getBundle(), "TrueValued_" + id + "_" + bundleBid.getId());
+            BundleBid trueValuedBundleBid = new BundleBid(bidder.getValue(bundleBid.getBundle()), bundleBid.getBundle(), "TrueValued_" + String.valueOf(auction.getNumberOfRounds()+1) + "_" + bundleBid.getId());
             result.addBundleBid(trueValuedBundleBid);
         }
         return result;

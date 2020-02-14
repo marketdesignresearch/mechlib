@@ -2,10 +2,10 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.su
 
 import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 
 public interface SupplementaryRound {
-    Bid getSupplementaryBids(String id, Bidder bidder, Prices prices);
+    Bid getSupplementaryBids(CCAuction auction, Bidder bidder);
     int getNumberOfSupplementaryBids();
 
     default String getDescription() {
