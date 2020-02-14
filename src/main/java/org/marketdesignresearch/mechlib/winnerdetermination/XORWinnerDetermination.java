@@ -40,7 +40,7 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
 
                 Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
                 bidVariables.put(bundleBid, bidI);
-                double bidAmount = bundleBid.getAmount().doubleValue();
+                double bidAmount = this.getScaledBundleBidAmount(bundleBid).doubleValue();
                 winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
                 exclusiveBids.addTerm(1, bidI);
                 for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {

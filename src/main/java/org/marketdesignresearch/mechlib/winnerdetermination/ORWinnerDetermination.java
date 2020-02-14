@@ -36,7 +36,7 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
         for (Bidder bidder : bids.getBidders()) {
             for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
                 Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
-                winnerDeterminationProgram.addObjectiveTerm(bundleBid.getAmount().doubleValue(), bidI);
+                winnerDeterminationProgram.addObjectiveTerm(this.getScaledBundleBidAmount(bundleBid).doubleValue(), bidI);
                 bidVariables.put(bundleBid, bidI);
             }
         }
