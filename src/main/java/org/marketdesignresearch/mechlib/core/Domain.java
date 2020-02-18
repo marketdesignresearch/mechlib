@@ -13,8 +13,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -112,9 +115,26 @@ public interface Domain extends MipInstrumentationable {
         });
         return new LinearPrices(priceMap);
     }
+    
+    /**
+     * This method generates a uniform random bundle in this domain. By default, the 
+     * the method generates a uniform bundle using the goods describing this domain.
+     * 
+     * @param random the random object that will be used to sample the random bundle
+     * @return a uniform random bundle of this domain
+     */
+    default Bundle getRandomBundle(Random random) {
+		Set<BundleEntry> bundleEntries = new HashSet<>();
+		for (Good g : this.getGoods()) {
+			int amount = (int) Math.floor(random.nextDouble() * (g.getQuantity() + 1));
+			if (amount > 0)
+				bundleEntries.add(new BundleEntry(g, amount));
+		}
+		return new Bundle(bundleEntries);
+	}
 
     default String getName() {
         return "Unnamed Domain";
     }
-
+    
 }
