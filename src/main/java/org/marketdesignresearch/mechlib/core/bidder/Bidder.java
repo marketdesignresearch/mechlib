@@ -147,7 +147,7 @@ public interface Bidder extends MipInstrumentationable {
         return getValue(bundle).subtract(prices.getPrice(bundle).getAmount());
     }
 
-    default <B extends Bid, T extends Interaction<B>> InteractionStrategy<B,T> getStrategy(Class<T> type) {
+    default <T extends InteractionStrategy> T getStrategy(Class<T> type) {
     	return InteractionStrategy.defaultStrategy(type, this);
     }
 }

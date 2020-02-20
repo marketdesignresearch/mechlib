@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DemandQueryStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -22,7 +23,7 @@ public class DefaultDemandQueryInteraction extends BundleValuePairTransformable<
 	
 	@Override
 	public DemandBid proposeBid() {
-		return this.getBidder().getStrategy(this.getType()).applyStrategy(this);
+		return this.getBidder().getStrategy(DemandQueryStrategy.class).applyDemandStrategy(this);
 	}
 
 	@Override

@@ -1,18 +1,18 @@
 package org.marketdesignresearch.mechlib.core.bidder.newstrategy;
 
-import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful.TruthfulDemandQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful.TruthfulExactValueQueryStrategy;
 
-public interface InteractionStrategy<B extends Bid, T extends Interaction<B>> {
-	B applyStrategy(T interaction);
+public interface InteractionStrategy {
 	
 	@SuppressWarnings("unchecked")
-	public static <B extends Bid, T extends Interaction<B>> InteractionStrategy<B,T> defaultStrategy(Class<T> type, Bidder bidder) {
-		
-		if(DemandQuery.class.equals(type)) {
-			return (InteractionStrategy<B, T>) new DefaultDemandQueryStrategy(bidder);
+	public static <T extends InteractionStrategy> T defaultStrategy(Class<T> type, Bidder bidder) {
+		if(type.isAssignableFrom(DemandQueryStrategy.class)) {
+			return (T) new TruthfulDemandQueryStrategy(bidder);
+		} 
+		if(type.isAssignableFrom(ExactValueQueryStrategy.class)) {
+			return (T) new TruthfulExactValueQueryStrategy(bidder);
 		}
 		throw new IllegalArgumentException("Unknown Strategy");
 	}
