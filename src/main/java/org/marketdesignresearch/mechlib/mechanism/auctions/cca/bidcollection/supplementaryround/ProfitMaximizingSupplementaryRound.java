@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 
@@ -26,15 +26,15 @@ public class ProfitMaximizingSupplementaryRound implements SupplementaryRound {
     private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
     
     @Override
-    public Bid getSupplementaryBids(CCAuction auction, Bidder bidder) {
+    public BundleValueBid getSupplementaryBids(CCAuction auction, Bidder bidder) {
         List<Bundle> bestBundles = bidder.getBestBundles(auction.getCurrentPrices(), numberOfSupplementaryBids, true);
-        List<BundleBid> bestBundleBids = new ArrayList<>();
+        List<BundleValuePair> bestBundleBids = new ArrayList<>();
         // Add with true value for now
         int count = 0;
         for (Bundle bundle : bestBundles) {
-            bestBundleBids.add(new BundleBid(bidder.getValue(bundle), bundle, "DQ_" + String.valueOf(auction.getNumberOfRounds()+1) + "-" + ++count + "_Bidder_" + bidder));
+            bestBundleBids.add(new BundleValuePair(bidder.getValue(bundle), bundle, "DQ_" + String.valueOf(auction.getNumberOfRounds()+1) + "-" + ++count + "_Bidder_" + bidder));
         }
-        return new Bid(Sets.newHashSet(bestBundleBids));
+        return new BundleValueBid(Sets.newHashSet(bestBundleBids));
     }
 
     public ProfitMaximizingSupplementaryRound withNumberOfSupplementaryBids(int numberOfSupplementaryBids) {

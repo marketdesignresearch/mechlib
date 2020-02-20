@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents a sequential auction where for each round, there are only bids placed for a specific good
+ * 
+ * TODO change to new auction design with interactions 
  */
 @ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
-public class SimultaneousAuction extends Auction {
+public class SimultaneousAuction extends Auction<BundleValuePair> {
 
     @PersistenceConstructor
     public SimultaneousAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {

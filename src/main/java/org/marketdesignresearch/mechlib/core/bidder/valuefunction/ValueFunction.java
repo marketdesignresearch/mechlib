@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
@@ -24,19 +24,19 @@ public interface ValueFunction extends Serializable {
     BigDecimal getValueFor(Bundle bundle);
 
     /**
-     * Turns the value function into a {@link Bid}, given a {@link UnaryOperator} to account for a strategy.
+     * Turns the value function into a {@link BundleValueBid}, given a {@link UnaryOperator} to account for a strategy.
      *
      * @param bundleBidOperator the unary operator to be applied on the bundle values to get bundle bids
      * @return the bid
      */
-    Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator);
+    BundleValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator);
 
     /**
-     * Turns the value function into a {@link Bid}, using true values.
+     * Turns the value function into a {@link BundleValueBid}, using true values.
      *
      * @return the bid
      */
-    default Bid toBid() {
+    default BundleValueBid toBid() {
         return toBid(UnaryOperator.identity());
     }
 

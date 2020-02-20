@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class PVMAuctionRound extends DefaultAuctionRound {
+public class PVMAuctionRound extends DefaultAuctionRound<BundleValuePair> {
 
     @Getter
     private final InferredValueFunctions inferredValueFunctions;
@@ -29,7 +30,7 @@ public class PVMAuctionRound extends DefaultAuctionRound {
     @Getter
     private final Map<UUID, List<Bundle>> queriedBundles;
 
-    public PVMAuctionRound(int roundNumber, Bids bids, Prices prices, Map<Bidder, ValueFunction> inferredValueFunctions, Map<Bidder, List<Bundle>> queriedBundles) {
+    public PVMAuctionRound(int roundNumber, BundleValueBids<BundleValuePair> bids, Prices prices, Map<Bidder, ValueFunction> inferredValueFunctions, Map<Bidder, List<Bundle>> queriedBundles) {
         super(roundNumber, bids, prices);
         this.inferredValueFunctions = new InferredValueFunctions(inferredValueFunctions);
         this.inferredOptimalAllocation = this.inferredValueFunctions.calculateInferredOptimalAllocation();
@@ -39,7 +40,7 @@ public class PVMAuctionRound extends DefaultAuctionRound {
     }
 
     @PersistenceConstructor
-    private PVMAuctionRound(int roundNumber, Bids bids, Prices prices, InferredValueFunctions inferredValueFunctions, Allocation inferredOptimalAllocation, Map<UUID, List<Bundle>> queriedBundles) {
+    private PVMAuctionRound(int roundNumber, BundleValueBids<BundleValuePair> bids, Prices prices, InferredValueFunctions inferredValueFunctions, Allocation inferredOptimalAllocation, Map<UUID, List<Bundle>> queriedBundles) {
         super(roundNumber, bids, prices);
         this.inferredValueFunctions = inferredValueFunctions;
         this.inferredOptimalAllocation = inferredOptimalAllocation;

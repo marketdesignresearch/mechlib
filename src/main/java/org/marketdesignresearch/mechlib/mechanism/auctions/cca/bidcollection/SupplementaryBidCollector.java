@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection;
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.SupplementaryRound;
@@ -15,8 +15,8 @@ public class SupplementaryBidCollector {
     private final CCAuction auction;
     private final SupplementaryRound supplementaryRound; 
 
-    public Bids collectBids() {
-        Bids bids = new Bids();
+    public BundleValueBids collectBids() {
+        BundleValueBids bids = new BundleValueBids();
         for (Bidder bidder : this.auction.getDomain().getBidders()) {
             log.debug("Asking bidder {} for additional bids...", bidder.getName());
             bids.setBid(bidder, supplementaryRound.getSupplementaryBids(auction, bidder));

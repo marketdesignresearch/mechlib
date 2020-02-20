@@ -3,7 +3,8 @@ package org.marketdesignresearch.mechlib.input;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.input.csv.CsvBidsReader;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.MechanismFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
@@ -23,7 +24,7 @@ public class CSVInputTest {
 
     @Test
     public void testSimpleInput() throws FileNotFoundException {
-        Bids bids = CsvBidsReader.csvToXORBids(Paths.get("src/test/resources/CsvBidsTestFile.csv"));
+        BundleValueBids<BundleValuePair> bids = CsvBidsReader.csvToXORBids(Paths.get("src/test/resources/CsvBidsTestFile.csv"));
         MechanismFactory quadraticCCG = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
             NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         Payment ccgPayment = quadraticCCG.getOutcomeRule(bids).getPayment();
@@ -33,7 +34,7 @@ public class CSVInputTest {
 
     @Test
     public void testRealInput() throws FileNotFoundException {
-        Bids bids = CsvBidsReader.csvToXORBids(Paths.get("src/test/resources/CsvGsvmTestFile.csv"));
+        BundleValueBids<BundleValuePair> bids = CsvBidsReader.csvToXORBids(Paths.get("src/test/resources/CsvGsvmTestFile.csv"));
         MechanismFactory quadraticCCG = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         Payment ccgPayment = quadraticCCG.getOutcomeRule(bids).getPayment();

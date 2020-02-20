@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
@@ -32,7 +33,7 @@ public final class SimpleORDomain implements Domain {
                 log.warn("Requested efficient allocation for bidders with no values attached!");
                 efficientAllocation = Allocation.EMPTY_ALLOCATION;
             } else {
-                ORWinnerDetermination orWDP = new ORWinnerDetermination(Bids.fromORBidders(bidders));
+                ORWinnerDetermination orWDP = new ORWinnerDetermination(BundleValueBids.fromORBidders(bidders));
                 orWDP.setMipInstrumentation(getMipInstrumentation());
                 orWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
                 efficientAllocation = orWDP.getAllocation();

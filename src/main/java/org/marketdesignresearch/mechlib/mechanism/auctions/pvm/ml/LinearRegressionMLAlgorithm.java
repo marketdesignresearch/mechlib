@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -31,9 +31,9 @@ import java.util.Set;
 public class LinearRegressionMLAlgorithm implements MLAlgorithm {
     private static MathContext precision = new MathContext(6);
     private final List<? extends Good> goods;
-    private Bid reports = new Bid();
+    private BundleValueBid<BundleValuePair> reports = new BundleValueBid<>();
 
-    public void addReport(Bid report) {
+    public void addReport(BundleValueBid<BundleValuePair> report) {
         reports = reports.join(report);
     }
 
@@ -42,7 +42,7 @@ public class LinearRegressionMLAlgorithm implements MLAlgorithm {
             ArrayList<Double> yVector = new ArrayList<>();
             ArrayList<ArrayList<Double>> xVectors = new ArrayList<>();
 
-            for (BundleBid report : reports.getBundleBids()) {
+            for (BundleValuePair report : reports.getBundleBids()) {
                 if (!Bundle.EMPTY.equals(report.getBundle())) {
                     yVector.add(report.getAmount().doubleValue());
                     ArrayList<Double> xVector = new ArrayList<>();

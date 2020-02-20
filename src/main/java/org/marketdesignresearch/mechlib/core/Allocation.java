@@ -3,7 +3,8 @@ package org.marketdesignresearch.mechlib.core;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import lombok.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @ToString
 public class Allocation implements MetaInfoResult {
-    public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new Bids(new HashMap<>()), new MetaInfo());
+    public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new BundleValueBids(new HashMap<>()), new MetaInfo());
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
     @Getter
@@ -35,7 +36,7 @@ public class Allocation implements MetaInfoResult {
 
     private final Map<UUID, BidderAllocation> tradesMap; // The Map only includes winning bidders
     @Getter @EqualsAndHashCode.Exclude
-    private final Bids bids;
+    private final BundleValueBids bids;
     @Getter @EqualsAndHashCode.Exclude
     private final MetaInfo metaInfo;
     @Getter
@@ -43,18 +44,18 @@ public class Allocation implements MetaInfoResult {
     @EqualsAndHashCode.Exclude
     private Set<PotentialCoalition> coalitions;
 
-    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
+    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, BundleValueBids bids, MetaInfo metaInfo) {
         this(tradesMap, bids, metaInfo, null);
     }
-    public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo) {
+    public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, BundleValueBids bids, MetaInfo metaInfo) {
         this(totalAllocationValue, tradesMap, bids, metaInfo, null);
     }
 
-    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> potentialCoalitions) {
+    public Allocation(Map<? extends Bidder, BidderAllocation> tradesMap, BundleValueBids bids, MetaInfo metaInfo, Set<PotentialCoalition> potentialCoalitions) {
         this(tradesMap.values().stream().map(BidderAllocation::getValue).reduce(BigDecimal.ZERO, BigDecimal::add), tradesMap, bids, metaInfo, potentialCoalitions);
     }
 
-    public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, Bids bids, MetaInfo metaInfo, Set<PotentialCoalition> coalitions) {
+    public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, BundleValueBids bids, MetaInfo metaInfo, Set<PotentialCoalition> coalitions) {
         this.totalAllocationValue = totalAllocationValue;
         this.trueSocialWelfare = tradesMap.entrySet().stream().map(e -> e.getKey().getValue(e.getValue().getBundle())).reduce(BigDecimal.ZERO, BigDecimal::add);
         HashMap<UUID, BidderAllocation> map = new HashMap<>();
@@ -103,7 +104,7 @@ public class Allocation implements MetaInfoResult {
     public Allocation getAllocationWithTrueValues() {
         Map<Bidder, BidderAllocation> map = new HashMap<>();
         tradesMap.forEach((k, v) -> map.put(getBidder(k), new BidderAllocation(getBidder(k).getValue(v.getBundle()), v.getBundle(), new HashSet<>())));
-        return new Allocation(map, new Bids(), new MetaInfo());
+        return new Allocation(map, new BundleValueBids(), new MetaInfo());
     }
 
     private Bidder getBidder(UUID id) {

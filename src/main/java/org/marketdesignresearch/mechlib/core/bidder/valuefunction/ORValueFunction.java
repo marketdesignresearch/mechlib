@@ -6,10 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
@@ -59,14 +59,14 @@ public class ORValueFunction implements ValueFunction {
     }
 
     @Override
-    public Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
-        Set<BundleBid> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
-        return new Bid(bundleBids);
+    public BundleValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
+        Set<BundleValuePair> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
+        return new BundleValueBid(bundleBids);
     }
 
     @Override
     public WinnerDetermination toWDP(Bidder bidder) {
-        return new ORWinnerDetermination(new Bids(Collections.singletonMap(bidder, toBid())));
+        return new ORWinnerDetermination(new BundleValueBids(Collections.singletonMap(bidder, toBid())));
     }
 }
 

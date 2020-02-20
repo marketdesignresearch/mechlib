@@ -5,9 +5,9 @@ import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -65,12 +65,12 @@ public class ORBidder implements Bidder, Serializable {
 
     @Override
     public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
-        Bid valueMinusPrice = new Bid();
-        value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleBid(
+        BundleValueBid valueMinusPrice = new BundleValueBid();
+        value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new Bids(ImmutableMap.of(this, valueMinusPrice)));
+        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);

@@ -1,5 +1,8 @@
-package org.marketdesignresearch.mechlib.core;
+package org.marketdesignresearch.mechlib.core.bid.bundle;
 
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
 import lombok.EqualsAndHashCode;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @EqualsAndHashCode
 @ToString
-public class BundleBid {
+public class BundleValuePair {
 
     @Getter
     private final BigDecimal amount;
@@ -40,7 +43,7 @@ public class BundleBid {
      * @param bundle Goods to bid on
      * @param id Same id as BundleValue
      */
-    public BundleBid(BigDecimal amount, Set<Good> bundle, String id) {
+    public BundleValuePair(BigDecimal amount, Set<Good> bundle, String id) {
         this(amount, Bundle.of(bundle), id);
     }
 
@@ -55,12 +58,12 @@ public class BundleBid {
         return Collections.unmodifiableSet(bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()));
     }
 
-    public BundleBid reducedBy(BigDecimal amount) {
-        return new BundleBid(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
+    public BundleValuePair reducedBy(BigDecimal amount) {
+        return new BundleValuePair(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
     }
 
-    public BundleBid withAmount(BigDecimal amount) {
-        return new BundleBid(amount, bundle, id);
+    public BundleValuePair withAmount(BigDecimal amount) {
+        return new BundleValuePair(amount, bundle, id);
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {

@@ -1,7 +1,8 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
@@ -10,10 +11,9 @@ import java.util.*;
 
 public class CATSAdapter {
 
-    public Bids adaptCATSAuction(CATSAuction catsAuction) {
+    public BundleValueBids<BundleValuePair> adaptCATSAuction(CATSAuction catsAuction) {
         SimpleXORDomain domain = adaptToDomain(catsAuction);
-        return Bids.fromXORBidders(domain.getBidders());
-
+        return BundleValueBids.fromXORBidders(domain.getBidders());
     }
 
     private List<SimpleGood> adaptGoods(CATSAuction catsAuction) {

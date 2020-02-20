@@ -4,7 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
@@ -25,7 +26,7 @@ public class MetaElicitation {
         bidderMLAlgorithmMap.forEach((k, v) -> this.algorithms.put(k.getId(), v));
     }
 
-    public Map<Bidder, ValueFunction> process(Bids bids) {
+    public Map<Bidder, ValueFunction> process(BundleValueBids bids) {
         Map<Bidder, ValueFunction> inferredValues = new HashMap<>();
         for (Map.Entry<UUID, MLAlgorithm> entry : algorithms.entrySet()) {
             if (bids.getBid(getBidder(entry.getKey())) != null) {

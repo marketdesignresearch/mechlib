@@ -3,8 +3,6 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
@@ -13,6 +11,10 @@ import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.input.cats.CATSParser;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
@@ -35,6 +37,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
 
 @Slf4j
 public class CCATest {
@@ -74,7 +77,7 @@ public class CCATest {
 
     @Test
     public void testRoundAfterRoundCCAWithCATSAuction() {
-        VCGRule auction = new XORVCGRule(Bids.fromXORBidders(domain.getBidders()));
+        VCGRule auction = new XORVCGRule(BundleValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
         CCAuction cca = new CCAuction(domain);
@@ -98,7 +101,7 @@ public class CCATest {
 
     @Test
     public void testFinishPhase() {
-        VCGRule auction = new XORVCGRule(Bids.fromXORBidders(domain.getBidders()));
+        VCGRule auction = new XORVCGRule(BundleValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
         CCAuction cca = new CCAuction(domain);
@@ -229,16 +232,16 @@ public class CCATest {
 
 
         // First round
-        Bids bids = new Bids();
+        BundleValueBids<BundleValuePair> bids = new BundleValueBids<BundleValuePair>();
         for (Bidder bidder : domain.getBidders()) {
             Bundle bestBundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-            Bid bid = new Bid(Sets.newHashSet(bundleBid));
-            checkBidEquality(bid, cca.proposeBid(bidder));
+            BundleValuePair bundleBid = new BundleValuePair(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+            BundleValueBid<BundleValuePair> bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+            assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder).proposeBid()).getDemandedBundle());
             bids.setBid(bidder, bid);
         }
         // Set all bids
-        cca.submitBids(bids);
+        cca.collectBids();
         Outcome temp = cca.getTemporaryResult();
         assertThat(temp.getAllocation().getTotalAllocationValue()).isZero();
         assertThat(temp.getAllocation().allocationOf(bidder1).getValue()).isZero();
@@ -258,11 +261,11 @@ public class CCATest {
         // Second round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bestBundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-            Bid bid = new Bid(Sets.newHashSet(bundleBid));
-            checkBidEquality(bid, cca.proposeBid(bidder));
+            BundleValuePair bundleBid = new BundleValuePair(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+            BundleValueBid<BundleValuePair> bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+            assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder).proposeBid()).getDemandedBundle());
             // Submit bids one by one
-            cca.submitBid(bidder, bid);
+            cca.getCurrentInteraction(bidder).submitBid(new DemandBid(bestBundle));
         }
 
         temp = cca.getTemporaryResult();
@@ -278,16 +281,16 @@ public class CCATest {
 
         // Third round
         Bundle bestBundle = bidder2.getBestBundle(cca.getCurrentPrices());
-        BundleBid bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-        Bid bid = new Bid(Sets.newHashSet(bundleBid));
-        checkBidEquality(bid, cca.proposeBid(bidder2));
-        cca.submitBid(bidder2, bid);
+        BundleValuePair bundleBid = new BundleValuePair(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+        BundleValueBid<BundleValuePair> bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+        assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder2).proposeBid()).getDemandedBundle());
+        cca.getCurrentInteraction(bidder2).submitBid(new DemandBid(bestBundle));
 
         bestBundle = bidder3.getBestBundle(cca.getCurrentPrices());
-        bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-        bid = new Bid(Sets.newHashSet(bundleBid));
-        checkBidEquality(bid, cca.proposeBid(bidder3));
-        cca.submitBid(bidder3, bid);
+        bundleBid = new BundleValuePair(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+        bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+        assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder3).proposeBid()).getDemandedBundle());
+        cca.getCurrentInteraction(bidder3).submitBid(new DemandBid(bestBundle));
 
         // Workaround for known bug in java compilation if using it directly this way:
         // assertThat(cca.getTemporaryResult().getWinners()).containsExactlyInAnyOrder(bidder2, bidder3);
@@ -296,10 +299,10 @@ public class CCATest {
         assertThat(cca.getTemporaryResult().getWinners().contains(bidder3)).isTrue();
 
         bestBundle = bidder1.getBestBundle(cca.getCurrentPrices());
-        bundleBid = new BundleBid(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-        bid = new Bid(Sets.newHashSet(bundleBid));
-        checkBidEquality(bid, cca.proposeBid(bidder1));
-        cca.submitBid(bidder1, bid);
+        bundleBid = new BundleValuePair(cca.getCurrentPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+        bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+        assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder1).proposeBid()).getDemandedBundle());
+        cca.getCurrentInteraction(bidder1).submitBid(new DemandBid(bestBundle));
 
         temp = cca.getTemporaryResult();
         assertThat(temp.getAllocation().getTotalAllocationValue()).isEqualTo(BigDecimal.valueOf(6));
@@ -314,10 +317,10 @@ public class CCATest {
         // Fourth round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bb = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
-            bid = new Bid(Sets.newHashSet(bb));
-            checkBidEquality(bid, cca.proposeBid(bidder));
-            cca.submitBid(bidder, bid);
+            BundleValuePair bb = new BundleValuePair(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
+            bid = new BundleValueBid<>(Sets.newHashSet(bb));
+            assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder).proposeBid()).getDemandedBundle());
+            cca.getCurrentInteraction(bidder).submitBid(new DemandBid(bestBundle));
         }
 
         temp = cca.getTemporaryResult();
@@ -334,10 +337,10 @@ public class CCATest {
         // Fifth round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bundle = bidder.getBestBundle(cca.getCurrentPrices());
-            BundleBid bb = new BundleBid(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
-            bid = new Bid(Sets.newHashSet(bb));
-            checkBidEquality(bid, cca.proposeBid(bidder));
-            cca.submitBid(bidder, bid);
+            BundleValuePair bb = new BundleValuePair(cca.getCurrentPrices().getPrice(bundle).getAmount(), bundle, UUID.randomUUID().toString());
+            bid = new BundleValueBid<>(Sets.newHashSet(bb));
+            assertEquals(bestBundle, ((DemandBid)cca.getCurrentInteraction(bidder).proposeBid()).getDemandedBundle());
+            cca.getCurrentInteraction(bidder).submitBid(new DemandBid(bestBundle));
         }
 
         temp = cca.getTemporaryResult();
@@ -370,7 +373,7 @@ public class CCATest {
         // TODO: Test supplementary round as well
     }
 
-    private void checkBidEquality(Bid bid, Bid proposedBid) {
+    private void checkBidEquality(BundleValueBid<BundleValuePair> bid, BundleValueBid<BundleValuePair> proposedBid) {
         assertThat(bid.getBundleBids().size()).isOne();
         assertThat(proposedBid.getBundleBids().size()).isOne();
         assertThat(bid.getBundleBids().iterator().next().getBundle()).isEqualTo(proposedBid.getBundleBids().iterator().next().getBundle());

@@ -1,7 +1,8 @@
 package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
 import lombok.EqualsAndHashCode;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class ShaveStrategy implements ComparableStrategy<ShaveStrategy> {
     }
 
     @Override
-    public Bid apply(ValueFunction combinatorialValueFunction) {
+    public BundleValueBid apply(ValueFunction combinatorialValueFunction) {
 
         return combinatorialValueFunction.toBid(v -> v.multiply(shaveFactor));
     }

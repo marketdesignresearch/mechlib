@@ -2,6 +2,8 @@ package org.marketdesignresearch.mechlib.core;
 
 import com.google.common.collect.Sets;
 import lombok.*;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +31,9 @@ public final class BidderAllocation {
     @Getter
     private final Bundle bundle;
     @Getter @EqualsAndHashCode.Exclude
-    private final Set<BundleBid> acceptedBids; // TODO: Check if this is needed
+    private final Set<BundleValuePair> acceptedBids; // TODO: Check if this is needed
 
-    public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleBid> acceptedBids) {
+    public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleValuePair> acceptedBids) {
         this(value, Bundle.of(bundle), acceptedBids);
     }
 

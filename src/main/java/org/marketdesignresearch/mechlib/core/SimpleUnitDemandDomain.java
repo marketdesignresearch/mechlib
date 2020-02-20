@@ -4,7 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.UnitDemandBidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
@@ -35,7 +36,7 @@ public final class SimpleUnitDemandDomain implements Domain {
                     allocationMap.put(winner, new BidderAllocation(winner.getValue(), Bundle.of(good), new HashSet<>()));
                 }
             }
-            efficientAllocation = new Allocation(allocationMap, new Bids(), new MetaInfo());
+            efficientAllocation = new Allocation(allocationMap, new BundleValueBids(), new MetaInfo());
         }
         return efficientAllocation;
     }

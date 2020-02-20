@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
@@ -40,7 +40,7 @@ public class PaymentRuleTests {
         SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder, eastBidder, globalBidder), ImmutableList.of(west, east));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
-        OutcomeRule outcomeRule = equalNorm.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule outcomeRule = equalNorm.getOutcomeRule(BundleValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = outcomeRule.getPayment();
         assertThat(payment.paymentOf(eastBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(1.75));
         assertThat(payment.paymentOf(westBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));
@@ -57,7 +57,7 @@ public class PaymentRuleTests {
     @Test
     public void paperExample() throws IOException {
         CPLEXUtils.SOLVER.initializeSolveParams();
-        Bids bids = Bids.fromXORBidders(SimpleXORDomain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).getBidders());
+        BundleValueBids bids = BundleValueBids.fromXORBidders(SimpleXORDomain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).getBidders());
         MechanismFactory quadratic = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
         MechanismFactory large = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN), new NormFactory(Norm.MANHATTAN,

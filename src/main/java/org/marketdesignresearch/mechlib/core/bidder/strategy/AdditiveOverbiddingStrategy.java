@@ -1,8 +1,9 @@
 package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+
 import com.google.common.collect.ImmutableSet;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
@@ -37,11 +38,11 @@ public class AdditiveOverbiddingStrategy<S extends ComparableStrategy<S>> implem
 
 
     @Override
-    public Bid apply(ValueFunction combinatorialValueFunction) {
-        Bid bid = normalStrategy.apply(combinatorialValueFunction);
+    public BundleValueBid<BundleValuePair> apply(ValueFunction combinatorialValueFunction) {
+        BundleValueBid<BundleValuePair> bid = normalStrategy.apply(combinatorialValueFunction);
         if (overBid.signum() != 0) {
-            BigDecimal bidSoFar = bid.getBundleBids().stream().map(BundleBid::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-            BundleBid bundleBid = new BundleBid(bidSoFar.add(overBid), allGoods, "FakeBig");
+            BigDecimal bidSoFar = bid.getBundleBids().stream().map(BundleValuePair::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BundleValuePair bundleBid = new BundleValuePair(bidSoFar.add(overBid), allGoods, "FakeBig");
             bid.addBundleBid(bundleBid);
         }
         return bid;

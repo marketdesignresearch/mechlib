@@ -3,10 +3,13 @@ package org.marketdesignresearch.mechlib.core.bidder;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import java.math.BigDecimal;
@@ -144,13 +147,7 @@ public interface Bidder extends MipInstrumentationable {
         return getValue(bundle).subtract(prices.getPrice(bundle).getAmount());
     }
 
-    /**
-     * Gets the bidder's default strategy.
-     *
-     * @return the bidder's default strategy
-     */
-    default Strategy getDefaultStrategy() {
-        return Strategy.TRUTHFUL;
+    default <B extends Bid, T extends Interaction<B>> InteractionStrategy<B,T> getStrategy(Class<T> type) {
+    	return InteractionStrategy.defaultStrategy(type, this);
     }
-
 }

@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 
 public class CachedReferencePointFactory implements ReferencePointFactory {
     private Payment payment;
@@ -13,7 +13,7 @@ public class CachedReferencePointFactory implements ReferencePointFactory {
 
 
     @Override
-    public Payment computeReferencePoint(Bids bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids bids, Allocation allocation) {
         return payment;
     }
 

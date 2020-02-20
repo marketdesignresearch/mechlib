@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
@@ -43,7 +44,7 @@ public class MipInstrumentationTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        BundleValueBids<BundleValuePair> bids = adapter.adaptCATSAuction(catsAuction);
         OutcomeRule vcgRule = new ORVCGRule(bids);
         vcgRule.setMipInstrumentation(new MipLoggingInstrumentation());
         vcgRule.getOutcome();

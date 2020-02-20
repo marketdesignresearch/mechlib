@@ -6,9 +6,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Map<Good, PotentialCoalition> goodToCoalitionMap = new HashMap<>();
     private final CorePaymentRule corePaymentRule;
 
-    public UnitedConstrainedGenerator(Bids bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
+    public UnitedConstrainedGenerator(BundleValueBids bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
         this.generatorAlgorithms = generatorAlgorithms;
         this.corePaymentRule = corePaymentRule;
 

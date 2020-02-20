@@ -5,10 +5,11 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
@@ -26,12 +27,12 @@ import java.util.stream.Collectors;
  */
 class PerBidConstraintGenerator implements PartialConstraintGenerator {
     @Override
-    public void generateFirstRoundConstraints(Bids bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public <T extends BundleValuePair> void generateFirstRoundConstraints(BundleValueBids<T> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
         corePaymentRule.resetResult();
         Allocation allocation = referencePoint.getAllocation();
         Payment lowerBound = referencePoint.getPayment();
-        for (Entry<Bidder, Bid> bid : bids.getBidMap().entrySet()) {
-            for (BundleBid bundleBid : bid.getValue().getBundleBids()) {
+        for (Entry<Bidder, BundleValueBid<T>> bid : bids.getBidMap().entrySet()) {
+            for (BundleValuePair bundleBid : bid.getValue().getBundleBids()) {
                 // TODO: assumes availability of 1
                 Set<Bidder> blockedBiddersSet = bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(goodToBidderMap::containsKey).map(good -> goodToBidderMap.get(good).getBidder()).collect(Collectors.toSet());
                 BigDecimal currentValue = allocation.allocationOf(bid.getKey()) == null ? BigDecimal.ZERO : allocation.allocationOf(bid.getKey()).getValue();

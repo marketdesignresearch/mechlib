@@ -1,9 +1,10 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +56,8 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
         return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();
     }
 
-    public BundleBid toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
-        return new BundleBid(valueToBidFunction.apply(amount), bundle, id);
+    public BundleValuePair toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
+        return new BundleValuePair(valueToBidFunction.apply(amount), bundle, id);
     }
 
     @Override

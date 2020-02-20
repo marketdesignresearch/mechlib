@@ -1,38 +1,42 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.BundleBid;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.ClockPhaseBidCollector;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.SupplementaryBidCollector;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.SupplementaryRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class CCAuction extends Auction {
+public class CCAuction extends Auction<BundleValuePair> {
 
     @Getter
     private Prices currentPrices;
@@ -67,6 +71,7 @@ public class CCAuction extends Auction {
         } else {
             this.currentPrices = new LinearPrices(getDomain().getGoods());
         }
+        this.buildInteractions();
     }
 
     @PersistenceConstructor
@@ -77,6 +82,7 @@ public class CCAuction extends Auction {
         this.supplementaryRounds = supplementaryRounds;
         this.supplementaryRoundQueue = supplementaryRoundQueue;
         this.clockPhaseCompleted = clockPhaseCompleted;
+        // TODO handle interactions
     }
 
     @Override
@@ -128,7 +134,7 @@ public class CCAuction extends Auction {
     @Override
     public boolean currentPhaseFinished() {
         if (rounds.isEmpty()) return false;
-        AuctionRound lastRound = rounds.get(rounds.size() - 1);
+        AuctionRound<BundleValuePair> lastRound = rounds.get(rounds.size() - 1);
         if (lastRound instanceof CCAClockRound && clockPhaseCompleted) {
             return true;
         } else {
@@ -139,11 +145,11 @@ public class CCAuction extends Auction {
     @Override
     public void closeRound() {
         Preconditions.checkState(!finished());
-        Bids bids = current.getBids();
+        BundleValueBids<BundleValuePair> bids = current.getBids();
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
         int roundNumber = rounds.size() + 1;
-        AuctionRound round;
+        AuctionRound<BundleValuePair> round;
         if (clockPhaseCompleted) {
             round = new CCASupplementaryRound(roundNumber, bids, getCurrentPrices());
             supplementaryRoundQueue.poll();
@@ -155,26 +161,26 @@ public class CCAuction extends Auction {
         // }
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleGenerator());
+        current = new AuctionRoundBuilder<BundleValuePair>(getOutcomeRuleGenerator());
         current.setMipInstrumentation(getMipInstrumentation());
         updatePrices();
+        buildInteractions();
     }
 
     @Override
     public boolean finished() {
         return super.finished() || clockPhaseCompleted && !hasNextSupplementaryRound();
     }
-
-    @Override
-    public Bid proposeBid(Bidder bidder) {
-        Bid bid = super.proposeBid(bidder);
-        if (!clockPhaseCompleted) {
-            Set<BundleBid> bundleBids = bid.getBundleBids().stream()
-                    .map(bb -> new BundleBid(getCurrentPrices().getPrice(bb.getBundle()).getAmount(), bb.getBundle(), bb.getId()))
-                    .collect(Collectors.toSet());
-            bid = new Bid(bundleBids);
-        }
-        return bid;
+    
+    @SuppressWarnings("unchecked")
+	private void buildInteractions() {
+    	Map<UUID, BundleValuePairTransformable<Bid,BundleValuePair>> currentInteractions = new HashMap<UUID, BundleValuePairTransformable<Bid,BundleValuePair>>();
+    	if(!clockPhaseCompleted) {
+    		for(Bidder b : this.getDomain().getBidders()) {
+    			currentInteractions.put(b.getId(), (BundleValuePairTransformable)new DefaultDemandQueryInteraction(b.getId(), this.currentPrices));
+    		}
+    	}
+    	this.setCurrentInteractions(currentInteractions);
     }
 
     private void updatePrices() {
@@ -188,36 +194,16 @@ public class CCAuction extends Auction {
         currentPrices = updatedPrices;
     }
 
-    @Override
-    public void advanceRound() {
-        List<Bidder> biddersToQuery = getDomain().getBidders().stream().filter(b -> !current.getBids().getBidders().contains(b)).collect(Collectors.toList());
-        if (!clockPhaseCompleted) {
-            ClockPhaseBidCollector collector = new ClockPhaseBidCollector(getNumberOfRounds() + 1, getCurrentPrices(), biddersToQuery);
-            log.debug("Starting clock round {}...", getNumberOfRounds() + 1);
-            submitBids(collector.collectBids());
-        } else {
-            if (supplementaryRoundQueue.isEmpty()) {
-                log.warn("No supplementary round found to run");
-                return;
-            }
-            SupplementaryRound supplementaryRound = supplementaryRoundQueue.peek();
-            SupplementaryBidCollector collector = new SupplementaryBidCollector(this, supplementaryRound);
-            log.debug("Starting supplementary round '{}'...", collector);
-            submitBids(collector.collectBids());
-        }
-        closeRound();
-    }
-
     public boolean hasNextSupplementaryRound() {
         return !supplementaryRoundQueue.isEmpty();
     }
 
     @Override
     public void resetToRound(int index) {
-        AuctionRound round = getRound(index);
+        AuctionRound<BundleValuePair> round = getRound(index);
         currentPrices = round.getPrices();
         if (clockPhaseCompleted) {
-            AuctionRound previous = getRound(index - 1);
+            AuctionRound<BundleValuePair> previous = getRound(index - 1);
             Preconditions.checkState(previous instanceof CCAClockRound,
                     "Currently, the implementation does not allow to reset to another supplementary round than the first one.");
             if (round instanceof CCAClockRound) {

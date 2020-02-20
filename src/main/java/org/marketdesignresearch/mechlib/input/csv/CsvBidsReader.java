@@ -2,8 +2,9 @@ package org.marketdesignresearch.mechlib.input.csv;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 
@@ -21,14 +22,14 @@ public class CsvBidsReader {
      * @return  The bids that are represented by this CSV file, which can be further processed
      * @throws  FileNotFoundException if there is no file at this path
      */
-    public static Bids csvToXORBids(Path path) throws FileNotFoundException {
+    public static BundleValueBids<BundleValuePair> csvToXORBids(Path path) throws FileNotFoundException {
         // Maps the CSV rows to BidBeans
         List<BidBean> bidBeans = new CsvToBeanBuilder<BidBean>(new FileReader(path.toString()))
                 .withType(BidBean.class).build().parse();
-        if (bidBeans.isEmpty()) return new Bids();
+        if (bidBeans.isEmpty()) return new BundleValueBids<BundleValuePair>();
         // Collect the information about the items
         List<SimpleGood> goods = bidBeans.get(0).getGoods().keySet().stream().map(SimpleGood::new).collect(Collectors.toList());
-        Map<Bidder, Bid> bidMap = new HashMap<>();
+        Map<Bidder, BundleValueBid<BundleValuePair>> bidMap = new HashMap<>();
         // Iterate through all BidBeans to collect the bids
         for (BidBean bidBean : bidBeans) {
             Bidder bidder = bidMap.keySet().stream().filter(b -> b.getName().equals(bidBean.getBidder())).findAny().orElse(new XORBidder(bidBean.getBidder()));
@@ -43,13 +44,13 @@ public class CsvBidsReader {
                     bundleEntries.add(new BundleEntry(good, numberOfGoods));
                 }
             }
-            BundleBid bundleBid = new BundleBid(bidBean.getBid(), new Bundle(bundleEntries), UUID.randomUUID().toString());
-            Bid bid = bidMap.getOrDefault(bidder, new Bid());
+            BundleValuePair bundleBid = new BundleValuePair(bidBean.getBid(), new Bundle(bundleEntries), UUID.randomUUID().toString());
+            BundleValueBid<BundleValuePair> bid = bidMap.getOrDefault(bidder, new BundleValueBid<BundleValuePair>());
             bid.addBundleBid(bundleBid);
             bidMap.put(bidder, bid);
         }
 
-        return new Bids(bidMap);
+        return new BundleValueBids<BundleValuePair>(bidMap);
     }
 
 }

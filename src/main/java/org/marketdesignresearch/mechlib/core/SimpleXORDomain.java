@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.input.cats.CATSParser;
@@ -36,7 +37,7 @@ public final class SimpleXORDomain implements Domain {
             efficientAllocation = Allocation.EMPTY_ALLOCATION;
         } else {
             if (efficientAllocation == null) {
-                XORWinnerDetermination xorWDP = new XORWinnerDetermination(Bids.fromXORBidders(bidders));
+                XORWinnerDetermination xorWDP = new XORWinnerDetermination(BundleValueBids.fromXORBidders(bidders));
                 xorWDP.setMipInstrumentation(getMipInstrumentation());
                 xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
                 efficientAllocation = xorWDP.getAllocation();

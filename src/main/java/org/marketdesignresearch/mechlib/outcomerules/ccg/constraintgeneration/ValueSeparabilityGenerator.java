@@ -8,9 +8,10 @@ import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
@@ -35,7 +36,7 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
     }
 
     @Override
-    public void generateFirstRoundConstraints(Bids bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public <T extends BundleValuePair> void generateFirstRoundConstraints(BundleValueBids<T> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
         this.referencePayments = referencePoint.getPayment();
     }
 

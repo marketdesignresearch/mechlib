@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
@@ -22,8 +22,8 @@ public class XORBlockingCoalitionFinderFactory implements BlockingAllocationFind
     }
 
     @Override
-    public BlockingAllocation findBlockingAllocation(Bids bids, Outcome priorResult) {
-        Bids reducedBids = bids.reducedBy(priorResult);
+    public BlockingAllocation findBlockingAllocation(BundleValueBids bids, Outcome priorResult) {
+        BundleValueBids reducedBids = bids.reducedBy(priorResult);
 
         WinnerDetermination blockingCoalitionFinder = new XORBlockingCoalitionDetermination(reducedBids);
         double lowerBound = priorResult.getPayment().getTotalPayments().subtract(epsilon).doubleValue();

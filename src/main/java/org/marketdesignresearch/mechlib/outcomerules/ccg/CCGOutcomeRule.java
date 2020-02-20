@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.core.Outcome;
@@ -26,18 +26,18 @@ import java.util.Set;
 @Slf4j
 public class CCGOutcomeRule implements OutcomeRule {
     private Outcome result = null;
-    private final Bids bids;
+    private final BundleValueBids bids;
     private final CorePaymentRule paymentRule;
     private final Allocation allocation;
     private final BlockingAllocationFinder blockingCoalitionFactory;
     private final Set<ConstraintGenerationAlgorithm> cgAlgorithms;
 
-    public CCGOutcomeRule(Bids bids, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
+    public CCGOutcomeRule(BundleValueBids bids, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
                           ConstraintGenerationAlgorithm... cgAlgorithms) {
         this(bids, allocation, paymentRule, blockingCoalitionFactory, EnumSet.copyOf(Arrays.asList(cgAlgorithms)));
     }
 
-    public CCGOutcomeRule(Bids bids, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
+    public CCGOutcomeRule(BundleValueBids bids, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
                           Set<ConstraintGenerationAlgorithm> cgAlgorithms) {
         this.bids = bids;
         this.allocation = allocation;

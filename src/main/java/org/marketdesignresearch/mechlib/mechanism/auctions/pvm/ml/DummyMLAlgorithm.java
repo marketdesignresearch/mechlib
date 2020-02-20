@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
@@ -27,9 +28,9 @@ import java.util.*;
 public class DummyMLAlgorithm implements MLAlgorithm {
     private final Bidder bidder;
     private final List<? extends Good> goods;
-    private Bid bid = new Bid();
+    private BundleValueBid<BundleValuePair> bid = new BundleValueBid<>();
 
-    public void addReport(Bid report) {
+    public void addReport(BundleValueBid<BundleValuePair> report) {
         bid = bid.join(report);
     }
 

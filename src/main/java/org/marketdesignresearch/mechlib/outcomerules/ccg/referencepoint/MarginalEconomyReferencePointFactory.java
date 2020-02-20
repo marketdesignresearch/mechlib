@@ -2,7 +2,8 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint;
 
 import com.google.common.base.Objects;
 import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 public class MarginalEconomyReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(Bids bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids<? extends BundleValuePair> bids, Allocation allocation) {
         // TODO: assumes availability of 1
         Map<Good, Bidder> winnerMap = new HashMap<>();
         for (Bidder bidder : allocation.getWinners()) {
@@ -23,7 +24,7 @@ public class MarginalEconomyReferencePointFactory implements ReferencePointFacto
         }
         Map<Good, BigDecimal> highestLosingBids = new HashMap<>(winnerMap.size());
         for (Bidder bidder : bids.getBidders()) {
-            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
+            for (BundleValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
                 BigDecimal bidPerGood = bundleBid.getAmount().divide(BigDecimal.valueOf(bundleBid.getBundle().getBundleEntries().size()), MathContext.DECIMAL64);
                 // TODO: assumes availability of 1
                 bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(good -> !Objects.equal(winnerMap.get(good), bidder)).forEach(good -> highestLosingBids.merge(good, bidPerGood, PrecisionUtils::max));

@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
-import org.marketdesignresearch.mechlib.core.bid.Bid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 import java.math.BigDecimal;
 
 public interface Strategy {
-    Bid apply(ValueFunction combinatorialValueFunction);
+    BundleValueBid apply(ValueFunction combinatorialValueFunction);
 
     Strategy ZERO = value -> value.toBid(b -> BigDecimal.ZERO);
     Strategy TRUTHFUL = ValueFunction::toBid;

@@ -1,37 +1,44 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import com.google.common.base.Preconditions;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderAllocation;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.math.DoubleMath;
+
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.stream.Collector;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
-    private Bids bids;
+    private BundleValueBids<BundleValuePair> bids;
     // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    protected Map<BundleBid, Variable> bidVariables = new HashMap<>();
+    protected Map<BundleValuePair, Variable> bidVariables = new HashMap<>();
     
     private BigDecimal scalingFactor = new BigDecimal(1);
 
-    public BidBasedWinnerDetermination(Bids bids) {
+    public BidBasedWinnerDetermination(BundleValueBids<BundleValuePair> bids) {
         this.bids = bids;
         
         
-        BigDecimal maxValue = bids.getBids().stream().map(Bid::getBundleBids).flatMap(Set::stream).map(BundleBid::getAmount).reduce(BigDecimal::max).get();
+        BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleValuePair::getAmount).reduce(BigDecimal::max).get();
         BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
         
         if (maxValue.compareTo(maxMipValue) == 1) {
@@ -39,11 +46,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         }
     }
     
-    protected BigDecimal getScaledBundleBidAmount(BundleBid bundleBid) {
+    protected BigDecimal getScaledBundleBidAmount(BundleValuePair bundleBid) {
     	return bundleBid.getAmount().multiply(this.scalingFactor);
     }
 
-    protected Bids getBids() {
+    protected BundleValueBids<BundleValuePair> getBids() {
         return bids;
     }
 
@@ -72,8 +79,8 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         for (Bidder bidder : bids.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
             HashSet<BundleEntry> bundleEntries = new HashSet<>();
-            ImmutableSet.Builder<BundleBid> bundleBids = ImmutableSet.builder();
-            for (BundleBid bundleBid : bids.getBid(bidder).getBundleBids()) {
+            ImmutableSet.Builder<BundleValuePair> bundleBids = ImmutableSet.builder();
+            for (BundleValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
                     bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
                     bundleBids.add(bundleBid);
@@ -91,7 +98,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         return new Allocation(trades.build(), bids, metaInfo);
     }
 
-    protected Variable getBidVariable(BundleBid bundleBid) {
+    protected Variable getBidVariable(BundleValuePair bundleBid) {
         return bidVariables.get(bundleBid);
     }
 

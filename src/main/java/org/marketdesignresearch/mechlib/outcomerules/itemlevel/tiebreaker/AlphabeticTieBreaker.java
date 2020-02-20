@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel.tiebreaker;
 
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBid;
 
 public class AlphabeticTieBreaker implements TieBreaker {
     @Override

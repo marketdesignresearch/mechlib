@@ -4,9 +4,10 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
@@ -24,7 +25,7 @@ import java.util.Set;
  */
 public class SeparabilityConstraintGenerator implements PartialConstraintGenerator {
     @Override
-    public void generateFirstRoundConstraints(Bids bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public <T extends BundleValuePair> void generateFirstRoundConstraints(BundleValueBids<T> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
 
     }
 
