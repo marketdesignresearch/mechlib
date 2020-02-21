@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
+package org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions;
 
 import java.util.UUID;
 
@@ -11,10 +11,10 @@ import org.springframework.data.annotation.Transient;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class DefaultInteraction<T extends Bid> implements Interaction<T> {
+public abstract class DefaultInteraction<T extends Bid, R extends BundleValuePair> implements BundleValueTransformableInteraction<R> {
 	
 	@Transient
-	private Auction<? extends BundleValuePair> auction;
+	private Auction<R> auction;
 	
 	private final UUID bidderUuid;
 	private T submittedBid;
@@ -23,18 +23,20 @@ public abstract class DefaultInteraction<T extends Bid> implements Interaction<T
 		this.submittedBid = bid;
 	}
 	
-	public T getSubmittedBid() {
+	protected T getSubmittedBid() {
 		if(submittedBid == null) {
 			this.submitBid(this.proposeBid());
 		}
 		return this.submittedBid;
 	}
 	
+	protected abstract T proposeBid();
+	
 	public Bidder getBidder() {
 		return auction.getBidder(this.bidderUuid);
 	}
 	
-	public void setAuction(Auction<? extends BundleValuePair> auction) {
+	public void setAuction(Auction<R> auction) {
 		this.auction = auction;
 	}
 	

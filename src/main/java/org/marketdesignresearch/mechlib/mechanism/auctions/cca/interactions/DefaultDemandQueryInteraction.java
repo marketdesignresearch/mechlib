@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
+package org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions;
 
 import java.util.Set;
 import java.util.UUID;
@@ -11,7 +11,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class DefaultDemandQueryInteraction extends BundleValuePairTransformable<DemandBid,BundleValuePair> implements DemandQuery  {
+public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid, BundleValuePair> implements DemandQuery  {
 
 	private final Prices prices;
 
@@ -23,7 +23,7 @@ public class DefaultDemandQueryInteraction extends BundleValuePairTransformable<
 	
 	@Override
 	public DemandBid proposeBid() {
-		return this.getBidder().getStrategy(DemandQueryStrategy.class).applyDemandStrategy(this);
+		return this.proposeDemandBid();
 	}
 
 	@Override
@@ -37,11 +37,20 @@ public class DefaultDemandQueryInteraction extends BundleValuePairTransformable<
 		return this.prices;
 	}
 
-	public BundleValueBid<BundleValuePair> getBundleValueTransformedBid() {
+	public BundleValueBid<BundleValuePair> getTransformedBid() {
 		DemandBid bid = this.getSubmittedBid();
 		return new BundleValueBid<>(
 				Set.of(new BundleValuePair(this.prices.getPrice(bid.getDemandedBundle()).getAmount(),
 						bid.getDemandedBundle(), UUID.randomUUID().toString())));
 	}
 
+	@Override
+	public DemandBid proposeDemandBid() {
+		return this.getBidder().getStrategy(DemandQueryStrategy.class).applyDemandStrategy(this);
+	}
+
+	@Override
+	public void submitDemandBid(DemandBid bid) {
+		super.submitBid(bid);
+	}
 }

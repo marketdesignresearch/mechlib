@@ -1,11 +1,18 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.BundleValueTransformableInteraction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.DefaultExactValueQueryInteraction;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,19 +30,17 @@ public class LastBidsTrueValueSupplementaryRound implements SupplementaryRound {
     }
 
     @Override
-    public BundleValueBid getSupplementaryBids(CCAuction auction, Bidder bidder) {
-        BundleValueBid bid = auction.getLatestAggregatedBids(bidder);
-        if (bid == null) return new BundleValueBid();
-        BundleValueBid result = new BundleValueBid();
+    public BundleValueTransformableInteraction<BundleValuePair> getInteraction(CCAuction auction, Bidder bidder) {
+        BundleValueBid<BundleValuePair> bid = auction.getLatestAggregatedBids(bidder);
+        if (bid == null) return new DefaultExactValueQueryInteraction(new HashSet<>(),bidder.getId());
+        Set<Bundle> result = new LinkedHashSet<>();
         int count = 0;
         // TODO: This is not ordered nor unique. If needed, consider storing BundleBids in a List and filtering duplicates
         Iterator<BundleValuePair> iterator = bid.getBundleBids().iterator();
         while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
-            BundleValuePair bundleBid = iterator.next();
-            BundleValuePair trueValuedBundleBid = new BundleValuePair(bidder.getValue(bundleBid.getBundle()), bundleBid.getBundle(), "TrueValued_" + String.valueOf(auction.getNumberOfRounds()+1) + "_" + bundleBid.getId());
-            result.addBundleBid(trueValuedBundleBid);
+        	result.add(iterator.next().getBundle());
         }
-        return result;
+        return new DefaultExactValueQueryInteraction(result,bidder.getId());
     }
 
     public LastBidsTrueValueSupplementaryRound withNumberOfSupplementaryBids(int numberOfSupplementaryBids) {

@@ -34,6 +34,7 @@ public class SequentialAuction extends Auction<BundleValuePair> {
         setMaxRounds(domain.getGoods().size());
     }
 
+    /*
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {
         if (finished()) return new HashMap<>();
@@ -42,6 +43,7 @@ public class SequentialAuction extends Auction<BundleValuePair> {
         getDomain().getBidders().forEach(bidder -> map.put(bidder, Lists.newArrayList(bundle)));
         return map;
     }
+    */
 
     @Override
     public int allowedNumberOfBids() {
@@ -56,6 +58,7 @@ public class SequentialAuction extends Auction<BundleValuePair> {
      * @param bidder the bidder that's about to propose a bid
      * @return A (currently truthful) bid
      */
+    /*
     public BundleValueBid<BundleValuePair> proposeBid(Bidder bidder) {
         BundleValueBid bid = new BundleValueBid();
         if (allowedNumberOfBids() > 0 && restrictedBids().containsKey(bidder)) {
@@ -67,8 +70,9 @@ public class SequentialAuction extends Auction<BundleValuePair> {
                 bid.addBundleBid(new BundleValuePair(bidder.getValue(bundle, alreadyWon), bundle, UUID.randomUUID().toString()));
             }
         }
-        return bid;
+      	return bid;
     }
+    */
 
     /**
      * Overrides the default method to have outcomes only based on each round's bids

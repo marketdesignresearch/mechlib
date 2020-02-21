@@ -1,6 +1,5 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 
-import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 /**
@@ -10,10 +9,8 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
  *
  * @param <T>
  */
-public interface Interaction<T extends Bid> {
-	T proposeBid();
-	void submitBid(T bid);
+public interface Interaction {
 	Bidder getBidder();
 	
-	Class<? extends Interaction<T>> getType();
+	Class<? extends Interaction> getType();
 }

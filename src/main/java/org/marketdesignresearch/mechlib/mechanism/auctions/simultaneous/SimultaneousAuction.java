@@ -27,7 +27,7 @@ public class SimultaneousAuction extends Auction<BundleValuePair> {
     public SimultaneousAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
         super(domain, outcomeRuleGenerator);
     }
-
+    /*
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {
         if (finished()) return new HashMap<>();
@@ -36,4 +36,5 @@ public class SimultaneousAuction extends Auction<BundleValuePair> {
         getDomain().getBidders().forEach(bidder -> restrictedBids.put(bidder, bundleList));
         return restrictedBids;
     }
+    */
 }

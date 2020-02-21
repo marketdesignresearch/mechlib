@@ -8,12 +8,11 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.Mechanism;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.BundleValuePairTransformable;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.BundleValueTransformableInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentationable;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
@@ -41,6 +40,8 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     private int manualBids = DEFAULT_MANUAL_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
+    
+    // TODO move to demand query strategy
     @Getter @Setter
     private double relativeDemandQueryTolerance = 0;
     @Getter @Setter
@@ -53,7 +54,7 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     protected AuctionRoundBuilder<T> current;
     
     @Getter(AccessLevel.PROTECTED)
-    private Map<UUID,BundleValuePairTransformable<Bid, T>> currentInteractions;
+    private Map<UUID,BundleValueTransformableInteraction<T>> currentInteractions;
 
     @PersistenceConstructor
     public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
@@ -64,12 +65,12 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
         current.setMipInstrumentation(getMipInstrumentation());
     }
     
-    protected void setCurrentInteractions(Map<UUID,BundleValuePairTransformable<Bid, T>> newInteractions) {
+    protected void setCurrentInteractions(Map<UUID,BundleValueTransformableInteraction<T>> newInteractions) {
     	this.currentInteractions = newInteractions;
     	newInteractions.forEach((b,i) -> i.setAuction(this));
     }
     
-    public Interaction<Bid> getCurrentInteraction(Bidder b) {
+    public Interaction getCurrentInteraction(Bidder b) {
     	return this.currentInteractions.get(b.getId());
     }
 
@@ -105,49 +106,10 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
         closeRound();
     }
 
-    public void collectBids() {
+    protected void collectBids() {
     	BundleValueBids<T> bids = new BundleValueBids<>();
-    	this.currentInteractions.forEach((u,i) -> bids.setBid(this.getBidder(u), i.getBundleValueTransformedBid()));
+    	this.currentInteractions.forEach((u,i) -> bids.setBid(this.getBidder(u), i.getTransformedBid()));
     	this.current.setBids(bids);
-    }
-    
-    /**
-     *  Proposes a reasonable (currently truthful) bid for this bidder
-     */
-    /*
-    public BundleValueBid<T> proposeBid(Bidder bidder) {
-        BundleValueBid<T> bid = new BundleValueBid<T>();
-        if (allowedNumberOfBids() > 0) {
-            List<Bundle> bundlesToBidOn;
-            int numberOfBids = Math.max(allowedNumberOfBids() - getManualBids(), 1); // Propose at least one bid
-            if (restrictedBids().get(bidder) == null) {
-                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), numberOfBids, true, relativeDemandQueryTolerance, absoluteDemandQueryTolerance, demandQueryTimeLimit);
-            } else {
-                bundlesToBidOn = restrictedBids().get(bidder);
-            }
-            bundlesToBidOn.forEach(bundle -> bid.addBundleBid(new BundleValuePair(bidder.getValue(bundle), bundle, UUID.randomUUID().toString())));
-        }
-        return bid;
-    }
-    */
-
-    /**
-     * For all the bidders that did not submit a bid yet, this method collects proposed and submits a bid
-     */
-    /*
-    public void proposeBids() {
-        List<Bidder> biddersToQuery = getDomain().getBidders().stream().filter(b -> !current.getBids().getBidders().contains(b)).collect(Collectors.toList());
-        for (Bidder bidder : biddersToQuery) {
-            submitBid(bidder, proposeBid(bidder));
-        }
-    }
-    */
-
-    /**
-     * Per default, bidders can bid on all goods
-     */
-    public Map<Bidder, List<Bundle>> restrictedBids() {
-        return new HashMap<>();
     }
 
     /**
@@ -176,12 +138,6 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
         current = new AuctionRoundBuilder<T>(outcomeRuleGenerator);
         current.setMipInstrumentation(getMipInstrumentation());
     }
-
-    /*
-    public void resetBid(Bidder bidder) {
-        current.setBid(bidder, new BundleValueBid());
-    }
-    */
     
     // TODO 
     public void addRound(BundleValueBids<T> bids) {
@@ -194,7 +150,6 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     	this.collectBids();
         return current.getOutcome();
     }
-
 
     public BundleValueBids<T> getAggregatedBidsAt(int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());

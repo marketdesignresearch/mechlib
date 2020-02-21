@@ -20,6 +20,9 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.SupplementaryRound;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.BundleValueTransformableInteraction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.DefaultDemandQueryInteraction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.DefaultInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
@@ -174,11 +177,16 @@ public class CCAuction extends Auction<BundleValuePair> {
     
     @SuppressWarnings("unchecked")
 	private void buildInteractions() {
-    	Map<UUID, BundleValuePairTransformable<Bid,BundleValuePair>> currentInteractions = new HashMap<UUID, BundleValuePairTransformable<Bid,BundleValuePair>>();
+    	Map<UUID, BundleValueTransformableInteraction<BundleValuePair>> currentInteractions = new HashMap<>();
     	if(!clockPhaseCompleted) {
     		for(Bidder b : this.getDomain().getBidders()) {
-    			currentInteractions.put(b.getId(), (BundleValuePairTransformable)new DefaultDemandQueryInteraction(b.getId(), this.currentPrices));
+    			currentInteractions.put(b.getId(), new DefaultDemandQueryInteraction(b.getId(), this.currentPrices));
     		}
+    	} else {
+    		for(Bidder b : this.getDomain().getBidders()) {
+    			currentInteractions.put(b.getId(),this.supplementaryRoundQueue.get(0).getInteraction(this, b));
+    		}
+    		this.supplementaryRoundQueue.remove();
     	}
     	this.setCurrentInteractions(currentInteractions);
     }
