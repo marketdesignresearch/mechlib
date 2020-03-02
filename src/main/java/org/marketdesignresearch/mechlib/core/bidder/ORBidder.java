@@ -65,12 +65,12 @@ public class ORBidder implements Bidder, Serializable {
 
     @Override
     public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
-        BundleValueBid valueMinusPrice = new BundleValueBid();
+        BundleValueBid<BundleValuePair> valueMinusPrice = new BundleValueBid<>();
         value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids(ImmutableMap.of(this, valueMinusPrice)));
+        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids<BundleValuePair>(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);

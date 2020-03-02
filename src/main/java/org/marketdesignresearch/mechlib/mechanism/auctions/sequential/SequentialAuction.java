@@ -45,12 +45,6 @@ public class SequentialAuction extends Auction<BundleValuePair> {
     }
     */
 
-    @Override
-    public int allowedNumberOfBids() {
-        if (finished()) return 0;
-        return 1;
-    }
-
     /**
      * The bidder will take into account previous round's allocations, because they are definitive in a
      * sequential auction (not interim, as in other auctions).
@@ -79,10 +73,7 @@ public class SequentialAuction extends Auction<BundleValuePair> {
      */
     @Override
     public Outcome getOutcomeAtRound(int index) {
-        if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
-        }
-        return getRound(index).getOutcome();
+        return getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
     }
 
     @Override

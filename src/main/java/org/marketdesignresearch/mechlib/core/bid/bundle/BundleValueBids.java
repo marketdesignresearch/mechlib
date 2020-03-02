@@ -12,7 +12,6 @@ import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
-import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -20,37 +19,17 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
-@ToString @EqualsAndHashCode
-public class BundleValueBids<T extends BundleValuePair> implements Bids{
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class BundleValueBids<T extends BundleValuePair> extends Bids<BundleValueBid<T>>{
 
-    private final Map<UUID, BundleValueBid<T>> bidMap;
-    @Getter
-    private final Set<Bidder> bidders;
 
     public BundleValueBids() {
         this(new HashMap<>());
     }
 
     public BundleValueBids(Map<Bidder, BundleValueBid<T>> bidderBidMap) {
-        bidMap = new HashMap<>();
-        bidders = new HashSet<>(bidderBidMap.keySet());
-        bidderBidMap.forEach((k, v) -> this.bidMap.put(k.getId(), v));
-    }
-
-    public boolean setBid(Bidder bidder, BundleValueBid<T> bid) {
-        bidders.add(bidder);
-        return bidMap.put(bidder.getId(), bid) == null;
-    }
-
-    public Collection<BundleValueBid<T>> getBids() {
-        return bidMap.values();
-    }
-
-    public Map<Bidder, BundleValueBid<T>> getBidMap() {
-        HashMap<Bidder, BundleValueBid<T>> map = new HashMap<>();
-        bidMap.forEach((k, v) -> map.put(getBidder(k), v));
-        return map;
+    	super(bidderBidMap);
     }
 
     public Collection<Good> getGoods() {
@@ -61,7 +40,7 @@ public class BundleValueBids<T extends BundleValuePair> implements Bids{
 
     public int getDemand(Good good) {
         int demand = 0;
-        for (BundleValueBid<T> bid : bidMap.values()) {
+        for (BundleValueBid<T> bid : this.getBidMap().values()) {
             demand += bid.getBundleBids().stream().mapToInt(bb -> bb.countGood(good)).max().orElse(0);
         }
         return demand;
@@ -72,15 +51,11 @@ public class BundleValueBids<T extends BundleValuePair> implements Bids{
 	public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new BundleValueBids<BundleValuePair>());
         Map<Bidder, BundleValueBid<BundleValuePair>> bidsPerGood = new HashMap<>();
-        for (Entry<UUID, BundleValueBid<T>> entry : bidMap.entrySet()) {
+        for (Entry<Bidder, BundleValueBid<T>> entry : this.getBidMap().entrySet()) {
             Set<T> bundleBids = entry.getValue().getBundleBids().stream().filter(bbid -> bbid.getBundle().isSingleGood()).filter(bbid -> bbid.getBundle().getSingleGood().equals(good)).collect(Collectors.toSet());
-            if (!bundleBids.isEmpty()) bidsPerGood.put(getBidder(entry.getKey()), new BundleValueBid<BundleValuePair>((Set<BundleValuePair>) bundleBids));
+            if (!bundleBids.isEmpty()) bidsPerGood.put(entry.getKey(), new BundleValueBid<BundleValuePair>((Set<BundleValuePair>) bundleBids));
         }
         return new SingleItemBids(new BundleValueBids<BundleValuePair>(bidsPerGood));
-    }
-
-    private Bidder getBidder(UUID id) {
-        return getBidders().stream().filter(b -> b.getId().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
     }
 
     /**
@@ -90,8 +65,7 @@ public class BundleValueBids<T extends BundleValuePair> implements Bids{
      */
     public BundleValueBids<T> without(Bidder bidder) {
         Map<Bidder, BundleValueBid<T>> newBidderBidMap = new HashMap<>();
-        bidMap.forEach((k, v) -> {
-            Bidder b = getBidder(k);
+        this.getBidMap().forEach((b, v) -> {
             if (!b.equals(bidder)) newBidderBidMap.put(b, v);
         });
         return new BundleValueBids<T>(newBidderBidMap);
@@ -104,15 +78,10 @@ public class BundleValueBids<T extends BundleValuePair> implements Bids{
      */
     public BundleValueBids<T> of(Set<Bidder> bidders) {
         Map<Bidder, BundleValueBid<T>> newBidderBidMap = new HashMap<>();
-        bidMap.forEach((k, v) -> {
-            Bidder b = getBidder(k);
+        this.getBidMap().forEach((b, v) -> {
             if (bidders.contains(b)) newBidderBidMap.put(b, v);
         });
         return new BundleValueBids<T>(newBidderBidMap);
-    }
-
-    public BundleValueBid<T> getBid(Bidder bidder) {
-        return bidMap.getOrDefault(bidder.getId(), new BundleValueBid<T>());
     }
 
     public BundleValueBids<T> join(BundleValueBids<T> other) {
@@ -169,7 +138,8 @@ public class BundleValueBids<T extends BundleValuePair> implements Bids{
         return newBids;
     }
 
-    public boolean isEmpty() {
-        return bidMap.isEmpty() || bidMap.values().stream().allMatch(bid -> bid.getBundleBids().isEmpty());
-    }
+	@Override
+	protected BundleValueBid<T> createEmptyBid() {
+		return new BundleValueBid<>();
+	}
 }

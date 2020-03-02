@@ -12,9 +12,12 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.PersistenceConstructor;
 
+import com.google.common.base.Preconditions;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -74,4 +77,10 @@ public class BundleValuePair {
         return bundle.countGood(good);
     }
 
+
+	BundleValuePair joinWith(BundleValuePair otherBid) {
+    	Preconditions.checkArgument(otherBid.getClass().equals(BundleValuePair.class));
+    	Preconditions.checkArgument(this.getBundle().equals(otherBid.getBundle()));
+    	return new BundleValuePair(this.getAmount().max(otherBid.getAmount()), this.getBundle(), UUID.randomUUID().toString());
+    }
 }

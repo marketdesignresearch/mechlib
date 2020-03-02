@@ -4,12 +4,9 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
-public interface ProfitMaxQuery extends Interaction{
+public interface ProfitMaxQuery extends TypedInteraction<BundleValueBid<BundleValuePair>, BundleValuePair>{
 	Prices getPrices();
 	int getNumberOfBids();
-	
-	BundleValueBid<BundleValuePair> proposeExactValueBid();
-	void submitExactValueBid(BundleValueBid<BundleValuePair> bid);
 	
 	@Override
 	default Class<ProfitMaxQuery> getType() {

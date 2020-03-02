@@ -27,6 +27,7 @@ public class SimultaneousAuction extends Auction<BundleValuePair> {
     public SimultaneousAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
         super(domain, outcomeRuleGenerator);
     }
+    
     /*
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {

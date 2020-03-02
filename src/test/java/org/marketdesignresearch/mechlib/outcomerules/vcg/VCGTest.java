@@ -6,6 +6,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.SimpleBidInteraction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.simple.SimpleBidAuction;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
@@ -40,15 +42,15 @@ public class VCGTest {
         BundleValuePair bid2 = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(A, B, D), "2");
         BundleValuePair bid3 = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleValuePair bid4 = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
-        BundleValueBids bids = new BundleValueBids();
+        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
         Bidder bidder1 = new XORBidder("B" + 1);
         Bidder bidder2 = new XORBidder("B" + 2);
         Bidder bidder3 = new XORBidder("B" + 3);
         Bidder bidder4 = new XORBidder("B" + 4);
-        bids.setBid(bidder1, new BundleValueBid(Sets.newHashSet(bid1)));
-        bids.setBid(bidder2, new BundleValueBid(Sets.newHashSet(bid2)));
-        bids.setBid(bidder3, new BundleValueBid(Sets.newHashSet(bid3)));
-        bids.setBid(bidder4, new BundleValueBid(Sets.newHashSet(bid4)));
+        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new BundleValueBid<>(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new BundleValueBid<>(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new BundleValueBid<>(Sets.newHashSet(bid4)));
         OutcomeRule am = new ORVCGRule(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
@@ -64,15 +66,15 @@ public class VCGTest {
         BundleValuePair bid2 = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(A, B, D), "2");
         BundleValuePair bid3 = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleValuePair bid4 = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
-        BundleValueBids bids = new BundleValueBids();
+        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
         Bidder bidder1 = new XORBidder("B" + 1);
         Bidder bidder2 = new XORBidder("B" + 2);
         Bidder bidder3 = new XORBidder("B" + 3);
         Bidder bidder4 = new XORBidder("B" + 4);
-        bids.setBid(bidder1, new BundleValueBid(Sets.newHashSet(bid1)));
-        bids.setBid(bidder2, new BundleValueBid(Sets.newHashSet(bid2)));
-        bids.setBid(bidder3, new BundleValueBid(Sets.newHashSet(bid3)));
-        bids.setBid(bidder4, new BundleValueBid(Sets.newHashSet(bid4)));
+        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1)));
+        bids.setBid(bidder2, new BundleValueBid<>(Sets.newHashSet(bid2)));
+        bids.setBid(bidder3, new BundleValueBid<>(Sets.newHashSet(bid3)));
+        bids.setBid(bidder4, new BundleValueBid<>(Sets.newHashSet(bid4)));
         OutcomeRule am = new XORVCGRule(bids);
         Payment payment = am.getPayment();
         assertThat(am.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(4);
@@ -90,19 +92,18 @@ public class VCGTest {
         XORBidder bidder4 = new XORBidder("B" + 4);
 
         SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3, bidder4), Lists.newArrayList(A, B, C, D));
-        Auction<BundleValuePair> auction = new Auction<>(domain, OutcomeRuleGenerator.VCG_XOR);
+        SimpleBidAuction auction = new SimpleBidAuction(domain, OutcomeRuleGenerator.VCG_XOR);
 
         BundleValuePair bid1 = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(A), "1");
         BundleValuePair bid2 = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(A, B, D), "2");
         BundleValuePair bid3 = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "3");
         BundleValuePair bid4 = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(C, D), "4");
-        BundleValueBids bids = new BundleValueBids<BundleValuePair>();
-        bids.setBid(bidder1, new BundleValueBid<BundleValuePair>(Sets.newHashSet(bid1)));
-        bids.setBid(bidder2, new BundleValueBid<BundleValuePair>(Sets.newHashSet(bid2)));
-        bids.setBid(bidder3, new BundleValueBid<BundleValuePair>(Sets.newHashSet(bid3)));
-        bids.setBid(bidder4, new BundleValueBid<BundleValuePair>(Sets.newHashSet(bid4)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder1)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid1)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder2)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid2)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder3)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid3)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder4)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid4)));
 
-        auction.addRound(bids);
+        auction.closeRound();
 
         Allocation allocation = auction.getAllocation();
         Payment payment = auction.getPayment();
@@ -121,18 +122,16 @@ public class VCGTest {
         XORBidder bidder3 = new XORBidder("B" + 3);
 
         SimpleXORDomain domain = new SimpleXORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(A));
-        Auction auction = new Auction(domain, OutcomeRuleGenerator.VCG_XOR);
+        SimpleBidAuction auction = new SimpleBidAuction(domain, OutcomeRuleGenerator.VCG_XOR);
 
         BundleValuePair bid1 = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(A), "1");
         BundleValuePair bid2 = new BundleValuePair(BigDecimal.valueOf(20), Sets.newHashSet(A), "2");
         BundleValuePair bid3 = new BundleValuePair(BigDecimal.valueOf(30), Sets.newHashSet(A), "3");
-        BundleValueBids bids = new BundleValueBids();
-        bids.setBid(bidder1, new BundleValueBid(Sets.newHashSet(bid1)));
-        bids.setBid(bidder2, new BundleValueBid(Sets.newHashSet(bid2)));
-        bids.setBid(bidder3, new BundleValueBid(Sets.newHashSet(bid3)));
-
-        auction.addRound(bids);
-
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder1)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid1)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder2)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid2)));
+        ((SimpleBidInteraction)auction.getCurrentInteraction(bidder3)).submitBid(new BundleValueBid<>(Sets.newHashSet(bid3)));
+        auction.closeRound();
+        
         Allocation allocation = auction.getAllocation();
         Payment payment = auction.getPayment();
 

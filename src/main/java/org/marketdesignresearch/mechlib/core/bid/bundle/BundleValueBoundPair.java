@@ -2,10 +2,13 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.base.Preconditions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,5 +40,15 @@ public class BundleValueBoundPair extends BundleValuePair{
     
     public BigDecimal getLowerBound() {
     	return this.getAmount();
+    }
+    
+    BundleValuePair joinWith(BundleValuePair otherBid) {
+    	Preconditions.checkArgument(otherBid.getClass().equals(BundleValueBoundPair.class));
+    	BundleValueBoundPair otherBoundBid = (BundleValueBoundPair) otherBid;
+    	Preconditions.checkArgument(this.getBundle().equals(otherBoundBid.getBundle()));
+    	Preconditions.checkArgument(this.getLowerBound().compareTo(otherBoundBid.getUpperBound()) <= 0);
+    	Preconditions.checkArgument(otherBoundBid.getLowerBound().compareTo(this.getUpperBound()) <= 0);
+    	
+    	return new BundleValueBoundPair(this.getLowerBound().max(otherBoundBid.getLowerBound()), this.getUpperBound().min(otherBoundBid.getUpperBound()), this.getBundle(), UUID.randomUUID().toString());
     }
 }

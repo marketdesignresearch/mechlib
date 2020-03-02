@@ -1,35 +1,47 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
-import lombok.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultAuctionRound;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultPricedAuctionRound;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CCAClockRound extends DefaultAuctionRound<BundleValuePair> {
+public class CCAClockRound extends DefaultPricedAuctionRound<BundleValuePair> {
 
     @Getter
     private final Map<UUID, Integer> overDemand;
+    
+    @Getter
+    private final DemandBids demandBids;
 
-    public CCAClockRound(int roundNumber, BundleValueBids<BundleValuePair> bids, Prices prices, List<? extends Good> goods) {
-        this(roundNumber, bids, prices,
-                goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity())));
+    public CCAClockRound(Auction<BundleValuePair> auction, DemandBids bids, Prices prices, List<? extends Good> goods) {
+        super(auction, prices);
+        this.demandBids = bids;
+        this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity()));
     }
-
+    
     @PersistenceConstructor
-    private CCAClockRound(int roundNumber, BundleValueBids<BundleValuePair> bids, Prices prices, Map<UUID, Integer> overDemand) {
-        super(roundNumber, bids, prices);
+    protected CCAClockRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, Prices prices, DemandBids bids, Map<UUID, Integer> overDemand) {
+        super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber, prices);
+        this.demandBids = bids;
         this.overDemand = overDemand;
     }
 
-    @Override
+	@Override
     public String getDescription() {
         return "Clock Round " + getRoundNumber();
     }
@@ -37,6 +49,11 @@ public class CCAClockRound extends DefaultAuctionRound<BundleValuePair> {
     public String getType() {
         return "CLOCK";
     }
+
+	@Override
+	public BundleValueBids<BundleValuePair> getBids() {
+		return this.demandBids.transformToBundleValueBids(this.getPrices());
+	}
 
 }
 
