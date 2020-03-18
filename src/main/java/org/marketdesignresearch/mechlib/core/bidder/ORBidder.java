@@ -70,7 +70,7 @@ public class ORBidder implements Bidder, Serializable {
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids<BundleValuePair>(ImmutableMap.of(this, valueMinusPrice)));
+        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids<>(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
@@ -79,9 +79,15 @@ public class ORBidder implements Bidder, Serializable {
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
         List<Bundle> result = optimalAllocations.stream()
-                .peek(alloc -> Preconditions.checkArgument(
-                        getUtility(alloc.allocationOf(this).getBundle(), prices).equals(alloc.getTotalAllocationValue())
-                ))
+                .peek(alloc -> {
+                        BigDecimal utility = getUtility(alloc.allocationOf(this).getBundle(), prices);
+                        BigDecimal totalAllocationValue = alloc.getTotalAllocationValue();
+                        // FIXME: The following check is sometimes failing when utility is negative
+                        Preconditions.checkArgument(utility.equals(totalAllocationValue),
+                                "Utility of %s not equal to total allocation value of %s",
+                                utility,
+                                totalAllocationValue);
+                })
                 .map(allocation -> allocation.allocationOf(this).getBundle())
                 .filter(bundle -> allowNegative || getUtility(bundle, prices).signum() > -1)
                 .collect(Collectors.toList());

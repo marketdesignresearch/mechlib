@@ -35,19 +35,15 @@ public class FirstPriceRuleTest {
     @Test
     public void testSimpleFirstPriceAuction() {
         BundleValuePair bid1A = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleValuePair bid1B = new BundleValuePair(BigDecimal.valueOf(7), Sets.newHashSet(item), "1B");
-        BundleValuePair bid2A = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleValuePair bid2B = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
+        BundleValuePair bid2A = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "2A");
         BundleValuePair bid3A = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleValuePair bid3B = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleValuePair bid3C = new BundleValuePair(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
-        BundleValueBids bids = new BundleValueBids();
-        bids.setBid(bidder1, new BundleValueBid(Sets.newHashSet(bid1A, bid1B)));
-        bids.setBid(bidder2, new BundleValueBid(Sets.newHashSet(bid2A, bid2B)));
-        bids.setBid(bidder3, new BundleValueBid(Sets.newHashSet(bid3A, bid3B, bid3C)));
+        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
+        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1A)));
+        bids.setBid(bidder2, new BundleValueBid<>(Sets.newHashSet(bid2A)));
+        bids.setBid(bidder3, new BundleValueBid<>(Sets.newHashSet(bid3A)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         Outcome outcome = new FirstPriceRule(singleItemBids).getOutcome();
-        checkResult(outcome, bidder2, bid2B);
+        checkResult(outcome, bidder2, bid2A);
     }
 
     @Test
@@ -63,18 +59,12 @@ public class FirstPriceRuleTest {
 
     @Test
     public void testFirstPriceAuctionSingleBidder() {
-        BundleValuePair bid1A = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleValuePair bid1B = new BundleValuePair(BigDecimal.valueOf(9), Sets.newHashSet(item), "1B");
-        BundleValuePair bid2A = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(item), "2A");
-        BundleValuePair bid2B = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "2B");
-        BundleValuePair bid3A = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleValuePair bid3B = new BundleValuePair(BigDecimal.valueOf(1), Sets.newHashSet(item), "3B");
-        BundleValuePair bid3C = new BundleValuePair(BigDecimal.valueOf(8), Sets.newHashSet(item), "3C");
-        BundleValueBids bids = new BundleValueBids();
-        bids.setBid(bidder1, new BundleValueBid(Sets.newHashSet(bid1A, bid1B, bid2A, bid2B, bid3A, bid3B, bid3C)));
+        BundleValuePair bid1A = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "1");
+        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
+        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1A)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         Outcome outcome = new FirstPriceRule(singleItemBids).getOutcome();
-        checkResult(outcome, bidder1, bid2B);
+        checkResult(outcome, bidder1, bid1A);
     }
 
     private void checkResult(Outcome outcome, Bidder expectedWinner, BundleValuePair expectedWinningBid) {
