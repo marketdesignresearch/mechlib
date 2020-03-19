@@ -18,8 +18,7 @@ public enum OutcomeRuleGenerator {
     SECOND_PRICE,
     FIRST_PRICE;
 
-    @SuppressWarnings("rawtypes")
-	public OutcomeRule getOutcomeRule(BundleValueBids bids, MipInstrumentation mipInstrumentation) {
+	public OutcomeRule getOutcomeRule(BundleValueBids<?> bids, MipInstrumentation mipInstrumentation) {
         OutcomeRule outcomeRule;
         switch (this) {
             case VCG_OR:
@@ -45,8 +44,7 @@ public enum OutcomeRuleGenerator {
         return outcomeRule;
     }
 
-    @SuppressWarnings("rawtypes")
-	public OutcomeRule getOutcomeRule(BundleValueBids bids) {
+	public OutcomeRule getOutcomeRule(BundleValueBids<?> bids) {
         return getOutcomeRule(bids, MipInstrumentation.NO_OP);
     }
 }

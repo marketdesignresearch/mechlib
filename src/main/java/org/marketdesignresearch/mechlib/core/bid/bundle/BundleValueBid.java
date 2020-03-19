@@ -35,7 +35,7 @@ public class BundleValueBid<T extends BundleValuePair> implements Bid{
     @PersistenceConstructor
     public BundleValueBid(Set<T> bundleBids) {
     	// not more than one bid per bundle
-    	Preconditions.checkArgument(bundleBids.size() == bundleBids.stream().map(b -> b.getBundle()).collect(Collectors.toSet()).size());
+    	Preconditions.checkArgument(bundleBids.size() == bundleBids.stream().map(BundleValuePair::getBundle).collect(Collectors.toSet()).size());
     	this.bundleBids = bundleBids;
     }
 
