@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -73,32 +74,22 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		bidders.forEach(b -> {
 			BundleExactValueBid joined = new BundleExactValueBid();
 			if (getBid(b) != null)
-				getBid(b).getBundleBids().forEach(joined::addBundleBid);
+				joined = joined.join(getBid(b));
 			if (other.getBid(b) != null)
-				other.getBid(b).getBundleBids().forEach(joined::addBundleBid);
+				joined = joined.join(other.getBid(b));
 			result.setBid(b, joined);
 		});
 		return result;
 	}
 
 	@Override
-	public BundleValueBids<BundleExactValueBid> of(Set<Bidder> bidders) {
-		Map<Bidder, BundleExactValueBid> newBidderBidMap = new HashMap<>();
-		this.getBidMap().forEach((b, v) -> {
-			if (bidders.contains(b))
-				newBidderBidMap.put(b, v);
-		});
-		return new BundleExactValueBids(newBidderBidMap);
+	public BundleExactValueBids of(Set<Bidder> bidders) {
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
 
 	@Override
 	public BundleExactValueBids without(Bidder bidder) {
-		Map<Bidder, BundleExactValueBid> newBidderBidMap = new HashMap<>();
-		this.getBidMap().forEach((b, v) -> {
-			if (!b.equals(bidder))
-				newBidderBidMap.put(b, v);
-		});
-		return new BundleExactValueBids(newBidderBidMap);
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,

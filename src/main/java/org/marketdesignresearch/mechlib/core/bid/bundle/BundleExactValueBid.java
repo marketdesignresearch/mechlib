@@ -20,12 +20,14 @@ public class BundleExactValueBid extends BundleValueBid<BundleExactValuePair>{
 		super(of);
 	}
 
+    @Override
 	public BundleExactValueBid reducedBy(BigDecimal payoff) {
 		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.reducedBy(payoff)).collect(Collectors.toCollection(LinkedHashSet::new));
         return new BundleExactValueBid(newBids);
     }
     
-    public BundleExactValueBid join(BundleValueBid<BundleExactValuePair> other) {
+	@Override
+    public BundleExactValueBid join(BundleValueBid<?> other) {
     	BundleExactValueBid result = new BundleExactValueBid();
         getBundleBids().forEach(result::addBundleBid);
         for(BundleExactValuePair otherBid : other.getBundleBids()) {

@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.core.bid.bundle;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -51,7 +52,8 @@ public abstract class BundleValueBid<T extends BundleExactValuePair> implements 
         return goods;
     }
     
-    public abstract BundleValueBid<T> join(BundleValueBid<T> other);
+    public abstract BundleValueBid<T> join(BundleValueBid<?> other);
+	public abstract BundleValueBid<T> reducedBy(BigDecimal payoff);
 
 	@Override
 	public boolean isEmpty() {

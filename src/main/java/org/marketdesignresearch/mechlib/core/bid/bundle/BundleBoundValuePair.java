@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class BundleBoundValuePair extends BundleExactValuePair{
-	
+
 	@Getter
 	private final BigDecimal upperBound;
 	
@@ -30,6 +30,10 @@ public class BundleBoundValuePair extends BundleExactValuePair{
      */
     public BundleBoundValuePair(BigDecimal lowerBound, BigDecimal upperBound, Set<Good> bundle, String id) {
         this(lowerBound, upperBound, Bundle.of(bundle), id);
+    }
+    
+    public BundleBoundValuePair(BundleExactValuePair exactBid) {
+    	this(exactBid.getAmount(), exactBid.getAmount(), exactBid.getBundle(), UUID.randomUUID().toString());
     }
     
     @PersistenceConstructor
@@ -46,13 +50,17 @@ public class BundleBoundValuePair extends BundleExactValuePair{
     	return this.getUpperBound().subtract(this.getLowerBound());
     }
     
-    BundleExactValuePair joinWith(BundleExactValuePair otherBid) {
-    	Preconditions.checkArgument(otherBid.getClass().equals(BundleBoundValuePair.class));
-    	BundleBoundValuePair otherBoundBid = (BundleBoundValuePair) otherBid;
-    	Preconditions.checkArgument(this.getBundle().equals(otherBoundBid.getBundle()));
-    	Preconditions.checkArgument(this.getLowerBound().compareTo(otherBoundBid.getUpperBound()) <= 0);
-    	Preconditions.checkArgument(otherBoundBid.getLowerBound().compareTo(this.getUpperBound()) <= 0);
+    BundleBoundValuePair joinWith(BundleExactValuePair otherBid) {
+    	BigDecimal otherUpperBound = (otherBid instanceof BundleBoundValuePair) ? ((BundleBoundValuePair)otherBid).getUpperBound() : otherBid.getAmount(); 
+    	Preconditions.checkArgument(this.getBundle().equals(otherBid.getBundle()));
+    	Preconditions.checkArgument(this.getLowerBound().compareTo(otherUpperBound) <= 0);
+    	Preconditions.checkArgument(otherBid.getAmount().compareTo(this.getUpperBound()) <= 0);
     	
-    	return new BundleBoundValuePair(this.getLowerBound().max(otherBoundBid.getLowerBound()), this.getUpperBound().min(otherBoundBid.getUpperBound()), this.getBundle(), UUID.randomUUID().toString());
+    	return new BundleBoundValuePair(this.getLowerBound().max(otherBid.getAmount()), this.getUpperBound().min(otherUpperBound), this.getBundle(), UUID.randomUUID().toString());
     }
+    
+	@Override
+	public BundleBoundValuePair reducedBy(BigDecimal amount) {
+		return new BundleBoundValuePair(this.getLowerBound().subtract(amount), this.getUpperBound().subtract(amount), this.getBundle(), UUID.randomUUID().toString());
+	}
 }
