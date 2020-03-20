@@ -1,34 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.input.cats.CATSParser;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase.ProfitMaximizingSupplementaryPhase;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMaxQuery;
-import org.marketdesignresearch.mechlib.outcomerules.vcg.VCGRule;
-import org.marketdesignresearch.mechlib.outcomerules.vcg.XORVCGRule;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
-import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.data.Offset;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,9 +12,44 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
+import org.assertj.core.data.Offset;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.SimpleORDomain;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase.ProfitMaximizingSupplementaryPhase;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMaxQuery;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import org.marketdesignresearch.mechlib.outcomerules.vcg.VCGRule;
+import org.marketdesignresearch.mechlib.outcomerules.vcg.XORVCGRule;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CCATest {
@@ -80,7 +89,7 @@ public class CCATest {
 
     @Test
     public void testRoundAfterRoundCCAWithCATSAuction() {
-        VCGRule auction = new XORVCGRule(BundleValueBids.fromXORBidders(domain.getBidders()));
+        VCGRule auction = new XORVCGRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
         CCAuction cca = new CCAuction(domain);
@@ -104,7 +113,7 @@ public class CCATest {
 
     @Test
     public void testFinishPhase() {
-        VCGRule auction = new XORVCGRule(BundleValueBids.fromXORBidders(domain.getBidders()));
+        VCGRule auction = new XORVCGRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
         CCAuction cca = new CCAuction(domain);
@@ -261,8 +270,8 @@ public class CCATest {
         // Second round
         for (Bidder bidder : domain.getBidders()) {
             Bundle bestBundle = bidder.getBestBundle(((DemandQuery)cca.getCurrentInteraction(bidder)).getPrices());
-            BundleValuePair bundleBid = new BundleValuePair(((DemandQuery)cca.getCurrentInteraction(bidder)).getPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
-            BundleValueBid<BundleValuePair> bid = new BundleValueBid<>(Sets.newHashSet(bundleBid));
+            BundleExactValuePair bundleBid = new BundleExactValuePair(((DemandQuery)cca.getCurrentInteraction(bidder)).getPrices().getPrice(bestBundle).getAmount(), bestBundle, UUID.randomUUID().toString());
+            BundleExactValueBid bid = new BundleExactValueBid(Sets.newHashSet(bundleBid));
             DemandQuery query = (DemandQuery) cca.getCurrentInteraction(bidder);
             assertEquals(bestBundle, query.proposeBid().getDemandedBundle());
             // Submit bids one by one
@@ -377,7 +386,7 @@ public class CCATest {
         // TODO: Test supplementary round as well
     }
 
-    private void checkBidEquality(BundleValueBid<BundleValuePair> bid, BundleValueBid<BundleValuePair> proposedBid) {
+    private void checkBidEquality(BundleValueBid<BundleExactValuePair> bid, BundleValueBid<BundleExactValuePair> proposedBid) {
         assertThat(bid.getBundleBids().size()).isOne();
         assertThat(proposedBid.getBundleBids().size()).isOne();
         assertThat(bid.getBundleBids().iterator().next().getBundle()).isEqualTo(proposedBid.getBundleBids().iterator().next().getBundle());

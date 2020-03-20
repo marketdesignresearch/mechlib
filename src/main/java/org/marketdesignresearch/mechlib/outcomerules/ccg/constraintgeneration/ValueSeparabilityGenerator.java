@@ -1,25 +1,32 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.alg.util.NeighborCache;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 public abstract class ValueSeparabilityGenerator implements PartialConstraintGenerator {
 
@@ -36,7 +43,7 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
     }
 
     @Override
-    public <T extends BundleValuePair> void generateFirstRoundConstraints(BundleValueBids<T> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
         this.referencePayments = referencePoint.getPayment();
     }
 

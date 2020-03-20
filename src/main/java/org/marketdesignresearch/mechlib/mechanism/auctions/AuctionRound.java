@@ -1,14 +1,13 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 
-public interface AuctionRound<T extends BundleValuePair> {
+public interface AuctionRound<BB extends BundleValueBids<?>> {
 
     int getRoundNumber();
     int getAuctionPhaseNumber();
     int getAuctionPhaseRoundNumber();
-    BundleValueBids<T> getBids();
+    BB getBids();
 
     default String getDescription() {
         return "Auction round " + getRoundNumber();

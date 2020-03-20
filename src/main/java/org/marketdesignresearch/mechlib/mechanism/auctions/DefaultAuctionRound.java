@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.EqualsAndHashCode;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
-public abstract class DefaultAuctionRound<T extends BundleValuePair> implements AuctionRound<T> {
+public abstract class DefaultAuctionRound<BB extends BundleValueBids<?>> implements AuctionRound<BB> {
 
     @Getter
     private final int roundNumber;
@@ -20,7 +20,7 @@ public abstract class DefaultAuctionRound<T extends BundleValuePair> implements 
     @Getter
     private final int auctionPhaseRoundNumber;
     
-    public DefaultAuctionRound(Auction<T> auction) {
+    public DefaultAuctionRound(Auction<BB> auction) {
     	this.roundNumber = auction.getNumberOfRounds()+1;
     	this.auctionPhaseNumber = auction.getCurrentPhaseNumber();
     	this.auctionPhaseRoundNumber = auction.getCurrentPhaseRoundNumber();

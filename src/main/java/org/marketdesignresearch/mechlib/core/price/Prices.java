@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core.price;
 
-import org.marketdesignresearch.mechlib.core.Bundle;
-
 import java.util.ArrayList;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
 
 /**
  * Prices represent the mapping between some bundle of goods and a certain price.

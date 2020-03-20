@@ -1,20 +1,21 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.BidderPayment;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class PaymentNorm implements CorePaymentNorm {
     protected static final String BIDDER = "bidder_";

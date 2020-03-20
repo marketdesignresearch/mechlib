@@ -1,13 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBoundPair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 
-public interface BoundValueQuery extends ValueQuery<BundleValueBoundPair>{
-
-	BundleValueBid<BundleValueBoundPair> proposeBid();
-	void submitBids(BundleValueBid<BundleValueBoundPair> bid);
-	BundleValueBid<BundleValueBoundPair> getBid();
+public interface BoundValueQuery extends ValueQuery<BundleBoundValueBid>{
 	
 	@Override
 	default Class<BoundValueQuery> getType() {

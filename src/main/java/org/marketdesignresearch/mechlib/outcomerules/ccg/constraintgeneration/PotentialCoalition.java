@@ -1,12 +1,12 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.springframework.data.annotation.PersistenceConstructor;
-
 import java.math.BigDecimal;
 import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 /**
  * A potential coalition is not in conflict with itself and can thus form a

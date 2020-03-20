@@ -1,11 +1,11 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class CATSBid implements Serializable {

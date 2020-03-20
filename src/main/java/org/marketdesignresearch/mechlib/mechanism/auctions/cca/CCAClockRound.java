@@ -6,8 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -20,7 +19,7 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CCAClockRound extends DefaultPricedAuctionRound<BundleValuePair> {
+public class CCAClockRound extends DefaultPricedAuctionRound<BundleExactValueBids> {
 
     @Getter
     private final Map<UUID, Integer> overDemand;
@@ -28,7 +27,7 @@ public class CCAClockRound extends DefaultPricedAuctionRound<BundleValuePair> {
     @Getter
     private final DemandBids demandBids;
 
-    public CCAClockRound(Auction<BundleValuePair> auction, DemandBids bids, Prices prices, List<? extends Good> goods) {
+    public CCAClockRound(Auction<BundleExactValueBids> auction, DemandBids bids, Prices prices, List<? extends Good> goods) {
         super(auction, prices);
         this.demandBids = bids;
         this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity()));
@@ -51,7 +50,7 @@ public class CCAClockRound extends DefaultPricedAuctionRound<BundleValuePair> {
     }
 
 	@Override
-	public BundleValueBids<BundleValuePair> getBids() {
+	public BundleExactValueBids getBids() {
 		return this.demandBids.transformToBundleValueBids(this.getPrices());
 	}
 

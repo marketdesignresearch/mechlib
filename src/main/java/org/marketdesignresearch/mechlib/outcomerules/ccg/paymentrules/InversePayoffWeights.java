@@ -1,10 +1,11 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
+import java.math.BigDecimal;
+
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import edu.harvard.econcs.jopt.solver.mip.MIP;
 
-import java.math.BigDecimal;
+import edu.harvard.econcs.jopt.solver.mip.MIP;
 
 public class InversePayoffWeights implements CorePaymentWeights {
     private final Outcome referencePoint;

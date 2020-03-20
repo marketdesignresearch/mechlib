@@ -1,17 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,7 +9,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.SimpleORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
@@ -83,7 +90,7 @@ public class PVMTest {
             for (Bidder bidder : domain.getBidders()) {
                 log.info("----- Elicitation in round {} for bidder {}", auction.getNumberOfRounds(), bidder.getName());
                 for (Bundle bundle : bundles) {
-                    Optional<BundleValuePair> reported = auction.getLatestAggregatedBids(bidder).getBundleBids().stream().filter(bbid -> bbid.getBundle().equals(bundle)).findAny();
+                    Optional<BundleExactValuePair> reported = auction.getLatestAggregatedBids(bidder).getBundleBids().stream().filter(bbid -> bbid.getBundle().equals(bundle)).findAny();
                     log.info("- Bundle {}", bundle);
                     log.info("\t*\tTrue Value: {}", bidder.getValue(bundle).setScale(2, RoundingMode.HALF_UP));
                     log.info("\t*\tReported Value: {}", reported.isPresent() ? reported.get().getAmount().setScale(2, RoundingMode.HALF_UP) : "-");

@@ -7,8 +7,8 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 public class MaxTraitorXORBlockingCoalitionFinderFactory implements BlockingAllocationFinder {
 
     @Override
-    public BlockingAllocation findBlockingAllocation(BundleValueBids bids, Outcome priorResult) {
-        BundleValueBids reducedBids = bids.reducedBy(priorResult);
+    public BlockingAllocation findBlockingAllocation(BundleValueBids<?> bids, Outcome priorResult) {
+    	BundleValueBids<?> reducedBids = bids.reducedBy(priorResult);
         WinnerDetermination blockingCoalitionFinder = new XORMaxTraitorBlockingCoalition(reducedBids, priorResult);
         blockingCoalitionFinder.setLowerBound(priorResult.getPayment().getTotalPayments().doubleValue());
         return BlockingAllocation.of(blockingCoalitionFinder.getAllocation());

@@ -1,22 +1,27 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.*;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentNorm;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.EqualWeightsFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.NormFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.ParameterizedCorePaymentRule;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 
 public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFactory {
     /**
@@ -49,7 +54,7 @@ public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFac
 
 
     @Override
-    public CCGOutcomeRule getOutcomeRule(BundleValueBids bids) {
+    public CCGOutcomeRule getOutcomeRule(BundleValueBids<?> bids) {
         Outcome referencePoint = fixedReferencePoint;
         if (referencePoint == null) {
             Allocation allocation = new XORWinnerDetermination(bids).getAllocation();
@@ -60,7 +65,7 @@ public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFac
         return buildCCGAuction(bids, referencePoint);
     }
 
-    protected CCGOutcomeRule buildCCGAuction(BundleValueBids bids, Outcome referencePoint) {
+    protected CCGOutcomeRule buildCCGAuction(BundleValueBids<?> bids, Outcome referencePoint) {
         List<CorePaymentNorm> objectiveNorms = normFactories.stream().map(pnf -> pnf.getPaymentNorm(referencePoint)).collect(Collectors.toList());
 
         ParameterizedCorePaymentRule paymentRule = new ParameterizedCorePaymentRule(objectiveNorms);

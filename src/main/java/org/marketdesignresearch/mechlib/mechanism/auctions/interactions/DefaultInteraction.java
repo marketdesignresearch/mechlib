@@ -3,7 +3,6 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -17,18 +16,18 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
-public abstract class DefaultInteraction<T extends Bid, R extends BundleValuePair> implements TypedInteraction<T, R>{
+public abstract class DefaultInteraction<T extends Bid> implements TypedInteraction<T>{
 	
 	@Transient
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
 	// TODO may compare auction ID
-	protected Auction<R> auction;
+	protected Auction<?> auction;
 	
 	private final UUID bidderUuid;
 	private T submittedBid;
 	
-	public DefaultInteraction(UUID bidderUuid, Auction<R> auction) {
+	public DefaultInteraction(UUID bidderUuid, Auction<?> auction) {
 		this.bidderUuid = bidderUuid;
 		this.auction = auction;
 	}
@@ -45,7 +44,7 @@ public abstract class DefaultInteraction<T extends Bid, R extends BundleValuePai
 		return auction.getBidder(this.bidderUuid);
 	}
 	
-	public void setAuction(Auction<R> auction) {
+	public void setAuction(Auction<?> auction) {
 		this.auction = auction;
 	}
 	

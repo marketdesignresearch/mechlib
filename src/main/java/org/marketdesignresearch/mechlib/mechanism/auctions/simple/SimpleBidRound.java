@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.simple;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultAuctionRound;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -12,18 +11,18 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class SimpleBidRound extends DefaultAuctionRound<BundleValuePair> {
+public class SimpleBidRound extends DefaultAuctionRound<BundleExactValueBids> {
 
 	@Getter
-	private final BundleValueBids<BundleValuePair> bids;
+	private final BundleExactValueBids bids;
 	
-	public SimpleBidRound(Auction<BundleValuePair> auction, BundleValueBids<BundleValuePair> bids) {
+	public SimpleBidRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
 		super(auction);
 		this.bids = bids;
 	}
 	
 	@PersistenceConstructor
-	protected SimpleBidRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, BundleValueBids<BundleValuePair> bids) {
+	protected SimpleBidRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, BundleExactValueBids bids) {
 		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber);
 		this.bids = bids;
 	}

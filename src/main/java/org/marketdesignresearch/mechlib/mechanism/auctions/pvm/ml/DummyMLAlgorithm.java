@@ -1,22 +1,28 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.BigDecimal;
-import java.util.*;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * This dummy algorithm adds an over-valued value to the currently known reports.
@@ -28,9 +34,9 @@ import java.util.*;
 public class DummyMLAlgorithm implements MLAlgorithm {
     private final Bidder bidder;
     private final List<? extends Good> goods;
-    private BundleValueBid<BundleValuePair> bid = new BundleValueBid<>();
+    private BundleValueBid<BundleExactValuePair> bid = new BundleValueBid<>();
 
-    public void addReport(BundleValueBid<BundleValuePair> report) {
+    public void addReport(BundleValueBid<BundleExactValuePair> report) {
         bid = bid.join(report);
     }
 

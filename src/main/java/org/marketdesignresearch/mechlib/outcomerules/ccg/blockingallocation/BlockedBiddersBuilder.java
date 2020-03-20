@@ -1,13 +1,14 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
-import com.google.common.collect.ImmutableSet;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
+
+import com.google.common.collect.ImmutableSet;
 
 public class BlockedBiddersBuilder {
     private final Set<Bidder> blockedBidders = new HashSet<>();

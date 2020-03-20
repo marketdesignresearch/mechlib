@@ -8,7 +8,7 @@ import org.marketdesignresearch.mechlib.outcomerules.vcg.XORVCGRule;
 public class VCGReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(BundleValueBids bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
         return new XORVCGRule(bids).getPayment();
     }
 

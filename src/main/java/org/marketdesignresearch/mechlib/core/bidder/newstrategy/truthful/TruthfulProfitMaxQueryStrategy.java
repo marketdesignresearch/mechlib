@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ProfitMaxStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMaxQuery;
@@ -14,20 +14,22 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMa
 import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class TruthfulProfitMaxQueryStrategy implements ProfitMaxStrategy{
 
-	private final Bidder bidder;
+	@Setter
+	private transient Bidder bidder;
 	
 	@Override
-	public BundleValueBid<BundleValuePair> applyProfitMaxStrategy(ProfitMaxQuery interaction) {
+	public BundleExactValueBid applyProfitMaxStrategy(ProfitMaxQuery interaction) {
 		 List<Bundle> bestBundles = bidder.getBestBundles(interaction.getPrices(), interaction.getNumberOfBids(), true);
-	     List<BundleValuePair> bestBundleBids = new ArrayList<>();
+	     List<BundleExactValuePair> bestBundleBids = new ArrayList<>();
 	     for (Bundle bundle : bestBundles) {
-	         bestBundleBids.add(new BundleValuePair(bidder.getValue(bundle), bundle, UUID.randomUUID().toString()));
+	         bestBundleBids.add(new BundleExactValuePair(bidder.getValue(bundle), bundle, UUID.randomUUID().toString()));
 	     }
-	     return new BundleValueBid<BundleValuePair>(Sets.newHashSet(bestBundleBids));
+	     return new BundleExactValueBid(Sets.newHashSet(bestBundleBids));
 	}
 
 }

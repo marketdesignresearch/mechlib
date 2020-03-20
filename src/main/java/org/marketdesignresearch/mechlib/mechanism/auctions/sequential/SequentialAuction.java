@@ -1,24 +1,14 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.sequential;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
-import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This class represents a sequential auction where for each round, there are only bids placed for a specific good
@@ -26,7 +16,7 @@ import java.util.UUID;
  * TODO change to new auction design with interactions
  */
 @ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
-public class SequentialAuction extends Auction<BundleValuePair> {
+public class SequentialAuction extends Auction<BundleExactValuePair> {
 
     @PersistenceConstructor
     public SequentialAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {

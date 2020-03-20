@@ -1,9 +1,14 @@
 package org.marketdesignresearch.mechlib.core;
 
-import lombok.*;
+import java.util.UUID;
+
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Class representing a simple good that is sold in a Combinatorial Auction

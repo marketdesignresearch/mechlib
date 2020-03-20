@@ -1,10 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
-public interface ProfitMaxQuery extends TypedInteraction<BundleValueBid<BundleValuePair>, BundleValuePair>{
+public interface ProfitMaxQuery extends TypedInteraction<BundleExactValueBid>{
 	Prices getPrices();
 	int getNumberOfBids();
 	

@@ -7,13 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.CCAExactValueQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,17 +33,17 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
     public LastBidsTrueValueSupplementaryPhase() {
     }
 
-    public ExactValueQuery getInteraction(Auction<BundleValuePair> auction, Bidder bidder) {
-        BundleValueBid<BundleValuePair> bid = auction.getLatestAggregatedBids(bidder);
-        if (bid == null) return new CCAExactValueQueryInteraction(new HashSet<>(),bidder.getId(),auction);
+    public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
+        BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
+        if (bid == null) return new DefaultExactValueQueryInteraction(new HashSet<>(),bidder.getId(),auction);
         Set<Bundle> result = new LinkedHashSet<>();
         int count = 0;
         // TODO: This is not ordered nor unique. If needed, consider storing BundleBids in a List and filtering duplicates
-        Iterator<BundleValuePair> iterator = bid.getBundleBids().iterator();
+        Iterator<BundleExactValuePair> iterator = bid.getBundleBids().iterator();
         while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
         	result.add(iterator.next().getBundle());
         }
-        return new CCAExactValueQueryInteraction(result,bidder.getId(),auction);
+        return new DefaultExactValueQueryInteraction(result,bidder.getId(),auction);
     }
 
     public LastBidsTrueValueSupplementaryPhase withNumberOfSupplementaryBids(int numberOfSupplementaryBids) {
@@ -56,12 +57,12 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
     }
 
 	@Override
-	public AuctionRoundBuilder<BundleValuePair> createNextRoundBuilder(Auction<BundleValuePair> auction) {
-		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> this.getInteraction(auction, b))));
+	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
+		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> this.getInteraction(auction, b))),auction);
 	}
 
 	@Override
-	public boolean phaseFinished(Auction<BundleValuePair> auction) {
+	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
 		return auction.getCurrentPhaseRoundNumber() == 1;
 	}
 

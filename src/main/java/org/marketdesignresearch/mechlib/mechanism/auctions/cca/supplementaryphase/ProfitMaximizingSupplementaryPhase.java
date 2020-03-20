@@ -2,12 +2,11 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementarypha
 
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultPricedAuctionRound;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAClockRound;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.CCAProfitMaxInteraction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultProfitMaxInteraction;
 
 import com.google.common.base.Preconditions;
 
@@ -37,22 +36,22 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 	}
 
 	@Override
-	public AuctionRoundBuilder<BundleValuePair> createNextRoundBuilder(Auction<BundleValuePair> auction) {
+	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Preconditions.checkState(auction.getLastRound() instanceof DefaultPricedAuctionRound);
 
-		DefaultPricedAuctionRound<BundleValuePair> pricedRound = (DefaultPricedAuctionRound<BundleValuePair>) auction.getLastRound();
+		DefaultPricedAuctionRound<BundleExactValueBids> pricedRound = (DefaultPricedAuctionRound<BundleExactValueBids>) auction.getLastRound();
 		return new ProfitMaximizingSupplementaryRoundBuilder(
 				auction.getDomain().getBidders().stream()
 						.collect(
 								Collectors
 										.toMap(b -> b.getId(),
-												b -> new CCAProfitMaxInteraction(pricedRound.getPrices(),
+												b -> new DefaultProfitMaxInteraction(pricedRound.getPrices(),
 														this.getNumberOfSupplementaryBids(), b.getId(), auction))),
 				auction);
 	}
 
 	@Override
-	public boolean phaseFinished(Auction<BundleValuePair> auction) {
+	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
 		return auction.getCurrentPhaseRoundNumber() == 2;
 	}
 
@@ -60,5 +59,4 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 	public String getType() {
 		return "SUPPLEMENTARY PROFITMAX";
 	}
-
 }

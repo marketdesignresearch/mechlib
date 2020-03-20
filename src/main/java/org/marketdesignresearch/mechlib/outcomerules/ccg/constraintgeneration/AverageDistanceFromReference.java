@@ -1,12 +1,13 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 public class AverageDistanceFromReference implements Comparable<AverageDistanceFromReference> {
     private final BigDecimal totalDistance;

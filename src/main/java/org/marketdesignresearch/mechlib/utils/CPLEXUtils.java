@@ -1,14 +1,15 @@
 package org.marketdesignresearch.mechlib.utils;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.collect.Maps;
+
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public enum CPLEXUtils {

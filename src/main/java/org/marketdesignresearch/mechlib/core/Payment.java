@@ -1,16 +1,27 @@
 package org.marketdesignresearch.mechlib.core;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import lombok.*;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
+
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.BigDecimal;
-import java.util.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * The payment has exactly the same bidder Set as its corresponding Allocation

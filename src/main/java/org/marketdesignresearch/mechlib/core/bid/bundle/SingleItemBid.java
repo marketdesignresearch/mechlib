@@ -7,5 +7,5 @@ import lombok.Value;
 @Value
 public class SingleItemBid {
     Bidder bidder;
-    BundleValuePair bundleBid;
+    BundleExactValuePair bundleBid;
 }

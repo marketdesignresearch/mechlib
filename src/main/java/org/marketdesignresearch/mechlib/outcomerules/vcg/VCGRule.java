@@ -1,20 +1,21 @@
 package org.marketdesignresearch.mechlib.outcomerules.vcg;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.BidderPayment;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class VCGRule implements OutcomeRule {
 

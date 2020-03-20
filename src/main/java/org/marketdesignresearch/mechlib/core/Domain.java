@@ -1,14 +1,5 @@
 package org.marketdesignresearch.mechlib.core;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
-import org.marketdesignresearch.mechlib.core.price.Price;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -19,6 +10,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Price;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 /**
  * A domain consists of an ordered list of bidders and goods.

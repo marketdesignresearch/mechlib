@@ -1,13 +1,22 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -17,11 +26,14 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.BigDecimal;
-import java.util.*;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PVMAuction extends Auction<BundleValuePair> {
+public class PVMAuction extends Auction<BundleExactValuePair> {
 
     private final MetaElicitation metaElicitation;
 
@@ -78,13 +90,13 @@ public class PVMAuction extends Auction<BundleValuePair> {
 
     @Override
     public void closeRound() {
-        BundleValueBids<BundleValuePair> bids = current.getBids();
+        BundleValueBids<BundleExactValuePair> bids = current.getBids();
         Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
         Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
         Map<Bidder, List<Bundle>> requiredBids = restrictedBids();
         Map<Bidder, List<Bundle>> missingBids = new HashMap<>();
         for (Bidder bidder : getDomain().getBidders()) {
-            BundleValueBid<BundleValuePair> bid = bids.getBid(bidder);
+            BundleValueBid<BundleExactValuePair> bid = bids.getBid(bidder);
             for (Bundle bundle : requiredBids.get(bidder)) {
                 if (bid.getBundleBids().stream().noneMatch(bbid -> bbid.getBundle().equals(bundle))) {
                     missingBids.putIfAbsent(bidder, new ArrayList<>());
@@ -97,7 +109,7 @@ public class PVMAuction extends Auction<BundleValuePair> {
         PVMAuctionRound round = new PVMAuctionRound(roundNumber, bids, getCurrentPrices(), metaElicitation.process(bids), restrictedBids());
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
-        current = new AuctionRoundBuilder<BundleValuePair>(getOutcomeRuleGenerator());
+        current = new AuctionRoundBuilder<BundleExactValuePair>(getOutcomeRuleGenerator());
         current.setMipInstrumentation(getMipInstrumentation());
     }
 
@@ -123,7 +135,7 @@ public class PVMAuction extends Auction<BundleValuePair> {
             Allocation allocation = round.getInferredOptimalAllocation();
             getDomain().getBidders().forEach(bidder -> {
                 Bundle allocated = allocation.allocationOf(bidder).getBundle();
-                Optional<BundleValuePair> optional = getLatestAggregatedBids(bidder).getBundleBids().stream()
+                Optional<BundleExactValuePair> optional = getLatestAggregatedBids(bidder).getBundleBids().stream()
                         .filter(bb -> bb.getBundle().equals(allocated))
                         .findAny();
                 if (!optional.isPresent()) {
@@ -149,7 +161,7 @@ public class PVMAuction extends Auction<BundleValuePair> {
 
     private List<Bundle> findNextBundles(Bidder bidder, int amount) {
         List<Bundle> bundles = new ArrayList<>();
-        BundleValueBid<BundleValuePair> currentBid = getLatestAggregatedBids(bidder);
+        BundleValueBid<BundleExactValuePair> currentBid = getLatestAggregatedBids(bidder);
         // First make sure that the single goods are queried -> this avoids singular matrix in linear regression
         for (Good good : getDomain().getGoods()) {
             Bundle bundle = Bundle.of(good);

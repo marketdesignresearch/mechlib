@@ -8,7 +8,7 @@ public class ZeroReferencePointFactory implements ReferencePointFactory {
 
 
     @Override
-    public Payment computeReferencePoint(BundleValueBids bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
         return Payment.ZERO;
     }
 

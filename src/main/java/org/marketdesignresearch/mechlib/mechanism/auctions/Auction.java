@@ -1,28 +1,35 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import com.google.common.base.Preconditions;
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.mechanism.Mechanism;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentationable;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.mechanism.Mechanism;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.*;
+import com.google.common.base.Preconditions;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 
 @ToString(callSuper = true) 
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class Auction<T extends BundleValuePair> extends Mechanism implements AuctionInstrumentationable {
+public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism implements AuctionInstrumentationable {
 
     private static int DEFAULT_MAX_BIDS = 100;
     private static int DEFAULT_MANUAL_BIDS = 0;
@@ -33,6 +40,7 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     @Getter
     private final OutcomeRuleGenerator outcomeRuleGenerator;
 
+    // TODO think about removing maxBids and manualBids here
     @Getter @Setter
     private int maxBids = DEFAULT_MAX_BIDS;
     @Getter @Setter
@@ -48,17 +56,17 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     @Getter @Setter
     private double demandQueryTimeLimit = -1;
 
-    protected List<AuctionRound<T>> rounds = new ArrayList<>();
+    protected List<AuctionRound<BB>> rounds = new ArrayList<>();
     
     @Getter
     protected int currentPhaseNumber = 0;
     @Getter
     protected int currentPhaseRoundNumber = 0;
-    protected List<AuctionPhase<T>> phases = new ArrayList<>();
+    protected List<AuctionPhase<BB>> phases = new ArrayList<>();
 
-    protected AuctionRoundBuilder<T> current;
+    protected AuctionRoundBuilder<BB> current;
 
-    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionPhase<T> firstPhase) {
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionPhase<BB> firstPhase) {
         super();
         this.domain = domain;
         this.outcomeRuleGenerator = outcomeRuleGenerator;
@@ -69,23 +77,23 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     }
     
     @PersistenceConstructor
-    protected Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<T> current) {
+    protected Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BB> current) {
     	this.domain = domain;
     	this.outcomeRuleGenerator = outcomeRuleGenerator;
     	this.current = current;
     	current.setAuction(this);
     }
     
-    public boolean addAuctionPhase(AuctionPhase<T> auctionPhase) {
+    protected boolean addAuctionPhase(AuctionPhase<BB> auctionPhase) {
     	Preconditions.checkArgument(!this.finished());
     	return this.phases.add(auctionPhase);
     }
     
-    protected AuctionPhase<T> getCurrentPhase() {
+    protected AuctionPhase<BB> getCurrentPhase() {
     	return this.phases.get(this.currentPhaseNumber);
     }
     
-    public Interaction<T> getCurrentInteraction(Bidder b) {
+    public Interaction getCurrentInteraction(Bidder b) {
     	return this.current.getInteractions().get(b.getId());
     }
 
@@ -102,8 +110,7 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     }
 
     public boolean finished() {
-        return getNumberOfRounds() >= maxRounds || 
-        		(this.phases.size() == this.currentPhaseNumber+1 && this.getCurrentPhase().phaseFinished(this));
+        return this.current == null;
     }
     
     /**
@@ -117,14 +124,14 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
     public void closeRound() {
     	Preconditions.checkState(!this.finished());
     	
-        AuctionRound<T> round = this.current.build();
+        AuctionRound<BB> round = this.current.build();
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
         prepareNextAuctionRoundBuilder();
     }
 
 	protected void prepareNextAuctionRoundBuilder() {
-		if(this.finished()) {
+		if((this.phases.size() == this.currentPhaseNumber+1 && this.getCurrentPhase().phaseFinished(this)) || getNumberOfRounds() >= maxRounds ) {
         	current = null;
         } else {
         	if(this.getCurrentPhase().phaseFinished(this)) {
@@ -136,73 +143,71 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
         }
 	}
     
-
     public Outcome getTemporaryResult() {
         return current.computeTemporaryResult(this.outcomeRuleGenerator);
     }
 
 
-    public BundleValueBids<T> getAggregatedBidsAt(int round) {
+    public BB getAggregatedBidsAt(int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());
         return rounds.subList(0, round + 1).stream()
                 .map(AuctionRound::getBids)
-                .reduce(new BundleValueBids<T>(), BundleValueBids::join);
+                .reduce(this::join).orElse(this.createEmptyBids());
     }
 
-    public BundleValueBids<T> getBidsAt(int round) {
+    public BB getBidsAt(int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());
         return rounds.get(round).getBids();
     }
 
-    public BundleValueBid<T> getAggregatedBidsAt(Bidder bidder, int round) {
-        Preconditions.checkArgument(round >= 0 && round < rounds.size());
-        return rounds.subList(0, round + 1).stream()
-                .map(AuctionRound::getBids)
-                .map(bids -> bids.getBid(bidder))
-                .reduce(new BundleValueBid<T>(), BundleValueBid::join);
-    }
-
-    public BundleValueBid<T> getBidsAt(Bidder bidder, int round) {
-        return getBidsAt(round).getBid(bidder);
-    }
-
-    public BundleValueBids<T> getLatestAggregatedBids() {
-        if (rounds.size() == 0) return new BundleValueBids<T>();
+    public BB getLatestAggregatedBids() {
+        if (rounds.size() == 0) return this.createEmptyBids();
         return getAggregatedBidsAt(rounds.size() - 1);
     }
 
-    public BundleValueBids<T> getLatestBids() {
-        if (rounds.size() == 0) return new BundleValueBids<T>();
+    public BB getLatestBids() {
+        if (rounds.size() == 0) return this.createEmptyBids();
         return getBidsAt(rounds.size() - 1);
     }
-
-    public BundleValueBid<T> getLatestAggregatedBids(Bidder bidder) {
-        if (rounds.size() == 0) return new BundleValueBid<T>();
-        return getAggregatedBidsAt(bidder, rounds.size() - 1);
-    }
-
-    public BundleValueBid<T> getLatestBids(Bidder bidder) {
-        if (rounds.size() == 0) return new BundleValueBid<T>();
-        return getBidsAt(bidder, rounds.size() - 1);
-    }
-
-    public AuctionRound<T> getRound(int index) {
+    
+    protected abstract BB join(BB b1, BB b2);
+    protected abstract BB createEmptyBids();
+    /**
+     * Get the round with the given index. Note that the first round has index 0
+     * 
+     * @param index The index of the requested round.
+     * @return the round if it exists
+     */
+    public AuctionRound<BB> getRound(int index) {
         Preconditions.checkArgument(index >= 0 && index < rounds.size());
         return rounds.get(index);
     }
     
-    public AuctionRound<T> getLastRound() {
+    public AuctionRound<BB> getLastRound() {
     	return this.getRound(this.getNumberOfRounds()-1);
     }
 
+    /**
+     * Get the number of complete rounds. If the auction is not finished
+     * round getNumberOfRounds() + 1 is running at the moment.
+     * 
+     * @return number of completed rounds
+     */
     public int getNumberOfRounds() {
         return rounds.size();
     }
 
-    public void resetToRound(int index) {
-        Preconditions.checkArgument(index < rounds.size());
-        rounds = rounds.subList(0, index);
-        if(index > 0) {
+    
+    /**
+     * Reset the auction such that it is in the state of executing the given round. 
+     * (I.e. {@link #getNumberOfRounds()} will return round-1 after this method has executed.
+     * 
+     * @param round the round that should be executed next by this auction
+     */
+    public void resetToRound(int round) {
+        Preconditions.checkArgument(round >= 1 && round <= rounds.size()+1);
+        rounds = rounds.subList(0, round-1);
+        if(round > 0) {
         	this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
         	this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
         } else {
@@ -224,6 +229,10 @@ public class Auction<T extends BundleValuePair> extends Mechanism implements Auc
         }
         return getRound(index).getOutcome();
         */
+    }
+    
+    public int getMaximumSubmittedBids() {
+    	return this.getDomain().getBidders().stream().map(b -> this.rounds.stream().map(r -> r.getBids().getBid(b).getBundleBids().size()).reduce(Integer::sum).orElse(0)).reduce(Integer::max).orElse(0);
     }
 
     /**

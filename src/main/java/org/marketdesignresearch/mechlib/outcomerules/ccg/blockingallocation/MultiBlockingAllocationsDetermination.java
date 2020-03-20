@@ -1,16 +1,16 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import edu.harvard.econcs.jopt.solver.SolveParam;
-
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+
+import edu.harvard.econcs.jopt.solver.SolveParam;
 
 public class MultiBlockingAllocationsDetermination extends BlockingCoalitionDetermination {
     public enum Mode {
         JUST_ASK, POOL_5, POOl_10, POOl_15, POOL_30, POOl_50
     }
 
-    public MultiBlockingAllocationsDetermination(BundleValueBids bids, Outcome previousOutcome, Mode mode) {
+    public MultiBlockingAllocationsDetermination(BundleValueBids<?> bids, Outcome previousOutcome, Mode mode) {
         super(bids, previousOutcome);
         switch (mode) {
         case JUST_ASK:

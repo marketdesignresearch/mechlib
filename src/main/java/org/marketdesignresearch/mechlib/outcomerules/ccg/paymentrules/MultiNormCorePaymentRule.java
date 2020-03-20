@@ -1,12 +1,5 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-import edu.harvard.econcs.jopt.solver.MIPException;
-import edu.harvard.econcs.jopt.solver.mip.Constraint;
-import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
-import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
@@ -14,6 +7,14 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.MIPException;
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Creates a payment norm that is the sum of all the provided norms The program

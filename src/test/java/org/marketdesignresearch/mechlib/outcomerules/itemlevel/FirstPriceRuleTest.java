@@ -1,21 +1,25 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel;
 
-import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBids;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+
+import com.google.common.collect.Sets;
 
 public class FirstPriceRuleTest {
 
@@ -34,13 +38,13 @@ public class FirstPriceRuleTest {
 
     @Test
     public void testSimpleFirstPriceAuction() {
-        BundleValuePair bid1A = new BundleValuePair(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
-        BundleValuePair bid2A = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "2A");
-        BundleValuePair bid3A = new BundleValuePair(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
-        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
-        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1A)));
-        bids.setBid(bidder2, new BundleValueBid<>(Sets.newHashSet(bid2A)));
-        bids.setBid(bidder3, new BundleValueBid<>(Sets.newHashSet(bid3A)));
+        BundleExactValuePair bid1A = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(item), "1A");
+        BundleExactValuePair bid2A = new BundleExactValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "2A");
+        BundleExactValuePair bid3A = new BundleExactValuePair(BigDecimal.valueOf(3), Sets.newHashSet(item), "3A");
+        BundleExactValueBids bids = new BundleExactValueBids();
+        bids.setBid(bidder1, new BundleExactValueBid(Sets.newHashSet(bid1A)));
+        bids.setBid(bidder2, new BundleExactValueBid(Sets.newHashSet(bid2A)));
+        bids.setBid(bidder3, new BundleExactValueBid(Sets.newHashSet(bid3A)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         Outcome outcome = new FirstPriceRule(singleItemBids).getOutcome();
         checkResult(outcome, bidder2, bid2A);
@@ -48,7 +52,7 @@ public class FirstPriceRuleTest {
 
     @Test
     public void testFirstPriceAuctionNoBidder() {
-        SingleItemBids bids = new SingleItemBids(new BundleValueBids());
+        SingleItemBids bids = new SingleItemBids(new BundleExactValueBids());
         Outcome outcome = new FirstPriceRule(bids).getOutcome();
         Allocation allocation = outcome.getAllocation();
         assertThat(allocation.getTotalAllocationValue()).isZero();
@@ -59,15 +63,15 @@ public class FirstPriceRuleTest {
 
     @Test
     public void testFirstPriceAuctionSingleBidder() {
-        BundleValuePair bid1A = new BundleValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "1");
-        BundleValueBids<BundleValuePair> bids = new BundleValueBids<>();
-        bids.setBid(bidder1, new BundleValueBid<>(Sets.newHashSet(bid1A)));
+        BundleExactValuePair bid1A = new BundleExactValuePair(BigDecimal.valueOf(10), Sets.newHashSet(item), "1");
+        BundleExactValueBids bids = new BundleExactValueBids();
+        bids.setBid(bidder1, new BundleExactValueBid(Sets.newHashSet(bid1A)));
         SingleItemBids singleItemBids = new SingleItemBids(bids);
         Outcome outcome = new FirstPriceRule(singleItemBids).getOutcome();
         checkResult(outcome, bidder1, bid1A);
     }
 
-    private void checkResult(Outcome outcome, Bidder expectedWinner, BundleValuePair expectedWinningBid) {
+    private void checkResult(Outcome outcome, Bidder expectedWinner, BundleExactValuePair expectedWinningBid) {
         Set<Bidder> losers = Sets.newHashSet(bidder1, bidder2, bidder3);
         losers.remove(expectedWinner);
         Allocation allocation = outcome.getAllocation();
@@ -81,7 +85,7 @@ public class FirstPriceRuleTest {
         }
 
         assertThat(allocation.allocationOf(expectedWinner).getAcceptedBids()).hasSize(1);
-        BundleValuePair winningBid = allocation.allocationOf(expectedWinner).getAcceptedBids().iterator().next();
+        BundleExactValuePair winningBid = allocation.allocationOf(expectedWinner).getAcceptedBids().iterator().next();
         assertThat(winningBid.getId()).isEqualTo(expectedWinningBid.getId());
         assertThat(winningBid.getAmount()).isEqualTo(expectedWinningBid.getAmount());
         assertThat(winningBid.getBundle().getSingleGood()).isEqualTo(item);

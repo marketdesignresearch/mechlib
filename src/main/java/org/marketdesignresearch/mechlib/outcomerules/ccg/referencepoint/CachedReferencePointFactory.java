@@ -13,7 +13,7 @@ public class CachedReferencePointFactory implements ReferencePointFactory {
 
 
     @Override
-    public Payment computeReferencePoint(BundleValueBids bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
         return payment;
     }
 

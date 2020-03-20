@@ -1,22 +1,28 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint;
 
-import com.google.common.base.Objects;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderAllocation;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
+
+import com.google.common.base.Objects;
+
 public class MarginalEconomyReferencePointFactory implements ReferencePointFactory {
 
     @Override
-    public Payment computeReferencePoint(BundleValueBids<? extends BundleValuePair> bids, Allocation allocation) {
+    public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
         // TODO: assumes availability of 1
         Map<Good, Bidder> winnerMap = new HashMap<>();
         for (Bidder bidder : allocation.getWinners()) {
@@ -24,7 +30,7 @@ public class MarginalEconomyReferencePointFactory implements ReferencePointFacto
         }
         Map<Good, BigDecimal> highestLosingBids = new HashMap<>(winnerMap.size());
         for (Bidder bidder : bids.getBidders()) {
-            for (BundleValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
+            for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
                 BigDecimal bidPerGood = bundleBid.getAmount().divide(BigDecimal.valueOf(bundleBid.getBundle().getBundleEntries().size()), MathContext.DECIMAL64);
                 // TODO: assumes availability of 1
                 bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(good -> !Objects.equal(winnerMap.get(good), bidder)).forEach(good -> highestLosingBids.merge(good, bidPerGood, PrecisionUtils::max));

@@ -1,13 +1,14 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.function.UnaryOperator;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 /**
  * Attached to a {@link Bidder}, this interface is often used to represent the underlying value function, to abstract
@@ -29,14 +30,14 @@ public interface ValueFunction extends Serializable {
      * @param bundleBidOperator the unary operator to be applied on the bundle values to get bundle bids
      * @return the bid
      */
-    BundleValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator);
+    BundleExactValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator);
 
     /**
      * Turns the value function into a {@link BundleValueBid}, using true values.
      *
      * @return the bid
      */
-    default BundleValueBid toBid() {
+    default BundleExactValueBid toBid() {
         return toBid(UnaryOperator.identity());
     }
 

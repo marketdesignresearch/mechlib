@@ -1,15 +1,15 @@
 package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-
-import com.google.common.collect.ImmutableSet;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
+
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Created by Benedikt on 30.07.15.
@@ -38,15 +38,14 @@ public class AdditiveOverbiddingStrategy<S extends ComparableStrategy<S>> implem
 
 
     @Override
-    public BundleValueBid<BundleValuePair> apply(ValueFunction combinatorialValueFunction) {
-        BundleValueBid<BundleValuePair> bid = normalStrategy.apply(combinatorialValueFunction);
+    public BundleExactValueBid apply(ValueFunction combinatorialValueFunction) {
+    	BundleExactValueBid bid = normalStrategy.apply(combinatorialValueFunction);
         if (overBid.signum() != 0) {
-            BigDecimal bidSoFar = bid.getBundleBids().stream().map(BundleValuePair::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-            BundleValuePair bundleBid = new BundleValuePair(bidSoFar.add(overBid), allGoods, "FakeBig");
+            BigDecimal bidSoFar = bid.getBundleBids().stream().map(BundleExactValuePair::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BundleExactValuePair bundleBid = new BundleExactValuePair(bidSoFar.add(overBid), allGoods, "FakeBig");
             bid.addBundleBid(bundleBid);
         }
         return bid;
-
     }
 
     @Override

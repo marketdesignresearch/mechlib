@@ -1,7 +1,5 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -10,6 +8,8 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class CATSParser {
 

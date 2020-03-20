@@ -1,10 +1,10 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
+import java.util.Optional;
+
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
-
-import java.util.Optional;
 
 public class NormFactory {
     private final Norm norm;

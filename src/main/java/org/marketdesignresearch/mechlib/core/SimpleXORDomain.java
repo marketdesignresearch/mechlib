@@ -1,22 +1,22 @@
 package org.marketdesignresearch.mechlib.core;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.input.cats.CATSParser;
-import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 @Slf4j
 @ToString @EqualsAndHashCode
@@ -37,7 +37,7 @@ public final class SimpleXORDomain implements Domain {
             efficientAllocation = Allocation.EMPTY_ALLOCATION;
         } else {
             if (efficientAllocation == null) {
-                XORWinnerDetermination xorWDP = new XORWinnerDetermination(BundleValueBids.fromXORBidders(bidders));
+                XORWinnerDetermination xorWDP = new XORWinnerDetermination(BundleExactValueBids.fromXORBidders(bidders));
                 xorWDP.setMipInstrumentation(getMipInstrumentation());
                 xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
                 efficientAllocation = xorWDP.getAllocation();

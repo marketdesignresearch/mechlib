@@ -1,9 +1,8 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions;
+package org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DemandQueryStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -20,19 +19,19 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CCADemandQueryInteraction extends DefaultInteraction<DemandBid, BundleValuePair>
+public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
 		implements DemandQuery {
 
 	@Getter
 	private final Prices prices;
 
 	@PersistenceConstructor
-	protected CCADemandQueryInteraction(UUID bidder, Prices prices) {
+	protected DefaultDemandQueryInteraction(UUID bidder, Prices prices) {
 		super(bidder);
 		this.prices = prices;
 	}
 
-	public CCADemandQueryInteraction(UUID bidder, Prices prices, Auction<BundleValuePair> auction) {
+	public DefaultDemandQueryInteraction(UUID bidder, Prices prices, Auction<?> auction) {
 		super(bidder, auction);
 		this.prices = prices;
 	}

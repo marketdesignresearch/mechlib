@@ -1,13 +1,14 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.core.Allocation;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
 
 public class BlockingAllocation implements Iterable<Allocation> {
     private final Allocation mostBlockingAllocation;

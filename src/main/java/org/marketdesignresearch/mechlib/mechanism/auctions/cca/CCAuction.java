@@ -1,8 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
@@ -16,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class CCAuction extends Auction<BundleValuePair> {
+public class CCAuction extends Auction<BundleExactValueBids> {
 
     public CCAuction(Domain domain) {
         this(domain, OutcomeRuleGenerator.CCG);
@@ -87,5 +90,21 @@ public class CCAuction extends Auction<BundleValuePair> {
 
 	public boolean hasNextSupplementaryRound() {
 		return !this.finished() && this.phases.size() > 1;
+	}
+	
+	public void replaceSupplementaryPhases(SupplementaryPhase newSuppPhase) {
+		this.phases = Stream.of(this.phases.get(0)).collect(Collectors.toList());
+		this.phases.add(newSuppPhase);
+		this.resetToRound(this.rounds.stream().filter(r -> r.getAuctionPhaseNumber() == 0).map(r -> r.getRoundNumber()).reduce(Integer::max).orElse(-1)+1);
+	}
+
+	@Override
+	protected BundleExactValueBids createEmptyBids() {
+		return new BundleExactValueBids();
+	}
+
+	@Override
+	protected BundleExactValueBids join(BundleExactValueBids b1, BundleExactValueBids b2) {
+		return b1.join(b2);
 	}
 }

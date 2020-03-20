@@ -1,12 +1,11 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions;
+package org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ExactValueQueryStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;
@@ -21,32 +20,32 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CCAExactValueQueryInteraction extends DefaultInteraction<BundleValueBid<BundleValuePair>, BundleValuePair> implements ExactValueQuery {
+public class DefaultExactValueQueryInteraction extends DefaultInteraction<BundleExactValueBid> implements ExactValueQuery {
 
 	@Getter
 	private final Set<Bundle> queriedBundles;
 
 	@PersistenceConstructor
-	protected CCAExactValueQueryInteraction(Set<Bundle> bundles, UUID bidder) {
+	protected DefaultExactValueQueryInteraction(Set<Bundle> bundles, UUID bidder) {
 		super(bidder);
 		this.queriedBundles = bundles;
 	}
 	
-	public CCAExactValueQueryInteraction(Set<Bundle> bundles, UUID bidder, Auction<BundleValuePair> auction) {
+	public DefaultExactValueQueryInteraction(Set<Bundle> bundles, UUID bidder, Auction<?> auction) {
 		super(bidder, auction);
 		this.queriedBundles = bundles;
 	}
 
 	@Override
-	public BundleValueBid<BundleValuePair> proposeBid() {
+	public BundleExactValueBid proposeBid() {
 		return this.getBidder().getStrategy(ExactValueQueryStrategy.class).applyExactValueStrategy(this);
 	}
 
 	@Override
-	public void submitBid(BundleValueBid<BundleValuePair> bid) {
+	public void submitBid(BundleExactValueBid bid) {
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getGoods()));
 		Preconditions.checkArgument(this.getQueriedBundles().containsAll(bid.getBundleBids().stream().map(b -> b.getBundle()).collect(Collectors.toList())));
 		Preconditions.checkArgument(this.getQueriedBundles().size() == bid.getBundleBids().size());
-		this.submitBid(bid);
+		super.submitBid(bid);
 	}
 }

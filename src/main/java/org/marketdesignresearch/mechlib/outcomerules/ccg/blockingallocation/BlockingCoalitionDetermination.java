@@ -1,17 +1,5 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import edu.harvard.econcs.jopt.solver.ISolution;
-import edu.harvard.econcs.jopt.solver.mip.Constraint;
-import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import edu.harvard.econcs.jopt.solver.mip.Variable;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
-import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,11 +7,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderAllocation;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
+import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
+
+import edu.harvard.econcs.jopt.solver.ISolution;
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import edu.harvard.econcs.jopt.solver.mip.Variable;
+
 public class BlockingCoalitionDetermination extends ORWinnerDetermination {
     private final Map<Bidder, BigDecimal> previousPayoff = new HashMap<>();
     protected static final String TRAITOR = "TRAITOR_";
 
-    public BlockingCoalitionDetermination(BundleValueBids<BundleValuePair> bids, Outcome previousOutcome) {
+    public BlockingCoalitionDetermination(BundleValueBids<?> bids, Outcome previousOutcome) {
         super(bids);
         MIPWrapper mip = getMIP();
         for (Bidder winningBidder : previousOutcome.getWinners()) {
@@ -34,7 +36,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
 
             // traitor is 1 if at least one bundleBid of the bidder was
             // allocated else 0
-            for (BundleValuePair bundleBid : bids.getBid(winningBidder).getBundleBids()) {
+            for (BundleExactValuePair bundleBid : bids.getBid(winningBidder).getBundleBids()) {
 
                 Variable bidVariable = getBidVariable(bundleBid);
 

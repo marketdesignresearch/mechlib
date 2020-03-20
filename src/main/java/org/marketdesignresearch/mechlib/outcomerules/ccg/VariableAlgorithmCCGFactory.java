@@ -1,15 +1,16 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
+import java.util.Set;
+
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.NormFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.VCGReferencePointFactory;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-
-import java.util.Set;
 
 public class VariableAlgorithmCCGFactory extends ConfigurableCCGFactory implements MechanismFactory {
     /**

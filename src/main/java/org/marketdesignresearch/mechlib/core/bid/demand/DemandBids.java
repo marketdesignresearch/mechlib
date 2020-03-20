@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
@@ -40,11 +40,11 @@ public class DemandBids extends Bids<DemandBid> {
 		return demand;
 	}
 
-	public BundleValueBids<BundleValuePair> transformToBundleValueBids(Prices prices) {
-    	BundleValueBids<BundleValuePair> ret = new BundleValueBids<>();
+	public BundleExactValueBids transformToBundleValueBids(Prices prices) {
+    	BundleExactValueBids ret = new BundleExactValueBids();
     	for(Map.Entry<Bidder, DemandBid> entry : this.getBidMap().entrySet()) {
-    		ret.setBid(entry.getKey(), new BundleValueBid<>(
-				Set.of(new BundleValuePair(prices.getPrice(entry.getValue().getDemandedBundle()).getAmount(),
+    		ret.setBid(entry.getKey(), new BundleExactValueBid(
+				Set.of(new BundleExactValuePair(prices.getPrice(entry.getValue().getDemandedBundle()).getAmount(),
 						entry.getValue().getDemandedBundle(), UUID.randomUUID().toString()))));
     	}
     	return ret;

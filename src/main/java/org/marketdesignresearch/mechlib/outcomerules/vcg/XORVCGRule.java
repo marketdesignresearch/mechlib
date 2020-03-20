@@ -6,12 +6,12 @@ import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDeterminati
 
 public class XORVCGRule extends BidBasedVCGRule {
 
-    public XORVCGRule(BundleValueBids bids) {
+    public XORVCGRule(BundleValueBids<?> bids) {
         super(bids);
     }
 
     @Override
-    protected final WinnerDetermination getWinnerDetermination(BundleValueBids bids) {
+    protected final WinnerDetermination getWinnerDetermination(BundleValueBids<?> bids) {
         return new XORWinnerDetermination(bids);
     }
 

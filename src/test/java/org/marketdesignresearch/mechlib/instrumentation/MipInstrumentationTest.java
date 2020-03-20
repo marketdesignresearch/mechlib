@@ -1,23 +1,38 @@
 package org.marketdesignresearch.mechlib.instrumentation;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.assertj.core.data.Offset;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.SimpleORDomain;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.input.cats.CATSParser;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
@@ -26,13 +41,10 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.marketdesignresearch.mechlib.outcomerules.vcg.ORVCGRule;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MipInstrumentationTest {
@@ -44,7 +56,7 @@ public class MipInstrumentationTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        BundleValueBids<BundleValuePair> bids = adapter.adaptCATSAuction(catsAuction);
+        BundleExactValueBids bids = adapter.adaptCATSAuction(catsAuction);
         OutcomeRule vcgRule = new ORVCGRule(bids);
         vcgRule.setMipInstrumentation(new MipLoggingInstrumentation());
         vcgRule.getOutcome();

@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
-
 import java.math.BigDecimal;
+
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
 
 public interface ParameterizableCCGFactory extends MechanismFactory {
 

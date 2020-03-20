@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 
 /**
  * An AuctionPhase can consists of multiple rounds. The auction 
@@ -16,9 +16,9 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
  *
  * @param <T>
  */
-public interface AuctionPhase<T extends BundleValuePair> {
+public interface AuctionPhase<BB extends BundleValueBids<?>> {
 	
-	AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction);
+	AuctionRoundBuilder<BB> createNextRoundBuilder(Auction<BB> auction);
 	
 	/**
 	 * Method that can be invoked by the auction to check whether this phase 
@@ -30,7 +30,7 @@ public interface AuctionPhase<T extends BundleValuePair> {
 	 * @param auction the auction context
 	 * @return true if this phase has no more rounds otherwise false
 	 */
-	boolean phaseFinished(Auction<T> auction);
+	boolean phaseFinished(Auction<BB> auction);
 	
 	String getType();
 }

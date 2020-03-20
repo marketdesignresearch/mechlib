@@ -1,9 +1,8 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions;
+package org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl;
 
 import java.util.UUID;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ProfitMaxStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -19,7 +18,7 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CCAProfitMaxInteraction extends DefaultInteraction<BundleValueBid<BundleValuePair>, BundleValuePair> implements ProfitMaxQuery{
+public class DefaultProfitMaxInteraction extends DefaultInteraction<BundleExactValueBid> implements ProfitMaxQuery{
 
 	@Getter
 	private final Prices prices;
@@ -27,25 +26,25 @@ public class CCAProfitMaxInteraction extends DefaultInteraction<BundleValueBid<B
 	private final int numberOfBids;
 	
 	@PersistenceConstructor
-	protected CCAProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid) {
+	protected DefaultProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid) {
 		super(bidderUuid);
 		this.prices = prices;
 		this.numberOfBids = numberOfBids;
 	}
 	
-	public CCAProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid, Auction<BundleValuePair> auction) {
+	public DefaultProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid, Auction<?> auction) {
 		super(bidderUuid, auction);
 		this.prices = prices;
 		this.numberOfBids = numberOfBids;
 	}
 
 	@Override
-	public BundleValueBid<BundleValuePair> proposeBid() {
+	public BundleExactValueBid proposeBid() {
 		return this.getBidder().getStrategy(ProfitMaxStrategy.class).applyProfitMaxStrategy(this);
 	}
 
 	@Override
-	public void submitBid(BundleValueBid<BundleValuePair> bid) {
+	public void submitBid(BundleExactValueBid bid) {
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getGoods()));
 		Preconditions.checkArgument(bid.getBundleBids().size() <= this.getNumberOfBids());
 		super.submitBid(bid);

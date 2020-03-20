@@ -6,11 +6,13 @@ import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DemandQueryStrat
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class TruthfulDemandQueryStrategy implements DemandQueryStrategy{
 
-	private final Bidder bidder;
+	@Setter
+	private transient Bidder bidder;
 	
 	@Override
 	public DemandBid applyDemandStrategy(DemandQuery interaction) {

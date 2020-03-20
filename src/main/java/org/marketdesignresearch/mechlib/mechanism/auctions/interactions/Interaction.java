@@ -1,6 +1,5 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 
@@ -11,9 +10,9 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
  *
  * @param <T>
  */
-public interface Interaction<B extends BundleValuePair> {
+public interface Interaction {
 	Bidder getBidder();
-	void setAuction(Auction<B> auction);
+	void setAuction(Auction<?> auction);
 	void submitProposedBid();
-	Class<? extends Interaction<B>> getType();
+	Class<? extends Interaction> getType();
 }

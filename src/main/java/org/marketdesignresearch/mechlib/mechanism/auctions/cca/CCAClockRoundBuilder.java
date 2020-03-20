@@ -5,18 +5,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({ @PersistenceConstructor }))
-public class CCAClockRoundBuilder extends AuctionRoundBuilder<BundleValuePair> {
+public class CCAClockRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
 
+	@Getter
 	private final Map<UUID, DemandQuery> interactions;
 
-	public CCAClockRoundBuilder(Map<UUID, DemandQuery> interactions, Auction<BundleValuePair> auction) {
+	public CCAClockRoundBuilder(Map<UUID, DemandQuery> interactions, Auction<BundleExactValueBids> auction) {
 		super(auction);
 		this.interactions = interactions;
 	}
 
 	@Override
-	public Map<UUID, ? extends Interaction<BundleValuePair>> getInteractions() {
-		return this.interactions;
-	}
-
-	@Override
-	public AuctionRound<BundleValuePair> build() {
+	public AuctionRound<BundleExactValueBids> build() {
 		log.info("Building Clock Round {}", this.getAuction().getNumberOfRounds() + 1);
 		return new CCAClockRound(this.getAuction(), this.collectBids() , interactions.values().iterator().next().getPrices(),
 				this.getAuction().getDomain().getGoods());

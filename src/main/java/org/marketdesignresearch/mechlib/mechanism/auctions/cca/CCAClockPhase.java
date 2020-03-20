@@ -4,15 +4,15 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.interactions.CCADemandQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultDemandQueryInteraction;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.EqualsAndHashCode;
@@ -23,7 +23,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
-public class CCAClockPhase implements AuctionPhase<BundleValuePair> {
+public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 
 	@Setter
 	private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
@@ -39,13 +39,13 @@ public class CCAClockPhase implements AuctionPhase<BundleValuePair> {
 	}
 
 	@Override
-	public AuctionRoundBuilder<BundleValuePair> createNextRoundBuilder(Auction<BundleValuePair> auction) {
+	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Prices newPrices = this.getPrices(auction);
 		return new CCAClockRoundBuilder(Collections.unmodifiableMap(auction.getDomain().getBidders().stream().collect(
-				Collectors.toMap(b -> b.getId(), b -> new CCADemandQueryInteraction(b.getId(), newPrices, auction)))), auction);
+				Collectors.toMap(b -> b.getId(), b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction)))), auction);
 	}
 
-	private Prices getPrices(Auction<BundleValuePair> auction) {
+	private Prices getPrices(Auction<BundleExactValueBids> auction) {
 		if (auction.getNumberOfRounds() == 0) {
 			return this.initialPrices;
 		} else {
@@ -56,7 +56,7 @@ public class CCAClockPhase implements AuctionPhase<BundleValuePair> {
 	}
 
 	@Override
-	public boolean phaseFinished(Auction<BundleValuePair> auction) {
+	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
 		if(auction.getNumberOfRounds() == 0) {
 			return false;
 		} else {

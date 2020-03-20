@@ -1,18 +1,20 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
-import com.google.common.base.Preconditions;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.price.Price;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Price;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+
+import com.google.common.base.Preconditions;
+
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode

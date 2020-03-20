@@ -1,15 +1,18 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
+
 import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocation;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocationFinder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
@@ -17,27 +20,25 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.Co
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CCGOutcomeRule implements OutcomeRule {
     private Outcome result = null;
-    private final BundleValueBids bids;
+    private final BundleValueBids<?> bids;
     private final CorePaymentRule paymentRule;
     private final Allocation allocation;
     private final BlockingAllocationFinder blockingCoalitionFactory;
     private final Set<ConstraintGenerationAlgorithm> cgAlgorithms;
 
-    public CCGOutcomeRule(BundleValueBids bids, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
+    public CCGOutcomeRule(BundleValueBids<?> bids, Allocation allocation, BlockingAllocationFinder blockingCoalitionFactory, CorePaymentRule paymentRule,
                           ConstraintGenerationAlgorithm... cgAlgorithms) {
         this(bids, allocation, paymentRule, blockingCoalitionFactory, EnumSet.copyOf(Arrays.asList(cgAlgorithms)));
     }
 
-    public CCGOutcomeRule(BundleValueBids bids, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
+    public CCGOutcomeRule(BundleValueBids<?> bids, Allocation allocation, CorePaymentRule paymentRule, BlockingAllocationFinder blockingCoalitionFactory,
                           Set<ConstraintGenerationAlgorithm> cgAlgorithms) {
         this.bids = bids;
         this.allocation = allocation;

@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 
-public interface SupplementaryPhase extends AuctionPhase<BundleValuePair>{
+public interface SupplementaryPhase extends AuctionPhase<BundleExactValueBids>{
 	
     int getNumberOfSupplementaryBids();
 

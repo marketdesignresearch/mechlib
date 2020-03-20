@@ -1,18 +1,22 @@
 package org.marketdesignresearch.mechlib.core;
 
-import com.google.common.collect.Sets;
-import lombok.*;
-
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.PersistenceConstructor;
+import static java.util.Collections.emptySet;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-import static java.util.Collections.emptySet;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.collect.Sets;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Immutable Wrapper for an allocation
@@ -31,9 +35,9 @@ public final class BidderAllocation {
     @Getter
     private final Bundle bundle;
     @Getter @EqualsAndHashCode.Exclude
-    private final Set<BundleValuePair> acceptedBids; // TODO: Check if this is needed
+    private final Set<BundleExactValuePair> acceptedBids; // TODO: Check if this is needed
 
-    public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleValuePair> acceptedBids) {
+    public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleExactValuePair> acceptedBids) {
         this(value, Bundle.of(bundle), acceptedBids);
     }
 

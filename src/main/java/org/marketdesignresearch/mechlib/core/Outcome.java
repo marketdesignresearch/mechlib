@@ -1,13 +1,18 @@
 package org.marketdesignresearch.mechlib.core;
 
-import lombok.*;
+import java.math.BigDecimal;
+import java.util.Set;
+
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.BigDecimal;
-import java.util.Set;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode

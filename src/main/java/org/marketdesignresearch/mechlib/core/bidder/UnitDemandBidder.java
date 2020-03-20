@@ -1,21 +1,29 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
-import com.google.common.collect.Sets;
-import lombok.*;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.springframework.data.annotation.PersistenceConstructor;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.common.collect.Sets;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
@@ -66,6 +74,23 @@ public class UnitDemandBidder implements Bidder, Serializable {
                 .limit(maxNumberOfBundles)
                 .collect(Collectors.toList());
     }
+    
+    // region strategy
+    // TODO handle persistence
+    private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
+    
+    @Override
+	public void setStrategy(InteractionStrategy strategy) {
+    	strategy.setBidder(this);
+		strategy.getTypes().forEach(t -> this.strategies.put(t, strategy));
+	}
+    
+    @Override
+	public <T extends InteractionStrategy> T getStrategy(Class<T> type) {
+		if(!this.strategies.containsKey(type)) this.setStrategy(InteractionStrategy.defaultStrategy(type));
+		return  this.strategies.getInstance(type);
+	}
+	// endregion
 
     // region instrumentation
     @Override

@@ -1,16 +1,22 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-import edu.harvard.econcs.jopt.solver.mip.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.MIP;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import edu.harvard.econcs.jopt.solver.mip.VarType;
+import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class MaximumsNorm extends PaymentNorm {
     private final Outcome referencePoint;

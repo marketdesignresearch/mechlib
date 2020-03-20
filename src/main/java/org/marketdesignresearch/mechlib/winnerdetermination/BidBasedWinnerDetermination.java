@@ -12,9 +12,9 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.BidderAllocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 
@@ -28,17 +28,17 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
-    private BundleValueBids<BundleValuePair> bids;
+    private BundleValueBids<?> bids;
     // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    protected Map<BundleValuePair, Variable> bidVariables = new HashMap<>();
+    protected Map<BundleExactValuePair, Variable> bidVariables = new HashMap<>();
     
     private BigDecimal scalingFactor = new BigDecimal(1);
 
-    public BidBasedWinnerDetermination(BundleValueBids<BundleValuePair> bids) {
+    public BidBasedWinnerDetermination(BundleValueBids<?> bids) {
         this.bids = bids;
         
         
-        BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleValuePair::getAmount).reduce(BigDecimal::max).get();
+        BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
         BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
         
         if (maxValue.compareTo(maxMipValue) == 1) {
@@ -46,11 +46,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         }
     }
     
-    protected BigDecimal getScaledBundleBidAmount(BundleValuePair bundleBid) {
+    protected BigDecimal getScaledBundleBidAmount(BundleExactValuePair bundleBid) {
     	return bundleBid.getAmount().multiply(this.scalingFactor);
     }
 
-    protected BundleValueBids<BundleValuePair> getBids() {
+    protected BundleValueBids<?> getBids() {
         return bids;
     }
 
@@ -79,8 +79,8 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         for (Bidder bidder : bids.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
             HashSet<BundleEntry> bundleEntries = new HashSet<>();
-            ImmutableSet.Builder<BundleValuePair> bundleBids = ImmutableSet.builder();
-            for (BundleValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
+            ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
+            for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
                 if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
                     bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
                     bundleBids.add(bundleBid);
@@ -98,7 +98,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         return new Allocation(trades.build(), bids, metaInfo);
     }
 
-    protected Variable getBidVariable(BundleValuePair bundleBid) {
+    protected Variable getBidVariable(BundleExactValuePair bundleBid) {
         return bidVariables.get(bundleBid);
     }
 

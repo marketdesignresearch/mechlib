@@ -1,6 +1,14 @@
 package org.marketdesignresearch.mechlib.demandqueries;
 
-import com.google.common.collect.Sets;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -15,10 +23,7 @@ import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.*;
+import com.google.common.collect.Sets;
 
 public class ORBidderDemandQueryTest {
     private static SimpleGood A;

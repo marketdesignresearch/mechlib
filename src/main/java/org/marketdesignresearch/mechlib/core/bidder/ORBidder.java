@@ -1,13 +1,18 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import lombok.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -16,12 +21,17 @@ import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDeterminatio
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MutableClassToInstanceMap;
+
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
@@ -65,12 +75,12 @@ public class ORBidder implements Bidder, Serializable {
 
     @Override
     public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
-        BundleValueBid<BundleValuePair> valueMinusPrice = new BundleValueBid<>();
-        value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleValuePair(
+    	BundleExactValueBid valueMinusPrice = new BundleExactValueBid();
+        value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleExactValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
                 bundleValue.getBundle(),
                 bundleValue.getId())));
-        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleValueBids<>(ImmutableMap.of(this, valueMinusPrice)));
+        WinnerDetermination orWdp = new ORWinnerDetermination(new BundleExactValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
@@ -94,6 +104,23 @@ public class ORBidder implements Bidder, Serializable {
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }
+    
+ // region strategy
+    // TODO handle persistence
+    private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
+    
+    @Override
+	public void setStrategy(InteractionStrategy strategy) {
+    	strategy.setBidder(this);
+		strategy.getTypes().forEach(t -> this.strategies.put(t, strategy));
+	}
+    
+    @Override
+	public <T extends InteractionStrategy> T getStrategy(Class<T> type) {
+		if(!this.strategies.containsKey(type)) this.setStrategy(InteractionStrategy.defaultStrategy(type));
+		return  this.strategies.getInstance(type);
+	}
+	// endregion
 
     // region instrumentation
     @Getter @Setter

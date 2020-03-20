@@ -1,5 +1,10 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
@@ -11,17 +16,12 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Set<PartialConstraintGenerator> generatorAlgorithms;
     private final Map<Good, PotentialCoalition> goodToCoalitionMap = new HashMap<>();
     private final CorePaymentRule corePaymentRule;
 
-    public UnitedConstrainedGenerator(BundleValueBids bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
+    public UnitedConstrainedGenerator(BundleValueBids<?> bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
         this.generatorAlgorithms = generatorAlgorithms;
         this.corePaymentRule = corePaymentRule;
 
