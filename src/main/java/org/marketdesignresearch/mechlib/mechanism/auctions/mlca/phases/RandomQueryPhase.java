@@ -17,43 +17,38 @@ import org.springframework.data.annotation.PersistenceConstructor;
 public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T> {
 
 	private static final int DEFAULT_NUMBER_OF_INITIAL_QUERIES = 30;
-	
+
 	private long seed;
 	private final int numberOfInitialQueries;
-	
+
 	public RandomQueryPhase(long seed) {
-		this(seed,DEFAULT_NUMBER_OF_INITIAL_QUERIES);
+		this(seed, DEFAULT_NUMBER_OF_INITIAL_QUERIES);
 	}
-	
+
 	@PersistenceConstructor
 	public RandomQueryPhase(long seed, int numberOfQueries) {
 		this.seed = seed;
 		this.numberOfInitialQueries = numberOfQueries;
 	}
-	
+
 	@Override
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
-		Set<Bundle> restrictedBids = new LinkedHashSet<>();
+		Random random = new Random(this.seed);
+		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new HashMap<>();
 
-		int seedModifier = 0;
-
-		while (restrictedBids.size() < this.numberOfInitialQueries) {
-			// TODO remove old hacky code and use only one (potentially global) random object instead
-			Random random = new Random(this.seed);
-			for (int j = 0; j < seedModifier * auction.getDomain().getGoods().size(); j++) random.nextDouble();
-			// end remove
-			Bundle bundle = auction.getDomain().getRandomBundle(random);
-			restrictedBids.add(bundle);
-			seedModifier++;
+		for (Bidder b : auction.getDomain().getBidders()) {
+			bidderRestrictedBids.put(b, new LinkedHashSet<>());
+			while (bidderRestrictedBids.get(b).size() < this.numberOfInitialQueries) {
+				Bundle bundle = auction.getDomain().getRandomBundle(random);
+				bidderRestrictedBids.get(b).add(bundle);
+			}
 		}
-		
-		Map<Bidder,Set<Bundle>> bidderRestrictedBids = new HashMap<>();
-		auction.getDomain().getBidders().forEach(b -> bidderRestrictedBids.put(b, restrictedBids));
 
 		return this.createConcreteAuctionRoundBuilder(auction, bidderRestrictedBids);
 	}
-	
-	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction, Map<Bidder, Set<Bundle>> restrictedBids);
+
+	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction,
+			Map<Bidder, Set<Bundle>> restrictedBids);
 
 	@Override
 	public boolean phaseFinished(Auction<T> auction) {
