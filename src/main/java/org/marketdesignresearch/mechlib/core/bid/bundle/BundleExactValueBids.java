@@ -23,7 +23,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public BundleExactValueBids(Map<Bidder, BundleExactValueBid> bidMap) {
-		super();
+		super(bidMap);
 	}
 
 	@Override
