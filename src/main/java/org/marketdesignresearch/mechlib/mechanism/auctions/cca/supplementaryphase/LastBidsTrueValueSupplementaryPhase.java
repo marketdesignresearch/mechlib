@@ -25,35 +25,19 @@ import lombok.ToString;
 @ToString
 public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
-    private static final int DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS = 500;
-
-    @Setter @Getter
-    private int numberOfSupplementaryBids = DEFAULT_NUMBER_OF_SUPPLEMENTARY_BIDS;
-
     public LastBidsTrueValueSupplementaryPhase() {
     }
 
     public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
         BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
         if (bid == null) return new DefaultExactValueQueryInteraction(new HashSet<>(),bidder.getId(),auction);
-        Set<Bundle> result = new LinkedHashSet<>();
-        int count = 0;
-        // TODO: This is not ordered nor unique. If needed, consider storing BundleBids in a List and filtering duplicates
-        Iterator<BundleExactValuePair> iterator = bid.getBundleBids().iterator();
-        while (iterator.hasNext() && ++count < numberOfSupplementaryBids) {
-        	result.add(iterator.next().getBundle());
-        }
+        Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle).collect(Collectors.toSet());
         return new DefaultExactValueQueryInteraction(result,bidder.getId(),auction);
-    }
-
-    public LastBidsTrueValueSupplementaryPhase withNumberOfSupplementaryBids(int numberOfSupplementaryBids) {
-        setNumberOfSupplementaryBids(numberOfSupplementaryBids);
-        return this;
     }
 
     @Override
     public String getDescription() {
-        return "Supplementary round to submit the true values of the last " + numberOfSupplementaryBids + " bids";
+        return "Supplementary round to submit the true values of the available bids";
     }
 
 	@Override
@@ -68,6 +52,6 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public String getType() {
-		return "SUPPLEMENTARY PHASE Profit Max";
+		return "SUPPLEMENTARY PHASE Bids True Value";
 	}
 }
