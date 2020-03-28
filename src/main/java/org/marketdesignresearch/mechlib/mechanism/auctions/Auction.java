@@ -47,14 +47,6 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     private int manualBids = DEFAULT_MANUAL_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
-    
-    // TODO move to demand query strategy
-    @Getter @Setter
-    private double relativeDemandQueryTolerance = 0;
-    @Getter @Setter
-    private double absoluteDemandQueryTolerance = 0;
-    @Getter @Setter
-    private double demandQueryTimeLimit = -1;
 
     protected List<AuctionRound<BB>> rounds = new ArrayList<>();
     

@@ -26,6 +26,7 @@ public abstract class PaymentNorm implements CorePaymentNorm {
     }
 
     protected IMIPResult solveProgram(IMIP program) {
+    	getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT, program);
         IMIPResult result = CPLEXUtils.SOLVER.solve(program);
         getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, program, result);
         return result;

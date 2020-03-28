@@ -15,6 +15,8 @@ public class MipInstrumentation {
     public static MipInstrumentation NO_OP = new MipInstrumentation();
 
     protected MipInstrumentation() {}
+    
+    public void preMIP(MipPurpose mipPurpose, IMIP mip) {}
 
     public void postMIP(MipPurpose mipPurpose, IMIP mip, IMIPResult result, Allocation bestAllocation, List<Allocation> poolAllocations) {}
 

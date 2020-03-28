@@ -74,7 +74,7 @@ public class ORBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
+    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
     	BundleExactValueBid valueMinusPrice = new BundleExactValueBid();
         value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleExactValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
@@ -83,9 +83,6 @@ public class ORBidder implements Bidder, Serializable {
         WinnerDetermination orWdp = new ORWinnerDetermination(new BundleExactValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
-        orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
-        orWdp.setAbsolutePoolMode4Tolerance(absPoolTolerance);
-        orWdp.setTimeLimitPoolMode4(poolTimeLimit);
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
         List<Bundle> result = optimalAllocations.stream()
