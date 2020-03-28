@@ -58,7 +58,7 @@ public class UnitDemandBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
+    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
         return Sets.powerSet(new HashSet<>(goodsOfInterest)).stream()
                 .map(Bundle::of)
                 .sorted((a, b) -> getValue(b).subtract(prices.getPrice(b).getAmount()).compareTo(getValue(a).subtract(prices.getPrice(a).getAmount())))

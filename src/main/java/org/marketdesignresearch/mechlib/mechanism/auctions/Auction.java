@@ -38,12 +38,6 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
     private int manualBids = DEFAULT_MANUAL_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
-    @Getter @Setter
-    private double relativeDemandQueryTolerance = 0;
-    @Getter @Setter
-    private double absoluteDemandQueryTolerance = 0;
-    @Getter @Setter
-    private double demandQueryTimeLimit = -1;
 
     protected List<AuctionRound> rounds = new ArrayList<>();
 
@@ -99,7 +93,7 @@ public class Auction extends Mechanism implements AuctionInstrumentationable {
             List<Bundle> bundlesToBidOn;
             int numberOfBids = Math.max(allowedNumberOfBids() - getManualBids(), 1); // Propose at least one bid
             if (restrictedBids().get(bidder) == null) {
-                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), numberOfBids, true, relativeDemandQueryTolerance, absoluteDemandQueryTolerance, demandQueryTimeLimit);
+                bundlesToBidOn = bidder.getBestBundles(getCurrentPrices(), numberOfBids, true);
             } else {
                 bundlesToBidOn = restrictedBids().get(bidder);
             }
