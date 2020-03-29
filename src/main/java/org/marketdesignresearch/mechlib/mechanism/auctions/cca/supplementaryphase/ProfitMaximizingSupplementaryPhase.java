@@ -52,7 +52,7 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
-		return auction.getCurrentPhaseRoundNumber() == 2;
+		return auction.getCurrentPhaseRoundNumber() == 1;
 	}
 
 	@Override
