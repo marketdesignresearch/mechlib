@@ -62,15 +62,15 @@ public class SequentialAuction extends Auction<BundleExactValuePair> {
      * Overrides the default method to have outcomes only based on each round's bids
      */
     @Override
-    public Outcome getOutcomeAtRound(int index) {
-        return getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
+    public Outcome getOutcomeAtRound(OutcomeRuleGenerator generator, int index) {
+        return generator.getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
     }
 
     @Override
-    public Outcome getOutcome() {
+    public Outcome getOutcome(OutcomeRuleGenerator generator) {
         Outcome result = Outcome.NONE;
         for (int i = 0; i < getNumberOfRounds(); i++) {
-            result = result.merge(getOutcomeAtRound(i));
+            result = result.merge(getOutcomeAtRound(generator, i));
         }
         return result;
     }

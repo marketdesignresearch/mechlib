@@ -40,11 +40,6 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     @Getter
     private final OutcomeRuleGenerator outcomeRuleGenerator;
 
-    // TODO think about removing maxBids and manualBids here
-    @Getter @Setter
-    private int maxBids = DEFAULT_MAX_BIDS;
-    @Getter @Setter
-    private int manualBids = DEFAULT_MANUAL_BIDS;
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
 
@@ -197,8 +192,8 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
      * @param round the round that should be executed next by this auction
      */
     public void resetToRound(int round) {
-        Preconditions.checkArgument(round >= 1 && round <= rounds.size()+2);
-        rounds = rounds.subList(0, round-2);
+        Preconditions.checkArgument(round >= 1 && round <= rounds.size()+1);
+        rounds = rounds.subList(0, round-1);
         if(round > 0) {
         	this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
         	this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
@@ -214,13 +209,11 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
      * TODO: does it make sense to store outcomes in the auction rounds? rounds can be accessed directly and then some rounds contain outcomes some other don't
      */
     public Outcome getOutcomeAtRound(int index) {
-    	return outcomeRuleGenerator.getOutcomeRule(getAggregatedBidsAt(index), getMipInstrumentation()).getOutcome();
-    	/*
-        if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(outcomeRuleGenerator.getOutcomeRule(getAggregatedBidsAt(index), getMipInstrumentation()).getOutcome());
-        }
-        return getRound(index).getOutcome();
-        */
+    	return this.getOutcomeAtRound(this.getOutcomeRuleGenerator(),index);
+    }
+    
+    public Outcome getOutcomeAtRound(OutcomeRuleGenerator generator, int index) {
+    	return generator.getOutcomeRule(getAggregatedBidsAt(index), getMipInstrumentation()).getOutcome();
     }
     
     public int getMaximumSubmittedBids() {
@@ -233,7 +226,11 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
      */
     @Override
     public Outcome getOutcome() {
-        if (rounds.size() == 0) return Outcome.NONE;
+        return this.getOutcome(this.getOutcomeRuleGenerator());
+    }
+    
+    public Outcome getOutcome(OutcomeRuleGenerator generator) {
+    	if (rounds.size() == 0) return Outcome.NONE;
         return getOutcomeAtRound(rounds.size() - 1);
     }
 
