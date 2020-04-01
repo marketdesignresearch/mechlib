@@ -48,7 +48,11 @@ public class XORValueFunction implements ValueFunction {
     }
 
     public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles) {
-        return bundleValues.stream()
+        return this.getOptimalBundleValueAt(prices, maxNumberOfBundles, false);
+    }
+    
+    public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+        return bundleValues.stream().filter(b -> allowNegative || b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount()).signum() >= 0)
                 .sorted((a, b) -> {
                     BigDecimal first = a.getAmount().subtract(prices.getPrice(a.getBundle()).getAmount());
                     BigDecimal second = b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount());
