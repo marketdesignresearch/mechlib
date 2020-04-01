@@ -51,7 +51,7 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
             // Compared to a previous implementation, the parallel aspect was removed here. The problem was that
             // jgrapht's neighborsOf() method threw a ConcurrentModificationException in a computeIfAbsent() call
             // when parallelized. This was possible due to a bug in JDK8 (which is why it remained undetected), but not
-            // in later JDKs
+            // in later JDKs: https://stackoverflow.com/a/54825115
             BlockedBidders blockedBidders = BlockedBidders.from(subgraph, blockingCoalition.getPotentialCoalitions());
             AverageDistanceFromReference distancePerBidder = calcAdr(blockedBidders, priorResult.getPayment(), blockedBidders.getNonTraitors());
             addConstraints(blockedBidders, neighbors, priorResult.getPayment(), corePaymentRule, distancePerBidder);
