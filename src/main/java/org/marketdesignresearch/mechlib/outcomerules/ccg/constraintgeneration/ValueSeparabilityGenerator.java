@@ -1,12 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ForkJoinTask;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -52,17 +47,15 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
                                    ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition, Outcome priorResult) {
         constraintCount.set(0);
         NeighborCache<PotentialCoalition, DefaultEdge> neighbors = new NeighborCache<>(graph);
-        List<ForkJoinTask<?>> graphInspecting = new LinkedList<>();
         for (Set<PotentialCoalition> subgraph : connectivityInspector.connectedSets()) {
-            ForkJoinTask<?> task = ForkJoinTask.adapt(() -> {
-                BlockedBidders blockedBidders = BlockedBidders.from(subgraph, blockingCoalition.getPotentialCoalitions());
-                AverageDistanceFromReference distancePerBidder = calcAdr(blockedBidders, priorResult.getPayment(), blockedBidders.getNonTraitors());
-
-                addConstraints(blockedBidders, neighbors, priorResult.getPayment(), corePaymentRule, distancePerBidder);
-            });
-            graphInspecting.add(task.fork());
+            // Compared to a previous implementation, the parallel aspect was removed here. The problem was that
+            // jgrapht's neighborsOf() method threw a ConcurrentModificationException in a computeIfAbsent() call
+            // when parallelized. This was possible due to a bug in JDK8 (which is why it remained undetected), but not
+            // in later JDKs
+            BlockedBidders blockedBidders = BlockedBidders.from(subgraph, blockingCoalition.getPotentialCoalitions());
+            AverageDistanceFromReference distancePerBidder = calcAdr(blockedBidders, priorResult.getPayment(), blockedBidders.getNonTraitors());
+            addConstraints(blockedBidders, neighbors, priorResult.getPayment(), corePaymentRule, distancePerBidder);
         }
-        graphInspecting.forEach(ForkJoinTask::join);
     }
 
     protected void addConstraints(BlockedBidders blockedBidders, NeighborCache<PotentialCoalition, DefaultEdge> neighbors, Payment priorPayment, CorePaymentRule corePaymentRule,
@@ -71,8 +64,9 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
             corePaymentRule.addBlockingConstraint(blockedBidders, priorPayment);
 
             if (constraintCount.getAndIncrement() < MAX_CONSTRAINTS) {
-                Consumer<Bidder> subCoalitionInvestigator = b -> investigateSubCoalition(blockedBidders.getBlockingBidders(), neighbors, b, minadr, priorPayment, corePaymentRule);
-                blockedBidders.getBlockedBidders().parallelStream().forEach(subCoalitionInvestigator);
+                for (Bidder blockedBidder : blockedBidders.getBlockedBidders()) {
+                    investigateSubCoalition(blockedBidders.getBlockingBidders(), neighbors, blockedBidder, minadr, priorPayment, corePaymentRule);
+                }
             }
         }
 
