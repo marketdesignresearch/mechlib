@@ -59,7 +59,6 @@ public class EuclideanNorm extends PaymentNorm {
         IMIP newProgram = MIPWrapper.makeMIPWithoutObjective(program);
         addNormObjective(newProgram);
         IMIPResult result = solveProgram(newProgram);
-        getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, newProgram, result);
         metaInfo.setLpSolveTime(result.getSolveTime());
         metaInfo.setNumberOfQPs(1);
         setProposedValues(result, program);

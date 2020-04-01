@@ -61,9 +61,8 @@ public class XORBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
-        List<Bundle> result = value.getOptimalBundleValueAt(prices, maxNumberOfBundles).stream()
-                .filter(bundleValue -> allowNegative || bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()).signum() > 0)
+    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+        List<Bundle> result = value.getOptimalBundleValueAt(prices, maxNumberOfBundles, allowNegative).stream()
                 .map(BundleValue::getBundle).collect(Collectors.toList());
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;

@@ -49,6 +49,7 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
                 for (PaymentNorm paymentNorm : additionalNorms) {
                     paymentNorm.addNormObjective(tempProgram);
                 }
+                getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT, tempProgram);
                 IMIPResult mipResult = CPLEXUtils.SOLVER.solve(tempProgram);
                 getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, tempProgram, mipResult);
                 MetaInfo tempMetaInfo = new MetaInfo();
