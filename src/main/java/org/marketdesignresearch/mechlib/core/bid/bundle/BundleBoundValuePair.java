@@ -61,6 +61,10 @@ public class BundleBoundValuePair extends BundleExactValuePair{
     
 	@Override
 	public BundleBoundValuePair reducedBy(BigDecimal amount) {
-		return new BundleBoundValuePair(this.getLowerBound().subtract(amount), this.getUpperBound().subtract(amount), this.getBundle(), UUID.randomUUID().toString());
+		return new BundleBoundValuePair(this.getLowerBound().subtract(amount).max(BigDecimal.ZERO), this.getUpperBound().subtract(amount).max(BigDecimal.ZERO), this.getBundle(), getId());
 	}
+	
+	public BundleBoundValuePair multiply(BigDecimal amount) {
+        return new BundleBoundValuePair(getLowerBound().multiply(amount),getUpperBound().multiply(amount), getBundle(), getId());
+    }
 }

@@ -65,13 +65,17 @@ public class BundleExactValuePair {
     public BundleExactValuePair reducedBy(BigDecimal amount) {
         return new BundleExactValuePair(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
     }
+    
+    public BundleExactValuePair multiply(BigDecimal amount) {
+        return new BundleExactValuePair(getAmount().multiply(amount), bundle, id);
+    }
 
     public BundleExactValuePair withAmount(BigDecimal amount) {
         return new BundleExactValuePair(amount, bundle, id);
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {
-        return new PotentialCoalition(getGoods(), bidder, amount);
+        return new PotentialCoalition(getBundle(), bidder, amount);
     }
 
     public int countGood(Good good) {

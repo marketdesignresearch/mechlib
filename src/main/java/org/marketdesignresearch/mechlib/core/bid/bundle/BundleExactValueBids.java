@@ -100,4 +100,13 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		}
 		return new BundleExactValueBids(bidMap);
 	}
+
+	@Override
+	public BundleExactValueBids multiply(BigDecimal scale) {
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().multiply(scale));
+		}
+		return newBids;
+	}
 }
