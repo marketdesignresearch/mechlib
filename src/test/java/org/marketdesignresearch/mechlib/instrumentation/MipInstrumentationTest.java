@@ -89,7 +89,7 @@ public class MipInstrumentationTest {
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
         bidder.setMipInstrumentation(new MipLoggingInstrumentation());
         Bundle bestBundle = bidder.getBestBundle(prices);
-        List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
+        Set<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
     }
 
     @Test
