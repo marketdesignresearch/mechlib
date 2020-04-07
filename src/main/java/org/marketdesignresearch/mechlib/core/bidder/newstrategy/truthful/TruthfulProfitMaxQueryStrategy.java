@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
