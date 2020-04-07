@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.core.bidder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -65,14 +66,14 @@ public interface Bidder extends MipInstrumentationable {
      * Asks the bidder a demand query, without any pool tolerances or time limit.
      * @see #getBestBundles(Prices, int, boolean, double, double, double)
      */
-    List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
+    Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
 
     /**
      * Asks a bidder a demand query, without any pool tolerances or time limit, not accepting negative utility
      * @see #getBestBundles(Prices, int, boolean)
      */
-    default List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
-        List<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
+    default Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
+        Set<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
         if (results.size() < 1) results.add(Bundle.EMPTY);
         return results;
     }
@@ -86,9 +87,9 @@ public interface Bidder extends MipInstrumentationable {
      * @return the best bundle
      */
     default Bundle getBestBundle(Prices prices) {
-        List<Bundle> results = getBestBundles(prices, 1);
+        Set<Bundle> results = getBestBundles(prices, 1);
         if (results.size() > 1) System.err.println("Requested one solution, got " + results.size() + ".");
-        return results.get(0);
+        return results.iterator().next();
     }
 
     /**
