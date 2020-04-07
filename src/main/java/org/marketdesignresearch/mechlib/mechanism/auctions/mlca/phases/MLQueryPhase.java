@@ -43,9 +43,13 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 	
 	private final long seed;
 	
+	// only for comparison with old MLCA code
+	private final Random random;
+	
 	public MLQueryPhase(MachineLearningComponent<T> mlComponent, long seed) {
 		this.machineLearningComponent = mlComponent;
 		this.seed = seed;
+		this.random = new Random(seed);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -60,14 +64,14 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 		Map<Bidder, Set<Bundle>> restrictedBids = new HashMap<>();
 		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new HashMap<>();
 
-		Random random = new Random(seed);
+		//Random random = new Random(seed);
 		
 		for(int i = auction.getNumberOfRounds()-1; i>=0; i--) {
 			AuctionRound<T> auctionRound = auction.getRound(i);
 			// Find last MLQueryAuctionRound
 			if(auctionRound instanceof MLQueryAuctionRound) {
 				bidderMarginalsTemp = ((MLQueryAuctionRound)auctionRound).getMarginalsToQueryNext();
-				random = new Random(((MLQueryAuctionRound)auctionRound).getSeedNextRound());
+				//random = new Random(((MLQueryAuctionRound)auctionRound).getSeedNextRound());
 				break;
 			}
 		}
@@ -125,7 +129,9 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
 		}
 		
-		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp, random.nextLong());
+		// for comparison with original MLCA do not query next random
+		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp, 1L);
+		//return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp, random.nextLong());
 	}
 	
 	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction, Map<Bidder, Set<Bundle>> restrictedBids, Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp, long nextRandomSeed);
