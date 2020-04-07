@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +27,6 @@ public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids
 	@Override
 	protected AuctionRoundBuilder<BundleExactValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleExactValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids) {
-		return new ExactRandomQueryAuctionRoundBuilder(auction,auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction))));
+		return new ExactRandomQueryAuctionRoundBuilder(auction,auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction),(e1,e2)->e1,LinkedHashMap::new)));
 	}
 }

@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class ExactRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 	public AuctionRound<BundleExactValueBids> build() {
 		return new RandomQueryAuctionRound<>(this.getAuction(),
 				new BundleExactValueBids(this.interactions.entrySet().stream().collect(
-						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid()))));
+						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1,LinkedHashMap::new))));
 	}
 
 	@Override

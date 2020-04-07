@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class ExactMLQueryAuctionRoundBuilder extends AuctionRoundBuilder<BundleE
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
 		// TODO check if all interactions completed
-		return new MLQueryAuctionRound<>(this.getAuction(), new BundleExactValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid()))),marginalsToQueryNext,seedNextRound);
+		return new MLQueryAuctionRound<>(this.getAuction(), new BundleExactValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext,seedNextRound);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +58,8 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 			auction.getDomain().getBidders().forEach(bidder -> this.marginalEconomies.add(new ElicitationEconomy(auction.getDomain(),bidder)));
 		}
 		
-		Map<Bidder, Set<Bundle>> restrictedBids = new HashMap<>();
-		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new HashMap<>();
+		Map<Bidder, Set<Bundle>> restrictedBids = new LinkedHashMap<>();
+		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new LinkedHashMap<>();
 
 		Random random = new Random(seed);
 		
@@ -120,7 +121,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 					Map.of(bidder,
 							Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
 									.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
-									.collect(Collectors.toSet())));
+									.collect(Collectors.toCollection(LinkedHashSet::new))));
 			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(),infAllocation.getTradesMap().get(bidder).getBundle());
 			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
 		}

@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
@@ -34,7 +34,7 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 	@Override
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
 		Random random = new Random(this.seed);
-		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new HashMap<>();
+		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
 
 		for (Bidder b : auction.getDomain().getBidders()) {
 			bidderRestrictedBids.put(b, new LinkedHashSet<>());
