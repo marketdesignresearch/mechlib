@@ -53,28 +53,22 @@ public class CCAuction extends ExactValueAuction {
      * TODO ?? Why ??
      */
     @Override
-    public Outcome getOutcomeAtRound(int index) {
+    public Outcome getOutcomeAtRound(OutcomeRuleGenerator generator, int index) {
         if (getBidsAt(index).isEmpty()) return Outcome.NONE;
-        return getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
-        /*
-        if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
-        }
-        return getRound(index).getOutcome();
-        */
+        return generator.getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
     }
 
     /**
      * This is a shortcut to finish all rounds & calculate the final result
      */
     @Override
-    public Outcome getOutcome() {
+    public Outcome getOutcome(OutcomeRuleGenerator generator) {
         log.info("Finishing all rounds...");
         while (!finished()) {
             advanceRound();
         }
-        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
-        return getOutcomeRuleGenerator().getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", generator);
+        return generator.getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
     }
 
     public String getCurrentRoundType() {

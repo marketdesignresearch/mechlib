@@ -82,6 +82,7 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
         getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
         try {
+        	mipInstrumentation.preMIP(purpose, getMIP());
             IMIPResult mipResult = new SolverClient().solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
             Allocation bestAllocation = adaptMIPResult(mipResult);

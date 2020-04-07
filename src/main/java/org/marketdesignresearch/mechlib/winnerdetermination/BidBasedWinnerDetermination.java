@@ -25,6 +25,8 @@ import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
@@ -32,7 +34,8 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
     protected Map<BundleExactValuePair, Variable> bidVariables = new HashMap<>();
     
-    private BigDecimal scalingFactor = new BigDecimal(1);
+    @Getter(AccessLevel.PROTECTED)
+    private BigDecimal scalingFactor = BigDecimal.ONE;
 
     public BidBasedWinnerDetermination(BundleValueBids<?> bids) {
         this.bids = bids;
@@ -44,6 +47,11 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         if (maxValue.compareTo(maxMipValue) == 1) {
             this.scalingFactor = maxMipValue.divide(maxValue,RoundingMode.HALF_UP);
         }
+    }
+    
+    @Override
+    public void setLowerBound(double lowerBound) {
+    	super.setLowerBound(BigDecimal.valueOf(lowerBound).multiply(this.scalingFactor).doubleValue());
     }
     
     protected BigDecimal getScaledBundleBidAmount(BundleExactValuePair bundleBid) {

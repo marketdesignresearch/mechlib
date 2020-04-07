@@ -35,7 +35,7 @@ public final class BidderAllocation {
     @Getter
     private final Bundle bundle;
     @Getter @EqualsAndHashCode.Exclude
-    private final Set<BundleExactValuePair> acceptedBids; // TODO: Check if this is needed
+    private final Set<? extends BundleExactValuePair> acceptedBids; // TODO: Check if this is needed
 
     public BidderAllocation(BigDecimal value, Set<? extends Good> bundle, Set<BundleExactValuePair> acceptedBids) {
         this(value, Bundle.of(bundle), acceptedBids);

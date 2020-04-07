@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,12 +85,12 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	@Override
 	public BundleExactValueBids of(Set<Bidder> bidders) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
 	}
 
 	@Override
 	public BundleExactValueBids without(Bidder bidder) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,
@@ -99,5 +100,14 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 			bidMap.put(bidder, operator.apply(bidder.getValue()));
 		}
 		return new BundleExactValueBids(bidMap);
+	}
+
+	@Override
+	public BundleExactValueBids multiply(BigDecimal scale) {
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().multiply(scale));
+		}
+		return newBids;
 	}
 }

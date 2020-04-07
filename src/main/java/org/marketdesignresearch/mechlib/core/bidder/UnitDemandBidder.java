@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -66,13 +68,13 @@ public class UnitDemandBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
+    public Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
         return Sets.powerSet(new HashSet<>(goodsOfInterest)).stream()
                 .map(Bundle::of)
                 .sorted((a, b) -> getValue(b).subtract(prices.getPrice(b).getAmount()).compareTo(getValue(a).subtract(prices.getPrice(a).getAmount())))
                 .filter(bundle -> allowNegative || value.subtract(prices.getPrice(bundle).getAmount()).signum() > -1)
                 .limit(maxNumberOfBundles)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
     
     // region strategy

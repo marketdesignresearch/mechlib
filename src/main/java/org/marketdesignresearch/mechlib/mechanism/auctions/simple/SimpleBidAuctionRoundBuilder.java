@@ -1,10 +1,12 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.simple;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
@@ -47,7 +49,7 @@ public class SimpleBidAuctionRoundBuilder extends AuctionRoundBuilder<BundleExac
 	}
 	
 	private BundleExactValueBids collectBids() {
-		return new BundleExactValueBids(interactions.values().stream().filter(e -> e.getBid() != null).collect(Collectors.toMap(e -> e.getBidder(), e-> e.getBid())));
+		return new BundleExactValueBids(interactions.values().stream().filter(e -> e.getBid() != null).collect(Collectors.toMap(e -> e.getBidder(), e-> e.getBid(), (e1,e2)->e1, LinkedHashMap::new)));
 	}
 	
 }

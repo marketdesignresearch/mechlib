@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.core.bidder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -62,34 +63,17 @@ public interface Bidder extends MipInstrumentationable {
     }
 
     /**
-     * Asks the bidder a demand query: What bundles would you choose if you'd have to pay certain prices?
-     *
-     * @param prices             the prices
-     * @param maxNumberOfBundles the maximum number of bundles to report
-     * @param allowNegative      whether or not to also report bundles when the utility of paying the given prices for the bundle would be negative
-     *
-     * If {@link WinnerDetermination.PoolMode#MODE_4} is used, the following parameters define some JOpt parameters linked to the solution pool:
-     * @param relPoolTolerance   the relative pool tolerance: {@link SolveParam#SOLUTION_POOL_MODE_4_RELATIVE_GAP_TOLERANCE}
-     * @param absPoolTolerance   the absolute pool tolerance: {@link SolveParam#SOLUTION_POOL_MODE_4_ABSOLUTE_GAP_TOLERANCE}
-     * @param poolTimeLimit      the pool time limit: {@link SolveParam#SOLUTION_POOL_MODE_4_TIME_LIMIT}
-     * @return A list of best bundles
-     */
-    List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit);
-
-    /**
      * Asks the bidder a demand query, without any pool tolerances or time limit.
      * @see #getBestBundles(Prices, int, boolean, double, double, double)
      */
-    default List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
-        return getBestBundles(prices, maxNumberOfBundles, allowNegative, 0.0, 0.0, -1);
-    }
+    Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
 
     /**
      * Asks a bidder a demand query, without any pool tolerances or time limit, not accepting negative utility
      * @see #getBestBundles(Prices, int, boolean)
      */
-    default List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
-        List<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
+    default Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
+        Set<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
         if (results.size() < 1) results.add(Bundle.EMPTY);
         return results;
     }
@@ -103,9 +87,9 @@ public interface Bidder extends MipInstrumentationable {
      * @return the best bundle
      */
     default Bundle getBestBundle(Prices prices) {
-        List<Bundle> results = getBestBundles(prices, 1);
+        Set<Bundle> results = getBestBundles(prices, 1);
         if (results.size() > 1) System.err.println("Requested one solution, got " + results.size() + ".");
-        return results.get(0);
+        return results.iterator().next();
     }
 
     /**

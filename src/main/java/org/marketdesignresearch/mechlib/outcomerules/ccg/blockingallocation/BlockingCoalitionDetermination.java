@@ -32,7 +32,7 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
             Variable traitor = mip.makeNewBooleanVar(TRAITOR + winningBidder.getId());
             BidderAllocation bidderAllocation = previousOutcome.getAllocation().allocationOf(winningBidder);
             BigDecimal payoff = bidderAllocation.getValue().subtract(previousOutcome.getPayment().paymentOf(winningBidder).getAmount());
-            mip.addObjectiveTerm(payoff.negate().doubleValue(), traitor);
+            mip.addObjectiveTerm(payoff.negate().multiply(getScalingFactor()).doubleValue(), traitor);
 
             // traitor is 1 if at least one bundleBid of the bidder was
             // allocated else 0

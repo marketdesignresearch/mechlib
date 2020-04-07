@@ -3,7 +3,9 @@ package org.marketdesignresearch.mechlib.core.bidder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -74,7 +76,7 @@ public class ORBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative, double relPoolTolerance, double absPoolTolerance, double poolTimeLimit) {
+    public Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
     	BundleExactValueBid valueMinusPrice = new BundleExactValueBid();
         value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleExactValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
@@ -83,12 +85,9 @@ public class ORBidder implements Bidder, Serializable {
         WinnerDetermination orWdp = new ORWinnerDetermination(new BundleExactValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
-        orWdp.setRelativePoolMode4Tolerance(relPoolTolerance);
-        orWdp.setAbsolutePoolMode4Tolerance(absPoolTolerance);
-        orWdp.setTimeLimitPoolMode4(poolTimeLimit);
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
-        List<Bundle> result = optimalAllocations.stream()
+        Set<Bundle> result = optimalAllocations.stream()
                 .peek(alloc -> {
                         BigDecimal utility = getUtility(alloc.allocationOf(this).getBundle(), prices);
                         BigDecimal totalAllocationValue = alloc.getTotalAllocationValue();
@@ -100,7 +99,7 @@ public class ORBidder implements Bidder, Serializable {
                 })
                 .map(allocation -> allocation.allocationOf(this).getBundle())
                 .filter(bundle -> allowNegative || getUtility(bundle, prices).signum() > -1)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }

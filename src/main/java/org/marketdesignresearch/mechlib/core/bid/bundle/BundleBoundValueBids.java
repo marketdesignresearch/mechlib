@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,12 +21,12 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid>{
 
 	@Override
 	public BundleBoundValueBids of(Set<Bidder> bidders) {
-		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(e1,e2)->e1,LinkedHashMap::new)));
 	}
 
 	@Override
 	public BundleBoundValueBids without(Bidder bidder) {
-		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(e1,e2)->e1,LinkedHashMap::new)));
 	}
 
 	@Override
@@ -47,6 +48,15 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid>{
 	@Override
 	protected BundleBoundValueBid createEmptyBid() {
 		return new BundleBoundValueBid();
+	}
+
+	@Override
+	public BundleValueBids<BundleBoundValueBid> multiply(BigDecimal scale) {
+		BundleBoundValueBids newBids = new BundleBoundValueBids();
+		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().multiply(scale));
+		}
+		return newBids;
 	}
 
 }

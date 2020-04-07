@@ -1,8 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase;
 
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultPricedAuctionRound;
@@ -44,15 +47,15 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 				auction.getDomain().getBidders().stream()
 						.collect(
 								Collectors
-										.toMap(b -> b.getId(),
+										.toMap(Bidder::getId,
 												b -> new DefaultProfitMaxInteraction(pricedRound.getPrices(),
-														this.getNumberOfSupplementaryBids(), b.getId(), auction))),
+														this.getNumberOfSupplementaryBids(), b.getId(), auction), (e1,e2)->e1, LinkedHashMap::new)),
 				auction);
 	}
 
 	@Override
 	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
-		return auction.getCurrentPhaseRoundNumber() == 2;
+		return auction.getCurrentPhaseRoundNumber() == 1;
 	}
 
 	@Override
