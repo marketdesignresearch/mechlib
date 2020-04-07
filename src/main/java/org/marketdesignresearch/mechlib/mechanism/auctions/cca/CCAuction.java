@@ -67,7 +67,7 @@ public class CCAuction extends ExactValueAuction {
         while (!finished()) {
             advanceRound();
         }
-        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
+        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", generator);
         return generator.getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
     }
 

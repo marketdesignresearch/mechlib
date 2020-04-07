@@ -1,9 +1,11 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -42,7 +44,7 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Prices newPrices = this.getPrices(auction);
 		return new CCAClockRoundBuilder(Collections.unmodifiableMap(auction.getDomain().getBidders().stream().collect(
-				Collectors.toMap(b -> b.getId(), b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction)))), auction);
+				Collectors.toMap(b -> b.getId(), b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction),(e1, e2) -> e1,LinkedHashMap::new))), auction);
 	}
 
 	private Prices getPrices(Auction<BundleExactValueBids> auction) {
@@ -51,7 +53,7 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 		} else {
 			CCAClockRound previousRound = (CCAClockRound) auction.getLastRound();
 			return priceUpdater.updatePrices(previousRound.getPrices(), auction.getDomain().getGoods().stream()
-					.collect(Collectors.toMap(g -> g, g -> previousRound.getDemandBids().getDemand(g))));
+					.collect(Collectors.toMap(g -> g, g -> previousRound.getDemandBids().getDemand(g), (e1,e2)->e1,LinkedHashMap::new)));
 		}
 	}
 

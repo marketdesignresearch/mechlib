@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementarypha
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
     public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
         BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
         if (bid == null) return new DefaultExactValueQueryInteraction(new HashSet<>(),bidder.getId(),auction);
-        Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle).collect(Collectors.toSet());
+        Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle).collect(Collectors.toCollection(LinkedHashSet::new));
         return new DefaultExactValueQueryInteraction(result,bidder.getId(),auction);
     }
 
@@ -42,7 +43,7 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
-		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> this.getInteraction(auction, b))),auction);
+		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> this.getInteraction(auction, b),(e1,e2) -> e1, LinkedHashMap::new)),auction);
 	}
 
 	@Override

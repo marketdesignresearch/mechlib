@@ -1,11 +1,13 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -30,7 +32,7 @@ public class CCAClockRound extends DefaultPricedAuctionRound<BundleExactValueBid
     public CCAClockRound(Auction<BundleExactValueBids> auction, DemandBids bids, Prices prices, List<? extends Good> goods) {
         super(auction, prices);
         this.demandBids = bids;
-        this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity()));
+        this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity(),(e1,e2)->e1, LinkedHashMap::new));
     }
     
     @PersistenceConstructor
