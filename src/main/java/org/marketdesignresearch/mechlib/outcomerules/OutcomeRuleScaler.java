@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class OutcomeRuleScaler implements OutcomeRule{
 		Payment newPayment = new Payment(originalOutome.getPayment().getPaymentMap().entrySet().stream()
 					.collect(Collectors.toMap(Map.Entry::getKey, 
 							e->new BidderPayment(
-									e.getValue().getAmount().divide(this.scale,RoundingMode.HALF_UP))))
+									e.getValue().getAmount().divide(this.scale,RoundingMode.HALF_UP)),(e1,e2)->e2,LinkedHashMap::new))
 					,originalOutome.getPayment().getMetaInfo());
 		
 		// create Allocation with original values
@@ -51,7 +52,7 @@ public class OutcomeRuleScaler implements OutcomeRule{
 		
 		Set<PotentialCoalition> potentialCoalitions = null;
 		if(originalOutome.getAllocation().getPotentialCoalitions() != null) {
-			potentialCoalitions = originalOutome.getAllocation().getPotentialCoalitions().stream().map(p -> new PotentialCoalition(p.getBundle(), p.getBidder(), p.getValue().divide(this.scale,RoundingMode.HALF_UP))).collect(Collectors.toSet());
+			potentialCoalitions = originalOutome.getAllocation().getPotentialCoalitions().stream().map(p -> new PotentialCoalition(p.getBundle(), p.getBidder(), p.getValue().divide(this.scale,RoundingMode.HALF_UP))).collect(Collectors.toCollection(LinkedHashSet::new));
 		}
 		
 		Allocation newAllocation = new Allocation(tradesMap, originalBids, originalOutome.getMetaInfo(), potentialCoalitions);
