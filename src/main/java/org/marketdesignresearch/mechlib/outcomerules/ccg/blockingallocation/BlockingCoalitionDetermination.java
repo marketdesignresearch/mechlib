@@ -59,14 +59,13 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
         Map<Bidder, BidderAllocation> allocations = new HashMap<>(allocation.getTradesMap());
         Set<PotentialCoalition> potentialCoalitions = new HashSet<>();
         for (Bidder bidder : allocation.getWinners()) {
+            BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
             if (previousPayoff.containsKey(bidder)) {
-                BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
                 BigDecimal tradeValue = oldBidderAllocation.getValue().subtract(previousPayoff.get(bidder));
                 BidderAllocation bidderAllocation = new BidderAllocation(tradeValue, oldBidderAllocation.getBundle(), oldBidderAllocation.getAcceptedBids());
                 allocations.put(bidder, bidderAllocation);
                 potentialCoalitions.add(bidderAllocation.getPotentialCoalition(bidder));
             } else {
-                BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
                 potentialCoalitions.addAll(oldBidderAllocation.getAcceptedBids().stream().map(bundleBid -> bundleBid.getPotentialCoalition(bidder)).collect(Collectors.toList()));
             }
         }
