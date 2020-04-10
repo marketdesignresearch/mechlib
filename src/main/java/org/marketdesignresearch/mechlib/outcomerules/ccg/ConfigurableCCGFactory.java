@@ -1,7 +1,5 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -64,18 +62,22 @@ public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFac
 
     @Override
     public OutcomeRule getOutcomeRule(BundleValueBids<?> bids) {
-    	
-    	BundleValueBids<?> originalBids = bids;
-    	
-    	BigDecimal scalingFactor = null;
-    	BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-        BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
-        
-        if (maxValue.compareTo(maxMipValue) == 1) {
-            scalingFactor = maxMipValue.divide(maxValue,RoundingMode.HALF_UP);
+
+        BundleValueBids<?> originalBids = bids;
+
+        BigDecimal scalingFactor = null;
+        BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).orElse(BigDecimal.ZERO);
+        BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
+
+        if (maxValue.compareTo(maxMipValue) > 0) {
+            scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
+            if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
+                throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because" +
+                        "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
+            }
             bids = bids.multiply(scalingFactor);
         }
-    	
+
         Outcome referencePoint = fixedReferencePoint;
         if (referencePoint == null) {
             Allocation allocation = new XORWinnerDetermination(bids).getAllocation();
@@ -83,10 +85,10 @@ public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFac
             referencePoint = new Outcome(payment, allocation);
         }
         // Important to use supplier because otherwise vcgAuction is invoked
-        
+
         OutcomeRule ret = buildCCGAuction(bids, referencePoint);
-        if(scalingFactor != null) {
-        	ret = new OutcomeRuleScaler(scalingFactor, originalBids, ret);
+        if (scalingFactor != null) {
+            ret = new OutcomeRuleScaler(scalingFactor, originalBids, ret);
         }
         return ret;
     }
