@@ -44,8 +44,12 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
         BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
         
-        if (maxValue.compareTo(maxMipValue) == 1) {
-            this.scalingFactor = maxMipValue.divide(maxValue,RoundingMode.HALF_UP);
+        if (maxValue.compareTo(maxMipValue) > 0) {
+            this.scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
+            if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
+                throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because" +
+                        "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
+            }
         }
     }
     
