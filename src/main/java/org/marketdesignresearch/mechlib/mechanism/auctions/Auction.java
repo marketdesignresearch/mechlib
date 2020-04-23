@@ -231,7 +231,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     
     public Outcome getOutcome(OutcomeRuleGenerator generator) {
     	if (rounds.size() == 0) return Outcome.NONE;
-        return getOutcomeAtRound(rounds.size() - 1);
+        return getOutcomeAtRound(generator,rounds.size() - 1);
     }
 
     // region instrumentation
