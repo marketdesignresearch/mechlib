@@ -87,12 +87,14 @@ public class CCGOutcomeRule implements OutcomeRule {
             blockingAllocation = blockingCoalitionFactory.findBlockingAllocation(bids, lastResult);
             metaInfo = metaInfo.join(blockingAllocation.getMostBlockingAllocation().getMetaInfo());
             
-            if(lastBlockingAllocationValue != null && PrecisionUtils.fuzzyEquals(lastBlockingAllocationValue, blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue(), PrecisionUtils.EPSILON.scaleByPowerOfTen(1))) {
-            	comparisonPrecision = comparisonPrecision.scaleByPowerOfTen(1);
-            	if(comparisonPrecision.compareTo(BigDecimal.valueOf(0.1))>0) 
-            		throw new IllegalStateException("Precision of comparison of winner payments and block allocation decreases below 0.1 - This might be due to numerical issues. Please check your MIPs");
-            } else {
-            	comparisonPrecision = PrecisionUtils.EPSILON.scaleByPowerOfTen(1);
+            if(lastBlockingAllocationValue != null) {
+            	if(PrecisionUtils.fuzzyEquals(lastBlockingAllocationValue, blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue(), PrecisionUtils.EPSILON.scaleByPowerOfTen(1))) {
+            		comparisonPrecision = comparisonPrecision.scaleByPowerOfTen(1);
+            		if(comparisonPrecision.compareTo(BigDecimal.valueOf(0.1))>0) 
+            			throw new IllegalStateException("Precision of comparison of winner payments and block allocation decreases below 0.1 - This might be due to numerical issues. Please check your MIPs");
+            	} else {
+            		comparisonPrecision = PrecisionUtils.EPSILON.scaleByPowerOfTen(1);
+            	}
             }
             
             lastBlockingAllocationValue = blockingAllocation.getMostBlockingAllocation().getTotalAllocationValue();

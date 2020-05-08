@@ -23,7 +23,11 @@ public class VariableNormCCGFactory extends ConfigurableCCGFactory implements Me
     }
 
     public VariableNormCCGFactory(ReferencePointFactory rpFactory, List<NormFactory> normFactories) {
-        super(new XORBlockingCoalitionFinderFactory(), rpFactory, normFactories, ConstraintGenerationAlgorithm.SEPARABILITY);
+        this(rpFactory, normFactories, ConstraintGenerationAlgorithm.SEPARABILITY);
+    }
+    
+    public VariableNormCCGFactory(ReferencePointFactory rpFactory, List<NormFactory> normFactories, ConstraintGenerationAlgorithm alg) {
+        super(new XORBlockingCoalitionFinderFactory(), rpFactory, normFactories, alg);
     }
 
     public VariableNormCCGFactory(ReferencePointFactory rpFacory, Norm primaryNorm, Norm... secondaryNorms) {

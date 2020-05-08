@@ -24,7 +24,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
  */
 public class SeparabilityConstraintGenerator implements PartialConstraintGenerator {
     @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
 
     }
 

@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
 
 public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Set<PartialConstraintGenerator> generatorAlgorithms;
-    private final Map<Good, PotentialCoalition> goodToCoalitionMap = new HashMap<>();
+    private final Map<Good, Set<PotentialCoalition>> goodToCoalitionMap = new HashMap<>();
     private final CorePaymentRule corePaymentRule;
 
     public UnitedConstrainedGenerator(BundleValueBids<?> bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
@@ -26,9 +27,10 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         this.corePaymentRule = corePaymentRule;
 
         for (PotentialCoalition coalition : referencePoint.getAllocation().getPotentialCoalitions()) {
-            // TODO: assumes that there are only single-availability goods
+            // TODO: check implementation for availability of more than 1
             for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
-                goodToCoalitionMap.put(good, coalition);
+            	goodToCoalitionMap.putIfAbsent(good, new HashSet<>());
+                goodToCoalitionMap.get(good).add(coalition);
             }
         }
         for (PartialConstraintGenerator particalConstraintGenerator : generatorAlgorithms) {
@@ -45,13 +47,13 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         priorResult.getAllocation().getPotentialCoalitions().forEach(tempGraph::addVertex);
         for (PotentialCoalition coalition : blockingCoalition.getPotentialCoalitions()) {
             tempGraph.addVertex(coalition);
-            // TODO: assumes that there are only single-availability goods
+            // TODO: check implementation for availability of more than 1
             for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
-                PotentialCoalition blockedCoalition = goodToCoalitionMap.get(good);
-
-                if (blockedCoalition != null) {
-                    tempGraph.addEdge(coalition, blockedCoalition);
-                }
+            	if(goodToCoalitionMap.containsKey(good)) {
+            		for(PotentialCoalition blockedCoalition : goodToCoalitionMap.get(good)) {
+            			tempGraph.addEdge(coalition, blockedCoalition);
+            		}
+            	}
             }
 
         }
