@@ -38,7 +38,7 @@ public abstract class ValueSeparabilityGenerator implements PartialConstraintGen
     }
 
     @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
         this.referencePayments = referencePoint.getPayment();
     }
 
