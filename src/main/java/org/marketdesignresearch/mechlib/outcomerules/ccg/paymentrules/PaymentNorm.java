@@ -14,6 +14,8 @@ import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.MIPException;
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,10 +28,21 @@ public abstract class PaymentNorm implements CorePaymentNorm {
     }
 
     protected IMIPResult solveProgram(IMIP program) {
-    	getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT, program);
-        IMIPResult result = CPLEXUtils.SOLVER.solve(program);
-        getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, program, result);
-        return result;
+    	int currentSolver = 1;
+    	while(true) {
+    		try {
+    			getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT, program);
+    			IMIPResult result = CPLEXUtils.SOLVER.solve(program);
+    			getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, program, result);
+    			return result; 
+    		} catch(MIPException ex) {
+    			// try different CPLEX solver
+    			if(currentSolver > 4)
+    				throw ex;
+    			program.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, currentSolver);
+    			currentSolver++;
+    		}
+    	} 
     }
 
     public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
