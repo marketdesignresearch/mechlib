@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -101,6 +102,56 @@ public class PaymentRuleTests {
         SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder1, westBidder2, globalBidder), ImmutableList.of(west));
         MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
+        OutcomeRule outcomeRule = equalNorm.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
+        Payment payment = outcomeRule.getPayment();
+        assertThat(payment.paymentOf(westBidder2).getAmount()).as("FIXME: This should produce the same result as above. Seems like something needs to be modified in the norms / reference points /...").isEqualByComparingTo(BigDecimal.valueOf(1.75));
+        assertThat(payment.paymentOf(westBidder1).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));
+
+    }
+    
+    
+    @Test
+    public void testEqualRulePerBidConstraintGenerator() {
+        CPLEXUtils.SOLVER.initializeSolveParams();
+        SimpleGood west = new SimpleGood("west");
+        SimpleGood east = new SimpleGood("east");
+
+        BundleValue westBundle = new BundleValue(BigDecimal.valueOf(1), ImmutableSet.of(west), "west");
+        XORBidder westBidder = new XORBidder("west", new XORValueFunction(ImmutableSet.of(westBundle)));
+
+        BundleValue eastBundle = new BundleValue(BigDecimal.valueOf(2.5), ImmutableSet.of(east), "east");
+        XORBidder eastBidder = new XORBidder("east", new XORValueFunction(ImmutableSet.of(eastBundle)));
+
+        BundleValue globalBundle = new BundleValue(BigDecimal.valueOf(2), ImmutableSet.of(west, east), "global");
+        XORBidder globalBidder = new XORBidder("global", new XORValueFunction(ImmutableSet.of(globalBundle)));
+
+        SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder, eastBidder, globalBidder), ImmutableList.of(west, east));
+        MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), List.of(new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
+                NormFactory.withEqualWeights(Norm.EUCLIDEAN)), ConstraintGenerationAlgorithm.PER_BID_CONSTRAINTS);
+        OutcomeRule outcomeRule = equalNorm.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
+        Payment payment = outcomeRule.getPayment();
+        assertThat(payment.paymentOf(eastBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(1.75));
+        assertThat(payment.paymentOf(westBidder).getAmount()).isEqualByComparingTo(BigDecimal.valueOf(.25));
+
+    }
+
+    @Test
+    public void testEqualRuleGenericPerBidConstraintGenerator() {
+        CPLEXUtils.SOLVER.initializeSolveParams();
+        SimpleGood west = new SimpleGood("west", 2, false);
+
+        BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(1), Bundle.of(west));
+        XORBidder westBidder1 = new XORBidder("west1", new XORValueFunction(ImmutableSet.of(valueWest1)));
+
+        BundleValue valueWest2 = new BundleValue(BigDecimal.valueOf(2.5), Bundle.of(west));
+        XORBidder westBidder2 = new XORBidder("west2", new XORValueFunction(ImmutableSet.of(valueWest2)));
+
+        BundleValue globalBundle = new BundleValue(BigDecimal.valueOf(2), new Bundle(Map.of(west, 2)), "global");
+        XORBidder globalBidder = new XORBidder("global", new XORValueFunction(ImmutableSet.of(globalBundle)));
+
+        SimpleXORDomain domain = new SimpleXORDomain(ImmutableList.of(westBidder1, westBidder2, globalBidder), ImmutableList.of(west));
+        MechanismFactory equalNorm = new VariableNormCCGFactory(new BidsReferencePointFactory(), List.of(new NormFactory(Norm.MANHATTAN, new EqualWeightsFactory(), Payment.ZERO),
+                NormFactory.withEqualWeights(Norm.EUCLIDEAN)), ConstraintGenerationAlgorithm.PER_BID_CONSTRAINTS);
         OutcomeRule outcomeRule = equalNorm.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = outcomeRule.getPayment();
         assertThat(payment.paymentOf(westBidder2).getAmount()).as("FIXME: This should produce the same result as above. Seems like something needs to be modified in the norms / reference points /...").isEqualByComparingTo(BigDecimal.valueOf(1.75));
