@@ -76,7 +76,7 @@ public class ORBidder implements Bidder, Serializable {
     }
 
     @Override
-    public Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+    public LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
     	BundleExactValueBid valueMinusPrice = new BundleExactValueBid();
         value.getBundleValues().forEach(bundleValue -> valueMinusPrice.addBundleBid(new BundleExactValuePair(
                 bundleValue.getAmount().subtract(prices.getPrice(bundleValue.getBundle()).getAmount()),
@@ -87,7 +87,7 @@ public class ORBidder implements Bidder, Serializable {
         orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
-        Set<Bundle> result = optimalAllocations.stream()
+        LinkedHashSet<Bundle> result = optimalAllocations.stream()
                 .peek(alloc -> {
                         BigDecimal utility = getUtility(alloc.allocationOf(this).getBundle(), prices);
                         BigDecimal totalAllocationValue = alloc.getTotalAllocationValue();
