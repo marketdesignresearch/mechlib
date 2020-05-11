@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
@@ -23,7 +22,6 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @ToString
@@ -31,17 +29,26 @@ import lombok.ToString;
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 
-	@Setter
 	private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
 
 	private final Prices initialPrices;
 
+	public CCAClockPhase(Prices initialPrices, PriceUpdater priceUpdater) {
+		this(initialPrices);
+		this.priceUpdater = priceUpdater;
+	}
+	
 	public CCAClockPhase(Domain domain, boolean proposeStartingPrices) {
 		if (proposeStartingPrices) {
 			this.initialPrices = domain.proposeStartingPrices();
 		} else {
 			this.initialPrices = new LinearPrices(domain.getGoods());
 		}
+	}
+	
+	public CCAClockPhase(Domain domain, boolean proposeStartingPrices, PriceUpdater priceUpdater) {
+		this(domain,proposeStartingPrices);
+		this.priceUpdater = priceUpdater;
 	}
 
 	@Override

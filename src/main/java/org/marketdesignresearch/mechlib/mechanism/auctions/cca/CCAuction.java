@@ -25,13 +25,26 @@ public class CCAuction extends ExactValueAuction {
     public CCAuction(Domain domain) {
         this(domain, OutcomeRuleGenerator.CCG);
     }
+    
+    public CCAuction(Domain domain, PriceUpdater priceUpdater) {
+        this(domain, OutcomeRuleGenerator.CCG, priceUpdater);
+    }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
         this(domain, outcomeRuleGenerator, false);
     }
+    
+    public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, PriceUpdater priceUpdater) {
+        this(domain, outcomeRuleGenerator, false, priceUpdater);
+    }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices) {
         super(domain,mechanismType,new CCAClockPhase(currentPrices));
+        setMaxRounds(100);
+    }
+    
+    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices, PriceUpdater priceUpdater) {
+        super(domain,mechanismType,new CCAClockPhase(currentPrices, priceUpdater));
         setMaxRounds(100);
     }
 
@@ -39,13 +52,14 @@ public class CCAuction extends ExactValueAuction {
         super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices));
         setMaxRounds(100);
     }
+    
+    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, PriceUpdater priceUpdater) {
+        super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater));
+        setMaxRounds(100);
+    }
 
     public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {
         this.addAuctionPhase(supplementaryRound);
-    }
-    
-    public void setPriceUpdater(PriceUpdater updater) {
-    	((CCAClockPhase)this.phases.get(0)).setPriceUpdater(updater);
     }
 
     /**

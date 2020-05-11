@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bidder;
 
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -63,17 +64,18 @@ public interface Bidder extends MipInstrumentationable {
     }
 
     /**
-     * Asks the bidder a demand query, without any pool tolerances or time limit.
+     * Asks the bidder a demand query
+     * @return a LinkedHashSet that contains the bundles ordered by decreasing utility
      * @see #getBestBundles(Prices, int, boolean, double, double, double)
      */
-    Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
+    LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
 
     /**
      * Asks a bidder a demand query, without any pool tolerances or time limit, not accepting negative utility
      * @see #getBestBundles(Prices, int, boolean)
      */
-    default Set<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
-        Set<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
+    default LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles) {
+    	LinkedHashSet<Bundle> results = getBestBundles(prices, maxNumberOfBundles, false);
         if (results.size() < 1) results.add(Bundle.EMPTY);
         return results;
     }
