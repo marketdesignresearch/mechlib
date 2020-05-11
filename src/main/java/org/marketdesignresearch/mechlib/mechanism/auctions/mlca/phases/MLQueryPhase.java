@@ -100,8 +100,10 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				Allocation inferredEfficientAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(), economy,
 						Map.of(bidder,
-								Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
-										.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
+								Stream.concat(
+										Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
+												.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
+										, Stream.of(Bundle.EMPTY))
 										.collect(Collectors.toSet())));
 				log.info(economy.toString() + " New bundle: "+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 				// TODO
@@ -119,8 +121,10 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			Allocation infAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy,
 					Map.of(bidder,
-							Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
-									.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
+							Stream.concat(
+									Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
+											.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
+									,Stream.of(Bundle.EMPTY))
 									.collect(Collectors.toCollection(LinkedHashSet::new))));
 			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(),infAllocation.getTradesMap().get(bidder).getBundle());
 			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
