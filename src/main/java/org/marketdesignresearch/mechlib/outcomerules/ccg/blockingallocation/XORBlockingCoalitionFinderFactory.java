@@ -18,7 +18,7 @@ public class XORBlockingCoalitionFinderFactory implements BlockingAllocationFind
     }
 
     public XORBlockingCoalitionFinderFactory() {
-        this.epsilon = PrecisionUtils.EPSILON;
+        this.epsilon = PrecisionUtils.EPSILON.scaleByPowerOfTen(2);
     }
 
     @Override
