@@ -18,7 +18,7 @@ public class OrStarBlockingCoalitionFinderFactory implements BlockingAllocationF
     }
 
     public OrStarBlockingCoalitionFinderFactory() {
-        this.epsilon = PrecisionUtils.EPSILON;
+        this.epsilon = PrecisionUtils.EPSILON.scaleByPowerOfTen(2);
     }
 
     @Override
