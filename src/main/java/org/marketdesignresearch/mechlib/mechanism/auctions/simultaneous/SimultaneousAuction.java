@@ -14,7 +14,7 @@ import lombok.ToString;
  * 
  * TODO change to new auction design with interactions 
  */
-@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
+/*@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
 public class SimultaneousAuction extends Auction<BundleExactValuePair> {
 
     @PersistenceConstructor
@@ -22,7 +22,7 @@ public class SimultaneousAuction extends Auction<BundleExactValuePair> {
         super(domain, outcomeRuleGenerator);
     }
     
-    /*
+
     @Override
     public Map<Bidder, List<Bundle>> restrictedBids() {
         if (finished()) return new HashMap<>();
@@ -31,5 +31,6 @@ public class SimultaneousAuction extends Auction<BundleExactValuePair> {
         getDomain().getBidders().forEach(bidder -> restrictedBids.put(bidder, bundleList));
         return restrictedBids;
     }
-    */
+
 }
+*/

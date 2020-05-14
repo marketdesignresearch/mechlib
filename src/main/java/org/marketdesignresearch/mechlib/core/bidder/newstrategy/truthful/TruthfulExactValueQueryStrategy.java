@@ -22,7 +22,7 @@ public class TruthfulExactValueQueryStrategy implements ExactValueQueryStrategy 
 	@Override
 	public BundleExactValueBid applyExactValueStrategy(ExactValueQuery interaction) {
 		return new BundleExactValueBid(interaction.getQueriedBundles().stream()
-				.map(b -> new BundleExactValuePair(this.bidder.getValue(b), b, UUID.randomUUID().toString()))
+				.map(b -> new BundleExactValuePair(this.bidder.getValue(b, interaction.getAlreadyWon()), b, UUID.randomUUID().toString()))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
 }

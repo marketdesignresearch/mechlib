@@ -8,4 +8,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 
 public interface ValueQuery<B extends BundleValueBid<?>> extends TypedInteraction<B> {
 	Set<Bundle> getQueriedBundles();
+	default Bundle getAlreadyWon() {
+		return Bundle.EMPTY;
+	}
 }
