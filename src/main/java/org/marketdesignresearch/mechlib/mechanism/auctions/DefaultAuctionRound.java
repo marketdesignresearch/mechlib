@@ -19,10 +19,10 @@ public abstract class DefaultAuctionRound<BB extends BundleValueBids<?>> impleme
     private final int auctionPhaseNumber;
     @Getter
     private final int auctionPhaseRoundNumber;
-    
+
     public DefaultAuctionRound(Auction<BB> auction) {
-    	this.roundNumber = auction.getNumberOfRounds()+1;
-    	this.auctionPhaseNumber = auction.getCurrentPhaseNumber();
-    	this.auctionPhaseRoundNumber = auction.getCurrentPhaseRoundNumber();
+        this.roundNumber = auction.getNumberOfRounds() + 1;
+        this.auctionPhaseNumber = auction.getCurrentPhaseNumber();
+        this.auctionPhaseRoundNumber = auction.getCurrentPhaseRoundNumber();
     }
 }

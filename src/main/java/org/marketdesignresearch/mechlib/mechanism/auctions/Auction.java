@@ -104,6 +104,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
      * This fills up the not-yet-submitted bids and closes the round
      */
     public void advanceRound() {
+        Preconditions.checkState(!finished());
         this.current.getInteractions().forEach((b,i) -> i.submitProposedBid());
         closeRound();
     }

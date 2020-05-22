@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * This only serves to keep PVM from being "wrong" about the bidder's value function, which leads
  * to new queries.
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+/*@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @RequiredArgsConstructor
 @Slf4j
 public class LinearRegressionMLAlgorithm implements MLAlgorithm {
@@ -79,3 +79,4 @@ public class LinearRegressionMLAlgorithm implements MLAlgorithm {
 
     }
 }
+*/

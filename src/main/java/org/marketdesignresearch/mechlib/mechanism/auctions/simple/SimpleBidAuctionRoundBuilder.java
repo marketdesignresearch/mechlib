@@ -6,11 +6,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
+import org.marketdesignresearch.mechlib.mechanism.auctions.base.BaseBidRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.SimpleBidInteraction;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
@@ -40,7 +40,7 @@ public class SimpleBidAuctionRoundBuilder extends AuctionRoundBuilder<BundleExac
 
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
-		return new SimpleBidRound(this.getAuction(), this.collectBids());
+		return new BaseBidRound(this.getAuction(), this.collectBids());
 	}
 
 	@Override

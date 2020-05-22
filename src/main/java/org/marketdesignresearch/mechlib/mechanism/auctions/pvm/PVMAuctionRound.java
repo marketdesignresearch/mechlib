@@ -19,7 +19,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
+/*
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class PVMAuctionRound extends DefaultAuctionRound<BundleExactValuePair> {
@@ -47,4 +47,4 @@ public class PVMAuctionRound extends DefaultAuctionRound<BundleExactValuePair> {
         this.inferredOptimalAllocation = inferredOptimalAllocation;
         this.queriedBundles = queriedBundles;
     }
-}
+}*/

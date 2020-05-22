@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.sequential;
+package org.marketdesignresearch.mechlib.mechanism.auctions.base;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -11,10 +11,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.SimpleBidInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.TypedInteraction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.simple.SimpleBidRound;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -26,11 +23,11 @@ import java.util.stream.Collectors;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
-public class SequentialAuctionRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
+public class BaseAuctionRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
 
     private final Map<UUID, ExactValueQuery> interactions;
 
-    public SequentialAuctionRoundBuilder(Auction<BundleExactValueBids> auction, Map<UUID, ExactValueQuery> interactions) {
+    public BaseAuctionRoundBuilder(Auction<BundleExactValueBids> auction, Map<UUID, ExactValueQuery> interactions) {
         super(auction);
         this.interactions = interactions;
     }
@@ -42,7 +39,7 @@ public class SequentialAuctionRoundBuilder extends AuctionRoundBuilder<BundleExa
 
     @Override
     public AuctionRound<BundleExactValueBids> build() {
-        return new SimpleBidRound(this.getAuction(), this.collectBids());
+        return new BaseBidRound(this.getAuction(), this.collectBids());
     }
 
     @Override
