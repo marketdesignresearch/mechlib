@@ -19,7 +19,12 @@ public enum CPLEXUtils {
     private final Map<SolveParam, Object> solveParamMap = Maps.newHashMap();
 
     public IMIPResult solve(IMIP program) {
+        return solve(program, Map.of());
+    }
+
+    public IMIPResult solve(IMIP program, Map<SolveParam, Object> additionalParams) {
         solveParamMap.forEach(program::setSolveParam);
+        additionalParams.forEach(program::setSolveParam);
         return solver.solve(program);
     }
 
