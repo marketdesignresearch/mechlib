@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultPricedAuctionRound;
+import org.marketdesignresearch.mechlib.mechanism.auctions.PricedAuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultProfitMaxInteraction;
 
 import com.google.common.base.Preconditions;
@@ -40,9 +41,9 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
-		Preconditions.checkState(auction.getLastRound() instanceof DefaultPricedAuctionRound);
+		Preconditions.checkState(auction.getLastRound() instanceof PricedAuctionRound);
 
-		DefaultPricedAuctionRound<BundleExactValueBids> pricedRound = (DefaultPricedAuctionRound<BundleExactValueBids>) auction.getLastRound();
+		PricedAuctionRound<BundleExactValueBids> pricedRound = (PricedAuctionRound<BundleExactValueBids>) auction.getLastRound();
 		return new ProfitMaximizingSupplementaryRoundBuilder(
 				auction.getDomain().getBidders().stream()
 						.collect(

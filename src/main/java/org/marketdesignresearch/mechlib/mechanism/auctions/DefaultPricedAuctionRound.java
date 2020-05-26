@@ -10,7 +10,7 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public abstract class DefaultPricedAuctionRound<BB extends BundleValueBids<?>> extends DefaultAuctionRound<BB>{
+public abstract class DefaultPricedAuctionRound<BB extends BundleValueBids<?>> extends DefaultAuctionRound<BB> implements PricedAuctionRound<BB>{
 	
 	@Getter
 	private final Prices prices;

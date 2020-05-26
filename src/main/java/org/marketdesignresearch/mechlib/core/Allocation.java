@@ -91,6 +91,10 @@ public class Allocation implements MetaInfoResult {
     public boolean isWinner(Bidder bidder) {
         return tradesMap.containsKey(bidder.getId());
     }
+    
+    public Bundle getAllocatedBundle() {
+    	return this.tradesMap.values().stream().map(BidderAllocation::getBundle).reduce(Bundle::merge).orElse(Bundle.EMPTY);
+    }
 
     public Set<PotentialCoalition> getPotentialCoalitions() {
         if (coalitions == null) {
