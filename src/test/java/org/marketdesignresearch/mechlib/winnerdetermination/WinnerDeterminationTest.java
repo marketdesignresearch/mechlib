@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import org.junit.Before;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.Allocation;
@@ -46,6 +47,7 @@ public class WinnerDeterminationTest {
     @Test
     public void testBidReduction() {
         CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 1e-6d);
         BundleExactValuePair bid1 = new BundleExactValuePair(BigDecimal.valueOf(6), Sets.newHashSet(A), "1");
         BundleExactValuePair bid2 = new BundleExactValuePair(BigDecimal.valueOf(20), Sets.newHashSet(B), "2");
         BundleExactValuePair bid3 = new BundleExactValuePair(BigDecimal.valueOf(20), Sets.newHashSet(C), "3");
