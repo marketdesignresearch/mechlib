@@ -2,10 +2,13 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -13,6 +16,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultDemandQueryInteraction;
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -50,8 +54,15 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Prices newPrices = this.getPrices(auction);
-		return new CCAClockRoundBuilder(Collections.unmodifiableMap(auction.getDomain().getBidders().stream().collect(
-				Collectors.toMap(b -> b.getId(), b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction),(e1, e2) -> e1,LinkedHashMap::new))), auction);
+		Map<UUID, DemandQuery> map = Collections.unmodifiableMap(auction.getDomain().getBidders().stream()
+				.collect(Collectors.toMap(
+						Bidder::getId,
+						b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction),
+						(e1, e2) -> e1,
+						LinkedHashMap::new)
+				)
+		);
+		return new CCAClockRoundBuilder(map, auction);
 	}
 
 	private Prices getPrices(Auction<BundleExactValueBids> auction) {

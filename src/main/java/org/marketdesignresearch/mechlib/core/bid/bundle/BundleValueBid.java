@@ -54,6 +54,7 @@ public abstract class BundleValueBid<T extends BundleExactValuePair> implements 
     
     public abstract BundleValueBid<T> join(BundleValueBid<?> other);
 	public abstract BundleValueBid<T> reducedBy(BigDecimal payoff);
+	public abstract BundleValueBid<T> multiply(BigDecimal scale);
 
 	@Override
 	public boolean isEmpty() {

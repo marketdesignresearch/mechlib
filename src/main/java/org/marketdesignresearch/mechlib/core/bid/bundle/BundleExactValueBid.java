@@ -38,4 +38,10 @@ public class BundleExactValueBid extends BundleValueBid<BundleExactValuePair>{
         }
         return result;
     }
+
+	@Override
+	public BundleExactValueBid multiply(BigDecimal scale) {
+		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.multiply(scale)).collect(Collectors.toCollection(LinkedHashSet::new));
+        return new BundleExactValueBid(newBids);
+	}
 }
