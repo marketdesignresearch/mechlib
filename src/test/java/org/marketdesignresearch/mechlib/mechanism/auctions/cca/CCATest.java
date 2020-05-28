@@ -67,9 +67,8 @@ public class CCATest {
 
     @Test
     public void testCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain);
-        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+    	PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
+        CCAuction cca = new CCAuction(domain, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
@@ -78,9 +77,8 @@ public class CCATest {
 
     @Test
     public void testCCAWithCATSAuctionAndVCG() {
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR);
-        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+    	PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
@@ -92,9 +90,8 @@ public class CCATest {
         VCGRule auction = new XORVCGRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
-        CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+        CCAuction cca = new CCAuction(domain, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
@@ -116,9 +113,8 @@ public class CCATest {
         VCGRule auction = new XORVCGRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Outcome resultIncludingAllBids = auction.getOutcome();
 
-        CCAuction cca = new CCAuction(domain);
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+        CCAuction cca = new CCAuction(domain, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Allocation previousAllocation = Allocation.EMPTY_ALLOCATION;
@@ -148,9 +144,8 @@ public class CCATest {
 
     @Test
     public void testResettingCCAWithCATSAuction() {
-        CCAuction cca = new CCAuction(domain);
-        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+    	PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
+        CCAuction cca = new CCAuction(domain, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(2));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(4));
@@ -197,8 +192,9 @@ public class CCATest {
         ORBidder bidder2 = new ORBidder("2", new ORValueFunction(value2));
         ORBidder bidder3 = new ORBidder("3", new ORValueFunction(value3));
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, true);
-        cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
+        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2));
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, true, priceUpdater);
+
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
 
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
@@ -231,8 +227,8 @@ public class CCATest {
         ORBidder bidder3 = new ORBidder("3", new ORValueFunction(value3));
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
-        cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
+        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2));
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, priceUpdater);
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
 
         assertThat(cca.hasNextSupplementaryRound()).isTrue();
