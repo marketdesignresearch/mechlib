@@ -12,12 +12,16 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public class KernelGaussian extends Kernel{
 	
-	private double bandwidth;
-	private double scalingFactor;
+	private final double bandwidth;
+	private final double scalingFactor;
+	
+	public KernelGaussian(double bandwidth, double scalingFactor) {
+		this.bandwidth = bandwidth;
+		this.scalingFactor = scalingFactor;
+	}
 	
 	public KernelGaussian(Map<String, Double> kernelParameters) {
-		this.scalingFactor = kernelParameters.get("gs");
-		this.bandwidth = kernelParameters.get("gb");	
+		this(kernelParameters.get("gb"), kernelParameters.get("gs"));
 	}
 
 	@Override

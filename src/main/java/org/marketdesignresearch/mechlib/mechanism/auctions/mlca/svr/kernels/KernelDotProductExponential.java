@@ -10,10 +10,13 @@ public class KernelDotProductExponential extends KernelDotProduct{
 	private double bandwidth;
 	private double scalingFactor;
 
+	public KernelDotProductExponential(double bandwidth, double scalingFactor) {
+		this.bandwidth = bandwidth;
+		this.scalingFactor = scalingFactor;
+	}
 	
 	public KernelDotProductExponential(Map<String, Double> parameters){
-		this.bandwidth = parameters.get("eb");
-		this.scalingFactor = parameters.get("es");
+		this(parameters.get("eb"), parameters.get("es"));
 	}
 	
 	public Double getValue(Bundle bundle, Bundle bundle2){
