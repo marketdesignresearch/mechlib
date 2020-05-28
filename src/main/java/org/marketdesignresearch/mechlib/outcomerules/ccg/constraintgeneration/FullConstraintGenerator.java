@@ -26,7 +26,7 @@ import com.google.common.collect.Sets;
 public class FullConstraintGenerator implements PartialConstraintGenerator {
 
     @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
 
     }
 

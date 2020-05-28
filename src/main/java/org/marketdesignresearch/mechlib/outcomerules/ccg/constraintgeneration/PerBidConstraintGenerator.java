@@ -19,6 +19,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingAllocation;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockingCoalitionDetermination;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
 import com.google.common.collect.Sets;
@@ -31,14 +33,15 @@ import com.google.common.collect.Sets;
  */
 class PerBidConstraintGenerator implements PartialConstraintGenerator {
     @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
         corePaymentRule.resetResult();
         Allocation allocation = referencePoint.getAllocation();
         Payment lowerBound = referencePoint.getPayment();
         for (Entry<Bidder, ? extends BundleValueBid<?>> bid : bids.getBidMap().entrySet()) {
             for (BundleExactValuePair bundleBid : bid.getValue().getBundleBids()) {
-                // TODO: assumes availability of 1
-                Set<Bidder> blockedBiddersSet = bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(goodToBidderMap::containsKey).map(good -> goodToBidderMap.get(good).getBidder()).collect(Collectors.toSet());
+                // TODO check implementation for availability of more than 1
+            	
+                Set<Bidder> blockedBiddersSet = bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).filter(goodToBidderMap::containsKey).flatMap(good -> goodToBidderMap.get(good).stream().map(PotentialCoalition::getBidder)).collect(Collectors.toSet());
                 BigDecimal currentValue = allocation.allocationOf(bid.getKey()) == null ? BigDecimal.ZERO : allocation.allocationOf(bid.getKey()).getValue();
                 BigDecimal currentPayment = lowerBound.paymentOf(bid.getKey()) == null ? BigDecimal.ZERO : lowerBound.paymentOf(bid.getKey()).getAmount();
                 BigDecimal blockingValue = bundleBid.getAmount().subtract(currentValue).add(currentPayment);

@@ -25,7 +25,7 @@ public class IntermediateSolutionsAllocationFinderFactory implements BlockingAll
     }
 
     public IntermediateSolutionsAllocationFinderFactory(MultiBlockingAllocationsDetermination.Mode mode) {
-        this(mode, PrecisionUtils.EPSILON);
+        this(mode, PrecisionUtils.EPSILON.scaleByPowerOfTen(2));
     }
 
     @Override

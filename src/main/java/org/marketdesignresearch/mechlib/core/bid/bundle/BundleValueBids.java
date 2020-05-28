@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.core.bid.bundle;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +62,8 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 	public abstract BundleValueBids<T> join(BundleValueBids<?> other);
     
     public abstract BundleValueBids<T> reducedBy(Outcome outcome);
+    
+    public abstract BundleValueBids<T> multiply(BigDecimal factor);
     
 	public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new BundleExactValueBids());

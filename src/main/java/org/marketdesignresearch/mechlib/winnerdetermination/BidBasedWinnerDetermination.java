@@ -25,6 +25,8 @@ import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
@@ -32,7 +34,8 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
     // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
     protected Map<BundleExactValuePair, Variable> bidVariables = new HashMap<>();
     
-    private BigDecimal scalingFactor = new BigDecimal(1);
+    @Getter(AccessLevel.PROTECTED)
+    private BigDecimal scalingFactor = BigDecimal.ONE;
 
     public BidBasedWinnerDetermination(BundleValueBids<?> bids) {
         this.bids = bids;
@@ -41,9 +44,18 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
         BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
         
-        if (maxValue.compareTo(maxMipValue) == 1) {
-            this.scalingFactor = maxMipValue.divide(maxValue,RoundingMode.HALF_UP);
+        if (maxValue.compareTo(maxMipValue) > 0) {
+            this.scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
+            if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
+                throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because" +
+                        "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
+            }
         }
+    }
+    
+    @Override
+    public void setLowerBound(double lowerBound) {
+    	super.setLowerBound(BigDecimal.valueOf(lowerBound).multiply(this.scalingFactor).doubleValue());
     }
     
     protected BigDecimal getScaledBundleBidAmount(BundleExactValuePair bundleBid) {

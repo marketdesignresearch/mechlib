@@ -34,5 +34,11 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair>{
 		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.reducedBy(payoff)).collect(Collectors.toCollection(LinkedHashSet::new));
         return new BundleBoundValueBid(newBids);
 	}
+
+	@Override
+	public BundleBoundValueBid multiply(BigDecimal scale) {
+		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.multiply(scale)).collect(Collectors.toCollection(LinkedHashSet::new));
+        return new BundleBoundValueBid(newBids);
+	}
 	
 }

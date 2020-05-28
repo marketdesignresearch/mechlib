@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
@@ -16,7 +17,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
 public class StandardCCGConstraintGenerator implements PartialConstraintGenerator {
 
     @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule) {
+    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
 
     }
 

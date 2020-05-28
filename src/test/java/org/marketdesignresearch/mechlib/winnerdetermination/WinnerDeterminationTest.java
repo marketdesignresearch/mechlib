@@ -16,6 +16,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGOutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
@@ -61,7 +62,7 @@ public class WinnerDeterminationTest {
         VCGReferencePointFactory rpFacory = new VCGReferencePointFactory();
         CCGFactory quadratic = new VariableNormCCGFactory(rpFacory, Norm.MANHATTAN, Norm.EUCLIDEAN);
 
-        CCGOutcomeRule ccgAuction = quadratic.getOutcomeRule(bids);
+        OutcomeRule ccgAuction = quadratic.getOutcomeRule(bids);
         Outcome outcome = ccgAuction.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue()).isEqualByComparingTo("46");
         assertThat(outcome.getPayment().getTotalPayments()).isEqualByComparingTo("6");
