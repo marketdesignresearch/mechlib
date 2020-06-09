@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
@@ -90,7 +91,7 @@ public class XORBidder implements Bidder, Serializable {
     
     @Override
 	public <T extends InteractionStrategy> T getStrategy(Class<T> type) {
-		if(!this.strategies.containsKey(type)) this.setStrategy(InteractionStrategy.defaultStrategy(type));
+		if(!this.strategies.containsKey(type)) this.setStrategy(DefaultStrategyHandler.defaultStrategy(type));
 		return  this.strategies.getInstance(type);
 	}
 	// endregion
