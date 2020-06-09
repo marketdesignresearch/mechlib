@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
