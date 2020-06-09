@@ -66,7 +66,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 		for(int i = auction.getNumberOfRounds()-1; i>=0; i--) {
 			AuctionRound<T> auctionRound = auction.getRound(i);
 			// Find last MLQueryAuctionRound
-			if(auctionRound instanceof MLQueryAuctionRound) {
+			if(MLQueryAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
 				bidderMarginalsTemp = ((MLQueryAuctionRound)auctionRound).getMarginalsToQueryNext();
 				random = new Random(((MLQueryAuctionRound)auctionRound).getSeedNextRound());
 				break;

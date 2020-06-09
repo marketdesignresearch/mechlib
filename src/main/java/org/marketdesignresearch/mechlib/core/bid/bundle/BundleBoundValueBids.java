@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
@@ -35,7 +36,7 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 	}
 
 	@Override
-	public BundleValueBids<BundleBoundValueBid> join(BundleValueBids<?> other) {
+	public BundleBoundValueBids join(BundleValueBids<?> other) {
 		if (!(other instanceof BundleBoundValueBids))
 			throw new IllegalArgumentException("Currently unable to join non BundleBoundValueBids");
 
@@ -81,8 +82,13 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 	}
 
 	public BundleExactValueBids getPerturbedBids(Allocation allocation) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-				e -> e.getValue().getPerturbedBid(allocation.getTradesMap().get(e.getKey()).getBundle()))));
+		Map<Bidder, BundleExactValueBid> perturbedBids = new LinkedHashMap<>();
+		for(Map.Entry<Bidder,BundleBoundValueBid> entry : this.getBidMap().entrySet()) {
+			Bundle allocated = allocation.allocationOf(entry.getKey()).getBundle();
+			perturbedBids.put(entry.getKey(), entry.getValue().getPerturbedBid(allocated));
+		}
+		
+		return new BundleExactValueBids(perturbedBids);
 	}
 
 }
