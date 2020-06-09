@@ -3,9 +3,6 @@ package org.marketdesignresearch.mechlib.core.bidder.newstrategy;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful.TruthfulDemandQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful.TruthfulExactValueQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful.TruthfulProfitMaxQueryStrategy;
 
 /**
  * A strategy defines how a bidder will respond to an auction interaction.
@@ -30,18 +27,4 @@ public interface InteractionStrategy {
 	 * @param bidder the bidder to which this strategy belongs
 	 */
 	void setBidder(Bidder bidder);
-	
-	@SuppressWarnings("unchecked")
-	public static <T extends InteractionStrategy> T defaultStrategy(Class<T> type) {
-		if(type.isAssignableFrom(DemandQueryStrategy.class)) {
-			return (T) new TruthfulDemandQueryStrategy();
-		} 
-		if(type.isAssignableFrom(ExactValueQueryStrategy.class)) {
-			return (T) new TruthfulExactValueQueryStrategy();
-		}
-		if(type.isAssignableFrom(ProfitMaxStrategy.class)) {
-			return (T) new TruthfulProfitMaxQueryStrategy();
-		}
-		throw new IllegalArgumentException("Unknown Strategy");
-	}
 }
