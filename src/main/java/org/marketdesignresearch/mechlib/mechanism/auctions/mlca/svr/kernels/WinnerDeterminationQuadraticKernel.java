@@ -28,7 +28,7 @@ public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithE
     } 
     
     @Override
-    protected MIPWrapper getSpecificMIP() {
+    protected MIPWrapper createKernelSpecificWinnerDeterminationProgram() {
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
     	for (UUID b : this.getEconomy().getBidders()){
     		bidderGoodVariables.put(b, new HashMap<Good, Variable>());

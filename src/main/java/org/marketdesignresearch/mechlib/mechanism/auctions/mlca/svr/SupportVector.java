@@ -10,16 +10,25 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
-public abstract class SupportVector<B extends BundleValueBid<?>, T extends BundleValueBids<B>> implements MachineLearningAllocationInferrer {
+import lombok.Getter;
+import lombok.Setter;
+
+public abstract class SupportVector<B extends BundleValueBid<?>, T extends BundleValueBids<B>> implements MachineLearningAllocationInferrer, MipInstrumentationable {
 
 	private final BundleExactValueBids supportVectorsPerBider;
 	private final Kernel kernel;
+	@Getter
+	@Setter
+	private MipInstrumentation mipInstrumentation;
 	
-	public SupportVector(SupportVectorSetup setup, T bids) {
+	public SupportVector(SupportVectorSetup setup, T bids, MipInstrumentation mipInstrumentation) {
+		this.mipInstrumentation = mipInstrumentation;
 		this.supportVectorsPerBider = new BundleExactValueBids();
 		bids.getBidMap().forEach((bidder,bid) -> this.supportVectorsPerBider.setBid(bidder, this.createSupportVectorMIP(setup, bid).getVectors()));
 		kernel = setup.getKernel();

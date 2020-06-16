@@ -29,6 +29,7 @@ import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,8 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 	private final Map<Bidder,Set<Bundle>> excludedBundles;
 	@Getter
 	private final boolean genericSetting;
+	
+	private IMIP winnerDeterminationProgram = null;
 
 	public WinnerDeterminationWithExcludedBundles(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles) {
 		this.domain = domain;
@@ -98,9 +101,8 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
         return new Allocation(BigDecimal.valueOf(mipResult.getObjectiveValue()),trades.build(),new BundleExactValueBids(),metaInfo);
     }  
     
-    @Override
-    protected final IMIP getMIP() {
-    	IMIP mip = this.getSpecificMIP();
+    private IMIP createWinnerDeterminationProgram() {
+    	IMIP mip = this.createKernelSpecificWinnerDeterminationProgram();
     	
     	for(Map.Entry<Bidder, Set<Bundle>> bidderEntry : this.excludedBundles.entrySet()) {
     		for (Bundle bundle : bidderEntry.getValue()) {
@@ -118,7 +120,14 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
     	return mip;
     }
     
-    protected abstract IMIP getSpecificMIP();
+    @Override
+    protected IMIP getMIP() {
+    	if(this.winnerDeterminationProgram == null)
+    		this.winnerDeterminationProgram = this.createWinnerDeterminationProgram();
+    	return this.winnerDeterminationProgram;
+    }
+    
+    protected abstract IMIP createKernelSpecificWinnerDeterminationProgram();
     
     @Override
 	public WinnerDetermination join(WinnerDetermination other) {

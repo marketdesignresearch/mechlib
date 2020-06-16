@@ -8,6 +8,9 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation.MipPurpose;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
 import com.google.common.collect.ImmutableMap;
@@ -19,8 +22,9 @@ import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
+import lombok.Setter;
 
-public abstract class SupportVectorMIP<B extends BundleValueBid<?>> {
+public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements MipInstrumentationable{
 
 	@Getter
 	private final double interpolationWeight;
@@ -30,19 +34,23 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> {
 	private final Kernel kernel;
 	@Getter
 	private final B bid;
-
+	@Getter
+	@Setter
+	private MipInstrumentation mipInstrumentation;
+	
 	private IMIP mip;
 	private BundleExactValueBid resultVectors;
 
 	protected Map<Integer, Variable> labeledDataVariables = new HashMap<Integer, Variable>();
 
-	public SupportVectorMIP(SupportVectorSetup setup, B bid) {
+	public SupportVectorMIP(SupportVectorSetup setup, B bid, MipInstrumentation mipInstrumentation) {
 		this.interpolationWeight = setup.getInterpolationWeight();
 		this.insensitivityThreshold = setup.getInsensitivityThreshold();
 		this.kernel = setup.getKernel();
 		this.bid = bid;
 
 		this.mip = this.createMip();
+		this.mipInstrumentation = mipInstrumentation;
 	}
 
 	protected abstract IMIP createMip();
@@ -51,7 +59,9 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> {
 		
 		IMIPResult result;
 		try {
+			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
     		result = new SolverClient().solve(this.mip);
+    		this.getMipInstrumentation().postMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip, result);
 		} catch(RuntimeException e){
 			// Try Barrier instead
 			try {

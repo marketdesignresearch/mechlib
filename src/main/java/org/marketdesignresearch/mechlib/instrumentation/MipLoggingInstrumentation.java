@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MipLoggingInstrumentation extends MipInstrumentation {
     @Override
-    public void postMIP(MipPurpose mipPurpose, IMIP mip, IMIPResult result, Allocation bestAllocation, List<Allocation> poolAllocations) {
+    public void postMIP(String mipPurpose, IMIP mip, IMIPResult result, Allocation bestAllocation, List<Allocation> poolAllocations) {
         log.info("MIP Purpose: {}", mipPurpose);
         log.info("MIP -> # Variables: {}", mip.getNumVars());
         log.info("MIP -> # Constraints: {}", mip.getNumConstraints());

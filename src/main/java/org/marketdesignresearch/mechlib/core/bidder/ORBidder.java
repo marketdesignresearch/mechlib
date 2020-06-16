@@ -85,7 +85,7 @@ public class ORBidder implements Bidder, Serializable {
                 bundleValue.getId())));
         WinnerDetermination orWdp = new ORWinnerDetermination(new BundleExactValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
-        orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
+        orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY.name());
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
         LinkedHashSet<Bundle> result = optimalAllocations.stream()

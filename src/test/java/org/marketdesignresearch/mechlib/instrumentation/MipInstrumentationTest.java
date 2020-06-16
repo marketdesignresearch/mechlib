@@ -100,10 +100,9 @@ public class MipInstrumentationTest {
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
-        cca.setMipInstrumentation(new MipLoggingInstrumentation());
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
-        cca.setPriceUpdater(priceUpdater);
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, priceUpdater);
+        cca.setMipInstrumentation(new MipLoggingInstrumentation());
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
@@ -133,9 +132,9 @@ public class MipInstrumentationTest {
         ORBidder bidder3 = new ORBidder("3", new ORValueFunction(value3));
         Domain domain = new SimpleORDomain(Lists.newArrayList(bidder1, bidder2, bidder3), Lists.newArrayList(goodA, goodB));
 
-        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
+        PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2));
+        CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false, priceUpdater);
         cca.setMipInstrumentation(new MipLoggingInstrumentation());
-        cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
         cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(56.0, Offset.offset(1e-4));
