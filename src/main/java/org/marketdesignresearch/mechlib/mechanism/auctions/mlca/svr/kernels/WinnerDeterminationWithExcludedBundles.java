@@ -18,6 +18,7 @@ import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation.MipPurpose;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
@@ -61,6 +62,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 		this.supportVectors = supportVectors;
 		this.excludedBundles = excludedBundles;
 		this.genericSetting = this.getDomain().getGoods().stream().map(g -> g.getQuantity() > 1).reduce(Boolean::logicalOr).get();
+		this.setPurpose(MipPurpose.KERNEL_WINNERDETERMINATION.name());
 	}
 	
     /*

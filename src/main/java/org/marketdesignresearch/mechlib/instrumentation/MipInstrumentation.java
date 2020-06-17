@@ -28,6 +28,7 @@ public class MipInstrumentation {
         ALLOCATION,
         PAYMENT,
         DEMAND_QUERY,
-        SUPPORT_VECTOR
+        SUPPORT_VECTOR,
+        KERNEL_WINNERDETERMINATION
     }
 }
