@@ -82,7 +82,6 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
         getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
-        CPLEXUtils.SOLVER.applyGlobalParams(getMIP());
         try {
         	mipInstrumentation.preMIP(purpose, getMIP());
             IMIPResult mipResult = new SolverClient().solve(getMIP());
