@@ -87,9 +87,7 @@ public class MLCATest {
     public void testMLCAWithLinearKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelLinear(0, 1)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1);
-    	mlPhase.setMaxQueries(50);
-    	mlPhase.setNumberOfMarginalQueriesPerRound(2);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 50, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
     	Outcome outcome = auction.getOutcome();
     	
@@ -104,9 +102,7 @@ public class MLCATest {
     public void testMLCAWithQuadraticKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelQuadratic(0, 1, 0.01)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1);
-    	mlPhase.setMaxQueries(50);
-    	mlPhase.setNumberOfMarginalQueriesPerRound(2);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 50, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
     	Outcome outcome = auction.getOutcome();
     	
@@ -123,9 +119,7 @@ public class MLCATest {
     	// reference runtime approx 6 minute
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelGaussian(1,10)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1);
-    	mlPhase.setMaxQueries(32);
-    	mlPhase.setNumberOfMarginalQueriesPerRound(2);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
     	Outcome outcome = auction.getOutcome();
     	
@@ -140,9 +134,7 @@ public class MLCATest {
     public void testMLCAWithExponentialKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductExponential(1,10));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1);
-    	mlPhase.setMaxQueries(32);
-    	mlPhase.setNumberOfMarginalQueriesPerRound(2);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
     	Outcome outcome = auction.getOutcome();
     	
@@ -157,9 +149,7 @@ public class MLCATest {
     public void testMLCAWithPolynomialKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductPolynomial(new double[] {0,1,0.1,0.01,0.001}));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1);
-    	mlPhase.setMaxQueries(32);
-    	mlPhase.setNumberOfMarginalQueriesPerRound(2);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
     	Outcome outcome = auction.getOutcome();
     	
