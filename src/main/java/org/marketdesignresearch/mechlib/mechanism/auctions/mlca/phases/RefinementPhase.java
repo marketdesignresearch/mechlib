@@ -50,20 +50,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 		}
 		
 		this.updateInfo(auction);
-
-		Random random = new Random(seed);
-		for (int i = auction.getNumberOfRounds() - 1; i >= 0; i--) {
-			AuctionRound<BundleBoundValueBids> auctionRound = auction.getRound(i);
-			// Find last RefinementAuctionRound
-			if (DefaultRefinementAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
-				random = new Random(((DefaultRefinementAuctionRound) auctionRound).getSeedNextRound());
-				break;
-			}
-		}
-		
-		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction, random, info);
-		
-		return new RefinementAuctionRoundBuilder(auction,bidderRefinementInfos, random.nextLong());
+		return new RefinementAuctionRoundBuilder(auction, seed, this.allRefinementEconomies, this.info);
 	}
 
 	@Override

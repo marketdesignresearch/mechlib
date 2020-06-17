@@ -16,6 +16,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultBoundValueQueryWithMRPARRefinementInteraction;
@@ -32,28 +33,45 @@ import lombok.extern.slf4j.Slf4j;
 public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBids> implements BidderRefinementRoundInfoCreator {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
+	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
 	
 	private final boolean refineMarginalEconomies;
+	private final boolean intermediateRefinements;
 	
 	private List<ElicitationEconomy> refinementEconomies;
 	
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed) {
-		this(mlComponent, seed, DEFAULT_REFINE_MARGINAL_ECONOMIES);
+		this(mlComponent, seed, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS);
 	}
 	
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed, boolean refineMarginalEconomies) {
+		this(mlComponent,seed,refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS);
+	}
+	
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed, boolean refineMarginalEconomies, boolean intermediateRefinments) {
 		super(mlComponent, seed);
 		this.refineMarginalEconomies = refineMarginalEconomies;
+		this.intermediateRefinements = intermediateRefinments;
+	}
+	
+	@Override
+	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
+		if(this.refinementEconomies == null) {
+			this.refinementEconomies = this.createAllRefinementEconomies(auction);
+		}
+		
+		// check if requested and perform intermediate refinement
+		if(intermediateRefinements && BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
+			return new RefinementAuctionRoundBuilder(auction, this.getSeed()+1, refinementEconomies, this.createEfficiencyInfo(auction));
+		}
+		
+		return super.createNextRoundBuilder(auction);
 	}
 
 	@Override
 	protected AuctionRoundBuilder<BundleBoundValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleBoundValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
 			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp, long nextRandomSeed) {
-
-		if(this.refinementEconomies == null) {
-			this.refinementEconomies = this.createAllRefinementEconomies(auction);
-		}
 		
 		Random random = new Random(nextRandomSeed);
 		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction, random, this.createEfficiencyInfo(auction));
