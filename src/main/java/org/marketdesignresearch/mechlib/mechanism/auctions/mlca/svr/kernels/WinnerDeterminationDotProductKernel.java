@@ -29,7 +29,8 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 		this.kernel = kernel;
 	}
 
-	protected IMIP getSpecificMIP() {
+	@Override
+	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
 		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new HashMap<>();
 
 		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();

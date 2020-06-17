@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import com.google.common.collect.Lists;
 
@@ -81,6 +82,7 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.RELATIVE_OBJ_GAP, epsilon);
         getMIP().setSolveParam(SolveParam.DISPLAY_OUTPUT, displayOutput);
         getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
+        CPLEXUtils.SOLVER.applyGlobalParams(getMIP());
         try {
         	mipInstrumentation.preMIP(purpose, getMIP());
             IMIPResult mipResult = new SolverClient().solve(getMIP());
@@ -172,7 +174,7 @@ public abstract class WinnerDetermination implements AllocationRule {
     @Getter @Setter
     private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
     @Getter @Setter
-    private MipInstrumentation.MipPurpose purpose = MipInstrumentation.MipPurpose.ALLOCATION;
+    private String purpose = MipInstrumentation.MipPurpose.ALLOCATION.name();
     // endregion
 
 }

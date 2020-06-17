@@ -2,15 +2,20 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ExactSupportVectorMIP extends SupportVectorMIP<BundleExactValueBid>{
+public class ExactSupportVectorMIP extends SupportVectorMIP<BundleExactValueBid> {
 
-	public ExactSupportVectorMIP(SupportVectorSetup setup, BundleExactValueBid bid) {
-		super(setup, bid);
+	
+	public ExactSupportVectorMIP(SupportVectorSetup setup, BundleExactValueBid bid, MipInstrumentation mipInstrumentation) {
+		super(setup, bid, mipInstrumentation);
 	}
 
 	@Override

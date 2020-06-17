@@ -35,7 +35,7 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 	}
 
     @Override
-	protected IMIP getSpecificMIP() {
+	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
     	
     	Map<UUID,Map<Bundle, Map<Good, Variable>>> bidderSVDiffVariables = new HashMap<>();
     	

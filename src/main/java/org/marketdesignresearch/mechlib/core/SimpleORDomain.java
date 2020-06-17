@@ -35,7 +35,7 @@ public final class SimpleORDomain implements Domain {
             } else {
                 ORWinnerDetermination orWDP = new ORWinnerDetermination(BundleExactValueBids.fromORBidders(bidders));
                 orWDP.setMipInstrumentation(getMipInstrumentation());
-                orWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+                orWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION.name());
                 efficientAllocation = orWDP.getAllocation();
             }
         }

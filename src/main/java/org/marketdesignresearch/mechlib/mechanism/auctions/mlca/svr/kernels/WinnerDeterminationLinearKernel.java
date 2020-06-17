@@ -25,7 +25,7 @@ public class WinnerDeterminationLinearKernel extends WinnerDeterminationWithExcl
 	}
 	
 	@Override
-	protected IMIP getSpecificMIP() {
+	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();    
     	
     	for (UUID b : this.getEconomy().getBidders()){
