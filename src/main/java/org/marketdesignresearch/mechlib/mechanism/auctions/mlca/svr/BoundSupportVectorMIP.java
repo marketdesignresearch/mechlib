@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
@@ -13,8 +14,8 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class BoundSupportVectorMIP extends SupportVectorMIP<BundleBoundValueBid>{
 
-	public BoundSupportVectorMIP(SupportVectorSetup setup, BundleBoundValueBid bid) {
-		super(setup, bid);
+	public BoundSupportVectorMIP(SupportVectorSetup setup, BundleBoundValueBid bid, MipInstrumentation instrumentation) {
+		super(setup, bid, instrumentation);
 	}
 
 	@Override

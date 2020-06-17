@@ -29,6 +29,7 @@ public class MipInstrumentation {
         PAYMENT,
         DEMAND_QUERY,
         SUPPORT_VECTOR,
-        KERNEL_WINNERDETERMINATION
+        KERNEL_WINNERDETERMINATION,
+        REFINEMENT_PRICES
     }
 }

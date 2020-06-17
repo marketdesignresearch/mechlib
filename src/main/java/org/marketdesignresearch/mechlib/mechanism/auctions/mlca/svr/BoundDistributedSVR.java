@@ -11,7 +11,7 @@ public class BoundDistributedSVR extends DistributedSVR<BundleBoundValueBids>{
 
 	@Override
 	public MachineLearningAllocationInferrer getMLFunction(BundleBoundValueBids bids) {
-		return new BoundSupportVector(this.getSetup(), bids);
+		return new BoundSupportVector(this.getSetup(), bids, this.getMipInstrumentation());
 	}
 
 }
