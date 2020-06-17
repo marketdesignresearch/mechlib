@@ -111,10 +111,9 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	private LinearPrices solveMIP() {
 		getMIP().setSolveParam(SolveParam.MIP_DISPLAY, 0);	
     	getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
-    	CPLEXUtils.SOLVER.applyGlobalParams(getMIP());
 		// TODO new MIP Purpose
 		this.instrumentation.preMIP(MipPurpose.ALLOCATION, getMIP());
-		IMIPResult result = new SolverClient().solve(getMIP());
+		IMIPResult result = CPLEXUtils.SOLVER.solve(getMIP());
 		this.instrumentation.postMIP(MipPurpose.ALLOCATION, getMIP(), result);
 		return this.adaptMIPResult(result);
 	}
