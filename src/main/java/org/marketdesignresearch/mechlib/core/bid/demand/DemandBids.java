@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
@@ -29,7 +30,7 @@ public class DemandBids extends Bids<DemandBid> {
 
 	@Override
 	protected DemandBid createEmptyBid() {
-		return null;
+		return new DemandBid(Bundle.EMPTY);
 	}
 
 	public int getDemand(Good good) {
