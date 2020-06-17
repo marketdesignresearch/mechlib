@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -91,6 +92,11 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	@Override
 	public BundleExactValueBids without(Bidder bidder) {
 		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
+	}
+	
+	@Override
+	public BundleExactValueBids only(Set<UUID> bidders) {
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey().getId())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,

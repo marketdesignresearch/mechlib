@@ -1,30 +1,39 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundMLQueryWithMRPARPhase;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundRandomQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.MLQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RandomQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementPhase;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.BoundDistributedSVR;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.SupportVectorSetup;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MLCAWithBounds extends Auction<BundleBoundValueBids>{
+public class MLCAWithBounds extends Auction<BundleBoundValueBids>{	
 
-	private static final int DEFAULT_MAX_QUERIES = 100;
-
-	@Setter @Getter
-	private int maxQueries = DEFAULT_MAX_QUERIES;
+	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
+	
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, long sampleSeed, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup) {
+		this(domain, outcomeRule, sampleSeed, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), DEFAULT_REFINE_MARGINAL_ECONOMIES);
+	}
+	
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, long sampleSeed, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies) {
+		this(domain, outcomeRule, sampleSeed, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), refineMarginalEconomies);
+	}
+	
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, long sampleSeed, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies) {
+		this(domain,outcomeRule,new BoundRandomQueryPhase(sampleSeed, numberOfInitialRandomQueries), new BoundMLQueryWithMRPARPhase(mlComponent, sampleSeed+1, refineMarginalEconomies), new RefinementPhase(sampleSeed+3, refineMarginalEconomies));
+	}
 	
 	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase, RefinementPhase refinement) {
 		super(domain,outcomeRule,initialPhase);

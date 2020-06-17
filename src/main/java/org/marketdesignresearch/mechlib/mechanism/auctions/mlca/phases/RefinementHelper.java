@@ -14,6 +14,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,22 +24,30 @@ public class RefinementHelper {
 	private RefinementHelper() {
 	}
 
-	public static class RefinementInfo {
+	public static class EfficiencyInfo {
 		public BigDecimal alpha;
 		public BigDecimal efficiency;
 	}
+	
+	public static EfficiencyInfo getRefinementInfo(Auction<BundleBoundValueBids> auction, ElicitationEconomy economy) {
+		return getRefinementInfo(auction.getLatestAggregatedBids().only(new LinkedHashSet<>(economy.getBidders())));
+	}
 
-	public static RefinementInfo getRefinementInfo(Auction<BundleBoundValueBids> auction) {
-		Allocation lowerBound = new XORWinnerDetermination(auction.getLatestAggregatedBids()).getAllocation();
+	public static EfficiencyInfo getRefinementInfo(Auction<BundleBoundValueBids> auction) {
+		return getRefinementInfo(auction.getLatestAggregatedBids());
+	}
+	
+	public static EfficiencyInfo getRefinementInfo(BundleBoundValueBids bids) {
+		Allocation lowerBound = new XORWinnerDetermination(bids).getAllocation();
 		Allocation perturbed = new XORWinnerDetermination(
-				auction.getLatestAggregatedBids().getPerturbedBids(lowerBound)).getAllocation();
+				bids.getPerturbedBids(lowerBound)).getAllocation();
 
 		log.info("Lowerbound Reported Value: " + lowerBound.getTotalAllocationValue() + "\tTrue value: "
 				+ lowerBound.getTrueSocialWelfare());
 		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue() + "\tTrue value: "
 				+ lowerBound.getTrueSocialWelfare());
 
-		RefinementInfo info = new RefinementInfo();
+		EfficiencyInfo info = new EfficiencyInfo();
 
 		info.alpha = lowerBound.getTotalAllocationValue()
 				.divide(lowerBound.getTotalAllocationValue(), RoundingMode.HALF_UP).max(BigDecimal.valueOf(0.5))
@@ -56,7 +65,7 @@ public class RefinementHelper {
 			BundleBoundValueBid bid = bids.getBid(b);
 			for(BundleBoundValuePair value : bid.getBundleBids()) {
 				epsilon = epsilon.add(value.getUpperBound().subtract(value.getLowerBound())
-						.divide(BigDecimal.valueOf(bid.getBundleBids().size())));
+						.divide(BigDecimal.valueOf(bid.getBundleBids().size()), RoundingMode.HALF_UP));
 			}
 		}
 		epsilon = epsilon.divide(BigDecimal.valueOf(2*bids.getBidders().size()),RoundingMode.HALF_UP);

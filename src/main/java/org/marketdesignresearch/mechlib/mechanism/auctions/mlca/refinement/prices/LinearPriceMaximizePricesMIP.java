@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
 
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
@@ -24,7 +25,7 @@ public class LinearPriceMaximizePricesMIP extends LinearPriceMIP{
 		for(Variable priceVar : this.getPriceVariables().values()) {
 			mipWrapper.addObjectiveTerm(1, priceVar);
 		}
-		
+		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.2);
     	return mipWrapper;
 	}
 	

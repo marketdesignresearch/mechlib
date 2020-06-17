@@ -21,6 +21,10 @@ public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {
 	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, long seed) {
 		super(mlComponent, seed);
 	}
+	
+	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, long seed, int maxQueries, int numberOfMarginalQueriesPerRound) {
+		super(mlComponent, seed, maxQueries, numberOfMarginalQueriesPerRound);
+	}
 
 	@Override
 	protected AuctionRoundBuilder<BundleExactValueBids> createConcreteAuctionRoundBuilder(

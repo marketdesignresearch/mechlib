@@ -163,9 +163,9 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 		
 		this.generatedPriceConstraints = new PriceConstraints(constraints);
 		
-		log.info("Max Value: {}",maxValue);
-		log.info("Number of Deltas: {}",numberOfDeltas);
-		log.info("Number of Positive Deltas: {}",numberOfPositiveDeltas);
+		log.debug("Max Value: {}",maxValue);
+		log.debug("Number of Deltas: {}",numberOfDeltas);
+		log.debug("Number of Positive Deltas: {}",numberOfPositiveDeltas);
 		return super.adaptMIPResult(result);
 	}
 

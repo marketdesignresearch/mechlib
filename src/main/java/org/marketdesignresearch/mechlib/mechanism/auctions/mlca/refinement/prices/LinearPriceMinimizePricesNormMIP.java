@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
 
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
@@ -37,7 +38,6 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 		}
 		
 		mipWrapper.add(constraint);
-		
 		return mipWrapper;
 	}
 	
