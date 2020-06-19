@@ -31,15 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism implements AuctionInstrumentationable {
 
-    private static int DEFAULT_MAX_BIDS = 100;
-    private static int DEFAULT_MANUAL_BIDS = 0;
-    private static int DEFAULT_MAX_ROUNDS = 1;
+    private static int DEFAULT_MAX_ROUNDS = 0;
 
     @Getter
     private final Domain domain;
     @Getter
     private final OutcomeRuleGenerator outcomeRuleGenerator;
 
+    /**
+     * maximal number of rounds in this auction
+     * 
+     * if maxRounds equals to 0 the number of rounds is infinite and the auction
+     * terminates after all auction phases have completed sucessfully
+     */
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
 
@@ -118,7 +122,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     }
 
 	protected void prepareNextAuctionRoundBuilder() {
-		if((this.phases.size() == this.currentPhaseNumber+1 && this.getCurrentPhase().phaseFinished(this)) || getNumberOfRounds() >= maxRounds ) {
+		if((this.phases.size() == this.currentPhaseNumber+1 && this.getCurrentPhase().phaseFinished(this)) || (maxRounds > 0 && getNumberOfRounds() >= maxRounds )) {
         	current = null;
         } else {
         	if(this.getCurrentPhase().phaseFinished(this)) {
@@ -231,7 +235,21 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     
     public Outcome getOutcome(OutcomeRuleGenerator generator) {
     	if (rounds.size() == 0) return Outcome.NONE;
-        return getOutcomeAtRound(rounds.size() - 1);
+        return getOutcomeAtRound(generator,rounds.size() - 1);
+    }
+    
+    
+    /**
+     * 
+     * @param i queried phase number (starting from 0)
+     * @return
+     */
+    public String getPhaseType(int i) {
+    	return this.phases.get(i).getType();
+    }
+    
+    public int getNumberOfPhases() {
+    	return this.phases.size();
     }
 
     // region instrumentation
