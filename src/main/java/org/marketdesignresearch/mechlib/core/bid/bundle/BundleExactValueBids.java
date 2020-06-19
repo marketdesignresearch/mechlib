@@ -84,7 +84,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	@Override
-	public BundleExactValueBids of(Set<Bidder> bidders) {
+	public BundleExactValueBids of(Set<? extends Bidder> bidders) {
 		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
 	}
 

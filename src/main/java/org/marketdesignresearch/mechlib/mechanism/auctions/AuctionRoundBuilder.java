@@ -22,23 +22,25 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
 public abstract class AuctionRoundBuilder<BB extends BundleValueBids<?>> {
 
-	@Getter(AccessLevel.PROTECTED)
-	@Transient
-	@EqualsExclude
-	@ToString.Exclude
-	// TODO may include auction ID in toString and Equals
-	private Auction<BB> auction;
-	
-	public AuctionRoundBuilder(Auction<BB> auction) {
-		this.auction = auction;
-	}
+    @Getter(AccessLevel.PROTECTED)
+    @Transient
+    @EqualsExclude
+    @ToString.Exclude
+    // TODO may include auction ID in toString and Equals
+    private Auction<BB> auction;
 
-	void setAuction(Auction<BB> auction) {
-		this.auction = auction;
-		this.getInteractions().forEach((b,i) -> i.setAuction(auction));
-	}
-	
-	public abstract Map<UUID, ? extends Interaction> getInteractions();
-	public abstract AuctionRound<BB> build();
-	protected abstract Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator);
+    public AuctionRoundBuilder(Auction<BB> auction) {
+        this.auction = auction;
+    }
+
+    void setAuction(Auction<BB> auction) {
+        this.auction = auction;
+        this.getInteractions().forEach((b, i) -> i.setAuction(auction));
+    }
+
+    public abstract Map<UUID, ? extends Interaction> getInteractions();
+
+    public abstract AuctionRound<BB> build();
+
+    protected abstract Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator);
 }

@@ -20,7 +20,7 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid>{
 	}
 
 	@Override
-	public BundleBoundValueBids of(Set<Bidder> bidders) {
+	public BundleBoundValueBids of(Set<? extends Bidder> bidders) {
 		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(e1,e2)->e1,LinkedHashMap::new)));
 	}
 

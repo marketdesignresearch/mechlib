@@ -20,15 +20,15 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleExactValuePair>> extends Bids<T>{
+public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleExactValuePair>> extends Bids<T> {
 
 
     public BundleValueBids() {
         this(new HashMap<>());
     }
 
-    public BundleValueBids(Map<Bidder, T> bidderBidMap) {
-    	super(bidderBidMap);
+    public BundleValueBids(Map<? extends Bidder, T> bidderBidMap) {
+        super(bidderBidMap);
     }
 
     public Collection<Good> getGoods() {
@@ -46,26 +46,24 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
     }
 
     /**
-     *
      * @param bidder to be removed
      * @return New bids not including the bid of the specified bidder
      */
     public abstract BundleValueBids<T> without(Bidder bidder);
 
     /**
-     *
      * @param bidders to be included
      * @return New bids consisting only of the bids of the specified bidders
      */
-    public abstract BundleValueBids<T> of(Set<Bidder> bidders);
+    public abstract BundleValueBids<T> of(Set<? extends Bidder> bidders);
 
-	public abstract BundleValueBids<T> join(BundleValueBids<?> other);
-    
+    public abstract BundleValueBids<T> join(BundleValueBids<?> other);
+
     public abstract BundleValueBids<T> reducedBy(Outcome outcome);
-    
+
     public abstract BundleValueBids<T> multiply(BigDecimal factor);
-    
-	public SingleItemBids getBidsPerSingleGood(Good good) {
+
+    public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new BundleExactValueBids());
         Map<Bidder, BundleExactValueBid> bidsPerGood = new HashMap<>();
         for (Entry<Bidder, T> entry : this.getBidMap().entrySet()) {

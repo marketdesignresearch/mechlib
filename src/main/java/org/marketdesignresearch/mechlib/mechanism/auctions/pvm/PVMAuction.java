@@ -20,8 +20,6 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.DummyMLAlgorithm;
-import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.LinearRegressionMLAlgorithm;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -31,7 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
-
+/*
 @Slf4j
 public class PVMAuction extends Auction<BundleExactValuePair> {
 
@@ -188,7 +186,7 @@ public class PVMAuction extends Auction<BundleExactValuePair> {
     /**
      * This is a shortcut to finish all rounds & calculate the final result
      */
-    @Override
+    /*@Override
     public Outcome getOutcome() {
         log.info("Finishing all rounds...");
         while (!finished()) {
@@ -197,4 +195,4 @@ public class PVMAuction extends Auction<BundleExactValuePair> {
         log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
         return getOutcomeAtRound(rounds.size() - 1);
     }
-}
+}*/

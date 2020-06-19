@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * This only serves to keep PVM from being "wrong" about the bidder's value function, which leads
  * to new queries.
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+/*@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @RequiredArgsConstructor
 public class DummyMLAlgorithm implements MLAlgorithm {
     private final Bidder bidder;
@@ -78,3 +78,4 @@ public class DummyMLAlgorithm implements MLAlgorithm {
         return null;
     }
 }
+*/

@@ -17,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
+/*
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @ToString
 @EqualsAndHashCode
@@ -47,3 +47,4 @@ public class MetaElicitation {
     }
 
 }
+*/

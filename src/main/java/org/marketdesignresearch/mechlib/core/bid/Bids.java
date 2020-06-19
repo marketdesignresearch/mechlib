@@ -29,7 +29,7 @@ public abstract class Bids<T extends Bid> {
 		this(new HashMap<>());
 	}
 
-	public Bids(Map<Bidder, T> bidderBidMap) {
+	public Bids(Map<? extends Bidder, T> bidderBidMap) {
 		bidMap = new HashMap<>();
 		bidders = new HashSet<>(bidderBidMap.keySet());
 		bidderBidMap.forEach((k, v) -> this.bidMap.put(k.getId(), v));
@@ -61,6 +61,6 @@ public abstract class Bids<T extends Bid> {
 	}
 
 	public boolean isEmpty() {
-		return bidMap.isEmpty() || this.getBidMap().values().stream().allMatch(bid -> bid.isEmpty());
+		return bidMap.isEmpty() || this.getBidMap().values().stream().allMatch(Bid::isEmpty);
 	}
 }

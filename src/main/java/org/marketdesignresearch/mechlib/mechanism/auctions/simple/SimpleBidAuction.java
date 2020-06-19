@@ -12,14 +12,14 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class SimpleBidAuction extends ExactValueAuction{
+public class SimpleBidAuction extends ExactValueAuction {
 
-	public SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
-		super(domain, outcomeRuleGenerator, new SimpleBidPhase());
-	}
-	
-	@PersistenceConstructor
-	protected SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current) {
-		super(domain,outcomeRuleGenerator,current);
-	}
+    public SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
+        super(domain, outcomeRuleGenerator, new SimpleBidPhase());
+    }
+
+    @PersistenceConstructor
+    protected SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current) {
+        super(domain, outcomeRuleGenerator, current);
+    }
 }
