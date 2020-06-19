@@ -32,4 +32,9 @@ public class BoundRandomQueryPhase extends RandomQueryPhase<BundleBoundValueBids
 								(e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
+	@Override
+	public String getType() {
+		return "Bound Random Query Phase";
+	}
+
 }

@@ -138,10 +138,4 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 	public boolean phaseFinished(Auction<T> auction) {
 		return auction.getMaximumSubmittedBids() >= this.getMaxQueries();
 	}
-
-	@Override
-	public String getType() {
-		return "ML Query Phase";
-	}
-
 }

@@ -37,4 +37,9 @@ public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {
 								(e1, e2) -> e1, LinkedHashMap::new)),
 				bidderMarginalsTemp, nextRandomSeed);
 	}
+
+	@Override
+	public String getType() {
+		return "Exact ML Query Phase";
+	}
 }

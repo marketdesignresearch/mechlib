@@ -120,4 +120,9 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	public Set<RefinementType> createRefinementType(BundleBoundValueBids bids) {
 		return RefinementHelper.getMRPAR();
 	}
+
+	@Override
+	public String getType() {
+		return "Bound ML Query with MRPAR Refinement Phase";
+	}
 }
