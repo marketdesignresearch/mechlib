@@ -30,7 +30,7 @@ public enum AllocationLimitUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public int calculateAllocationBundleSpace(AllocationLimit limit, List<? extends Good> startingSpace) {
+	public int calculateAllocationBundleSpaceSize(AllocationLimit limit, List<? extends Good> startingSpace) {
 		return helper.get(limit.getType()).calculateAllocationBundleSpace(limit, startingSpace);
 	}
 }
