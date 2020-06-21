@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.allocationlimits.validators.AllocationLimitUtils;
+import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;

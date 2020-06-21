@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.allocationlimits.validators;
+package org.marketdesignresearch.mechlib.core.allocationlimits.utils;
 
 import java.util.HashMap;
 import java.util.List;

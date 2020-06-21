@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.allocationlimits.validators.AllocationLimitUtils;
+import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
