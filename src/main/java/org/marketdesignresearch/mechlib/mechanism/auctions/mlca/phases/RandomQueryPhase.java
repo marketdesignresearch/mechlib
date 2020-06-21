@@ -9,6 +9,7 @@ import java.util.Set;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomBundleSampling;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -35,11 +36,13 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
 		Random random = new Random(this.seed);
 		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
+		
+		UniformRandomBundleSampling sampler = new UniformRandomBundleSampling(random);
 
 		for (Bidder b : auction.getDomain().getBidders()) {
 			bidderRestrictedBids.put(b, new LinkedHashSet<>());
 			while (bidderRestrictedBids.get(b).size() < this.numberOfInitialQueries) {
-				Bundle bundle = auction.getDomain().getRandomBundle(random);
+				Bundle bundle = sampler.getSingleBundle(auction.getDomain().getGoods());
 				bidderRestrictedBids.get(b).add(bundle);
 			}
 		}
