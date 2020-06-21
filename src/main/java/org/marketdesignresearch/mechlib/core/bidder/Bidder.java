@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
@@ -135,5 +136,9 @@ public interface Bidder extends MipInstrumentationable {
     void setStrategy(InteractionStrategy strategy);
 
     <T extends InteractionStrategy> T getStrategy(Class<T> type);
+    
+    default AllocationLimit getAllocationLimit() {
+    	return AllocationLimit.NO;
+    }
     
 }

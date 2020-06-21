@@ -28,6 +28,8 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+// TODO implement Allocation limits
+// quite hard for OR trivial for XOR
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
     private BundleValueBids<?> bids;
