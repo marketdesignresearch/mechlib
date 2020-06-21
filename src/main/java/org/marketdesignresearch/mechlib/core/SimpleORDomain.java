@@ -29,7 +29,7 @@ public final class SimpleORDomain implements Domain {
     @Override
     public Allocation getEfficientAllocation() {
         if (efficientAllocation == null) {
-            if (bidders.stream().allMatch(bidder -> bidder.getValue().getBundleValues().isEmpty())) {
+            if (bidders.stream().allMatch(bidder -> bidder.getValueFunction().getBundleValues().isEmpty())) {
                 log.warn("Requested efficient allocation for bidders with no values attached!");
                 efficientAllocation = Allocation.EMPTY_ALLOCATION;
             } else {

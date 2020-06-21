@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits.validators;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
@@ -30,7 +30,7 @@ public enum AllocationLimitUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public int calculateAllocationBundleSpace(AllocationLimit limit, Set<? extends Good> startingSpace) {
+	public int calculateAllocationBundleSpace(AllocationLimit limit, List<? extends Good> startingSpace) {
 		return helper.get(limit.getType()).calculateAllocationBundleSpace(limit, startingSpace);
 	}
 }

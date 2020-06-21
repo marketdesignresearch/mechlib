@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits.validators;
 
-import java.util.Set;
+import java.util.List;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
@@ -20,7 +20,7 @@ public class NoAllocationLimitHelper implements AllocationLimitHelper<NoAllocati
 	}
 
 	@Override
-	public int calculateAllocationBundleSpace(NoAllocationLimit allocationLimit, Set<? extends Good> startingSpace) {
+	public int calculateAllocationBundleSpace(NoAllocationLimit allocationLimit, List<? extends Good> startingSpace) {
 		return (int) Math.pow(2, startingSpace.stream().mapToInt(Good::getQuantity).sum());
 	}
 

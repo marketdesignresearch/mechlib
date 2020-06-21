@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.allocationlimits.validators.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.springframework.data.annotation.PersistenceConstructor;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import com.google.common.collect.Sets;
@@ -60,7 +62,9 @@ public class UnitDemandBidder implements Bidder, Serializable {
     }
 
     @Override
-    public BigDecimal getValue(Bundle bundle) {
+    public BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits) {
+    	Preconditions.checkArgument(ignoreAllocationLimits || AllocationLimitUtils.HELPER.validate(this.getAllocationLimit(), bundle)); 
+    	
         if (bundle.getBundleEntries().size() > 0) {
             return value;
         } else {

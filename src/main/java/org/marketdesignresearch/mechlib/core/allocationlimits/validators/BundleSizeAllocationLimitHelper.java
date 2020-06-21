@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits.validators;
 
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -22,7 +22,7 @@ public class BundleSizeAllocationLimitHelper implements AllocationLimitHelper<Bu
 
 	@Override
 	public int calculateAllocationBundleSpace(BundleSizeAllocationLimit allocationLimit,
-			Set<? extends Good> startingSpace) {
+			List<? extends Good> startingSpace) {
 		int numberOfItems = startingSpace.stream().mapToInt(Good::getQuantity).sum();
 		int maxNumberOfBundlesInterestedIn = 0;
     	for(int i = 0; i <= allocationLimit.getBundleSizeLimit(); i++) {

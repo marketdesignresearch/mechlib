@@ -60,7 +60,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 			Function<ValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
 		for (XORBidder bidder : bidders) {
-			bidMap.put(bidder, operator.apply(bidder.getValue()));
+			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
 		}
 		return new BundleExactValueBids(bidMap);
 	}
@@ -103,7 +103,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 			Function<ValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
 		for (ORBidder bidder : bidders) {
-			bidMap.put(bidder, operator.apply(bidder.getValue()));
+			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
 		}
 		return new BundleExactValueBids(bidMap);
 	}

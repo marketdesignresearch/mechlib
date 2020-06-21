@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits;
 
-import java.util.Set;
+import java.util.List;
 
 import org.marketdesignresearch.mechlib.core.Good;
 
@@ -10,5 +10,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultGoodAllocationLimit implements GoodAllocationLimit{
 	@Getter
-	private final Set<? extends Good> goodAllocationLimit;
+	private final List<? extends Good> goodAllocationLimit;
 }

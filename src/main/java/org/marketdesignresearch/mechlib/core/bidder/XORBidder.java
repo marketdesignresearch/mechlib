@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.validators.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
@@ -19,6 +20,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.springframework.data.annotation.PersistenceConstructor;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
@@ -40,7 +42,7 @@ public class XORBidder implements Bidder, Serializable {
     @ToString.Include
     private final String name;
     @Getter
-    private final XORValueFunction value;
+    private final XORValueFunction valueFunction;
     @Getter
     private final String description;
     @Getter
@@ -53,7 +55,7 @@ public class XORBidder implements Bidder, Serializable {
     public XORBidder(String name, XORValueFunction value) {
         this.id = UUID.randomUUID();
         this.name = name;
-        this.value = value;
+        this.valueFunction = value;
         StringBuilder sb = new StringBuilder("Bidder with an XOR-based value function with the following most-valued bundles (rounded):");
         for (BundleValue bundleValue : value.getBundleValues()
                 .stream()
@@ -68,16 +70,22 @@ public class XORBidder implements Bidder, Serializable {
 
     @Override
     public BigDecimal getValue(Bundle bundle) {
-        return value.getValueFor(bundle);
+        return valueFunction.getValueFor(bundle);
     }
 
     @Override
     public LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
-    	LinkedHashSet<Bundle> result = value.getOptimalBundleValueAt(prices, maxNumberOfBundles, allowNegative).stream()
+    	LinkedHashSet<Bundle> result = valueFunction.getOptimalBundleValueAt(prices, maxNumberOfBundles, allowNegative).stream()
                 .map(BundleValue::getBundle).collect(Collectors.toCollection(LinkedHashSet::new));
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }
+    
+    @Override
+	public BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits) {
+    	Preconditions.checkArgument(ignoreAllocationLimits || AllocationLimitUtils.HELPER.validate(this.getAllocationLimit(), bundle)); 
+    	return valueFunction.getValueFor(bundle);
+	}
     
     // region strategy
     // TODO handle persistence

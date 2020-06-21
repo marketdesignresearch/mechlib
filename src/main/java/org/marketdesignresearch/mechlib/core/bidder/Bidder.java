@@ -46,11 +46,30 @@ public interface Bidder extends MipInstrumentationable {
 
     /**
      * Asks the bidder a value query: What is your value for a certain bundle of goods
+     * An expection is thrown if a bundle is queried that may not be allocated to this
+     * bidder
+     * 
+     * @see #getValue(Bundle, boolean)
      *
      * @param bundle the bundle
      * @return the value of this bidder for the bundle of goods
      */
-    BigDecimal getValue(Bundle bundle);
+    default BigDecimal getValue(Bundle bundle) {
+    	return this.getValue(bundle, false);
+    }
+    
+    /**
+     * Asks the bidder a value query: What is your value for a certain bundle of goods. If
+     * the allocation limit is respected and a bundle is queried that can not be allocated
+     * to this bidder an exception is thrown. This is done in order to verify that you are 
+     * sure you want to query a bundle that can not be allocated to this bidder. In most 
+     * cases you probably won't query such a bundle. 
+     * 
+     * @param bundle the bundle
+     * @param ignoreAllocationLimits specifies weather the allocation limit should be respected.
+     * @return the value of this bidder for the bundle of goods
+     */
+    BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits);
 
     /**
      * Asks the bidder a value query: What is your value for a certain bundle of goods,

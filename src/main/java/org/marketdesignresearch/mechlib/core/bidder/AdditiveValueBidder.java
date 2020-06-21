@@ -30,7 +30,7 @@ public class AdditiveValueBidder extends ORBidder {
         }
         Preconditions.checkArgument(value.getBundleValues().stream().map(be -> be.getBundle().getSingleGood()).distinct().count() == value.getBundleValues().size());
         StringBuilder sb = new StringBuilder("Bidder with an additive value function with the following values per item (rounded):");
-        for (BundleValue bundleValue : getValue().getBundleValues()) {
+        for (BundleValue bundleValue : getValueFunction().getBundleValues()) {
             sb.append("\n\t- ").append(bundleValue.getBundle()).append(": ").append(bundleValue.getAmount().setScale(2, RoundingMode.HALF_UP));
         }
         setDescription(sb.toString());

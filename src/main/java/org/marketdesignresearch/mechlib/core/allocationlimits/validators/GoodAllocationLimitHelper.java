@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits.validators;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -21,7 +22,7 @@ public class GoodAllocationLimitHelper implements AllocationLimitHelper<GoodAllo
 	}
 
 	@Override
-	public int calculateAllocationBundleSpace(GoodAllocationLimit allocationLimit, Set<? extends Good> startingSpace) {
+	public int calculateAllocationBundleSpace(GoodAllocationLimit allocationLimit, List<? extends Good> startingSpace) {
 		Set<? extends Good> allocatableGoods = new LinkedHashSet<>(startingSpace);
 		allocatableGoods.retainAll(allocationLimit.getGoodAllocationLimit());
 		return (int) Math.pow(2, allocatableGoods.stream().mapToInt(Good::getQuantity).sum());

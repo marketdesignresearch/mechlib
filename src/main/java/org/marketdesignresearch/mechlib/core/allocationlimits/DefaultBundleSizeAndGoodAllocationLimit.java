@@ -1,10 +1,8 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,5 +12,5 @@ public class DefaultBundleSizeAndGoodAllocationLimit implements BundleSizeAndGoo
 	@Getter
 	private final int bundleSizeLimit;
 	@Getter
-	private final Set<? extends Good> goodAllocationLimit;
+	private final List<? extends Good> goodAllocationLimit;
 }
