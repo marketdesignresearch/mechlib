@@ -30,8 +30,8 @@ import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
-import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +40,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 	// TODO ??
 	public double relSolutionGap;
-	
+	@Getter(AccessLevel.PACKAGE)
     protected Map<UUID,Map<Good, Variable>> bidderGoodVariables = new HashMap<>();
 	
     @Getter
@@ -117,6 +117,11 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
     					intCut.addTerm(-1, this.bidderGoodVariables.get(bidderEntry.getKey().getId()).get(good));
     			}
     		}
+    	}
+    	
+    	// apply AllocationLimits
+    	for(UUID bUUID : this.getEconomy().getBidders()) {
+    		KernelWinnerDeterminationAllocationLimitApplier.APPLIER.apply(this.getBidder(bUUID), this).forEach(mip::add);
     	}
     	
     	return mip;
