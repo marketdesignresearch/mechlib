@@ -1,6 +1,15 @@
 package org.marketdesignresearch.mechlib.demandqueries;
 
-import com.google.common.collect.Sets;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -15,10 +24,7 @@ import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 import org.marketdesignresearch.mechlib.core.price.Price;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.*;
+import com.google.common.collect.Sets;
 
 public class ORBidderDemandQueryTest {
     private static SimpleGood A;
@@ -59,7 +65,7 @@ public class ORBidderDemandQueryTest {
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
 
         Bundle bestBundle = bidder.getBestBundle(prices);
-        List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
+        List<Bundle> bestBundles = new ArrayList<>(bidder.getBestBundles(prices, 10));
 
 
         assertThat(bestBundles).hasSize(8);
@@ -74,7 +80,7 @@ public class ORBidderDemandQueryTest {
         checkBundle(bestBundles.get(6), A         );
         checkBundle(bestBundles.get(7)            );
 
-        List<Bundle> bestBundlesInclNegative = bidder.getBestBundles(prices, 10, true);
+        List<Bundle> bestBundlesInclNegative = new ArrayList<>(bidder.getBestBundles(prices, 10, true));
         assertThat(bestBundlesInclNegative).hasSize(10);
         assertThat(bestBundles.subList(0, 8).equals(bestBundlesInclNegative));
         checkBundle(bestBundlesInclNegative.get(8), A, B, C, D);

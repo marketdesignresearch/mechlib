@@ -1,21 +1,33 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import com.google.common.collect.ImmutableList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.assertj.core.data.Offset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
 import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
 import org.marketdesignresearch.mechlib.input.cats.CATSParser;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfoResult;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.*;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.IntermediateSolutionsAllocationFinderFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.MaxTraitorOrBlockingCoalitionFinderFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.MaxTraitorXORBlockingCoalitionFinderFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.MultiBlockingAllocationsDetermination;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.OrStarBlockingCoalitionFinderFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.EqualWeightsFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
@@ -25,13 +37,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.VCGRefer
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.google.common.collect.ImmutableList;
 
 @RunWith(Parameterized.class)
 public class CCGOutcomeRuleTest {
@@ -39,7 +45,7 @@ public class CCGOutcomeRuleTest {
 
     public CCGOutcomeRuleTest(MechanismFactory factory) {
         this.factory = factory;
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
     }
 
     @Parameterized.Parameters
@@ -78,7 +84,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
         Bidder bidder0 = domain.getBidder("SB" + 0);
@@ -103,7 +109,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         // Compare to direct CPLEX result
         Bidder bidder1 = domain.getBidder("DB" + 3);
@@ -128,7 +134,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(0.00001);
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(7751.4898, offset);
@@ -141,7 +147,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         MetaInfoResult result = wd.getPayment();
         System.out.println(result.getMetaInfo());
 
@@ -154,7 +160,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(26, offset);
@@ -172,7 +178,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(10, offset);
@@ -186,7 +192,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
 
@@ -201,7 +207,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(PrecisionUtils.EPSILON.doubleValue());
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(20, offset);
@@ -215,7 +221,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment payment = wd.getPayment();
         Offset<Double> offset = Offset.offset(1e-6);
         assertThat(payment.getTotalPayments().doubleValue()).isEqualTo(3.3853760, offset);
@@ -229,7 +235,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         Bidder bidder0 = domain.getBidder("DB" + 4);
         Bidder bidder1 = domain.getBidder("DB" + 5);
@@ -249,7 +255,7 @@ public class CCGOutcomeRuleTest {
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFileStream);
         CATSAdapter adapter = new CATSAdapter();
         SimpleXORDomain domain = adapter.adaptToDomain(catsAuction);
-        OutcomeRule wd = factory.getOutcomeRule(Bids.fromXORBidders(domain.getBidders()));
+        OutcomeRule wd = factory.getOutcomeRule(BundleExactValueBids.fromXORBidders(domain.getBidders()));
         Payment result = wd.getPayment();
         Bidder bidder0 = domain.getBidder("SB" + 0);
         Bidder bidder1 = domain.getBidder("SB" + 1);

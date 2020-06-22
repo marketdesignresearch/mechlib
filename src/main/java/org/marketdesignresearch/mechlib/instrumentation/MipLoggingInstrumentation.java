@@ -1,17 +1,18 @@
 package org.marketdesignresearch.mechlib.instrumentation;
 
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
-import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.Allocation;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MipLoggingInstrumentation extends MipInstrumentation {

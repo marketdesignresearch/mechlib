@@ -1,18 +1,25 @@
-package org.marketdesignresearch.mechlib.core;
+package org.marketdesignresearch.mechlib.core.bid.bundle;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.base.Preconditions;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.PersistenceConstructor;
-
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Class that represents a Bid of one {@link Bidder} on one bundle of
@@ -26,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @EqualsAndHashCode
 @ToString
-public class BundleBid {
+public class BundleExactValuePair {
 
     @Getter
     private final BigDecimal amount;
@@ -40,7 +47,7 @@ public class BundleBid {
      * @param bundle Goods to bid on
      * @param id Same id as BundleValue
      */
-    public BundleBid(BigDecimal amount, Set<Good> bundle, String id) {
+    public BundleExactValuePair(BigDecimal amount, Set<Good> bundle, String id) {
         this(amount, Bundle.of(bundle), id);
     }
 
@@ -55,20 +62,30 @@ public class BundleBid {
         return Collections.unmodifiableSet(bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()));
     }
 
-    public BundleBid reducedBy(BigDecimal amount) {
-        return new BundleBid(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
+    public BundleExactValuePair reducedBy(BigDecimal amount) {
+        return new BundleExactValuePair(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
+    }
+    
+    public BundleExactValuePair multiply(BigDecimal amount) {
+        return new BundleExactValuePair(getAmount().multiply(amount), bundle, id);
     }
 
-    public BundleBid withAmount(BigDecimal amount) {
-        return new BundleBid(amount, bundle, id);
+    public BundleExactValuePair withAmount(BigDecimal amount) {
+        return new BundleExactValuePair(amount, bundle, id);
     }
 
     public PotentialCoalition getPotentialCoalition(Bidder bidder) {
-        return new PotentialCoalition(getGoods(), bidder, amount);
+        return new PotentialCoalition(getBundle(), bidder, amount);
     }
 
     public int countGood(Good good) {
         return bundle.countGood(good);
     }
 
+
+	BundleExactValuePair joinWith(BundleExactValuePair otherBid) {
+    	Preconditions.checkArgument(otherBid.getClass().equals(BundleExactValuePair.class));
+    	Preconditions.checkArgument(this.getBundle().equals(otherBid.getBundle()));
+    	return new BundleExactValuePair(this.getAmount().max(otherBid.getAmount()), this.getBundle(), UUID.randomUUID().toString());
+    }
 }

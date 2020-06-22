@@ -1,13 +1,13 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class CATSAuction implements Serializable {

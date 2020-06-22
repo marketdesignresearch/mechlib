@@ -1,37 +1,50 @@
 package org.marketdesignresearch.mechlib.instrumentation;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.data.Offset;
-import org.junit.Test;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
-import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
-import org.marketdesignresearch.mechlib.input.cats.CATSParser;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
-import org.marketdesignresearch.mechlib.core.price.Price;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.ProfitMaximizingSupplementaryRound;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
-import org.marketdesignresearch.mechlib.outcomerules.vcg.ORVCGRule;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.data.Offset;
+import org.junit.Test;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.SimpleORDomain;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
+import org.marketdesignresearch.mechlib.core.price.Price;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.input.cats.CATSAdapter;
+import org.marketdesignresearch.mechlib.input.cats.CATSAuction;
+import org.marketdesignresearch.mechlib.input.cats.CATSParser;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.CCAuction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase.ProfitMaximizingSupplementaryPhase;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import org.marketdesignresearch.mechlib.outcomerules.vcg.ORVCGRule;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MipInstrumentationTest {
@@ -43,7 +56,7 @@ public class MipInstrumentationTest {
         CATSParser parser = new CATSParser();
         CATSAuction catsAuction = parser.readCatsAuctionBean(catsFile);
         CATSAdapter adapter = new CATSAdapter();
-        Bids bids = adapter.adaptCATSAuction(catsAuction);
+        BundleExactValueBids bids = adapter.adaptCATSAuction(catsAuction);
         OutcomeRule vcgRule = new ORVCGRule(bids);
         vcgRule.setMipInstrumentation(new MipLoggingInstrumentation());
         vcgRule.getOutcome();
@@ -76,7 +89,7 @@ public class MipInstrumentationTest {
         Bidder bidder = new ORBidder("bidder", new ORValueFunction(value));
         bidder.setMipInstrumentation(new MipLoggingInstrumentation());
         Bundle bestBundle = bidder.getBestBundle(prices);
-        List<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
+        Set<Bundle> bestBundles = bidder.getBestBundles(prices, 10);
     }
 
     @Test
@@ -91,7 +104,7 @@ public class MipInstrumentationTest {
         cca.setMipInstrumentation(new MipLoggingInstrumentation());
         PriceUpdater priceUpdater = new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.TEN);
         cca.setPriceUpdater(priceUpdater);
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(8240.2519, Offset.offset(1e-4));
         log.info(outcome.toString());
@@ -123,7 +136,7 @@ public class MipInstrumentationTest {
         CCAuction cca = new CCAuction(domain, OutcomeRuleGenerator.VCG_XOR, false);
         cca.setMipInstrumentation(new MipLoggingInstrumentation());
         cca.setPriceUpdater(new SimpleRelativePriceUpdate().withInitialUpdate(BigDecimal.ONE).withPriceUpdate(BigDecimal.valueOf(2)));
-        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryRound().withNumberOfSupplementaryBids(3));
+        cca.addSupplementaryRound(new ProfitMaximizingSupplementaryPhase().withNumberOfSupplementaryBids(3));
         Outcome outcome = cca.getOutcome();
         assertThat(outcome.getAllocation().getTotalAllocationValue().doubleValue()).isEqualTo(56.0, Offset.offset(1e-4));
         log.info(outcome.toString());

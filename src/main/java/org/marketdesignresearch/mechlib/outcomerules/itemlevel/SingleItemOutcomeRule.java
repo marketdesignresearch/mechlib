@@ -1,28 +1,39 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import lombok.RequiredArgsConstructor;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderAllocation;
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.itemlevel.tiebreaker.AlphabeticTieBreaker;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class SingleItemOutcomeRule implements OutcomeRule {
 
     protected final Set<SingleItemBids> bidsPerGood = new HashSet<>();
 
-    public SingleItemOutcomeRule(Bids bids) {
+    public SingleItemOutcomeRule(BundleValueBids<?> bids) {
         for (Good good : bids.getGoods()) {
             this.bidsPerGood.add(bids.getBidsPerSingleGood(good));
         }
@@ -48,7 +59,7 @@ public abstract class SingleItemOutcomeRule implements OutcomeRule {
             }
             SingleItemBid firstBid = firstBids.stream()
                     .sorted((a, b) -> new AlphabeticTieBreaker().compare(a, b)).collect(Collectors.toList()).get(0);
-            BundleBid winningBid = firstBid.getBundleBid();
+            BundleExactValuePair winningBid = firstBid.getBundleBid();
             Bidder winner = firstBid.getBidder();
             BidderAllocation bidderAllocation = new BidderAllocation(winningBid.getAmount(), Sets.newHashSet(bids.getItem()), Sets.newHashSet(winningBid));
             Allocation allocation = new Allocation(ImmutableMap.of(winner, bidderAllocation), bids, new MetaInfo());

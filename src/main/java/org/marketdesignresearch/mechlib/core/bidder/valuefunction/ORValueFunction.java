@@ -1,20 +1,5 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.BundleEntry;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
-import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
-import org.springframework.data.annotation.PersistenceConstructor;
-
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,6 +7,23 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.winnerdetermination.ORWinnerDetermination;
+import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
@@ -59,14 +61,14 @@ public class ORValueFunction implements ValueFunction {
     }
 
     @Override
-    public Bid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
-        Set<BundleBid> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
-        return new Bid(bundleBids);
+    public BundleExactValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
+        Set<BundleExactValuePair> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
+        return new BundleExactValueBid(bundleBids);
     }
 
     @Override
     public WinnerDetermination toWDP(Bidder bidder) {
-        return new ORWinnerDetermination(new Bids(Collections.singletonMap(bidder, toBid())));
+        return new ORWinnerDetermination(new BundleExactValueBids(Collections.singletonMap(bidder, toBid())));
     }
 }
 

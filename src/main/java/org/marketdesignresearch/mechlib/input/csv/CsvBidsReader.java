@@ -1,17 +1,28 @@
 package org.marketdesignresearch.mechlib.input.csv;
 
-import com.opencsv.bean.CsvToBeanBuilder;
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.BundleEntry;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+
+import com.opencsv.bean.CsvToBeanBuilder;
 
 public class CsvBidsReader {
 
@@ -21,14 +32,14 @@ public class CsvBidsReader {
      * @return  The bids that are represented by this CSV file, which can be further processed
      * @throws  FileNotFoundException if there is no file at this path
      */
-    public static Bids csvToXORBids(Path path) throws FileNotFoundException {
+    public static BundleExactValueBids csvToXORBids(Path path) throws FileNotFoundException {
         // Maps the CSV rows to BidBeans
         List<BidBean> bidBeans = new CsvToBeanBuilder<BidBean>(new FileReader(path.toString()))
                 .withType(BidBean.class).build().parse();
-        if (bidBeans.isEmpty()) return new Bids();
+        if (bidBeans.isEmpty()) return new BundleExactValueBids();
         // Collect the information about the items
         List<SimpleGood> goods = bidBeans.get(0).getGoods().keySet().stream().map(SimpleGood::new).collect(Collectors.toList());
-        Map<Bidder, Bid> bidMap = new HashMap<>();
+        Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
         // Iterate through all BidBeans to collect the bids
         for (BidBean bidBean : bidBeans) {
             Bidder bidder = bidMap.keySet().stream().filter(b -> b.getName().equals(bidBean.getBidder())).findAny().orElse(new XORBidder(bidBean.getBidder()));
@@ -43,13 +54,13 @@ public class CsvBidsReader {
                     bundleEntries.add(new BundleEntry(good, numberOfGoods));
                 }
             }
-            BundleBid bundleBid = new BundleBid(bidBean.getBid(), new Bundle(bundleEntries), UUID.randomUUID().toString());
-            Bid bid = bidMap.getOrDefault(bidder, new Bid());
+            BundleExactValuePair bundleBid = new BundleExactValuePair(bidBean.getBid(), new Bundle(bundleEntries), UUID.randomUUID().toString());
+            BundleExactValueBid bid = bidMap.getOrDefault(bidder, new BundleExactValueBid());
             bid.addBundleBid(bundleBid);
             bidMap.put(bidder, bid);
         }
 
-        return new Bids(bidMap);
+        return new BundleExactValueBids(bidMap);
     }
 
 }

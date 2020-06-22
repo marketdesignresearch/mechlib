@@ -1,12 +1,13 @@
 package org.marketdesignresearch.mechlib.core;
 
+import java.math.BigDecimal;
+
+import org.springframework.data.annotation.PersistenceConstructor;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.PersistenceConstructor;
-
-import java.math.BigDecimal;
 
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @ToString

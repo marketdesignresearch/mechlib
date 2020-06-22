@@ -1,15 +1,16 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -30,7 +31,7 @@ interface PartialConstraintGenerator {
      * @param goodToBidderMap
      * @param bids
      */
-    void generateFirstRoundConstraints(Bids bids, Outcome referencePoint, Map<Good, PotentialCoalition> goodToBidderMap, CorePaymentRule corePaymentRule);
+    void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule);
 
     void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,
                             ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition, Outcome priorResult);

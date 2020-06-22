@@ -1,21 +1,22 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
-import com.google.common.base.Preconditions;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.UUID;
+
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.UUID;
+import com.google.common.base.Preconditions;
+
+import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 public class AdditiveValueBidder extends ORBidder {
 
-    public AdditiveValueBidder(String name, ORValueFunction value) {
+	public AdditiveValueBidder(String name, ORValueFunction value) {
         this(UUID.randomUUID(), name, value);
     }
 

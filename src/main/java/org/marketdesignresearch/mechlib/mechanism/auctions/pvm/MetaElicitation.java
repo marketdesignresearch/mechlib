@@ -1,16 +1,22 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml.MLAlgorithm;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @ToString
@@ -25,7 +31,7 @@ public class MetaElicitation {
         bidderMLAlgorithmMap.forEach((k, v) -> this.algorithms.put(k.getId(), v));
     }
 
-    public Map<Bidder, ValueFunction> process(Bids bids) {
+    public Map<Bidder, ValueFunction> process(BundleValueBids bids) {
         Map<Bidder, ValueFunction> inferredValues = new HashMap<>();
         for (Map.Entry<UUID, MLAlgorithm> entry : algorithms.entrySet()) {
             if (bids.getBid(getBidder(entry.getKey())) != null) {

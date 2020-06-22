@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.outcomerules;
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.MechanismFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.VariableAlgorithmCCGFactory;
@@ -18,7 +18,7 @@ public enum OutcomeRuleGenerator {
     SECOND_PRICE,
     FIRST_PRICE;
 
-    public OutcomeRule getOutcomeRule(Bids bids, MipInstrumentation mipInstrumentation) {
+	public OutcomeRule getOutcomeRule(BundleValueBids<?> bids, MipInstrumentation mipInstrumentation) {
         OutcomeRule outcomeRule;
         switch (this) {
             case VCG_OR:
@@ -44,7 +44,7 @@ public enum OutcomeRuleGenerator {
         return outcomeRule;
     }
 
-    public OutcomeRule getOutcomeRule(Bids bids) {
+	public OutcomeRule getOutcomeRule(BundleValueBids<?> bids) {
         return getOutcomeRule(bids, MipInstrumentation.NO_OP);
     }
 }

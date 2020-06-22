@@ -1,9 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.core.Good;
-
 import java.util.Map;
+
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.price.Prices;
 
 public interface PriceUpdater {
     Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand);

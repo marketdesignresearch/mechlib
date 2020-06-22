@@ -1,19 +1,25 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
+
 import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
-import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
-import com.google.common.math.DoubleMath;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.mip.*;
 
-import java.math.BigDecimal;
+import com.google.common.math.DoubleMath;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import edu.harvard.econcs.jopt.solver.mip.VarType;
+import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class BaseCorePaymentRule implements CorePaymentRule {
 

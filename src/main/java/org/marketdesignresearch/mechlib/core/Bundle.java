@@ -1,18 +1,24 @@
 package org.marketdesignresearch.mechlib.core;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.data.annotation.PersistenceConstructor;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.PersistenceConstructor;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A bundle is a collection of goods with corresponding quantities.

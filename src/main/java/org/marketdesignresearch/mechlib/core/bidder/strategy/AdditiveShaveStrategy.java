@@ -1,14 +1,15 @@
 package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
-import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
@@ -21,7 +22,7 @@ public class AdditiveShaveStrategy implements ComparableStrategy<AdditiveShaveSt
     }
 
     @Override
-    public Bid apply(ValueFunction combinatorialValueFunction) {
+    public BundleExactValueBid apply(ValueFunction combinatorialValueFunction) {
         return combinatorialValueFunction.toBid(b -> b.add(additiveShave).max(PrecisionUtils.EPSILON));
     }
 

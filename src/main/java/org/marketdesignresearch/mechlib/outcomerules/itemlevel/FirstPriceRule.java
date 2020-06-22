@@ -1,11 +1,11 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel;
 
-import org.marketdesignresearch.mechlib.core.BidderPayment;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBids;
-
 import java.util.Iterator;
+
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBids;
 
 public class FirstPriceRule extends SingleItemOutcomeRule {
 
@@ -13,7 +13,7 @@ public class FirstPriceRule extends SingleItemOutcomeRule {
         super(bids);
     }
 
-    public FirstPriceRule(Bids bids) {
+    public FirstPriceRule(BundleValueBids<?> bids) {
         super(bids);
     }
 

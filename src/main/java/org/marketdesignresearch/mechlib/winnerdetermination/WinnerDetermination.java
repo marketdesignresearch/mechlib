@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.winnerdetermination;
 
 import com.google.common.collect.Lists;
 import edu.harvard.econcs.jopt.solver.*;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -77,7 +77,7 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
         try {
         	mipInstrumentation.preMIP(purpose, getMIP());
-            IMIPResult mipResult = new SolverClient().solve(getMIP());
+            IMIPResult mipResult = CPLEXUtils.SOLVER.solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
             Allocation bestAllocation = adaptMIPResult(mipResult);
             mipInstrumentation.postMIP(purpose, getMIP(), mipResult, bestAllocation, intermediateSolutions);

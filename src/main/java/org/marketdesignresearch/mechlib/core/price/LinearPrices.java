@@ -1,17 +1,26 @@
 package org.marketdesignresearch.mechlib.core.price;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import lombok.*;
-import lombok.experimental.Wither;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
 @ToString

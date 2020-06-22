@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core.price;
 
-import lombok.Value;
-
 import java.math.BigDecimal;
+
+import lombok.Value;
 
 @Value
 public class Price {

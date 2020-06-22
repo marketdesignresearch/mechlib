@@ -1,14 +1,15 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.outcomerules.ccg.ConfigurableCCGFactory;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.MechanismFactory;
-import com.google.common.collect.Lists;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.outcomerules.ccg.ConfigurableCCGFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.MechanismFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.XORBlockingCoalitionFinderFactory;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.ConstraintGenerationAlgorithm;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.ReferencePointFactory;
+
+import com.google.common.collect.Lists;
 
 public class VariableNormCCGFactory extends ConfigurableCCGFactory implements MechanismFactory {
 
@@ -22,7 +23,11 @@ public class VariableNormCCGFactory extends ConfigurableCCGFactory implements Me
     }
 
     public VariableNormCCGFactory(ReferencePointFactory rpFactory, List<NormFactory> normFactories) {
-        super(new XORBlockingCoalitionFinderFactory(), rpFactory, normFactories, ConstraintGenerationAlgorithm.SEPARABILITY);
+        this(rpFactory, normFactories, ConstraintGenerationAlgorithm.SEPARABILITY);
+    }
+    
+    public VariableNormCCGFactory(ReferencePointFactory rpFactory, List<NormFactory> normFactories, ConstraintGenerationAlgorithm alg) {
+        super(new XORBlockingCoalitionFinderFactory(), rpFactory, normFactories, alg);
     }
 
     public VariableNormCCGFactory(ReferencePointFactory rpFacory, Norm primaryNorm, Norm... secondaryNorms) {

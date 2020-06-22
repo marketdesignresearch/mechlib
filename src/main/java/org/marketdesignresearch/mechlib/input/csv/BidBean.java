@@ -1,12 +1,14 @@
 package org.marketdesignresearch.mechlib.input.csv;
 
-import com.opencsv.bean.CsvBindAndJoinByName;
-import com.opencsv.bean.CsvBindByName;
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
+
 import org.apache.commons.collections4.MultiValuedMap;
 
-import java.math.BigDecimal;
+import com.opencsv.bean.CsvBindAndJoinByName;
+import com.opencsv.bean.CsvBindByName;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This helper class represents a row in a CSV file to read in a collection of bids.

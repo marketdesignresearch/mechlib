@@ -1,20 +1,21 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import edu.harvard.econcs.jopt.solver.ISolution;
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.BidderAllocation;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.core.BidderAllocation;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration.PotentialCoalition;
+import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
+
+import edu.harvard.econcs.jopt.solver.ISolution;
+
 public class XORBlockingCoalitionDetermination extends XORWinnerDetermination {
 
-    public XORBlockingCoalitionDetermination(Bids bids) {
+    public XORBlockingCoalitionDetermination(BundleValueBids<?> bids) {
         super(bids);
     }
 

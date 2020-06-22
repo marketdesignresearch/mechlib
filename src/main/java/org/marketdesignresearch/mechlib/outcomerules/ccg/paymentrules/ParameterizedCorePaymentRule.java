@@ -1,17 +1,19 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import com.google.common.collect.Lists;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.MIPException;
-import edu.harvard.econcs.jopt.solver.mip.Constraint;
-import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.MIPException;
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {

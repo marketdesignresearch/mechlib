@@ -1,7 +1,11 @@
 package org.marketdesignresearch.mechlib.values;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -16,12 +20,8 @@ import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 
 public class ValueTest {
     private static SimpleGood A;

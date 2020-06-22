@@ -1,19 +1,25 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
-import org.marketdesignresearch.mechlib.core.*;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.SimpleGood;
+import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
+import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 
 public class CATSAdapter {
 
-    public Bids adaptCATSAuction(CATSAuction catsAuction) {
+    public BundleExactValueBids adaptCATSAuction(CATSAuction catsAuction) {
         SimpleXORDomain domain = adaptToDomain(catsAuction);
-        return Bids.fromXORBidders(domain.getBidders());
-
+        return BundleExactValueBids.fromXORBidders(domain.getBidders());
     }
 
     private List<SimpleGood> adaptGoods(CATSAuction catsAuction) {

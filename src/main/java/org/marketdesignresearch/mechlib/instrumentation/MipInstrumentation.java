@@ -1,12 +1,13 @@
 package org.marketdesignresearch.mechlib.instrumentation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import lombok.EqualsAndHashCode;
-import org.marketdesignresearch.mechlib.core.Allocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @EqualsAndHashCode
 public class MipInstrumentation {

@@ -2,8 +2,9 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.Payment;
-import edu.harvard.econcs.jopt.solver.IMIP;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
 
 public interface CorePaymentNorm extends MipInstrumentationable {
     /**

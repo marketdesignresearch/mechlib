@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 public class PaymentWeights implements CorePaymentWeights {
     private final Payment payment;

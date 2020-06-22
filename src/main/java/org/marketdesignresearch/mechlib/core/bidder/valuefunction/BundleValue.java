@@ -1,22 +1,26 @@
 package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.springframework.data.annotation.PersistenceConstructor;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.springframework.data.annotation.PersistenceConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * Class that represents an XORValue of one {@link Bidder} on one bundle of
@@ -55,8 +59,8 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
         return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();
     }
 
-    public BundleBid toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
-        return new BundleBid(valueToBidFunction.apply(amount), bundle, id);
+    public BundleExactValuePair toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
+        return new BundleExactValuePair(valueToBidFunction.apply(amount), bundle, id);
     }
 
     @Override

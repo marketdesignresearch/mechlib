@@ -1,24 +1,25 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.pvm.ml;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
-import org.springframework.data.annotation.PersistenceConstructor;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This dummy algorithm adds an over-valued value to the currently known reports.
@@ -31,9 +32,9 @@ import java.util.Set;
 public class LinearRegressionMLAlgorithm implements MLAlgorithm {
     private static MathContext precision = new MathContext(6);
     private final List<? extends Good> goods;
-    private Bid reports = new Bid();
+    private BundleValueBid<BundleExactValuePair> reports = new BundleValueBid<>();
 
-    public void addReport(Bid report) {
+    public void addReport(BundleValueBid<BundleExactValuePair> report) {
         reports = reports.join(report);
     }
 
@@ -42,7 +43,7 @@ public class LinearRegressionMLAlgorithm implements MLAlgorithm {
             ArrayList<Double> yVector = new ArrayList<>();
             ArrayList<ArrayList<Double>> xVectors = new ArrayList<>();
 
-            for (BundleBid report : reports.getBundleBids()) {
+            for (BundleExactValuePair report : reports.getBundleBids()) {
                 if (!Bundle.EMPTY.equals(report.getBundle())) {
                     yVector.add(report.getAmount().doubleValue());
                     ArrayList<Double> xVector = new ArrayList<>();

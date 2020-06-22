@@ -1,20 +1,30 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
-import lombok.*;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.springframework.data.annotation.PersistenceConstructor;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
 @EqualsAndHashCode
@@ -61,12 +71,29 @@ public class XORBidder implements Bidder, Serializable {
     }
 
     @Override
-    public List<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
-        List<Bundle> result = value.getOptimalBundleValueAt(prices, maxNumberOfBundles, allowNegative).stream()
-                .map(BundleValue::getBundle).collect(Collectors.toList());
+    public LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+    	LinkedHashSet<Bundle> result = value.getOptimalBundleValueAt(prices, maxNumberOfBundles, allowNegative).stream()
+                .map(BundleValue::getBundle).collect(Collectors.toCollection(LinkedHashSet::new));
         if (result.isEmpty()) result.add(Bundle.EMPTY);
         return result;
     }
+    
+    // region strategy
+    // TODO handle persistence
+    private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
+    
+    @Override
+	public void setStrategy(InteractionStrategy strategy) {
+    	strategy.setBidder(this);
+		strategy.getTypes().forEach(t -> this.strategies.put(t, strategy));
+	}
+    
+    @Override
+	public <T extends InteractionStrategy> T getStrategy(Class<T> type) {
+		if(!this.strategies.containsKey(type)) this.setStrategy(InteractionStrategy.defaultStrategy(type));
+		return  this.strategies.getInstance(type);
+	}
+	// endregion
 
     // region instrumentation
     @Override

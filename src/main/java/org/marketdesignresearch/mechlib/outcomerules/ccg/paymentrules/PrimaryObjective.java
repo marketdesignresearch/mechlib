@@ -1,10 +1,12 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import com.google.common.collect.ImmutableList;
-import edu.harvard.econcs.jopt.solver.mip.Constraint;
-
 import java.util.List;
+
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+
+import com.google.common.collect.ImmutableList;
+
+import edu.harvard.econcs.jopt.solver.mip.Constraint;
 
 public class PrimaryObjective {
     private final List<Constraint> constraints;
