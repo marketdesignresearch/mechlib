@@ -33,6 +33,7 @@ public enum CPLEXUtils {
      * Careful: JOpt has a default parameter logic as well, so often the program already includes JOpt-specific default
      * parameters, which will not be overwritten here. To be sure, you can call {@link IMIP#clearSolveParams()} before
      * setting your own parameters
+     *
      * @param program The program to be solved
      * @return The result object
      */
@@ -55,10 +56,12 @@ public enum CPLEXUtils {
         solveParamMap.put(param, value);
     }
 
+    /**
+     * Clears the previously added solve parameters
+     */
     public void clearSolveParams() {
         solveParamMap.clear();
     }
-
 
     /**
      *  A helper function to initialize the solver with some reasonable default parameters.
