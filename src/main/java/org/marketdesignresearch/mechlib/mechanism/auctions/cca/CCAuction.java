@@ -40,22 +40,18 @@ public class CCAuction extends ExactValueAuction {
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices) {
         super(domain,mechanismType,new CCAClockPhase(currentPrices));
-        setMaxRounds(100);
     }
     
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices, PriceUpdater priceUpdater) {
         super(domain,mechanismType,new CCAClockPhase(currentPrices, priceUpdater));
-        setMaxRounds(100);
     }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
         super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices));
-        setMaxRounds(100);
     }
     
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, PriceUpdater priceUpdater) {
         super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater));
-        setMaxRounds(100);
     }
 
     public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {

@@ -19,7 +19,6 @@ import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.MIPException;
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
@@ -84,7 +83,7 @@ public abstract class WinnerDetermination implements AllocationRule {
         getMIP().setSolveParam(SolveParam.ACCEPT_SUBOPTIMAL, acceptSuboptimal);
         try {
         	mipInstrumentation.preMIP(purpose, getMIP());
-            IMIPResult mipResult = new SolverClient().solve(getMIP());
+            IMIPResult mipResult = CPLEXUtils.SOLVER.solve(getMIP());
             intermediateSolutions = solveIntermediateSolutions(mipResult);
             Allocation bestAllocation = adaptMIPResult(mipResult);
             mipInstrumentation.postMIP(purpose, getMIP(), mipResult, bestAllocation, intermediateSolutions);
