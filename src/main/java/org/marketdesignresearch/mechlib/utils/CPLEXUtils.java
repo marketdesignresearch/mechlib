@@ -10,6 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A wrapper around the solving logic. By default, all solves in MechLib are solved through this singleton,
+ * which allows setting some parameters that are applied consistently among all MIPs that are solved inside the MechLib.
+ * E.g., you can specify a thread count here, and this will be applied to all MIPs that are to be solved.
+ * Parameters that are set on {@link IMIP}-level are NOT overwritten.
+ *
+ * This wrapper also exposes some methods to set default parameters in a way they have been set in experiments before.
+ */
 @Slf4j
 public enum CPLEXUtils {
     SOLVER;
@@ -38,7 +46,7 @@ public enum CPLEXUtils {
     }
 
     /**
-     * You can add additional (or override existing) default parameters that are then applied to any future program
+     * You can add additional (or override previously added) default parameters that are then applied to any future program
      * that does not define these solve parameters by itself already.
      * @param param The SolveParam to be specified
      * @param value The value that should be set for the SolveParam
@@ -47,16 +55,26 @@ public enum CPLEXUtils {
         solveParamMap.put(param, value);
     }
 
+    public void clearSolveParams() {
+        solveParamMap.clear();
+    }
+
 
     /**
      *  A helper function to initialize the solver with some reasonable default parameters.
      *  Has to be actively called by the user.
+     *  This sets the following:
+     *  <ul>
+     *      <li>DISPLAY_OUTPUT: according to the log level - only if the debug log level is enabled, it's set to true</li>
+     *      <li>THREADS: 1</li>
+     *      <li>TIME_LIMIT: 1 hour</li>
+     *  </ul>
      */
     public void initializeSolveParams() {
-        solveParamMap.clear();
-        solveParamMap.put(SolveParam.DISPLAY_OUTPUT, log.isDebugEnabled());
-        solveParamMap.put(SolveParam.THREADS, 1);
-        solveParamMap.put(SolveParam.TIME_LIMIT, (double) TimeUnit.SECONDS.convert(1, TimeUnit.HOURS));
+        clearSolveParams();
+        setSolveParam(SolveParam.DISPLAY_OUTPUT, log.isDebugEnabled());
+        setSolveParam(SolveParam.THREADS, 1);
+        setSolveParam(SolveParam.TIME_LIMIT, (double) TimeUnit.SECONDS.convert(1, TimeUnit.HOURS));
     }
 
     /**
@@ -65,17 +83,17 @@ public enum CPLEXUtils {
      */
     public void initializeNormSolveParams() {
         initializeSolveParams();
-        solveParamMap.put(SolveParam.CALC_DUALS, Boolean.TRUE);
-        solveParamMap.put(SolveParam.LP_OPTIMIZATION_ALG, 2);
-        solveParamMap.put(SolveParam.PARALLEL_MODE, 1);
-        solveParamMap.put(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9);
-        solveParamMap.put(SolveParam.ABSOLUTE_OBJ_GAP, 0d);
-        solveParamMap.put(SolveParam.RELATIVE_OBJ_GAP, 0d);
-        solveParamMap.put(SolveParam.OBJ_TOLERANCE, 1e-9);
-        solveParamMap.put(SolveParam.MARKOWITZ_TOLERANCE, .1);
-        solveParamMap.put(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
-        solveParamMap.put(SolveParam.PROBLEM_FILE, "");
-        solveParamMap.put(SolveParam.SOLUTION_POOL_REPLACEMENT, 2);
+        setSolveParam(SolveParam.CALC_DUALS, Boolean.TRUE);
+        setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 2);
+        setSolveParam(SolveParam.PARALLEL_MODE, 1);
+        setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9);
+        setSolveParam(SolveParam.ABSOLUTE_OBJ_GAP, 0d);
+        setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 0d);
+        setSolveParam(SolveParam.OBJ_TOLERANCE, 1e-9);
+        setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, .1);
+        setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
+        setSolveParam(SolveParam.PROBLEM_FILE, "");
+        setSolveParam(SolveParam.SOLUTION_POOL_REPLACEMENT, 2);
     }
 
 }
