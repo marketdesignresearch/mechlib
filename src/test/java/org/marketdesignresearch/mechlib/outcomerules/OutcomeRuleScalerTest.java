@@ -27,7 +27,7 @@ public class OutcomeRuleScalerTest {
     @Test
     public void testScalerForCCG() {
 
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleSolveParams();
         SimpleGood west = new SimpleGood("west", 2, false);
 
         BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(2e15), Bundle.of(west));
@@ -49,7 +49,7 @@ public class OutcomeRuleScalerTest {
     
     @Test
     public void testScalerForCCGinORDomain() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleSolveParams();
         SimpleGood west = new SimpleGood("west", 2, false);
 
         BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(2e15), Bundle.of(west));

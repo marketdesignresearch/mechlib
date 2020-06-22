@@ -73,7 +73,7 @@ public enum CPLEXUtils {
      *      <li>TIME_LIMIT: 1 hour</li>
      *  </ul>
      */
-    public void initializeSolveParams() {
+    public void exampleSolveParams() {
         clearSolveParams();
         setSolveParam(SolveParam.DISPLAY_OUTPUT, log.isDebugEnabled());
         setSolveParam(SolveParam.THREADS, 1);
@@ -84,8 +84,8 @@ public enum CPLEXUtils {
      * A helper function to initialize the solver with default parameters that were previously used in experiments
      * of very specific CCG-price calculation MIPs
      */
-    public void initializeNormSolveParams() {
-        initializeSolveParams();
+    public void exampleNormSolveParams() {
+        exampleSolveParams();
         setSolveParam(SolveParam.CALC_DUALS, Boolean.TRUE);
         setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 2);
         setSolveParam(SolveParam.PARALLEL_MODE, 1);

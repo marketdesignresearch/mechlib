@@ -45,7 +45,7 @@ public class CCGOutcomeRuleTest {
 
     public CCGOutcomeRuleTest(MechanismFactory factory) {
         this.factory = factory;
-        CPLEXUtils.SOLVER.initializeNormSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
     }
 
     @Parameterized.Parameters

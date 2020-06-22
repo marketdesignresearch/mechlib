@@ -19,7 +19,6 @@ import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGFactory;
-import org.marketdesignresearch.mechlib.outcomerules.ccg.CCGOutcomeRule;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.Norm;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.VariableNormCCGFactory;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.VCGReferencePointFactory;
@@ -46,7 +45,7 @@ public class WinnerDeterminationTest {
 
     @Test
     public void testBidReduction() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleSolveParams();
         CPLEXUtils.SOLVER.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 1e-6d);
         BundleExactValuePair bid1 = new BundleExactValuePair(BigDecimal.valueOf(6), Sets.newHashSet(A), "1");
         BundleExactValuePair bid2 = new BundleExactValuePair(BigDecimal.valueOf(20), Sets.newHashSet(B), "2");
