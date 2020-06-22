@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableSet;
 public class PaymentRuleTests {
     @Test
     public void testSimpleExample() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         SimpleGood west = new SimpleGood("west", 2, false);
 
         BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(2), Bundle.of(west));
@@ -62,7 +62,7 @@ public class PaymentRuleTests {
 
     @Test
     public void testEqualRule() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         SimpleGood west = new SimpleGood("west");
         SimpleGood east = new SimpleGood("east");
 
@@ -87,7 +87,7 @@ public class PaymentRuleTests {
 
     @Test
     public void testEqualRuleGeneric() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         SimpleGood west = new SimpleGood("west", 2, false);
 
         BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(1), Bundle.of(west));
@@ -112,7 +112,7 @@ public class PaymentRuleTests {
     
     @Test
     public void testEqualRulePerBidConstraintGenerator() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         SimpleGood west = new SimpleGood("west");
         SimpleGood east = new SimpleGood("east");
 
@@ -137,7 +137,7 @@ public class PaymentRuleTests {
 
     @Test
     public void testEqualRuleGenericPerBidConstraintGenerator() {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         SimpleGood west = new SimpleGood("west", 2, false);
 
         BundleValue valueWest1 = new BundleValue(BigDecimal.valueOf(1), Bundle.of(west));
@@ -168,7 +168,7 @@ public class PaymentRuleTests {
 
     @Test
     public void paperExample() throws IOException {
-        CPLEXUtils.SOLVER.initializeSolveParams();
+        CPLEXUtils.SOLVER.exampleNormSolveParams();
         BundleValueBids<?> bids = BundleExactValueBids.fromXORBidders(SimpleXORDomain.fromCatsFile(Paths.get("src/test/resources/supersimple.txt")).getBidders());
         MechanismFactory quadratic = new VariableNormCCGFactory(new VCGReferencePointFactory(), NormFactory.withEqualWeights(Norm.MANHATTAN),
                 NormFactory.withEqualWeights(Norm.EUCLIDEAN));
