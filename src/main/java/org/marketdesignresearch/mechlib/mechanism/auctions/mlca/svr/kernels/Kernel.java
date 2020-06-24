@@ -21,6 +21,9 @@ public abstract class Kernel implements MipInstrumentationable{
 	@Setter
 	@Getter
 	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+	@Setter
+	@Getter
+	private double wdpTimeLimit = -1;
 
 	public abstract Double getValue(Bundle bundle, Bundle bundle2);
 

@@ -56,26 +56,15 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 	
 	private IMIP winnerDeterminationProgram = null;
 
-	public WinnerDeterminationWithExcludedBundles(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles) {
+	public WinnerDeterminationWithExcludedBundles(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles, double timelimit) {
 		this.domain = domain;
 		this.economy = economy;
 		this.supportVectors = supportVectors;
 		this.excludedBundles = excludedBundles;
 		this.genericSetting = this.getDomain().getGoods().stream().map(g -> g.getQuantity() > 1).reduce(Boolean::logicalOr).get();
 		this.setPurpose(MipPurpose.KERNEL_WINNERDETERMINATION.name());
+		this.setTimeLimit(timelimit);
 	}
-	
-    /*
-    protected Allocation solveWinnerDetermination(IMIP mipWrapper) {
-    	mipWrapper.setSolveParam(SolveParam.TIME_LIMIT, cplexTimeLimit);	
-    	if(mipGapTolerance>0.0) mipWrapper.setSolveParam(SolveParam.SOLUTION_POOL_MODE_4_RELATIVE_GAP_TOLERANCE, mipGapTolerance);
-    	if(mipGapTolerance>0.0) mipWrapper.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, mipGapTolerance);	
-    	else mipWrapper.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 0.0);
- 	
-        IMIPResult mipResult = this.solve(mipWrapper);
-        return adaptMIPResult(mipResult);
-    }
-    */
 	
 	protected Bidder getBidder(UUID id) {
 		return this.domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);

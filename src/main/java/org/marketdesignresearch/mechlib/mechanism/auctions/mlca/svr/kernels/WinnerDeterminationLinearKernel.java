@@ -20,8 +20,8 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class WinnerDeterminationLinearKernel extends WinnerDeterminationWithExcludedBundles{
 
-	public WinnerDeterminationLinearKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles) {
-		super(domain, economy,supportVectors,excludedBundles);
+	public WinnerDeterminationLinearKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles, double timelimit) {
+		super(domain, economy,supportVectors,excludedBundles, timelimit);
 	}
 	
 	@Override

@@ -40,7 +40,7 @@ public class KernelGaussian extends Kernel{
 	protected WinnerDetermination createWinnerDetermination(Domain domain, ElicitationEconomy economy,
 			BundleExactValueBids supportVectorsPerBidder,
 			Map<Bidder, Set<Bundle>> excludedBids) {
-		return new WinnerDeterminationTranslationInvariantKernel (domain, economy, supportVectorsPerBidder, excludedBids, this);
+		return new WinnerDeterminationTranslationInvariantKernel (domain, economy, supportVectorsPerBidder, excludedBids, this, this.getWdpTimeLimit());
 	}
 
 }

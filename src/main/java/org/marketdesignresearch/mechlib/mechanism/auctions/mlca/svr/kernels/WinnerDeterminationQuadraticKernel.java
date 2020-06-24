@@ -22,8 +22,8 @@ public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithE
 	
 	private final KernelQuadratic kernel;
 
-    public WinnerDeterminationQuadraticKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles, KernelQuadratic kernel) {
-    	super(domain, economy,supportVectors,excludedBundles);
+    public WinnerDeterminationQuadraticKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles, KernelQuadratic kernel, double timelimit) {
+    	super(domain, economy,supportVectors,excludedBundles, timelimit);
     	this.kernel = kernel;
     } 
     

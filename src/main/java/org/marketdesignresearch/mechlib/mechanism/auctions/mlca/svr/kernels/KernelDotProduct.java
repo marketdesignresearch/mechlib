@@ -19,7 +19,7 @@ public abstract class KernelDotProduct extends Kernel{
 	@Override
 	protected WinnerDetermination createWinnerDetermination(Domain domain, ElicitationEconomy economy,
 			BundleExactValueBids supportVectorsPerBidder, Map<Bidder,Set<Bundle>> excludedBids) {
-		return new WinnerDeterminationDotProductKernel (domain, economy, supportVectorsPerBidder, excludedBids, this); 
+		return new WinnerDeterminationDotProductKernel (domain, economy, supportVectorsPerBidder, excludedBids, this, this.getWdpTimeLimit()); 
 	}
 }
 

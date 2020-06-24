@@ -24,8 +24,8 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 	private KernelDotProduct kernel;
 
 	public WinnerDeterminationDotProductKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors,
-			Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel) {
-		super(domain, economy, supportVectors, excludedBundles);
+			Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel, double timelimit) {
+		super(domain, economy, supportVectors, excludedBundles, timelimit);
 		this.kernel = kernel;
 	}
 

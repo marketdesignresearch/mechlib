@@ -12,6 +12,7 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation.MipPurpose;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
@@ -60,13 +61,13 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 		IMIPResult result;
 		try {
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
-    		result = new SolverClient().solve(this.mip);
+    		result = CPLEXUtils.SOLVER.solve(this.mip);
     		this.getMipInstrumentation().postMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip, result);
 		} catch(RuntimeException e){
 			// Try Barrier instead
 			try {
 			this.mip.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
-			result = new SolverClient().solve(this.mip);
+			result = CPLEXUtils.SOLVER.solve(this.mip);
 			} catch(RuntimeException e2) {
 				// new CPlexMIPSolver().exportToDisk(mipWrapper, FileSystems.getDefault().getPath("mip", "train-"+System.currentTimeMillis()+".lp"));
 				throw e2;

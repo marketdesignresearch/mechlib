@@ -29,8 +29,8 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
     public WinnerDeterminationTranslationInvariantKernel(Domain domain, ElicitationEconomy economy,
     		BundleExactValueBids supportVectorsPerBidder,
 			Map<Bidder, Set<Bundle>> excludedBids,
-			KernelGaussian kernelGaussian) {
-    	super(domain,economy,supportVectorsPerBidder,excludedBids);
+			KernelGaussian kernelGaussian, double timelimit) {
+    	super(domain,economy,supportVectorsPerBidder,excludedBids, timelimit);
 		this.kernel = kernelGaussian;
 	}
 
