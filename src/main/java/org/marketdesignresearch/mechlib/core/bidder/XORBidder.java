@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
@@ -47,12 +48,22 @@ public class XORBidder implements Bidder, Serializable {
     private final String description;
     @Getter
     private final String shortDescription;
+    @Getter
+    private final AllocationLimit allocationLimit;
 
     public XORBidder(String name) {
         this(name, new XORValueFunction());
     }
-
+    
+    public XORBidder(String name, AllocationLimit limit) {
+    	this(name, new XORValueFunction(), limit);
+    }
+    
     public XORBidder(String name, XORValueFunction value) {
+    	this(name,value,AllocationLimit.NO);
+    }
+
+    public XORBidder(String name, XORValueFunction value, AllocationLimit limit) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.valueFunction = value;
@@ -66,6 +77,7 @@ public class XORBidder implements Bidder, Serializable {
         }
         this.description = sb.toString();
         this.shortDescription = "XOR-Bidder: " + getName();
+        this.allocationLimit = limit;
     }
 
     @Override

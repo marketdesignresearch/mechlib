@@ -1,13 +1,17 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.allocationlimits.NoAllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.winnerdetermination.allocationlimit.OrWDPAllocationLimitUtils;
+import org.springframework.data.util.Pair;
 
 import com.google.common.base.Preconditions;
 
@@ -53,6 +57,13 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
             }
         }
         goods.values().forEach(winnerDeterminationProgram::add);
+        
+        // add Allocation Limits
+        for (Bidder bidder : bids.getBidders()) {
+        	Pair<List<Constraint>, List<Variable>> cv = OrWDPAllocationLimitUtils.PROCESSOR.createVariablesAndConstraints(bidder, bids.getBid(bidder), bidVariables);
+        	cv.getFirst().forEach(winnerDeterminationProgram::add);
+        	cv.getSecond().forEach(winnerDeterminationProgram::add);
+        }
 
         return winnerDeterminationProgram;
     }

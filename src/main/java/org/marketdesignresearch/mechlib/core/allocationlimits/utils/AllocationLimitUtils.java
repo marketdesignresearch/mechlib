@@ -15,12 +15,13 @@ public enum AllocationLimitUtils {
 	private Map<Class<? extends AllocationLimit>, AllocationLimitHelper> helper = new HashMap<>();
 	
 	private AllocationLimitUtils() {
-		this.addAllocationValidator(new NoAllocationLimitHelper());
-		this.addAllocationValidator(new BundleSizeAllocationLimitHelper());
-		this.addAllocationValidator(new GoodAllocationLimitHelper());
+		this.addAllocationLimitHelper(new NoAllocationLimitHelper());
+		this.addAllocationLimitHelper(new BundleSizeAllocationLimitHelper());
+		this.addAllocationLimitHelper(new GoodAllocationLimitHelper());
+		this.addAllocationLimitHelper(new BundleSizeAndGoodAllocationLimitHelper());
 	}
 	
-	private void addAllocationValidator(AllocationLimitHelper<?> validator) {
+	public void addAllocationLimitHelper(AllocationLimitHelper<?> validator) {
 		this.helper.put(validator.getAllocationLimitType(), validator);
 	}
 	

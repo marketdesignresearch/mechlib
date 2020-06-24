@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -39,16 +40,17 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
             Constraint exclusiveBids = new Constraint(CompareType.LEQ, 1);
 
             for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
-
-                Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
-                bidVariables.put(bundleBid, bidI);
-                double bidAmount = this.getScaledBundleBidAmount(bundleBid).doubleValue();
-                winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
-                exclusiveBids.addTerm(1, bidI);
-                for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.getQuantity()));
-                    noDoubleAssignment.addTerm(entry.getAmount(), bidI);
-                }
+            	if(AllocationLimitUtils.HELPER.validate(bidder.getAllocationLimit(), bundleBid.getBundle())) {
+            		Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
+            		bidVariables.put(bundleBid, bidI);
+            		double bidAmount = this.getScaledBundleBidAmount(bundleBid).doubleValue();
+            		winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
+            		exclusiveBids.addTerm(1, bidI);
+            		for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
+            			Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.getQuantity()));
+            			noDoubleAssignment.addTerm(entry.getAmount(), bidI);
+            		}
+            	}
             }
             winnerDeterminationProgram.add(exclusiveBids);
         }

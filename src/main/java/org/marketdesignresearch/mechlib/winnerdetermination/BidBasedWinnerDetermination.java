@@ -28,8 +28,6 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-// TODO implement Allocation limits
-// quite hard for OR trivial for XOR
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
     private BundleValueBids<?> bids;
@@ -95,11 +93,14 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
             HashSet<BundleEntry> bundleEntries = new HashSet<>();
             ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
             for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
-                if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
-                    bundleBids.add(bundleBid);
-                    totalValue = totalValue.add(bundleBid.getAmount());
-                }
+            	// An unallocatable bundle might not be added to the mip at all
+            	if(getBidVariable(bundleBid) != null) {
+            		if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
+                    	bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
+                    	bundleBids.add(bundleBid);
+                    	totalValue = totalValue.add(bundleBid.getAmount());
+                	}
+            	}
             }
             if (!bundleEntries.isEmpty()) {
                 trades.put(bidder, new BidderAllocation(totalValue, new Bundle(bundleEntries), bundleBids.build()));
