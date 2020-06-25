@@ -46,6 +46,6 @@ public class DefaultRefinementQueryInteraction extends DefaultInteraction<Bundle
 
 	@Override
 	public BundleBoundValueBid proposeBid() {
-		return this.getBidder().getStrategy(RefinementStrategy.class).applyRefinementStrategy(this);
+		return this.getBidder().getStrategy(RefinementStrategy.class).applyRefinementStrategy(this, this.getAuction());
 	}
 }

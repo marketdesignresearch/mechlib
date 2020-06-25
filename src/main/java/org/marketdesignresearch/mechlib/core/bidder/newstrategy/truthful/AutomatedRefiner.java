@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
@@ -30,8 +31,21 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 	public abstract BundleBoundValueBid refineBids(E type, Bidder b,
 			BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices,
-			Bundle provisionalAllocation);
+			Bundle provisionalAllocation, Random random);
 	
+	
+	/**
+	 * Generates a random number using the central limit theorem
+	 * @return
+	 */
+	protected double getNextGuassianLikeDouble(Bidder b, Random random) {
+		double value = 0;
+		int j = 2;
+		for(int i =0; i<j; i++) {
+			value += random.nextDouble();
+		}
+		return value / j;
+	}
 
 	@SuppressWarnings("rawtypes")
 	private static Map<Class<? extends RefinementType>,AutomatedRefiner> refiners;
@@ -47,7 +61,7 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 		return refiners.get(type.getClass());
 	}
 	
-	public static BundleBoundValueBid refine(RefinementType type, Bidder bidder, BundleBoundValueBid activeBids, BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation) {
-		return getRefiner(type).refineBids(type, bidder, activeBids, refinedBids, prices, provisionalAllocation);
+	public static BundleBoundValueBid refine(RefinementType type, Bidder bidder, BundleBoundValueBid activeBids, BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
+		return getRefiner(type).refineBids(type, bidder, activeBids, refinedBids, prices, provisionalAllocation, random);
 	}
 }

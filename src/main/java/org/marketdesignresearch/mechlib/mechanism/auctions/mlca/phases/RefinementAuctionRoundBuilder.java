@@ -3,7 +3,6 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,27 +36,14 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	private final Map<UUID,BidderRefinementRoundInfo> refinementInfos;
 	@Getter
 	private final List<ElicitationEconomy> refinementEconomies;
-	private final long seedNextRound;
 
 	private final Map<UUID, BundleBoundValueBid> original = new LinkedHashMap<>();
 
-	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, long seed, List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos) {
+	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos) {
 		super(auction);
 		this.refinementEconomies = refinementEconomies;
 		
-		
-		Random random = new Random(seed);
-		for (int i = auction.getNumberOfRounds() - 1; i >= 0; i--) {
-			AuctionRound<BundleBoundValueBids> auctionRound = auction.getRound(i);
-			// Find last RefinementAuctionRound
-			if (DefaultRefinementAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
-				random = new Random(((DefaultRefinementAuctionRound) auctionRound).getSeedNextRound());
-				break;
-			}
-		}
-		
-		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, random, efficiencyInfos);
-		this.seedNextRound = random.nextLong();
+		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(), efficiencyInfos);
 		
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
 		this.interactions = new LinkedHashMap<>();
@@ -84,7 +70,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		
 		return new DefaultRefinementAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(
 						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid()))),
-				refinementInfos, seedNextRound);
+				refinementInfos);
 	}
 
 	@Override

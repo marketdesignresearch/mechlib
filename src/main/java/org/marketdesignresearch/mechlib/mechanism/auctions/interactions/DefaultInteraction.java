@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Transient;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -21,6 +22,7 @@ public abstract class DefaultInteraction<T extends Bid> implements TypedInteract
 	@Transient
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
+	@Getter
 	// TODO may compare auction ID
 	protected Auction<?> auction;
 	

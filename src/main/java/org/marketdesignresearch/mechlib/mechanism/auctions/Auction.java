@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Domain;
@@ -38,6 +39,10 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     @Getter
     private final OutcomeRuleGenerator outcomeRuleGenerator;
 
+    private Long seed;
+    
+    private Random roundRandom;
+    
     /**
      * maximal number of rounds in this auction
      * 
@@ -58,11 +63,16 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     protected AuctionRoundBuilder<BB> current;
 
     public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionPhase<BB> firstPhase) {
+    	this(domain, outcomeRuleGenerator, firstPhase, null);
+    }
+    
+    public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionPhase<BB> firstPhase, Long seed) {
         super();
         this.domain = domain;
         this.outcomeRuleGenerator = outcomeRuleGenerator;
         this.phases.add(firstPhase);
         this.prepareNextAuctionRoundBuilder();
+        this.seed = seed;
         // TODO
         //current.setMipInstrumentation(getMipInstrumentation());
     }
@@ -85,6 +95,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     }
     
     public Interaction getCurrentInteraction(Bidder b) {
+    	Preconditions.checkArgument(!this.finished());
     	return this.current.getInteractions().get(b.getId());
     }
 
@@ -108,6 +119,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
      * This fills up the not-yet-submitted bids and closes the round
      */
     public void advanceRound() {
+    	Preconditions.checkArgument(!this.finished());
         this.current.getInteractions().forEach((b,i) -> i.submitProposedBid());
         closeRound();
     }
@@ -118,6 +130,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
         AuctionRound<BB> round = this.current.build();
         getAuctionInstrumentation().postRound(round);
         rounds.add(round);
+        roundRandom = null;
         prepareNextAuctionRoundBuilder();
     }
 
@@ -132,6 +145,24 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
         	current = this.getCurrentPhase().createNextRoundBuilder(this);
         	this.currentPhaseRoundNumber++;
         }
+		log.info("Starting round {}", this.getNumberOfRounds()+1);
+	}
+	
+	public Random getCurrentRoundRandom() {
+		Preconditions.checkArgument(!this.finished());
+		if(seed == null) {
+			log.warn("No random seed provided. Please provide a seed to make experiments repeatable");
+			seed = new Random().nextLong();
+		}
+		if(roundRandom == null) {
+			Random init = new Random(seed);
+			long roundSeed = init.nextLong();
+			for(int i=0; i<this.getNumberOfRounds();i++) {
+				roundSeed = init.nextLong();
+			}
+			roundRandom = new Random(roundSeed);
+		}
+		return roundRandom;
 	}
     
     public Outcome getTemporaryResult() {

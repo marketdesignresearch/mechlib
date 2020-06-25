@@ -48,6 +48,6 @@ public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
 
 	@Override
 	public DemandBid proposeBid() {
-		return this.getBidder().getStrategy(DemandQueryStrategy.class).applyDemandStrategy(this);
+		return this.getBidder().getStrategy(DemandQueryStrategy.class).applyDemandStrategy(this, this.getAuction());
 	}
 }

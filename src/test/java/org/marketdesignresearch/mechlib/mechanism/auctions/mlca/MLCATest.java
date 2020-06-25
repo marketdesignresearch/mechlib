@@ -5,11 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +22,6 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.SimpleGood;
 import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
@@ -87,23 +83,22 @@ public class MLCATest {
     public void testMLCAWithLinearKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelLinear(0, 1)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 50, 2);
-    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 50, 2);
+    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
     	Outcome outcome = auction.getOutcome();
     	
     	assertEquals(50, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::max).orElse(0).intValue());
     	assertEquals(50, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::min).orElse(0).intValue());
     	assertEquals(8, auction.getNumberOfRounds());
     	assertTrue(domain.getEfficientAllocation().getTotalAllocationValue().doubleValue() > outcome.getAllocation().getTotalAllocationValue().doubleValue());
-    	
     }
     
     @Test
     public void testMLCAWithQuadraticKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelQuadratic(0, 1, 0.01)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 50, 2);
-    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 50, 2);
+    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
     	Outcome outcome = auction.getOutcome();
     	
     	assertEquals(8, auction.getNumberOfRounds());
@@ -119,8 +114,8 @@ public class MLCATest {
     	// reference runtime approx 6 minute
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelGaussian(1,10)));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
-    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
+    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
     	Outcome outcome = auction.getOutcome();
     	
     	assertEquals(2, auction.getNumberOfRounds());
@@ -134,8 +129,8 @@ public class MLCATest {
     public void testMLCAWithExponentialKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductExponential(1,10));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
-    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
+    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
     	Outcome outcome = auction.getOutcome();
     	
     	assertEquals(2, auction.getNumberOfRounds());
@@ -149,8 +144,8 @@ public class MLCATest {
     public void testMLCAWithPolynomialKernel() {
     	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductPolynomial(new double[] {0,1,0.1,0.01,0.001}));
-    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 1, 32, 2);
-    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase);
+    	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
+    	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
     	Outcome outcome = auction.getOutcome();
     	
     	assertEquals(2, auction.getNumberOfRounds());

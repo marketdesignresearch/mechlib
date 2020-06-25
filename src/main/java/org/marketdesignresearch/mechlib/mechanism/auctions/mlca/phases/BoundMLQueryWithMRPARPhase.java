@@ -4,27 +4,20 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultBoundValueQueryWithMRPARRefinementInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementHelper.EfficiencyInfo;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
-import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 import org.slf4j.Logger;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,16 +33,16 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	
 	private List<ElicitationEconomy> refinementEconomies;
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed) {
-		this(mlComponent, seed, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent) {
+		this(mlComponent, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS);
 	}
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed, boolean refineMarginalEconomies) {
-		this(mlComponent,seed,refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies) {
+		this(mlComponent,refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS);
 	}
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, long seed, boolean refineMarginalEconomies, boolean intermediateRefinments) {
-		super(mlComponent, seed);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies, boolean intermediateRefinments) {
+		super(mlComponent);
 		this.refineMarginalEconomies = refineMarginalEconomies;
 		this.intermediateRefinements = intermediateRefinments;
 	}
@@ -62,7 +55,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 		
 		// check if requested and perform intermediate refinement
 		if(intermediateRefinements && BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
-			return new RefinementAuctionRoundBuilder(auction, this.getSeed()+1, refinementEconomies, this.createEfficiencyInfo(auction));
+			return new RefinementAuctionRoundBuilder(auction, refinementEconomies, this.createEfficiencyInfo(auction));
 		}
 		
 		return super.createNextRoundBuilder(auction);
@@ -71,11 +64,9 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	@Override
 	protected AuctionRoundBuilder<BundleBoundValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleBoundValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
-			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp, long nextRandomSeed) {
+			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
 		
-		Random random = new Random(nextRandomSeed);
-		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction, random, this.createEfficiencyInfo(auction));
-		nextRandomSeed = random.nextLong();
+		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(), this.createEfficiencyInfo(auction));
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
 		
@@ -86,7 +77,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 										bidderRefinementInfos.get(b.getId()).getAlphaAllocation().allocationOf(b).getBundle(), bidderRefinementInfos.get(b.getId()).getPrices(),
 										latestAggregatedBids.getBid(b), restrictedBids.get(b)),
 								(e1, e2) -> e1, LinkedHashMap::new)),
-				bidderMarginalsTemp, nextRandomSeed, bidderRefinementInfos);
+				bidderMarginalsTemp, bidderRefinementInfos);
 	}
 	
 	private Map<ElicitationEconomy, EfficiencyInfo> createEfficiencyInfo(Auction<BundleBoundValueBids> auction) {

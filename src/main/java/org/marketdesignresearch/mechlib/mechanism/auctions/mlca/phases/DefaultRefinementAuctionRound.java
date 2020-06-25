@@ -15,13 +15,10 @@ public class DefaultRefinementAuctionRound extends DefaultAuctionRound<BundleBou
 	private final BundleBoundValueBids bids;
 	@Getter
 	private final Map<UUID, BidderRefinementRoundInfo> refinementInfos;
-	@Getter
-	private final long seedNextRound;
 	
-	public DefaultRefinementAuctionRound(Auction<BundleBoundValueBids> auction, BundleBoundValueBids bids, Map<UUID,BidderRefinementRoundInfo> refinementRoundInfos, long seedNextRound) {
+	public DefaultRefinementAuctionRound(Auction<BundleBoundValueBids> auction, BundleBoundValueBids bids, Map<UUID,BidderRefinementRoundInfo> refinementRoundInfos) {
 		super(auction);
 		this.bids = bids;
 		this.refinementInfos = refinementRoundInfos;
-		this.seedNextRound = seedNextRound;
 	}
 }

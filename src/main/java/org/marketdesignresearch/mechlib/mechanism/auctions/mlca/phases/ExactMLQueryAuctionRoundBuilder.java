@@ -27,20 +27,18 @@ public class ExactMLQueryAuctionRoundBuilder extends AuctionRoundBuilder<BundleE
 	private Map<UUID, ExactValueQuery> interactions;
 	
 	private final Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext;
-	private final long seedNextRound;
 	
 	
-	public ExactMLQueryAuctionRoundBuilder(Auction<BundleExactValueBids> auction, Map<UUID, ExactValueQuery> interactions,Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext,long seed) {
+	public ExactMLQueryAuctionRoundBuilder(Auction<BundleExactValueBids> auction, Map<UUID, ExactValueQuery> interactions,Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext) {
 		super(auction);
 		this.interactions = interactions;
 		this.marginalsToQueryNext = marginalsToQueryNext;
-		this.seedNextRound = seed;
 	}
 
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
 		// TODO check if all interactions completed
-		return new MLQueryAuctionRound<>(this.getAuction(), new BundleExactValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext,seedNextRound);
+		return new MLQueryAuctionRound<>(this.getAuction(), new BundleExactValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext);
 	}
 
 	@Override

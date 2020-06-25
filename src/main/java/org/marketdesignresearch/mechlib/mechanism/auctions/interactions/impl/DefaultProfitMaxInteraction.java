@@ -40,7 +40,7 @@ public class DefaultProfitMaxInteraction extends DefaultInteraction<BundleExactV
 
 	@Override
 	public BundleExactValueBid proposeBid() {
-		return this.getBidder().getStrategy(ProfitMaxStrategy.class).applyProfitMaxStrategy(this);
+		return this.getBidder().getStrategy(ProfitMaxStrategy.class).applyProfitMaxStrategy(this, this.getAuction());
 	}
 
 	@Override

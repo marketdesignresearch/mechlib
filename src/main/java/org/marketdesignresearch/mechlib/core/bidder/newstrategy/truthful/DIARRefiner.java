@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -39,7 +40,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 	public BundleBoundValueBid refineBids(DIARRefinement type, Bidder b,
 			BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices,
-			Bundle provisionalTrade) {
+			Bundle provisionalTrade, Random random) {
 		
 		BundleBoundValueBid returnBid = refinedBids.copy();
 		
@@ -49,7 +50,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 		
 		BigDecimal trueValueProvisional = b.getValue(provisionalTrade);
 		
-		BigDecimal lambda = epsilon.multiply(new BigDecimal(BoundRandomHelper.getNextGuassianLikeDouble(b)));
+		BigDecimal lambda = epsilon.multiply(new BigDecimal(this.getNextGuassianLikeDouble(b, random)));
 		
 		for(ImmutablePair<Bundle, BigDecimal> diarError : diarErrors) {
 			
@@ -72,7 +73,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 			
 			BigDecimal diarBundleOffset = BigDecimal.ZERO;
 			
-			BigDecimal beta = new BigDecimal(BoundRandomHelper.getRandom(b).nextGaussian()).multiply(gamma).multiply(epsilon).abs();
+			BigDecimal beta = new BigDecimal(random.nextGaussian()).multiply(gamma).multiply(epsilon).abs();
 			
 			if(diarError.left!= null) diarBundleOffset = activeBids.getBidForBundle(diarError.left).getUpperBound().subtract(trueValue);
 			if(diarBundleOffset.add(provisonalOffset).compareTo(epsilon.add(beta)) > 0 && (diarError.left != null || !(provisionalTrade.getTotalAmount() == 0))) {
@@ -91,7 +92,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 				}	
 						
 				
-				BigDecimal offset = possibleReduction.subtract(neededReduction).multiply(new BigDecimal(BoundRandomHelper.getNextGuassianLikeDouble(b)));
+				BigDecimal offset = possibleReduction.subtract(neededReduction).multiply(new BigDecimal(this.getNextGuassianLikeDouble(b, random)));
 				
 				BigDecimal reduction = BigDecimal.ZERO;
 				if(! (provisionalTrade.getTotalAmount() == 0)) {
@@ -133,7 +134,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 					}
 					BigDecimal newRangeA = epsilon.subtract(newRangeX);
 				
-					BigDecimal kapa = new BigDecimal(BoundRandomHelper.getNextGuassianLikeDouble(b));
+					BigDecimal kapa = new BigDecimal(this.getNextGuassianLikeDouble(b, random));
 					if(! (provisionalTrade.getTotalAmount() == 0)) {
 						BigDecimal newUpper = b.getValue(provisionalTrade).add(kapa.multiply(newRangeA)).subtract(roundingDelta).max(returnBid.getBidForBundle(provisionalTrade).getLowerBound().add(newRangeA).subtract(roundingDelta));
 						newUpper =  newUpper.min(returnBid.getBidForBundle(provisionalTrade).getUpperBound());
@@ -149,7 +150,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 						returnBid.addBundleBid(new BundleBoundValuePair(newLower, newUpper, provisionalTrade, UUID.randomUUID().toString()));
 					}
 				
-					kapa = new BigDecimal(BoundRandomHelper.getNextGuassianLikeDouble(b));
+					kapa = new BigDecimal(this.getNextGuassianLikeDouble(b, random));
 					if(diarError.left != null) {
 						BigDecimal newUpper = b.getValue(diarError.left).add(kapa.multiply(newRangeX)).subtract(roundingDelta).max(returnBid.getBidForBundle(diarError.left).getLowerBound().add(newRangeX).subtract(roundingDelta));
 						newUpper = newUpper.min(returnBid.getBidForBundle(diarError.left).getUpperBound());

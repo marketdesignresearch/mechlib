@@ -48,6 +48,6 @@ public class DefaultBoundValueQueryWithMRPARRefinementInteraction extends Defaul
 
 	@Override
 	public BundleBoundValueBid proposeBid() {
-		return this.getBidder().getStrategy(BoundValueQueryWithMRPARRefinementStrategy.class).applyBoundValueQueryWithMRPARRefinementStrategy(this);
+		return this.getBidder().getStrategy(BoundValueQueryWithMRPARRefinementStrategy.class).applyBoundValueQueryWithMRPARRefinementStrategy(this, this.getAuction());
 	}
 }

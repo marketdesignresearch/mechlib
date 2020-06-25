@@ -8,12 +8,12 @@ import org.springframework.data.annotation.PersistenceConstructor;
 public class ExactValueAuction extends Auction<BundleExactValueBids>{
 
 	public ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator,
-			AuctionPhase<BundleExactValueBids> firstPhase) {
+			AuctionPhase<BundleExactValueBids> firstPhase, Long seed) {
 		super(domain, outcomeRuleGenerator, firstPhase);
 	}
 	
 	@PersistenceConstructor
-	protected ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current) {
+	protected ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current, Long seed) {
 		super(domain,outcomeRuleGenerator,current);
 	}
 

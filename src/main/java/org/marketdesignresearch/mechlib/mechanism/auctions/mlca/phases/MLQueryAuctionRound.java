@@ -18,21 +18,17 @@ public class MLQueryAuctionRound<T extends BundleValueBids<?>> extends DefaultAu
 	private final T bids;
 	@Getter
 	private final Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext;
-	@Getter
-	private final long seedNextRound;
 	
-	public MLQueryAuctionRound(Auction<T> auction, T bids, Map<UUID, List<ElicitationEconomy>> marginalsMap, long seed) {
+	public MLQueryAuctionRound(Auction<T> auction, T bids, Map<UUID, List<ElicitationEconomy>> marginalsMap) {
 		super(auction);
 		this.bids = bids;
 		this.marginalsToQueryNext = marginalsMap;
-		this.seedNextRound = seed;
 	}
 	
 	@PersistenceConstructor
-	public MLQueryAuctionRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, T bids, Map<UUID, List<ElicitationEconomy>> marginalsMap, long seed) {
+	public MLQueryAuctionRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, T bids, Map<UUID, List<ElicitationEconomy>> marginalsMap) {
 		super(roundNumber,auctionPhaseNumber,auctionPhaseRoundNumber);
 		this.bids = bids;
 		this.marginalsToQueryNext = marginalsMap;
-		this.seedNextRound = seed;
 	}
 }

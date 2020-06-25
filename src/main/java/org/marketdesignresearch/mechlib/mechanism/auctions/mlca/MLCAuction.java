@@ -18,16 +18,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MLCAuction extends ExactValueAuction {
 	
-	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, long sampleSeed, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup) {
-		this(domain, outcomeRule, sampleSeed, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new ExactDistributedSVR(svrSetup));
+	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed) {
+		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new ExactDistributedSVR(svrSetup),seed);
 	}
 	
-	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, long sampleSeed, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleExactValueBids> mlComponent) {
-		this(domain, outcomeRule, new ExactRandomQueryPhase(sampleSeed, numberOfInitialRandomQueries), new ExactMLQueryPhase(mlComponent, sampleSeed+1, maxQueries, marginalQueriesPerRound));
+	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleExactValueBids> mlComponent, Long seed) {
+		this(domain, outcomeRule, new ExactRandomQueryPhase(numberOfInitialRandomQueries), new ExactMLQueryPhase(mlComponent, maxQueries, marginalQueriesPerRound),seed);
 	}
 	
-	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, RandomQueryPhase<BundleExactValueBids> initialPhase, MLQueryPhase<BundleExactValueBids> mlPhase) {
-		super(domain,outcomeRule,initialPhase);
+	public MLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, RandomQueryPhase<BundleExactValueBids> initialPhase, MLQueryPhase<BundleExactValueBids> mlPhase, Long seed) {
+		super(domain,outcomeRule,initialPhase,seed);
 		this.addAuctionPhase(mlPhase);
 		this.setMaxRounds(1000);
 	}

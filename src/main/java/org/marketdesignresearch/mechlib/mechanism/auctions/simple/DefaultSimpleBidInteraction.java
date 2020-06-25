@@ -27,7 +27,7 @@ public class DefaultSimpleBidInteraction extends DefaultInteraction<BundleExactV
 	
 	@Override
 	public BundleExactValueBid proposeBid() {
-		return this.getBidder().getStrategy(SimpleBidStrategy.class).applySimpleBidStrategy(this);
+		return this.getBidder().getStrategy(SimpleBidStrategy.class).applySimpleBidStrategy(this, this.getAuction());
 	}
 	
 	@Override

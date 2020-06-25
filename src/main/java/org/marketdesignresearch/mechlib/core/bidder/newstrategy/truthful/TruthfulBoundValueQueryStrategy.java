@@ -1,26 +1,86 @@
 package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryWithMRPARRefinementStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQuery;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQueryWithMRPARRefinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-public class TruthfulBoundValueQueryStrategy implements BoundValueQueryStrategy{
+@RequiredArgsConstructor
+public class TruthfulBoundValueQueryStrategy
+		implements BoundValueQueryStrategy, BoundValueQueryWithMRPARRefinementStrategy {
+
+	private final static BigDecimal defaultStdDeviation = BigDecimal.valueOf(0.5);
 
 	@Setter
 	private transient Bidder bidder;
 
+	private final BigDecimal stdDeviation;
+
+	public TruthfulBoundValueQueryStrategy() {
+		this(defaultStdDeviation);
+	}
+
 	@Override
-	public BundleBoundValueBid applyBoundValueStrategy(BoundValueQuery interaction) {
-		return new BundleBoundValueBid(interaction.getQueriedBundles()
-				.stream()
-				.map(bundle -> BoundRandomHelper.getValueBoundsForBundle(bidder, bundle))
+	public BundleBoundValueBid applyBoundValueStrategy(BoundValueQuery interaction, Auction<?> auction) {
+		return new BundleBoundValueBid(interaction.getQueriedBundles().stream()
+				.map(bundle -> this.getValueBoundsForBundle(bidder, bundle,
+						auction.getCurrentRoundRandom(), stdDeviation))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
+
+	public BundleBoundValueBid applyBoundValueQueryWithMRPARRefinementStrategy(BoundValueQueryWithMRPARRefinement query,
+			Auction<?> auction) {
+		BundleBoundValueBid newBids = this.applyBoundValueStrategy(query, auction);
+
+		BundleBoundValueBid activeBids = query.getLatestActiveBid().join(newBids);
+		return AutomatedRefiner.refine(new MRPARRefinement(), bidder, activeBids, activeBids, query.getPrices(),
+				query.getProvisionalAllocation(), auction.getCurrentRoundRandom());
+	}
+
+	@Override
+	public Set<Class<? extends InteractionStrategy>> getTypes() {
+		Set<Class<? extends InteractionStrategy>> types = new LinkedHashSet<>();
+		types.addAll(BoundValueQueryStrategy.super.getTypes());
+		types.addAll(BoundValueQueryWithMRPARRefinementStrategy.super.getTypes());
+		return types;
+	}
+
 	
+	/**
+	 * Generate random truthful bounds
+	 * @param bundle
+	 * @return
+	 */
+	private BundleBoundValuePair getValueBoundsForBundle(Bidder bidder, Bundle bundle, Random random, BigDecimal stdDeviation) {
+		
+		BigDecimal value = bidder.getValue(bundle);
+		BigDecimal lowerBound = value.subtract(BigDecimal.valueOf(random.nextGaussian())
+														 .abs()
+														 .multiply(stdDeviation
+																 .multiply(value)))
+						              .max(BigDecimal.ZERO);
+		BigDecimal upperBound = value.add(BigDecimal.valueOf(random.nextGaussian())
+													.abs()
+													.multiply(stdDeviation
+															.multiply(value))
+										);
+		return new BundleBoundValuePair(lowerBound, upperBound, bundle, UUID.randomUUID().toString());
+	}
 }

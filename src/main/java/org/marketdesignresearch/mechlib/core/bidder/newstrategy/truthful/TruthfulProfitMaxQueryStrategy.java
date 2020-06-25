@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ProfitMaxStrategy;
+import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMaxQuery;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class TruthfulProfitMaxQueryStrategy implements ProfitMaxStrategy{
 	private transient Bidder bidder;
 	
 	@Override
-	public BundleExactValueBid applyProfitMaxStrategy(ProfitMaxQuery interaction) {
+	public BundleExactValueBid applyProfitMaxStrategy(ProfitMaxQuery interaction, Auction<?> auction) {
 		 Set<Bundle> bestBundles = bidder.getBestBundles(interaction.getPrices(), interaction.getNumberOfBids(), true);
 	     Set<BundleExactValuePair> bestBundleBids = new LinkedHashSet<>();
 	     for (Bundle bundle : bestBundles) {

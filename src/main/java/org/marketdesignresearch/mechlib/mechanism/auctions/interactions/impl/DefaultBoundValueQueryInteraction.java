@@ -38,7 +38,7 @@ public class DefaultBoundValueQueryInteraction extends DefaultInteraction<Bundle
 
 	@Override
 	public BundleBoundValueBid proposeBid() {
-		return this.getBidder().getStrategy(BoundValueQueryStrategy.class).applyBoundValueStrategy(this);
+		return this.getBidder().getStrategy(BoundValueQueryStrategy.class).applyBoundValueStrategy(this, this.getAuction());
 	}
 
 	@Override

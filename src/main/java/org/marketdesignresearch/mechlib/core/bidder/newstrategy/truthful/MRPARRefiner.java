@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 	public BundleBoundValueBid refineBids(MRPARRefinement type, Bidder b,
 			BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices,
-			Bundle provisionalAllocation) {
+			Bundle provisionalAllocation, Random random) {
 		
 		BundleBoundValueBid returnBid = refinedBids.copy();
 		
@@ -75,7 +76,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 			secondBestUpperBoundUtility = BigDecimal.ZERO.max(secondBestUpperBoundUtility);
 		}
 		
-		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility).multiply(new BigDecimal(BoundRandomHelper.getNextGuassianLikeDouble(b))));
+		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility).multiply(new BigDecimal(this.getNextGuassianLikeDouble(b, random))));
 		
 		BigDecimal preferedLowerBoundUtility = BigDecimal.ZERO;
 		if(prefered.left != null) {

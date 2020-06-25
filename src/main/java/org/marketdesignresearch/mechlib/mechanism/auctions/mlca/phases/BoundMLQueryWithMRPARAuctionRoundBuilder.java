@@ -29,16 +29,14 @@ public class BoundMLQueryWithMRPARAuctionRoundBuilder extends AuctionRoundBuilde
 	private Map<UUID, BundleBoundValueBid> original = new LinkedHashMap<>();
 	
 	private final Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext;
-	private final long seedNextRound;
 	private final Map<UUID, BidderRefinementRoundInfo> refinementInfos;
 	
 	
-	public BoundMLQueryWithMRPARAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, Map<UUID, BoundValueQueryWithMRPARRefinement> interactions,Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext,long seed, Map<UUID, BidderRefinementRoundInfo> refinementInfos) {
+	public BoundMLQueryWithMRPARAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, Map<UUID, BoundValueQueryWithMRPARRefinement> interactions,Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext, Map<UUID, BidderRefinementRoundInfo> refinementInfos) {
 		super(auction);
 		this.interactions = interactions;
 		this.interactions.entrySet().forEach(e-> original.put(e.getKey(), e.getValue().getLatestActiveBid().copy()));
 		this.marginalsToQueryNext = marginalsToQueryNext;
-		this.seedNextRound = seed;
 		this.refinementInfos = refinementInfos;
 	}
 
@@ -58,7 +56,7 @@ public class BoundMLQueryWithMRPARAuctionRoundBuilder extends AuctionRoundBuilde
 			Preconditions.checkState(entry.getValue().getBid().getBundleBids().stream().map(BundleBoundValuePair::getBundle).collect(Collectors.toList()).containsAll(entry.getValue().getQueriedBundles()));
 		}
 				
-		return new BoundMLQueryWithMRPARAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext,seedNextRound, this.refinementInfos);
+		return new BoundMLQueryWithMRPARAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext, this.refinementInfos);
 	}
 
 	@Override

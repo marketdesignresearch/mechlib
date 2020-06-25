@@ -38,7 +38,7 @@ public class DefaultExactValueQueryInteraction extends DefaultInteraction<Bundle
 
 	@Override
 	public BundleExactValueBid proposeBid() {
-		return this.getBidder().getStrategy(ExactValueQueryStrategy.class).applyExactValueStrategy(this);
+		return this.getBidder().getStrategy(ExactValueQueryStrategy.class).applyExactValueStrategy(this, this.getAuction());
 	}
 
 	@Override

@@ -15,11 +15,15 @@ import lombok.ToString;
 public class SimpleBidAuction extends ExactValueAuction{
 
 	public SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
-		super(domain, outcomeRuleGenerator, new SimpleBidPhase());
+		this(domain,outcomeRuleGenerator,null);
+	}
+	
+	public SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, Long seed) {
+		super(domain, outcomeRuleGenerator, new SimpleBidPhase(), seed);
 	}
 	
 	@PersistenceConstructor
-	protected SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current) {
-		super(domain,outcomeRuleGenerator,current);
+	protected SimpleBidAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current, Long seed) {
+		super(domain,outcomeRuleGenerator,current, seed);
 	}
 }

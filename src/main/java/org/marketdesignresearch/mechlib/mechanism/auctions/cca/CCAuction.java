@@ -5,9 +5,7 @@ import java.util.stream.Stream;
 
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.ExactValueAuction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
 import org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase.SupplementaryPhase;
@@ -39,19 +37,19 @@ public class CCAuction extends ExactValueAuction {
     }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices) {
-        super(domain,mechanismType,new CCAClockPhase(currentPrices));
+        super(domain,mechanismType,new CCAClockPhase(currentPrices), null);
     }
     
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices, PriceUpdater priceUpdater) {
-        super(domain,mechanismType,new CCAClockPhase(currentPrices, priceUpdater));
+        super(domain,mechanismType,new CCAClockPhase(currentPrices, priceUpdater), null);
     }
 
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
-        super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices));
+        super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices), null);
     }
     
     public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices, PriceUpdater priceUpdater) {
-        super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater));
+        super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater), null);
     }
 
     public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {

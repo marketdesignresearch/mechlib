@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
-import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
@@ -34,13 +31,12 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 
 	private final BigDecimal efficientyTolerance;
 	private final int maxNumberOfRounds;
-	private final long seed;
 	private final boolean refineMarginalEconomies;
 	
 	private List<ElicitationEconomy> allRefinementEconomies;
 
-	public RefinementPhase(long seed, boolean refineMarginalEconomies) {
-		this(DEFAULT_EFFICIENCY_TOLERANCE, DEFAULT_MAX_NUMBER_OF_ROUNDS, seed, refineMarginalEconomies);
+	public RefinementPhase(boolean refineMarginalEconomies) {
+		this(DEFAULT_EFFICIENCY_TOLERANCE, DEFAULT_MAX_NUMBER_OF_ROUNDS, refineMarginalEconomies);
 	}
 
 	@Override
@@ -50,7 +46,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 		}
 		
 		this.updateInfo(auction);
-		return new RefinementAuctionRoundBuilder(auction, seed, this.allRefinementEconomies, this.info);
+		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info);
 	}
 
 	@Override

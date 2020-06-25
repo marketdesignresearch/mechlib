@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,16 +35,14 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 	
 	private final MachineLearningComponent<T> machineLearningComponent;
 	@Getter
-	private final long seed;
-	@Getter
 	private final int maxQueries;
 	@Getter
 	private final int numberOfMarginalQueriesPerRound;
 	private ElicitationEconomy mainEconomy;
 	private List<ElicitationEconomy> marginalEconomies;
 	
-	public MLQueryPhase(MachineLearningComponent<T> mlComponent, long seed) {
-		this(mlComponent,seed,DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES,DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND);
+	public MLQueryPhase(MachineLearningComponent<T> mlComponent) {
+		this(mlComponent,DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES,DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -59,15 +56,12 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 		
 		Map<Bidder, Set<Bundle>> restrictedBids = new LinkedHashMap<>();
 		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new LinkedHashMap<>();
-
-		Random random = new Random(seed);
 		
 		for(int i = auction.getNumberOfRounds()-1; i>=0; i--) {
 			AuctionRound<T> auctionRound = auction.getRound(i);
 			// Find last MLQueryAuctionRound
 			if(MLQueryAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
 				bidderMarginalsTemp = ((MLQueryAuctionRound)auctionRound).getMarginalsToQueryNext();
-				random = new Random(((MLQueryAuctionRound)auctionRound).getSeedNextRound());
 				break;
 			}
 		}
@@ -95,7 +89,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				// choose random setting and remove from setting list
 				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId())
-						.remove(random.nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
+						.remove(auction.getCurrentRoundRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
 
 				Allocation inferredEfficientAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(), economy,
 						Map.of(bidder,
@@ -129,10 +123,10 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
 		}
 		
-		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp, random.nextLong());
+		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp);
 	}
 	
-	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction, Map<Bidder, Set<Bundle>> restrictedBids, Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp, long nextRandomSeed);
+	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction, Map<Bidder, Set<Bundle>> restrictedBids, Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp);
 
 	@Override
 	public boolean phaseFinished(Auction<T> auction) {
