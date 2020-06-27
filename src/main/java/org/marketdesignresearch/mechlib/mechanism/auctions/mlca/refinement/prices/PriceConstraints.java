@@ -25,7 +25,7 @@ public class PriceConstraints {
 	private final Map<UUID, Map<Bundle, BigDecimal>> rightHandSides;
 	
 	public PriceConstraints(List<UUID> bidders) {
-		rightHandSides = bidders.stream().collect(Collectors.toMap(b->b, b-> new LinkedHashMap<Bundle, BigDecimal>()));
+		rightHandSides = bidders.stream().collect(Collectors.toMap(b->b, b-> new LinkedHashMap<Bundle, BigDecimal>(), (e1, e2) -> e1, LinkedHashMap::new));
 	}
 	
 	public PriceConstraints(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints baseline) {

@@ -18,7 +18,4 @@ public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids>{
 	public MachineLearningAllocationInferrer getMLFunction(BundleExactValueBids bids) {
 		return new ExactSupportVector(this.getSetup(), bids, this.getMipInstrumentation());
 	}
-
-	
-
 }

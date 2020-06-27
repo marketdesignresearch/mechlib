@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class ValueSeparabilitySideDownGenerator extends ValueSeparabilityGenerat
         ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(newGraph);
         Stream<BlockedBidders> blockedBidders = connectivityInspector.connectedSets().stream().map(subGraph -> BlockedBidders.from(subGraph, blockingBidders));
         Set<Bidder> minAdrBidders = minadr.getBlockedBidders();
-        Map<BlockedBidders, AverageDistanceFromReference> adrMap = blockedBidders.collect(Collectors.toMap(Function.identity(), bb -> calcAdr(bb, priorPayment, minAdrBidders)));
+        Map<BlockedBidders, AverageDistanceFromReference> adrMap = blockedBidders.collect(Collectors.toMap(Function.identity(), bb -> calcAdr(bb, priorPayment, minAdrBidders), (e1, e2) -> e1, LinkedHashMap::new));
         while (!adrMap.isEmpty()) {
 
             Entry<BlockedBidders, AverageDistanceFromReference> maxEntry = Collections.max(adrMap.entrySet(), Comparator.comparing(Entry::getValue));

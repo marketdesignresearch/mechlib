@@ -69,7 +69,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		interactions.entrySet().forEach(e -> Preconditions.checkState(e.getValue().getBid().getBundleBids().size() == original.get(e.getKey()).getBundleBids().size()));
 		
 		return new DefaultRefinementAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(
-						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid()))),
+						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))),
 				refinementInfos);
 	}
 

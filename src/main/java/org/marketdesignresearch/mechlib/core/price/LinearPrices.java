@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.core.price;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class LinearPrices implements Prices {
     private final Set<Good> goods;
 
     public LinearPrices(List<? extends Good> goods) {
-        this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO)));
+        this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO, (e1, e2) -> e1, LinkedHashMap::new)));
     }
 
     public LinearPrices(Map<Good, Price> goodPriceMap) {
@@ -63,4 +64,9 @@ public class LinearPrices implements Prices {
     private Good getGood(UUID id) {
         return goods.stream().filter(g -> g.getUuid().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
     }
+
+	@Override
+	public Prices divide(BigDecimal divisor) {
+		return new LinearPrices(this.priceMap.entrySet().stream().collect(Collectors.toMap(e -> this.goods.stream().filter(g -> g.getUuid().equals(e.getKey())).findAny().orElseThrow(), e -> new Price(e.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)), (e1, e2) -> e1, LinkedHashMap::new)));
+	}
 }

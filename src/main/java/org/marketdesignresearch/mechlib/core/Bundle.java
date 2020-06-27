@@ -69,7 +69,7 @@ public final class Bundle {
      * @return A bundle consisting of the goods at quantity 1
      */
     public static Bundle of(List<? extends Good> bundle) {
-        return new Bundle(bundle.stream().collect(Collectors.toMap(g -> g, g -> 1)));
+        return new Bundle(bundle.stream().collect(Collectors.toMap(g -> g, g -> 1, (e1, e2) -> e1, LinkedHashMap::new)));
     }
 
     /**

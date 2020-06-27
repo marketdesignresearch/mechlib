@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.core.price;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -22,4 +23,5 @@ public interface Prices {
      */
     Price getPrice(Bundle bundle);
 
+    Prices divide(BigDecimal divisor);
 }

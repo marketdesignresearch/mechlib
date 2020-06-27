@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -47,7 +48,7 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
     private final String id;
 
     public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, new Bundle(bundle.stream().collect(Collectors.toMap(good -> good, good -> 1))), id);
+        this(amount, new Bundle(bundle.stream().collect(Collectors.toMap(good -> good, good -> 1, (e1, e2) -> e1, LinkedHashMap::new))), id);
     }
 
     public BundleValue(BigDecimal amount, Bundle bundle) {

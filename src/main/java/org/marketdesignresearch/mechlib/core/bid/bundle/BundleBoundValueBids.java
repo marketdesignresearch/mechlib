@@ -88,7 +88,7 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 
 	public BundleExactValueBids getAlphaBids(BigDecimal alpha) {
 		return new BundleExactValueBids(this.getBidMap().entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getAlphaBid(alpha))));
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getAlphaBid(alpha), (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	public BundleExactValueBids getPerturbedBids(Allocation allocation) {
