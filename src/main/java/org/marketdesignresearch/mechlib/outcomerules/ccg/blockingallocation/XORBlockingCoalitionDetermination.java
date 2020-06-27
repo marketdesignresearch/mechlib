@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class XORBlockingCoalitionDetermination extends XORWinnerDetermination {
     @Override
     public Allocation adaptMIPResult(ISolution mipResult) {
         Allocation allocation = super.adaptMIPResult(mipResult);
-        Set<PotentialCoalition> potentialCoalitions = new HashSet<>();
+        Set<PotentialCoalition> potentialCoalitions = new LinkedHashSet<>();
         for (Bidder bidder : allocation.getWinners()) {
             BidderAllocation bidderAllocation = allocation.allocationOf(bidder);
             potentialCoalitions.addAll(bidderAllocation.getAcceptedBids().stream().map(acceptedBid -> acceptedBid.getPotentialCoalition(bidder)).collect(Collectors.toList()));

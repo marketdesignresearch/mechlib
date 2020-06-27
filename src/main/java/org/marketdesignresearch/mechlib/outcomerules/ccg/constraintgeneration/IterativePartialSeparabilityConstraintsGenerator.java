@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,10 +32,10 @@ class IterativePartialSeparabilityConstraintsGenerator implements PartialConstra
         NeighborCache<PotentialCoalition, DefaultEdge> neighborIndex = new NeighborCache<>(graph);
         Allocation winningAllocation = lastResult.getAllocation();
         for (Set<PotentialCoalition> subGraph : connectivityInspector.connectedSets()) {
-            Set<Set<PotentialCoalition>> allreadyAddedCoalitions = new HashSet<>();
+            Set<Set<PotentialCoalition>> allreadyAddedCoalitions = new LinkedHashSet<>();
             Set<PotentialCoalition> subGraphWinners = ImmutableSet.copyOf(Sets.intersection(subGraph, winningAllocation.getPotentialCoalitions()));
             for (PotentialCoalition winner : subGraphWinners) {
-                Set<PotentialCoalition> blockedBidderSet = new HashSet<>(subGraphWinners.size());
+                Set<PotentialCoalition> blockedBidderSet = new LinkedHashSet<>(subGraphWinners.size());
                 blockedBidderSet.add(winner);
                 BlockedBidders nStepBlockingBidders = BlockedBidders.emptyBlockedBidders();
                 while (blockedBidderSet.size() < subGraphWinners.size() && !allreadyAddedCoalitions.contains(nStepBlockingBidders.getBlockingBidders())) {
@@ -51,7 +51,7 @@ class IterativePartialSeparabilityConstraintsGenerator implements PartialConstra
     }
 
     private BlockedBidders findNStepBlockingBidders(Set<PotentialCoalition> startingPoints, NeighborCache<PotentialCoalition, DefaultEdge> index, Allocation blockingCoalition) {
-        Set<PotentialCoalition> blockingBidders = new HashSet<>();
+        Set<PotentialCoalition> blockingBidders = new LinkedHashSet<>();
         BlockedBiddersBuilder builder = new BlockedBiddersBuilder();
         for (PotentialCoalition startingPoint : startingPoints) {
             for (PotentialCoalition blockingBidder : index.neighborsOf(startingPoint)) {

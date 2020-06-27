@@ -15,13 +15,13 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids>{
 
-	public ExactRandomQueryPhase(long seed) {
-		super(seed);
+	public ExactRandomQueryPhase() {
+		super();
 	}
 	
 	@PersistenceConstructor
-	public ExactRandomQueryPhase(long seed, int numberOfQueries) {
-		super(seed, numberOfQueries);
+	public ExactRandomQueryPhase(int numberOfQueries) {
+		super(numberOfQueries);
 	}
 
 	@Override

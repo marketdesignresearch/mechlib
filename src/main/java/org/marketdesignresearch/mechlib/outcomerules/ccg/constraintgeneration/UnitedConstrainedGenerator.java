@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.constraintgeneration;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
 
 public class UnitedConstrainedGenerator implements ConstraintGenerator {
     private final Set<PartialConstraintGenerator> generatorAlgorithms;
-    private final Map<Good, Set<PotentialCoalition>> goodToCoalitionMap = new HashMap<>();
+    private final Map<Good, Set<PotentialCoalition>> goodToCoalitionMap = new LinkedHashMap<>();
     private final CorePaymentRule corePaymentRule;
 
     public UnitedConstrainedGenerator(BundleValueBids<?> bids, Outcome referencePoint, Set<PartialConstraintGenerator> generatorAlgorithms, CorePaymentRule corePaymentRule) {
@@ -29,7 +29,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         for (PotentialCoalition coalition : referencePoint.getAllocation().getPotentialCoalitions()) {
             // TODO: check implementation for availability of more than 1
             for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
-            	goodToCoalitionMap.putIfAbsent(good, new HashSet<>());
+            	goodToCoalitionMap.putIfAbsent(good, new LinkedHashSet<>());
                 goodToCoalitionMap.get(good).add(coalition);
             }
         }

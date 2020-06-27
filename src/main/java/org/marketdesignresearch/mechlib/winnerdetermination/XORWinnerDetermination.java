@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
@@ -35,7 +35,7 @@ public class XORWinnerDetermination extends BidBasedWinnerDetermination {
     private MIPWrapper createWinnerDeterminationMIP(BundleValueBids<?> bids) {
         MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
         // Add decision variables and objective terms:
-        Map<Good, Constraint> goods = new HashMap<>();
+        Map<Good, Constraint> goods = new LinkedHashMap<>();
         for (Bidder bidder : bids.getBidders()) {
             Constraint exclusiveBids = new Constraint(CompareType.LEQ, 1);
 

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -37,13 +37,13 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
     @Override
 	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
     	
-    	Map<UUID,Map<Bundle, Map<Good, Variable>>> bidderSVDiffVariables = new HashMap<>();
+    	Map<UUID,Map<Bundle, Map<Good, Variable>>> bidderSVDiffVariables = new LinkedHashMap<>();
     	
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();	    		      	
     	
     	for (UUID b : this.getEconomy().getBidders()){
-    		bidderGoodVariables.put(b, new HashMap<>()); 
-    		bidderSVDiffVariables.put(b,new HashMap<>());
+    		bidderGoodVariables.put(b, new LinkedHashMap<>()); 
+    		bidderSVDiffVariables.put(b,new LinkedHashMap<>());
     		
 			//Insert variables, one per each good     		
 			for (Good good : this.getDomain().getGoods()){
@@ -51,7 +51,7 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 			}
    			  			
 			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()){
-				bidderSVDiffVariables.get(b).put(bv.getBundle(), new HashMap<>());
+				bidderSVDiffVariables.get(b).put(bv.getBundle(), new LinkedHashMap<>());
 				Constraint cSet = mipWrapper.beginNewEQConstraint(1+bv.getBundle().getTotalAmount());
 				Constraint cSize = mipWrapper.beginNewEQConstraint(1);
 				
@@ -64,7 +64,7 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 					goodIdx++;
 				}
 				
-				Set<Good> complementSet = new HashSet<>();
+				Set<Good> complementSet = new LinkedHashSet<>();
 				//TODO: Implement multiple units!
 				for (Good good : this.getDomain().getGoods()){
 					if (bv.getBundle().countGood(good)==0) complementSet.add(good);

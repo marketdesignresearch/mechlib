@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,7 +25,7 @@ public class PriceConstraints {
 	private final Map<UUID, Map<Bundle, BigDecimal>> rightHandSides;
 	
 	public PriceConstraints(List<UUID> bidders) {
-		rightHandSides = bidders.stream().collect(Collectors.toMap(b->b, b-> new HashMap<Bundle, BigDecimal>()));
+		rightHandSides = bidders.stream().collect(Collectors.toMap(b->b, b-> new LinkedHashMap<Bundle, BigDecimal>()));
 	}
 	
 	public PriceConstraints(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints baseline) {

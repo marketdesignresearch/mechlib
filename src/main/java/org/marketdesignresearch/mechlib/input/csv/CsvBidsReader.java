@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,11 +39,11 @@ public class CsvBidsReader {
         if (bidBeans.isEmpty()) return new BundleExactValueBids();
         // Collect the information about the items
         List<SimpleGood> goods = bidBeans.get(0).getGoods().keySet().stream().map(SimpleGood::new).collect(Collectors.toList());
-        Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
+        Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
         // Iterate through all BidBeans to collect the bids
         for (BidBean bidBean : bidBeans) {
             Bidder bidder = bidMap.keySet().stream().filter(b -> b.getName().equals(bidBean.getBidder())).findAny().orElse(new XORBidder(bidBean.getBidder()));
-            Set<BundleEntry> bundleEntries = new HashSet<>();
+            Set<BundleEntry> bundleEntries = new LinkedHashSet<>();
             for (Good good : goods) {
                 Collection<Integer> columnValues = bidBean.getGoods().get(good.getName());
                 if (columnValues.size() != 1) {

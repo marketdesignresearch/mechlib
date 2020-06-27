@@ -1,7 +1,5 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,8 +16,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactVal
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @EqualsAndHashCode
@@ -31,7 +27,7 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
     public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
         BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
-        if (bid == null) return new DefaultExactValueQueryInteraction(new HashSet<>(),bidder.getId(),auction);
+        if (bid == null) return new DefaultExactValueQueryInteraction(new LinkedHashSet<>(),bidder.getId(),auction);
         Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle).collect(Collectors.toCollection(LinkedHashSet::new));
         return new DefaultExactValueQueryInteraction(result,bidder.getId(),auction);
     }

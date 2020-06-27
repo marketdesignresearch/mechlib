@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class SingleItemOutcomeRule implements OutcomeRule {
 
-    protected final Set<SingleItemBids> bidsPerGood = new HashSet<>();
+    protected final Set<SingleItemBids> bidsPerGood = new LinkedHashSet<>();
 
     public SingleItemOutcomeRule(BundleValueBids<?> bids) {
         for (Good good : bids.getGoods()) {

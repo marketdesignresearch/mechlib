@@ -2,8 +2,8 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -41,7 +41,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 	// TODO ??
 	public double relSolutionGap;
 	@Getter(AccessLevel.PACKAGE)
-    protected Map<UUID,Map<Good, Variable>> bidderGoodVariables = new HashMap<>();
+    protected Map<UUID,Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
 	
     @Getter
     private final Domain domain;
@@ -76,7 +76,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 	    ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
        
         for (UUID bidder : this.getEconomy().getBidders()) {
-        	Set<BundleEntry> entries = new HashSet<>();
+        	Set<BundleEntry> entries = new LinkedHashSet<>();
     		for (Good good : this.getGoods()) {
 				double value = mipResult.getValue(bidderGoodVariables.get(bidder).get(good));
     			if (value >= 1 - 1e-3 && value <= 1 + 1e-3)

@@ -67,12 +67,11 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     }
     
     public Auction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionPhase<BB> firstPhase, Long seed) {
-        super();
         this.domain = domain;
+        this.seed = seed;
         this.outcomeRuleGenerator = outcomeRuleGenerator;
         this.phases.add(firstPhase);
         this.prepareNextAuctionRoundBuilder();
-        this.seed = seed;
         // TODO
         //current.setMipInstrumentation(getMipInstrumentation());
     }
@@ -142,14 +141,13 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
         		this.currentPhaseNumber++;
         		this.currentPhaseRoundNumber = 0;
         	}
+        	log.info("Starting round {}", this.getNumberOfRounds()+1);
         	current = this.getCurrentPhase().createNextRoundBuilder(this);
         	this.currentPhaseRoundNumber++;
         }
-		log.info("Starting round {}", this.getNumberOfRounds()+1);
 	}
 	
 	public Random getCurrentRoundRandom() {
-		Preconditions.checkArgument(!this.finished());
 		if(seed == null) {
 			log.warn("No random seed provided. Please provide a seed to make experiments repeatable");
 			seed = new Random().nextLong();

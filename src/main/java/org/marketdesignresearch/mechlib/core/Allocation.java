@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -39,7 +39,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Allocation implements MetaInfoResult {
-    public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new BundleExactValueBids(new HashMap<>()), new MetaInfo());
+    public static final Allocation EMPTY_ALLOCATION = new Allocation(ImmutableMap.of(), new BundleExactValueBids(new LinkedHashMap<>()), new MetaInfo());
     @Getter
     private final BigDecimal totalAllocationValue; // TODO: Is that ever different than the sum of the bidder allocation's values?
     @Getter
@@ -69,7 +69,7 @@ public class Allocation implements MetaInfoResult {
     public Allocation(BigDecimal totalAllocationValue, Map<? extends Bidder, BidderAllocation> tradesMap, BundleValueBids<?> bids, MetaInfo metaInfo, Set<PotentialCoalition> coalitions) {
         this.totalAllocationValue = totalAllocationValue;
         this.trueSocialWelfare = tradesMap.entrySet().stream().map(e -> e.getKey().getValue(e.getValue().getBundle())).reduce(BigDecimal.ZERO, BigDecimal::add);
-        HashMap<UUID, BidderAllocation> map = new HashMap<>();
+        Map<UUID, BidderAllocation> map = new LinkedHashMap<>();
         tradesMap.forEach((bidder, bidderAllocation) -> map.put(bidder.getId(), bidderAllocation));
         this.tradesMap = ImmutableMap.copyOf(map);
         this.winners = ImmutableSet.copyOf(tradesMap.keySet());
@@ -83,7 +83,7 @@ public class Allocation implements MetaInfoResult {
     }
 
     public Map<Bidder, BidderAllocation> getTradesMap() {
-        HashMap<Bidder, BidderAllocation> map = new HashMap<>();
+        Map<Bidder, BidderAllocation> map = new LinkedHashMap<>();
         tradesMap.forEach((k, v) -> map.put(getBidder(k), v));
         return map;
     }
@@ -98,7 +98,7 @@ public class Allocation implements MetaInfoResult {
 
     public Set<PotentialCoalition> getPotentialCoalitions() {
         if (coalitions == null) {
-            Set<PotentialCoalition> coalitions = new HashSet<>(tradesMap.size());
+            Set<PotentialCoalition> coalitions = new LinkedHashSet<>(tradesMap.size());
             coalitions.addAll(getWinners().stream()
                     .map(bidder -> allocationOf(bidder).getPotentialCoalition(bidder))
                     .filter(pc -> pc.getValue().signum() > 0)
@@ -109,7 +109,7 @@ public class Allocation implements MetaInfoResult {
     }
 
     public Allocation merge(Allocation other) {
-        Map<Bidder, BidderAllocation> tradesMap = new HashMap<>();
+        Map<Bidder, BidderAllocation> tradesMap = new LinkedHashMap<>();
         for (Bidder bidder : Sets.union(getWinners(), other.getWinners())) {
             tradesMap.put(bidder, allocationOf(bidder).merge(other.allocationOf(bidder)));
         }
@@ -117,8 +117,8 @@ public class Allocation implements MetaInfoResult {
     }
 
     public Allocation getAllocationWithTrueValues() {
-        Map<Bidder, BidderAllocation> map = new HashMap<>();
-        tradesMap.forEach((k, v) -> map.put(getBidder(k), new BidderAllocation(getBidder(k).getValue(v.getBundle()), v.getBundle(), new HashSet<>())));
+        Map<Bidder, BidderAllocation> map = new LinkedHashMap<>();
+        tradesMap.forEach((k, v) -> map.put(getBidder(k), new BidderAllocation(getBidder(k).getValue(v.getBundle()), v.getBundle(), new LinkedHashSet<>())));
         return new Allocation(map, new BundleExactValueBids(), new MetaInfo());
     }
 

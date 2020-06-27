@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -31,13 +31,13 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 
 	@Override
 	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
-		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new HashMap<>();
+		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new LinkedHashMap<>();
 
 		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
 
 		for (UUID b : this.getEconomy().getBidders()) {
-			bidderGoodVariables.put(b, new HashMap<Good, Variable>());
-			bidderSVSizeVariables.put(b, new HashMap<Bundle, Map<Integer, Variable>>());
+			bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
+			bidderSVSizeVariables.put(b, new LinkedHashMap<Bundle, Map<Integer, Variable>>());
 
 			// Insert variables, one per each good
 			for (Good good : this.getDomain().getGoods()) {
@@ -47,7 +47,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 
 			// Define objective
 			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()) {
-				bidderSVSizeVariables.get(b).put(bv.getBundle(), new HashMap<Integer, Variable>());
+				bidderSVSizeVariables.get(b).put(bv.getBundle(), new LinkedHashMap<Integer, Variable>());
 				Constraint cSize = mipWrapper.beginNewEQConstraint(1);
 				Constraint cSet = mipWrapper.beginNewEQConstraint(1);
 				int svSize = bv.getBundle().getTotalAmount();

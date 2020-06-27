@@ -2,7 +2,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -30,7 +30,7 @@ public class DemandDependentPriceUpdate implements PriceUpdater {
     @Override
     public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
         Preconditions.checkArgument(oldPrices instanceof LinearPrices, "Demand dependent price updater only works with linear prices.");
-        Map<Good, Price> newPrices = new HashMap<>();
+        Map<Good, Price> newPrices = new LinkedHashMap<>();
         for (Map.Entry<Good, Integer> entry : demand.entrySet()) {
             Good good = entry.getKey();
             BigDecimal diff = BigDecimal.valueOf(demand.getOrDefault(good, 0) - good.getQuantity());

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -158,7 +158,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		if (preferedBundle != null) {
 			minUtilityPreferedBundle = refinedBids.getBidForBundle(preferedBundle).getLowerBound().subtract(prices.getPrice(preferedBundle).getAmount());
 		}
-		Set<Bundle> witnessTrades = new HashSet<>();
+		Set<Bundle> witnessTrades = new LinkedHashSet<>();
 
 		for (BundleBoundValuePair bid : refinedBids.getBundleBids()) {
 			if (!bid.getBundle().equals(preferedBundle)) {

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.vcg;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
@@ -36,7 +36,7 @@ public abstract class VCGRule implements OutcomeRule {
         allocationWdp.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION.name());
         Allocation allocation = allocationWdp.getAllocation();
 
-        Map<Bidder, BidderPayment> payments = new HashMap<>(allocation.getWinners().size());
+        Map<Bidder, BidderPayment> payments = new LinkedHashMap<>(allocation.getWinners().size());
         MetaInfo metaInfo = allocation.getMetaInfo();
         if (allocation.getWinners().size() > 0) {
             for (Bidder bidder : allocation.getWinners()) {

@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.core.price;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -35,7 +35,7 @@ public class LinearPrices implements Prices {
 
     public LinearPrices(Map<Good, Price> goodPriceMap) {
         this.goods = ImmutableSet.copyOf(goodPriceMap.keySet());
-        Map<UUID, Price> map = new HashMap<>();
+        Map<UUID, Price> map = new LinkedHashMap<>();
         goodPriceMap.forEach((g, p) -> map.put(g.getUuid(), p));
         this.priceMap = ImmutableMap.copyOf(map);
     }
@@ -55,7 +55,7 @@ public class LinearPrices implements Prices {
     }
 
     public Map<Good, Price> getPriceMap() {
-        Map<Good, Price> map = new HashMap<>();
+        Map<Good, Price> map = new LinkedHashMap<>();
         priceMap.forEach((k, v) -> map.put(getGood(k), v));
         return map;
     }

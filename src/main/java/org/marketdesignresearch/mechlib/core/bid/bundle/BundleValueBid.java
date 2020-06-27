@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,7 +44,7 @@ public abstract class BundleValueBid<T extends BundleExactValuePair> implements 
     }
 
     public Set<Good> getGoods() {
-        Set<Good> goods = new HashSet<>();
+        Set<Good> goods = new LinkedHashSet<>();
         for (BundleExactValuePair bundleBid : bundleBids) {
             goods.addAll(bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()));
         }

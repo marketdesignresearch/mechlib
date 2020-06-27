@@ -7,6 +7,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -35,8 +36,8 @@ public class LimitedSizeRandomBundleSampling implements BundleSampling {
         if (goods.stream().anyMatch(good -> good.getQuantity() > 1)) {
             throw new IllegalArgumentException("This bundle sampling currently only supports goods with quantity of 1");
         }
-        Set<? extends Set<? extends Good>> powerSet = Sets.powerSet(Sets.newHashSet(goods));
-        Set<? extends Set<? extends Good>> filteredSet = powerSet.stream().filter(set -> set.size() <= sizeLimit).collect(Collectors.toSet());
+        Set<? extends Set<? extends Good>> powerSet = Sets.powerSet(new LinkedHashSet<>(goods));
+        Set<? extends Set<? extends Good>> filteredSet = powerSet.stream().filter(set -> set.size() <= sizeLimit).collect(Collectors.toCollection(LinkedHashSet::new));
         Set<? extends Good> singleSet = Lists.newArrayList(filteredSet).get((int) Math.round(random.nextDouble() * filteredSet.size()));
         return new Bundle(singleSet.stream().map(good -> new BundleEntry(good, 1)).collect(Collectors.toSet()));
     }

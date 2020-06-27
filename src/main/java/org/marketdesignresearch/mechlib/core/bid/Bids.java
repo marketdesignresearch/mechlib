@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core.bid;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -26,12 +26,12 @@ public abstract class Bids<T extends Bid> {
 	private final Set<Bidder> bidders;
 
 	public Bids() {
-		this(new HashMap<>());
+		this(new LinkedHashMap<>());
 	}
 
 	public Bids(Map<Bidder, T> bidderBidMap) {
-		bidMap = new HashMap<>();
-		bidders = new HashSet<>(bidderBidMap.keySet());
+		bidMap = new LinkedHashMap<>();
+		bidders = new LinkedHashSet<>(bidderBidMap.keySet());
 		bidderBidMap.forEach((k, v) -> this.bidMap.put(k.getId(), v));
 	}
 
@@ -45,7 +45,7 @@ public abstract class Bids<T extends Bid> {
 	}
 
 	public Map<Bidder, T> getBidMap() {
-		HashMap<Bidder, T> map = new HashMap<>();
+		Map<Bidder, T> map = new LinkedHashMap<>();
 		bidMap.forEach((k, v) -> map.put(getBidder(k), v));
 		return map;
 	}

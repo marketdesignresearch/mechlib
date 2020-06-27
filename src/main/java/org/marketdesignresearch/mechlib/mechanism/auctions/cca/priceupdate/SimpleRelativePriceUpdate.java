@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -32,7 +32,7 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
     public Prices updatePrices(Prices oldPrices, Map<Good, Integer> demand) {
         Preconditions.checkArgument(oldPrices instanceof LinearPrices, "Simple relative price updater only works with linear prices.");
 
-        Map<Good, Price> newPrices = new HashMap<>();
+        Map<Good, Price> newPrices = new LinkedHashMap<>();
 
         for (Map.Entry<Good, Integer> entry : demand.entrySet()) {
             Good good = entry.getKey();

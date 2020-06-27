@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -61,12 +61,12 @@ public class MRPARValidator extends ActivityRuleValidator<MRPARRefinement> {
 		// No trade has 0 utility
 		BigDecimal maxUtility = BigDecimal.ZERO;
 		BigDecimal utilityLowerBound;
-		Set<Bundle> potentialCandidatePassingTrades = new HashSet<>();
+		Set<Bundle> potentialCandidatePassingTrades = new LinkedHashSet<>();
 		for (BundleBoundValuePair bid : refinedBids.getBundleBids()) {
 			utilityLowerBound = bid.getLowerBound().subtract(bidderPrices.getPrice(bid.getBundle()).getAmount());
 			if (utilityLowerBound.compareTo(maxUtility) > 0) {
 				maxUtility = utilityLowerBound;
-				potentialCandidatePassingTrades = new HashSet<>();
+				potentialCandidatePassingTrades = new LinkedHashSet<>();
 			}
 			if (utilityLowerBound.compareTo(maxUtility) == 0) {
 				potentialCandidatePassingTrades.add(bid.getBundle());
@@ -79,12 +79,12 @@ public class MRPARValidator extends ActivityRuleValidator<MRPARRefinement> {
 			// Breaking ties (i)
 			BigDecimal maxUncertainty = BigDecimal.ZERO;
 			BigDecimal uncertainty;
-			Set<Bundle> potentialCandidatePassingTrades2 = new HashSet<>();
+			Set<Bundle> potentialCandidatePassingTrades2 = new LinkedHashSet<>();
 			for (Bundle b : potentialCandidatePassingTrades) {
 				uncertainty = refinedBids.getBidForBundle(b).getSpread();
 				if (uncertainty.compareTo(maxUncertainty) > 0) {
 					maxUncertainty = uncertainty;
-					potentialCandidatePassingTrades2 = new HashSet<>();
+					potentialCandidatePassingTrades2 = new LinkedHashSet<>();
 				}
 				if (uncertainty.compareTo(maxUncertainty) == 0) {
 					potentialCandidatePassingTrades2.add(b);

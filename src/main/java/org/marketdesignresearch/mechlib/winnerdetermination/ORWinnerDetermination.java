@@ -1,12 +1,11 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.allocationlimits.NoAllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -46,7 +45,7 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
                 bidVariables.put(bundleBid, bidI);
             }
         }
-        Map<Good, Constraint> goods = new HashMap<>();
+        Map<Good, Constraint> goods = new LinkedHashMap<>();
 
         for (Bidder bidder : bids.getBidders()) {
             for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {

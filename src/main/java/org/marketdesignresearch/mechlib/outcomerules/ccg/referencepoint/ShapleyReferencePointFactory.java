@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,9 +22,9 @@ public class ShapleyReferencePointFactory implements ReferencePointFactory {
 
     @Override
     public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
-        Map<Bidder, BidderPayment> referencePointMap = new HashMap<>(allocation.getWinners().size());
+        Map<Bidder, BidderPayment> referencePointMap = new LinkedHashMap<>(allocation.getWinners().size());
         for (Bidder bidder : allocation.getWinners()) {
-            Set<Bidder> biddersWithout = new HashSet<>(bids.getBidders());
+            Set<Bidder> biddersWithout = new LinkedHashSet<>(bids.getBidders());
             biddersWithout.remove(bidder);
             double shapleyValue = 0;
             int n = bids.getBidders().size() + 1;

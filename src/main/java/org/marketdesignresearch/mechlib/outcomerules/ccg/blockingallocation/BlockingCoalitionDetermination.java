@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class BlockingCoalitionDetermination extends ORWinnerDetermination {
-    private final Map<Bidder, BigDecimal> previousPayoff = new HashMap<>();
+    private final Map<Bidder, BigDecimal> previousPayoff = new LinkedHashMap<>();
     protected static final String TRAITOR = "TRAITOR_";
 
     public BlockingCoalitionDetermination(BundleValueBids<?> bids, Outcome previousOutcome) {
@@ -56,8 +56,8 @@ public class BlockingCoalitionDetermination extends ORWinnerDetermination {
     @Override
     public Allocation adaptMIPResult(ISolution mipResult) {
         Allocation allocation = super.adaptMIPResult(mipResult);
-        Map<Bidder, BidderAllocation> allocations = new HashMap<>(allocation.getTradesMap());
-        Set<PotentialCoalition> potentialCoalitions = new HashSet<>();
+        Map<Bidder, BidderAllocation> allocations = new LinkedHashMap<>(allocation.getTradesMap());
+        Set<PotentialCoalition> potentialCoalitions = new LinkedHashSet<>();
         for (Bidder bidder : allocation.getWinners()) {
             BidderAllocation oldBidderAllocation = allocation.allocationOf(bidder);
             if (previousPayoff.containsKey(bidder)) {

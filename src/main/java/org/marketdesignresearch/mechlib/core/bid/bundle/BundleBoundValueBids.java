@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +49,9 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 			throw new IllegalArgumentException("Currently unable to join non BundleBoundValueBids");
 
 		BundleBoundValueBids result = new BundleBoundValueBids();
-		Set<Bidder> bidders = Sets.union(getBidders(), other.getBidders());
+		Set<Bidder> bidders = new LinkedHashSet<>();
+		bidders.addAll(bidders);
+		bidders.addAll(other.getBidders());
 		bidders.forEach(b -> {
 			BundleBoundValueBid joined = new BundleBoundValueBid();
 			if (getBid(b) != null)

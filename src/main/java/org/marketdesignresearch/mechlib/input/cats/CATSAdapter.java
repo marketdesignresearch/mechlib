@@ -1,8 +1,9 @@
 package org.marketdesignresearch.mechlib.input.cats;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +37,9 @@ public class CATSAdapter {
 
     public SimpleXORDomain adaptToDomain(CATSAuction catsAuction) {
         List<SimpleGood> goods = adaptGoods(catsAuction);
-        Map<String, Set<BundleValue>> values = new HashMap<>();
+        Map<String, Set<BundleValue>> values = new LinkedHashMap<>();
         for (CATSBid catsBid : catsAuction.getCatsBids()) {
-            Set<Good> goodsPerBid = new HashSet<>();
+            Set<Good> goodsPerBid = new LinkedHashSet<>();
             String bidderId = "SB" + catsBid.getId();
             for (Integer id : catsBid.getGoodIds()) {
                 goodsPerBid.add(goods.get(id));

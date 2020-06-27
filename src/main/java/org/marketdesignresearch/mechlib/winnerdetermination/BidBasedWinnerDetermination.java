@@ -3,8 +3,8 @@ package org.marketdesignresearch.mechlib.winnerdetermination;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +32,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
     private BundleValueBids<?> bids;
     // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    protected Map<BundleExactValuePair, Variable> bidVariables = new HashMap<>();
+    protected Map<BundleExactValuePair, Variable> bidVariables = new LinkedHashMap<>();
     
     @Getter(AccessLevel.PROTECTED)
     private BigDecimal scalingFactor = BigDecimal.ONE;
@@ -90,7 +90,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
         for (Bidder bidder : bids.getBidders()) {
             BigDecimal totalValue = BigDecimal.ZERO;
-            HashSet<BundleEntry> bundleEntries = new HashSet<>();
+            Set<BundleEntry> bundleEntries = new LinkedHashSet<>();
             ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
             for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
             	// An unallocatable bundle might not be added to the mip at all

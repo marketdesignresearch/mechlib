@@ -2,8 +2,8 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -25,7 +25,7 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 
 
     public BundleValueBids() {
-        this(new HashMap<>());
+        this(new LinkedHashMap<>());
     }
 
     public BundleValueBids(Map<Bidder, T> bidderBidMap) {
@@ -33,7 +33,7 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
     }
 
     public Collection<Good> getGoods() {
-        Set<Good> goods = new HashSet<>();
+        Set<Good> goods = new LinkedHashSet<>();
         getBids().forEach(bid -> bid.getBundleBids().forEach(bbid -> goods.addAll(bbid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()))));
         return goods;
     }
@@ -75,7 +75,7 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
     
 	public SingleItemBids getBidsPerSingleGood(Good good) {
         if (!getGoods().contains(good)) return new SingleItemBids(new BundleExactValueBids());
-        Map<Bidder, BundleExactValueBid> bidsPerGood = new HashMap<>();
+        Map<Bidder, BundleExactValueBid> bidsPerGood = new LinkedHashMap<>();
         for (Entry<Bidder, T> entry : this.getBidMap().entrySet()) {
             Set<BundleExactValuePair> bundleBids = entry.getValue().getBundleBids().stream().filter(bbid -> bbid.getBundle().isSingleGood()).filter(bbid -> bbid.getBundle().getSingleGood().equals(good)).collect(Collectors.toSet());
             if (!bundleBids.isEmpty()) bidsPerGood.put(entry.getKey(), new BundleExactValueBid(bundleBids));

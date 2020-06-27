@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
-
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithE
     protected MIPWrapper createKernelSpecificWinnerDeterminationProgram() {
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
     	for (UUID b : this.getEconomy().getBidders()){
-    		bidderGoodVariables.put(b, new HashMap<Good, Variable>());
+    		bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
     		   		
 			//Insert variables, one per each good
 			for (Good good : this.getGoods()){

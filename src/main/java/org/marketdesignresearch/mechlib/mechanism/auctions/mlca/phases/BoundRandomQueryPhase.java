@@ -14,12 +14,12 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.Def
 
 public class BoundRandomQueryPhase extends RandomQueryPhase<BundleBoundValueBids> {
 
-	public BoundRandomQueryPhase(long seed) {
-		super(seed);
+	public BoundRandomQueryPhase() {
+		super();
 	}
 
-	public BoundRandomQueryPhase(long seed, int numberOfQueries) {
-		super(seed, numberOfQueries);
+	public BoundRandomQueryPhase(int numberOfQueries) {
+		super(numberOfQueries);
 	}
 
 	@Override

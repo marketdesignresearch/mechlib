@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +48,7 @@ public class LinearPriceGenerator {
 				try {
 					// find all deltas that can not be set negative
 					// only if positive deltas exist (with some slack to avoid infeasibility of following mips)
-					Map<Bidder,Set<Bundle>> positiveDeltas = setting.getBidders().stream().map(b -> domain.getBidders().stream().filter(bidder -> bidder.getId().equals(b)).findAny().orElseThrow()).collect(Collectors.toMap(b->b, b->new HashSet<Bundle>()));
+					Map<Bidder,Set<Bundle>> positiveDeltas = setting.getBidders().stream().map(b -> domain.getBidders().stream().filter(bidder -> bidder.getId().equals(b)).findAny().orElseThrow()).collect(Collectors.toMap(b->b, b->new LinkedHashSet<Bundle>()));
 					if(accMip.getDeltaResult().compareTo(localOffset.negate()) > 0) {
 						LinearPriceMinimizeNumberOfPositiveDeltasMIP posMip = new LinearPriceMinimizeNumberOfPositiveDeltasMIP(domain, setting.getBidders(), currentValuation, allocation, constraint, accMip.getDeltaResult(), localOffset);
 						prices = posMip.getPrices();

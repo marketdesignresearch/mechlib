@@ -6,6 +6,7 @@ import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class UniformRandomBundleSampling implements BundleSampling {
 
     @Override
     public Bundle getSingleBundle(List<? extends Good> goods) {
-        Set<BundleEntry> bundleEntries = new HashSet<>();
+        Set<BundleEntry> bundleEntries = new LinkedHashSet<>();
         for (Good g : goods) {
             int amount = (int) Math.floor(random.nextDouble() * (g.getQuantity() + 1));
             if (amount > 0)

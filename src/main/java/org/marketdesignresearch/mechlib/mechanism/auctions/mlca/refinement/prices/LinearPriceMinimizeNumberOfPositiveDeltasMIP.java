@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,7 +88,7 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 	@Override
 	protected LinearPrices adaptMIPResult(ISolution result) {
 		for(Bidder bidder: this.getBidders()) {
-			Set<Bundle> pDelta = new HashSet<>();
+			Set<Bundle> pDelta = new LinkedHashSet<>();
 			this.positiveDeltas.put(bidder, pDelta);
 			for(Map.Entry<Bundle,Variable> var : this.zVariables.get(bidder).entrySet()) {
 				if(result.getValue(var.getValue()) == 0) {

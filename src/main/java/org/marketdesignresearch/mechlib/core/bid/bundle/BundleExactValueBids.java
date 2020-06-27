@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +58,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders,
 			Function<ValueFunction, BundleExactValueBid> operator) {
-		Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
+		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (XORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
 		}
@@ -72,7 +72,9 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	@Override
 	public BundleExactValueBids join(BundleValueBids<?> other) {
 		BundleExactValueBids result = new BundleExactValueBids();
-		Set<Bidder> bidders = Sets.union(getBidders(), other.getBidders());
+		Set<Bidder> bidders = new LinkedHashSet<>();
+		bidders.addAll(getBidders());
+		bidders.addAll(other.getBidders());
 		bidders.forEach(b -> {
 			BundleExactValueBid joined = new BundleExactValueBid();
 			if (getBid(b) != null)
@@ -101,7 +103,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,
 			Function<ValueFunction, BundleExactValueBid> operator) {
-		Map<Bidder, BundleExactValueBid> bidMap = new HashMap<>();
+		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (ORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
 		}

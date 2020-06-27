@@ -34,7 +34,7 @@ public class ORValueFunction implements ValueFunction {
     private final Set<BundleValue> bundleValues;
 
     public ORValueFunction() {
-        this(new HashSet<>());
+        this(new LinkedHashSet<>());
     }
 
     @PersistenceConstructor

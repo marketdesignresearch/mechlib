@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.core;
 
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +32,7 @@ public final class Bundle {
     /**
      * The empty bundle.
      */
-    public static Bundle EMPTY = new Bundle(new HashMap<>());
+    public static Bundle EMPTY = new Bundle(new LinkedHashMap<>());
 
     @Getter
     private final List<BundleEntry> bundleEntries;
@@ -148,7 +148,7 @@ public final class Bundle {
     public Bundle merge(Bundle other, boolean cutoff) {
         Set<Good> goods = Sets.union(Sets.newHashSet(getBundleEntries()), Sets.newHashSet(other.getBundleEntries())).stream()
                 .map(BundleEntry::getGood).collect(Collectors.toSet());
-        Map<Good, Integer> map = new HashMap<>();
+        Map<Good, Integer> map = new LinkedHashMap<>();
         for (Good good : goods) {
             Set<BundleEntry> first = getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
             Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());

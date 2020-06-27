@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +46,7 @@ public abstract class PaymentNorm implements CorePaymentNorm {
     }
 
     public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
-        Map<Bidder, BidderPayment> newBidderPayments = new HashMap<>();
+        Map<Bidder, BidderPayment> newBidderPayments = new LinkedHashMap<>();
         for (Bidder winningBidder : winners) {
             String variableId = BIDDER + winningBidder.getId();
             BigDecimal newPayment = BigDecimal.ZERO;

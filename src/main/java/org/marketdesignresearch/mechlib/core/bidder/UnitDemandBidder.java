@@ -74,7 +74,7 @@ public class UnitDemandBidder implements Bidder, Serializable {
 
     @Override
     public LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
-        return Sets.powerSet(new HashSet<>(goodsOfInterest)).stream()
+        return Sets.powerSet(new LinkedHashSet<>(goodsOfInterest)).stream()
                 .map(Bundle::of)
                 .sorted((a, b) -> getValue(b).subtract(prices.getPrice(b).getAmount()).compareTo(getValue(a).subtract(prices.getPrice(a).getAmount())))
                 .filter(bundle -> allowNegative || value.subtract(prices.getPrice(bundle).getAmount()).signum() > -1)

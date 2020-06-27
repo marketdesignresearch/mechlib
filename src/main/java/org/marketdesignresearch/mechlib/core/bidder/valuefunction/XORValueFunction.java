@@ -34,7 +34,7 @@ public class XORValueFunction implements ValueFunction {
     private final Set<BundleValue> bundleValues;
 
     public XORValueFunction() {
-        this(new HashSet<>());
+        this(new LinkedHashSet<>());
     }
 
     @PersistenceConstructor

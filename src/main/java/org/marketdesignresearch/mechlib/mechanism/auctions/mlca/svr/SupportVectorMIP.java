@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
@@ -20,7 +20,6 @@ import com.google.common.math.DoubleMath;
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +41,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	private IMIP mip;
 	private BundleExactValueBid resultVectors;
 
-	protected Map<Integer, Variable> labeledDataVariables = new HashMap<Integer, Variable>();
+	protected Map<Integer, Variable> labeledDataVariables = new LinkedHashMap<Integer, Variable>();
 
 	public SupportVectorMIP(SupportVectorSetup setup, B bid, MipInstrumentation mipInstrumentation) {
 		this.interpolationWeight = setup.getInterpolationWeight();
@@ -60,6 +59,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 		
 		IMIPResult result;
 		try {
+			this.mip.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 1e-5);
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
     		result = CPLEXUtils.SOLVER.solve(this.mip);
     		this.getMipInstrumentation().postMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip, result);
@@ -77,7 +77,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	}
 	
 	private void adaptMIPResult(IMIPResult mipResult) {
-		Map<Bundle,Double> fbMap = new HashMap<Bundle,Double>();
+		Map<Bundle,Double> fbMap = new LinkedHashMap<Bundle,Double>();
 		int indexQuery = 0;
 		for (BundleExactValuePair bv : this.bid.getBundleBids()){
 			indexQuery ++;

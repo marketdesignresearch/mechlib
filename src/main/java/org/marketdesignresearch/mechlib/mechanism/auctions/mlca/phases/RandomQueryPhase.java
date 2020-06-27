@@ -12,7 +12,6 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bundlesampling.BundleSampling;
 import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomAllocationLimitSampling;
-import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomBundleSampling;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -22,22 +21,20 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 
 	private static final int DEFAULT_NUMBER_OF_INITIAL_QUERIES = 30;
 
-	private long seed;
 	private final int numberOfInitialQueries;
 
-	public RandomQueryPhase(long seed) {
-		this(seed, DEFAULT_NUMBER_OF_INITIAL_QUERIES);
+	public RandomQueryPhase() {
+		this(DEFAULT_NUMBER_OF_INITIAL_QUERIES);
 	}
 
 	@PersistenceConstructor
-	public RandomQueryPhase(long seed, int numberOfQueries) {
-		this.seed = seed;
+	public RandomQueryPhase(int numberOfQueries) {
 		this.numberOfInitialQueries = numberOfQueries;
 	}
 
 	@Override
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
-		Random random = new Random(this.seed);
+		Random random = auction.getCurrentRoundRandom();
 		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
 
 		for (Bidder b : auction.getDomain().getBidders()) {
