@@ -78,7 +78,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 					c = mipWrapper.beginNewLEQConstraint(value.add(offset.divide(BigDecimal.valueOf(100))).doubleValue());
 					this.addPriceVariables(c, allocated, bid.getBundle());
 
-					Variable delta = mipWrapper.makeNewDoubleVar("Delta "+bidder.toString()+" "+bid.getBundle().toString());
+					Variable delta = mipWrapper.makeNewDoubleVar("Delta "+bidder.getId()+" "+bid.getBundle().toString());
 				
 					// Set variable bounds with constraints as they are weaker (otherwise many infeasible QPs)
 					BigDecimal maxDeltaValue;

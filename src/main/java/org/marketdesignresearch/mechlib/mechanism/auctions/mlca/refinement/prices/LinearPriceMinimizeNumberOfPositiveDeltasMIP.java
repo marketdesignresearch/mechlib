@@ -66,7 +66,7 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 					constraint = mipWrapper.beginNewLEQConstraint(allocatedMinusBundleValue.add(maxDelta).doubleValue());
 					this.addPriceVariables(constraint, allocated, bid.getBundle());
 				
-					Variable zVariable = mipWrapper.makeNewBooleanVar("Delta "+bidder.toString()+ " "+bid.getBundle().toString());
+					Variable zVariable = mipWrapper.makeNewBooleanVar("Delta "+bidder.getId()+ " "+bid.getBundle().toString());
 					LinearTerm lt = new LinearTerm(1, zVariable);
 					mipWrapper.addObjectiveTerm(lt);
 

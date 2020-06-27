@@ -33,7 +33,7 @@ public class MLCAWithBounds extends Auction<BundleBoundValueBids>{
 	}
 	
 	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed) {
-		this(domain,outcomeRule,new BoundRandomQueryPhase(numberOfInitialRandomQueries), new BoundMLQueryWithMRPARPhase(mlComponent, refineMarginalEconomies, intermediateRefinement), new RefinementPhase(refineMarginalEconomies), seed);
+		this(domain,outcomeRule,new BoundRandomQueryPhase(numberOfInitialRandomQueries), new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound, refineMarginalEconomies, intermediateRefinement), new RefinementPhase(refineMarginalEconomies), seed);
 	}
 	
 	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase, RefinementPhase refinement, Long seed) {

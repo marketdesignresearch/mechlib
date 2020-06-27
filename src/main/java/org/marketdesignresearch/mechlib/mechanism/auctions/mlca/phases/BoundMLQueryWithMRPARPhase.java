@@ -33,16 +33,16 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	
 	private List<ElicitationEconomy> refinementEconomies;
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent) {
-		this(mlComponent, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries) {
+		this(mlComponent, maxQueries, numberOfmarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS);
 	}
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies) {
-		this(mlComponent,refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries, boolean refineMarginalEconomies) {
+		this(mlComponent, maxQueries, numberOfmarginalQueries, refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS);
 	}
 	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies, boolean intermediateRefinments) {
-		super(mlComponent);
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinments) {
+		super(mlComponent, maxQueries, numberOfmarginalQueries);
 		this.refineMarginalEconomies = refineMarginalEconomies;
 		this.intermediateRefinements = intermediateRefinments;
 	}
