@@ -81,7 +81,7 @@ public class MLCATest {
     
     @Test
     public void testMLCAWithLinearKernel() {
-    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
+    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelLinear(0, 1)));
     	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 50, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
@@ -95,7 +95,7 @@ public class MLCATest {
     
     @Test
     public void testMLCAWithQuadraticKernel() {
-    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
+    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelQuadratic(0, 1, 0.01)));
     	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 50, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
@@ -112,7 +112,7 @@ public class MLCATest {
     @Ignore
     public void testMLCAWithGaussianKernel() {
     	// reference runtime approx 6 minute
-    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
+    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, new KernelGaussian(1,10)));
     	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
@@ -127,7 +127,7 @@ public class MLCATest {
     
     @Test
     public void testMLCAWithExponentialKernel() {
-    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
+    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductExponential(1,10));
     	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
@@ -136,13 +136,13 @@ public class MLCATest {
     	assertEquals(2, auction.getNumberOfRounds());
     	assertEquals(32, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::max).orElse(0).intValue());
     	assertEquals(32, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::min).orElse(0).intValue());
-    	assertEquals(domain.getEfficientAllocation().getTotalAllocationValue().doubleValue(), outcome.getAllocation().getTotalAllocationValue().doubleValue(),1e-15);
+    	assertTrue(domain.getEfficientAllocation().getTotalAllocationValue().doubleValue() > outcome.getAllocation().getTotalAllocationValue().doubleValue());
     	log.info(outcome.toString());
     }
     
     @Test
     public void testMLCAWithPolynomialKernel() {
-    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(1,30);
+    	ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
     	ExactDistributedSVR svr = new ExactDistributedSVR(new KernelDotProductPolynomial(new double[] {0,1,0.1,0.01,0.001}));
     	ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 32, 2);
     	MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
@@ -151,7 +151,7 @@ public class MLCATest {
     	assertEquals(2, auction.getNumberOfRounds());
     	assertEquals(32, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::max).orElse(0).intValue());
     	assertEquals(32, auction.getLatestAggregatedBids().getBids().stream().map(BundleExactValueBid::getBundleBids).map(Set::size).reduce(Integer::min).orElse(0).intValue());
-    	assertEquals(domain.getEfficientAllocation().getTotalAllocationValue().doubleValue(), outcome.getAllocation().getTotalAllocationValue().doubleValue(),1e-15);
+    	assertTrue(domain.getEfficientAllocation().getTotalAllocationValue().doubleValue() > outcome.getAllocation().getTotalAllocationValue().doubleValue());
     	log.info(outcome.toString());
     }
 }
