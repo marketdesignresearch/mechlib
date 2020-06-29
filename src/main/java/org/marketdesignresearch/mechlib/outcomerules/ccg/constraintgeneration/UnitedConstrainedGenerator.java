@@ -28,7 +28,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
 
         for (PotentialCoalition coalition : referencePoint.getAllocation().getPotentialCoalitions()) {
             // TODO: check implementation for availability of more than 1
-            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
+            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new))) {
             	goodToCoalitionMap.putIfAbsent(good, new LinkedHashSet<>());
                 goodToCoalitionMap.get(good).add(coalition);
             }
@@ -48,7 +48,7 @@ public class UnitedConstrainedGenerator implements ConstraintGenerator {
         for (PotentialCoalition coalition : blockingCoalition.getPotentialCoalitions()) {
             tempGraph.addVertex(coalition);
             // TODO: check implementation for availability of more than 1
-            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet())) {
+            for (Good good : coalition.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new))) {
             	if(goodToCoalitionMap.containsKey(good)) {
             		for(PotentialCoalition blockedCoalition : goodToCoalitionMap.get(good)) {
             			tempGraph.addEdge(coalition, blockedCoalition);

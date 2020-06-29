@@ -41,13 +41,14 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
     	
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();	    		      	
     	
+    	int varNum = 0;
     	for (UUID b : this.getEconomy().getBidders()){
     		bidderGoodVariables.put(b, new LinkedHashMap<>()); 
     		bidderSVDiffVariables.put(b,new LinkedHashMap<>());
     		
 			//Insert variables, one per each good     		
 			for (Good good : this.getDomain().getGoods()){
-				bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar(b.toString()+" Good "+good.toString()));
+				bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
 			}
    			  			
 			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()){
@@ -57,7 +58,7 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 				
 				int goodIdx = 0;
 				for (Good good : this.getDomain().getGoods()){
-					bidderSVDiffVariables.get(b).get(bv.getBundle()).put(good, mipWrapper.makeNewBooleanVar(b.toString()+" "+bv.toString()+" Diff "+good.toString()));
+					bidderSVDiffVariables.get(b).get(bv.getBundle()).put(good, mipWrapper.makeNewBooleanVar("SV Diff "+ (++varNum)));
 					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue()*kernel.getValueGivenDifference(goodIdx),bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
 					cSet.addTerm(goodIdx+1, bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
 					cSize.addTerm(1, bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
@@ -72,7 +73,10 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 				}
 				for (Good good : this.getDomain().getGoods()){
 					if (bv.getBundle().countGood(good)==1) cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));
-					if (bv.getBundle().countGood(good)>1) {System.out.println("I am ignoring multiple units!");cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));}
+					if (bv.getBundle().countGood(good)>1) {
+						cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));
+						throw new IllegalStateException("Generic domains are not supported");
+					}
 				}
 				for (Good good : complementSet) cSet.addTerm(-1.0, bidderGoodVariables.get(b).get(good));
 				

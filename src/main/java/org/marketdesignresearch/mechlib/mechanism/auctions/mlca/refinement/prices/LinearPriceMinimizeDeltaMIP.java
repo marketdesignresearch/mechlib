@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,7 +64,6 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 		}
 		
 		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9d);
-		// TODO Timelimit?
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
 		
     	return mipWrapper;
@@ -71,7 +71,7 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 
 	@Override
 	protected LinearPrices adaptMIPResult(ISolution result) {
-		deltaResult = BigDecimal.valueOf(result.getValue(this.delta));
+		deltaResult = BigDecimal.valueOf(result.getValue(this.delta)).setScale(6,RoundingMode.HALF_UP);
 		return super.adaptMIPResult(result);
 	}
 }

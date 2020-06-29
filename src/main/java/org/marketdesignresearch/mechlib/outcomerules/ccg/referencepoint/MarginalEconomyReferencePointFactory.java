@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class MarginalEconomyReferencePointFactory implements ReferencePointFacto
         // TODO: assumes availability of 1
         Map<Good, Bidder> winnerMap = new LinkedHashMap<>();
         for (Bidder bidder : allocation.getWinners()) {
-            allocation.allocationOf(bidder).getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()).forEach(g -> winnerMap.put(g, bidder));
+            allocation.allocationOf(bidder).getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new)).forEach(g -> winnerMap.put(g, bidder));
         }
         Map<Good, BigDecimal> highestLosingBids = new LinkedHashMap<>(winnerMap.size());
         for (Bidder bidder : bids.getBidders()) {

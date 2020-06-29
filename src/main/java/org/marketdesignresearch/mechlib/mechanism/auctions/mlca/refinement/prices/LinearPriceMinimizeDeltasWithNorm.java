@@ -62,6 +62,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 		
 		// Constraints
 		Constraint c;
+		int varNr = 0;
 		for(Bidder bidder: this.getBidders()) {
 			BundleExactValueBid values = bids.getBid(bidder);
 			
@@ -78,7 +79,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 					c = mipWrapper.beginNewLEQConstraint(value.add(offset.divide(BigDecimal.valueOf(100))).doubleValue());
 					this.addPriceVariables(c, allocated, bid.getBundle());
 
-					Variable delta = mipWrapper.makeNewDoubleVar("Delta "+bidder.getId()+" "+bid.getBundle().toString());
+					Variable delta = mipWrapper.makeNewDoubleVar("Bid Delta "+(++varNr));
 				
 					// Set variable bounds with constraints as they are weaker (otherwise many infeasible QPs)
 					BigDecimal maxDeltaValue;
@@ -117,7 +118,6 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 		}
 		
 		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.99999);
-		// TODO Timelimit?
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
     	
     	return mipWrapper;
@@ -146,7 +146,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 				
 				BigDecimal delta = BigDecimal.ZERO;
 				if(this.deltas.get(bidder).containsKey(bid.getBundle())) {
-					delta = BigDecimal.valueOf(result.getValue(this.deltas.get(bidder).get(bid.getBundle())));
+					delta = BigDecimal.valueOf(result.getValue(this.deltas.get(bidder).get(bid.getBundle()))).setScale(6,  RoundingMode.HALF_UP);
 					// fancy rounding to avoid infeasibility of next MIP but remain accurate
 					if(delta.compareTo(BigDecimal.ZERO) > 0) delta = delta.add(offset);
 					else delta = BigDecimal.ZERO.min(delta.add(offset));

@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -77,8 +78,9 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	private void createVariables(Domain domain) {
 		// Create Variables;
 		priceVariables = new LinkedHashMap<>();
+		int nr = 0;
 		for(Good g : domain.getGoods()) {
-			Variable var = new Variable("Price for Good "+g.toString(), VarType.DOUBLE, 0, MIP.MAX_VALUE);
+			Variable var = new Variable("Price for Good "+(++nr), VarType.DOUBLE, 0, MIP.MAX_VALUE);
 			// unallocated bundle
 			if(allocation.getAllocatedBundle().countGood(g) != g.getQuantity()) {
 				var.setUpperBound(0);
@@ -119,7 +121,7 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	protected LinearPrices adaptMIPResult(ISolution result) {
 		Map<Good, Price> prices = new LinkedHashMap<>();
 		for(Map.Entry<Good, Variable> entry : this.priceVariables.entrySet()) {
-			prices.put(entry.getKey(), new Price(BigDecimal.valueOf(result.getValue(entry.getValue()))));
+			prices.put(entry.getKey(), new Price(BigDecimal.valueOf(result.getValue(entry.getValue())).setScale(6, RoundingMode.CEILING)));
 		}
 		return new LinearPrices(prices);
 	}

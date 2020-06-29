@@ -97,7 +97,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 										Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
 												.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
 										, Stream.of(Bundle.EMPTY))
-										.collect(Collectors.toSet())));
+										.collect(Collectors.toCollection(LinkedHashSet::new))));
 				log.info(economy.toString() + " New bundle: "+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 				// TODO
 				// printElicitationInfo(inferredEfficientAllocation, bidder,

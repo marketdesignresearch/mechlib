@@ -46,7 +46,7 @@ public abstract class BundleValueBid<T extends BundleExactValuePair> implements 
     public Set<Good> getGoods() {
         Set<Good> goods = new LinkedHashSet<>();
         for (BundleExactValuePair bundleBid : bundleBids) {
-            goods.addAll(bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()));
+            goods.addAll(bundleBid.getBundle().getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new)));
         }
         return goods;
     }

@@ -42,7 +42,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
         
         
         BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-        BigDecimal maxMipValue = new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9));
+        BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
         
         if (maxValue.compareTo(maxMipValue) > 0) {
             this.scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);

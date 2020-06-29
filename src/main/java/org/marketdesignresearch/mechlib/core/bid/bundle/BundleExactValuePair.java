@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -59,7 +60,8 @@ public class BundleExactValuePair {
         if (bundle.getBundleEntries().stream().anyMatch(entry -> entry.getAmount() > 1)) {
             log.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
         }
-        return Collections.unmodifiableSet(bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toSet()));
+        Set<Good> goods = bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(goods);
     }
 
     public BundleExactValuePair reducedBy(BigDecimal amount) {

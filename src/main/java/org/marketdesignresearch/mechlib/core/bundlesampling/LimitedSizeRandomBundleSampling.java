@@ -39,6 +39,6 @@ public class LimitedSizeRandomBundleSampling implements BundleSampling {
         Set<? extends Set<? extends Good>> powerSet = Sets.powerSet(new LinkedHashSet<>(goods));
         Set<? extends Set<? extends Good>> filteredSet = powerSet.stream().filter(set -> set.size() <= sizeLimit).collect(Collectors.toCollection(LinkedHashSet::new));
         Set<? extends Good> singleSet = Lists.newArrayList(filteredSet).get((int) Math.round(random.nextDouble() * filteredSet.size()));
-        return new Bundle(singleSet.stream().map(good -> new BundleEntry(good, 1)).collect(Collectors.toSet()));
+        return new Bundle(singleSet.stream().map(good -> new BundleEntry(good, 1)).collect(Collectors.toCollection(LinkedHashSet::new)));
     }
 }

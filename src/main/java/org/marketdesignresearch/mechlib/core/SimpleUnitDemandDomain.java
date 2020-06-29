@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public final class SimpleUnitDemandDomain implements Domain {
     @Override
     public Allocation getEfficientAllocation() {
         if (efficientAllocation == null) {
-            Map<UnitDemandBidder, BidderAllocation> allocationMap = new HashMap<>();
+            Map<UnitDemandBidder, BidderAllocation> allocationMap = new LinkedHashMap<>();
             Queue<UnitDemandBidder> bidderQueue = bidders.stream().sorted((a, b) -> b.getValue().compareTo((a.getValue()))).collect(Collectors.toCollection(LinkedList::new));
             for (Good good : goods) {
                 for (int i = 0; i < good.getQuantity() && !bidderQueue.isEmpty(); i++) {

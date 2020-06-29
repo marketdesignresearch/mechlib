@@ -49,6 +49,7 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
     	
 		//Constraints
 		Constraint constraint;
+		int varNum = 0;
 		for(Bidder bidder: this.getBidders()) {
 			
 			this.zVariables.put(bidder, new LinkedHashMap<>());
@@ -66,7 +67,7 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 					constraint = mipWrapper.beginNewLEQConstraint(allocatedMinusBundleValue.add(maxDelta).doubleValue());
 					this.addPriceVariables(constraint, allocated, bid.getBundle());
 				
-					Variable zVariable = mipWrapper.makeNewBooleanVar("Delta "+bidder.getId()+ " "+bid.getBundle().toString());
+					Variable zVariable = mipWrapper.makeNewBooleanVar("Bid Delta "+ (++varNum));
 					LinearTerm lt = new LinearTerm(1, zVariable);
 					mipWrapper.addObjectiveTerm(lt);
 
@@ -79,7 +80,6 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 		}
 		
 		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9d);
-		// TODO Timelimit?
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 3);
 		
 		return mipWrapper;

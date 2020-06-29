@@ -34,7 +34,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new LinkedHashMap<>();
 
 		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
-
+		int varNum = 0;
 		for (UUID b : this.getEconomy().getBidders()) {
 			bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
 			bidderSVSizeVariables.put(b, new LinkedHashMap<Bundle, Map<Integer, Variable>>());
@@ -42,7 +42,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 			// Insert variables, one per each good
 			for (Good good : this.getDomain().getGoods()) {
 				bidderGoodVariables.get(b).put(good,
-						mipWrapper.makeNewBooleanVar(b.toString() + " Good " + good.toString()));
+						mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
 			}
 
 			// Define objective
@@ -53,7 +53,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 				int svSize = bv.getBundle().getTotalAmount();
 				for (int i = 0; i <= svSize; i++) {
 					bidderSVSizeVariables.get(b).get(bv.getBundle()).put(i,
-							mipWrapper.makeNewBooleanVar(b.toString() + " " + bv.toString() + " Size " + i));
+							mipWrapper.makeNewBooleanVar("SVSize "+ (++varNum)));
 					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue() * kernel.getValueGivenDotProduct(i),
 							bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));
 					cSize.addTerm(i + 1, bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));
@@ -64,8 +64,8 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 					if (be.getAmount() == 1)
 						cSize.addTerm(-1.0, bidderGoodVariables.get(b).get(be.getGood()));
 					if (be.getAmount() > 1) {
-						System.out.println("I am ignoring multiple units!");
 						cSize.addTerm(-1.0, bidderGoodVariables.get(b).get(be.getGood()));
+						throw new IllegalStateException("Generic Domains are not supported");
 					}
 				}
 				mipWrapper.endConstraint(cSize);

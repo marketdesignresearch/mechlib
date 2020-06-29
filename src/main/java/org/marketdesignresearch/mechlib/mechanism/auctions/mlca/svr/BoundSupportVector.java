@@ -16,9 +16,9 @@ public class BoundSupportVector extends SupportVector<BundleBoundValueBid,Bundle
 	public BoundSupportVector(SupportVectorSetup setup, BundleBoundValueBids bids, MipInstrumentation mipInstrumentation) {
 		super(setup, (BundleBoundValueBids) bids.multiply(
 				(bids.getBids().stream().map(BundleBoundValueBid::getBundleBids).flatMap(Set::stream)
-				.map(BundleBoundValuePair::getUpperBound).reduce(BigDecimal::max).get().compareTo(new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.9)))
+				.map(BundleBoundValuePair::getUpperBound).reduce(BigDecimal::max).get().compareTo(BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9)))
 				> 0 ? 
-						new BigDecimal(MIP.MAX_VALUE).multiply(new BigDecimal(.88)).divide(bids.getBids().stream().map(BundleBoundValueBid::getBundleBids).flatMap(Set::stream)
+						BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.88)).divide(bids.getBids().stream().map(BundleBoundValueBid::getBundleBids).flatMap(Set::stream)
 				.map(BundleBoundValuePair::getUpperBound).reduce(BigDecimal::max).get(),10,RoundingMode.HALF_UP)
 						
 						: BigDecimal.ONE)

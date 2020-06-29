@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ public final class Bundle {
      * @param map a good -> quantity map
      */
     public Bundle(Map<? extends Good, Integer> map) {
-        this(map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue())).collect(Collectors.toSet()));
+        this(map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue())).collect(Collectors.toCollection(LinkedHashSet::new)));
     }
 
     /**
@@ -147,11 +148,11 @@ public final class Bundle {
      */
     public Bundle merge(Bundle other, boolean cutoff) {
         Set<Good> goods = Sets.union(Sets.newHashSet(getBundleEntries()), Sets.newHashSet(other.getBundleEntries())).stream()
-                .map(BundleEntry::getGood).collect(Collectors.toSet());
+                .map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new));
         Map<Good, Integer> map = new LinkedHashMap<>();
         for (Good good : goods) {
-            Set<BundleEntry> first = getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
-            Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toSet());
+            Set<BundleEntry> first = getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toCollection(LinkedHashSet::new));
+            Set<BundleEntry> second = other.getBundleEntries().stream().filter(entry -> entry.getGood().equals(good)).collect(Collectors.toCollection(LinkedHashSet::new));
             int total = first.stream().mapToInt(BundleEntry::getAmount).sum() + second.stream().mapToInt(BundleEntry::getAmount).sum();
             if (cutoff) {
                 map.put(good, Math.min(total, good.getQuantity()));

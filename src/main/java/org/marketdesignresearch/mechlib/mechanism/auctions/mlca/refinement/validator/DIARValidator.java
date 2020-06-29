@@ -30,7 +30,7 @@ public class DIARValidator extends ActivityRuleValidator<DIARRefinement>{
 	private BigDecimal highestErrorReductionPossible(BundleValueBid<BundleBoundValuePair> activeBids,
 			BundleValueBid<BundleBoundValuePair> refinedBids, Prices bidderPrices,
 			Bundle provisionalAllocation, BigDecimal epsilon) {
-		BigDecimal highestErrorImproved = new BigDecimal(-Double.MAX_VALUE);
+		BigDecimal highestErrorImproved = BigDecimal.valueOf(-Double.MAX_VALUE);
 		for(BundleBoundValuePair activeBid : activeBids.getBundleBids()) {
 			BigDecimal error = this.perturbedValuation(activeBid, provisionalAllocation).subtract(bidderPrices.getPrice(activeBid.getBundle()).getAmount());
 			if(provisionalAllocation != null && !(provisionalAllocation.getTotalAmount() == 0))
@@ -66,7 +66,7 @@ public class DIARValidator extends ActivityRuleValidator<DIARRefinement>{
 	private BigDecimal highestErrorReduced(BundleValueBid<BundleBoundValuePair> activeBids,
 			BundleValueBid<BundleBoundValuePair> refinedBids, Prices bidderPrices,
 			Bundle provisionalAllocation, BigDecimal epsilon) {
-		BigDecimal highestErrorImproved = new BigDecimal(-Double.MAX_VALUE);
+		BigDecimal highestErrorImproved = BigDecimal.valueOf(-Double.MAX_VALUE);
 		for(BundleBoundValuePair activeBid : activeBids.getBundleBids()) {
 			BigDecimal error = this.perturbedValuation(activeBid, provisionalAllocation).subtract(bidderPrices.getPrice(activeBid.getBundle()).getAmount());
 			if(provisionalAllocation != null && ! (provisionalAllocation.getTotalAmount() == 0))

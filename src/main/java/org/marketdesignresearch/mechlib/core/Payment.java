@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.core;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -45,7 +46,7 @@ public final class Payment implements MetaInfoResult {
 
     public Payment(Map<Bidder, BidderPayment> bidderPaymentMap, MetaInfo metaInfo) {
         this.bidders = ImmutableSet.copyOf(bidderPaymentMap.keySet());
-        Map<UUID, BidderPayment> map = new HashMap<>();
+        Map<UUID, BidderPayment> map = new LinkedHashMap<>();
         bidderPaymentMap.forEach((k, v) -> map.put(k.getId(), v));
         this.paymentMap = ImmutableMap.copyOf(map);
         this.metaInfo = metaInfo;
@@ -56,7 +57,7 @@ public final class Payment implements MetaInfoResult {
     }
 
     public Map<Bidder, BidderPayment> getPaymentMap() {
-        Map<Bidder, BidderPayment> map = new HashMap<>();
+        Map<Bidder, BidderPayment> map = new LinkedHashMap<>();
         paymentMap.forEach((k, v) -> map.put(getBidder(k), v));
         return map;
     }
@@ -66,7 +67,7 @@ public final class Payment implements MetaInfoResult {
     }
 
     public Payment merge(Payment other) {
-        Map<Bidder, BidderPayment> paymentMap = new HashMap<>();
+        Map<Bidder, BidderPayment> paymentMap = new LinkedHashMap<>();
         for (Bidder bidder : Sets.union(getPaymentMap().keySet(), other.getPaymentMap().keySet())) {
             paymentMap.put(bidder, new BidderPayment(paymentOf(bidder).getAmount().add(other.paymentOf(bidder).getAmount())));
         }

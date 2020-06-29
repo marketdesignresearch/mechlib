@@ -25,13 +25,13 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 	/**
 	 * Used to show a strict preference of the preferred bundle over the provisional allocation if they are not equal 
 	 */
-	private static BigDecimal strictEta = new BigDecimal(1e-4);
+	private static BigDecimal strictEta = BigDecimal.valueOf(1e-4);
 	
 	/**
 	 * Even though working with BigDecimal arithmetics some slack
 	 * is needed to avoid validation errors later
 	 */
-	private static BigDecimal localStrictDelta = new BigDecimal(1E-10d); 
+	private static BigDecimal localStrictDelta = BigDecimal.valueOf(1E-10d); 
 	
 	/**
 	 * Sums all refinement performed by any MRPARRefiner during this program execution
@@ -53,8 +53,8 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		
 		ImmutablePair<Bundle, BigDecimal> prefered = computePreferedBundle(b, activeBids, prices, provisionalAllocation);
 		
-		BigDecimal secondBestUtility = new BigDecimal(-Double.MAX_VALUE);
-		BigDecimal secondBestUpperBoundUtility = new BigDecimal(-Double.MAX_VALUE);
+		BigDecimal secondBestUtility = BigDecimal.valueOf(-Double.MAX_VALUE);
+		BigDecimal secondBestUpperBoundUtility = BigDecimal.valueOf(-Double.MAX_VALUE);
 
 		// find second best true utility and upper bound utility
 		for (BundleBoundValuePair bid : activeBids.getBundleBids()) {
@@ -76,7 +76,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 			secondBestUpperBoundUtility = BigDecimal.ZERO.max(secondBestUpperBoundUtility);
 		}
 		
-		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility).multiply(new BigDecimal(this.getNextGuassianLikeDouble(b, random))));
+		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility).multiply(BigDecimal.valueOf(this.getNextGuassianLikeDouble(b, random))));
 		
 		BigDecimal preferedLowerBoundUtility = BigDecimal.ZERO;
 		if(prefered.left != null) {

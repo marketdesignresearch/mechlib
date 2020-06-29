@@ -33,14 +33,15 @@ public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithE
     		bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
     		   		
 			//Insert variables, one per each good
+    		int varNum = 0;
 			for (Good good : this.getGoods()){
 				if (this.isGenericSetting()) {
-					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewIntegerVar(b.toString()+" Good "+good.toString()));	
+					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewIntegerVar("GoodVar "+(++varNum)));	
 					bidderGoodVariables.get(b).get(good).setLowerBound(0);
 					bidderGoodVariables.get(b).get(good).setUpperBound(good.getQuantity());									
 				}
 				else {
-					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar(b.toString()+" Good "+good.toString()));	
+					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("GoodVar "+(++varNum)));	
 				}
 			}
 			

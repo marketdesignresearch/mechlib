@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,7 +101,7 @@ public interface Domain extends MipInstrumentationable {
      * @return the proposed starting prices
      */
     default Prices proposeStartingPrices() {
-        Map<Good, Price> priceMap = new HashMap<>();
+        Map<Good, Price> priceMap = new LinkedHashMap<>();
         getGoods().forEach(good -> {
             BigDecimal price = BigDecimal.ZERO;
             for (Bidder bidder : getBidders()) {

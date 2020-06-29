@@ -28,19 +28,20 @@ public class WinnerDeterminationLinearKernel extends WinnerDeterminationWithExcl
 	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();    
     	
+    	int varNum = 0;
     	for (UUID b : this.getEconomy().getBidders()){
     		bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());   		
     		
 			//Insert variables, one per each good     		
 			for (Good good : this.getGoods()){
 				if (this.isGenericSetting()) {
-					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewIntegerVar(b.toString()+" Good "+good.toString()));	
+					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewIntegerVar("Bidder good "+ (++varNum)));	
 					bidderGoodVariables.get(b).get(good).setLowerBound(0);
 					bidderGoodVariables.get(b).get(good).setUpperBound(good.getQuantity());									
 				}
 				else {
 					// use boolean var for non generic for better performance
-					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar(b.toString()+" Good "+good.toString()));	
+					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("Bidder good "+ (++varNum)));	
 				}
 			}
 			    			
