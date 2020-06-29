@@ -24,16 +24,16 @@ public class MLCAWithBounds extends Auction<BundleBoundValueBids>{
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
 	
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed) {
-		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS, seed);
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit) {
+		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS, seed, timeLimit);
 	}
 	
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed) {
-		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed);
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit) {
+		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound, new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit);
 	}
 	
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed) {
-		this(domain,outcomeRule,new BoundRandomQueryPhase(numberOfInitialRandomQueries), new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound, refineMarginalEconomies, intermediateRefinement), new RefinementPhase(refineMarginalEconomies), seed);
+	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries, int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent, boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit) {
+		this(domain,outcomeRule,new BoundRandomQueryPhase(numberOfInitialRandomQueries), new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound, refineMarginalEconomies, intermediateRefinement, timeLimit), new RefinementPhase(refineMarginalEconomies, timeLimit), seed);
 	}
 	
 	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase, RefinementPhase refinement, Long seed) {

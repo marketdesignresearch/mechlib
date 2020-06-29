@@ -9,7 +9,6 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
 
-import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
@@ -20,8 +19,8 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 	private BigDecimal priceSum;
 	
 	public LinearPriceMinimizePricesNormMIP(Domain domain, List<UUID> bidders, Allocation allocation,
-			PriceConstraints constraint, BigDecimal priceSum) {
-		super(domain, bidders, allocation, constraint);
+			PriceConstraints constraint, BigDecimal priceSum, double timelimit) {
+		super(domain, bidders, allocation, constraint, timelimit);
 		
 		this.priceSum = priceSum;
 	}

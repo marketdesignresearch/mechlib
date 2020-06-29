@@ -63,7 +63,7 @@ public interface BidderRefinementRoundInfoCreator {
 				BundleExactValueBids perturbedValuation = auction.getLatestAggregatedBids()
 						.getPerturbedBids(alphaAllocation);
 
-				Prices prices = LinearPriceGenerator.getPrices(auction.getDomain(),
+				Prices prices = this.getPriceGenerator().getPrices(auction.getDomain(),
 						new ElicitationEconomy(auction.getDomain()), alphaAllocation,
 						List.of(alphaValuation, perturbedValuation), true);
 
@@ -81,6 +81,8 @@ public interface BidderRefinementRoundInfoCreator {
 	default List<ElicitationEconomy> getRefinementEconomies(UUID bidder) {
 		return this.getRefinementEconomies().stream().filter(e -> e.getBidders().contains(bidder)).collect(Collectors.toList());
 	}
+	
+	LinearPriceGenerator getPriceGenerator();
 	
 	Set<RefinementType> createRefinementType(BundleBoundValueBids bids);
 	List<ElicitationEconomy> getRefinementEconomies();

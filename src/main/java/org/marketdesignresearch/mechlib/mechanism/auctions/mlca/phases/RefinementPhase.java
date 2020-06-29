@@ -14,8 +14,10 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementHelper.EfficiencyInfo;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 import org.slf4j.Logger;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,9 +36,12 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 	private final boolean refineMarginalEconomies;
 	
 	private List<ElicitationEconomy> allRefinementEconomies;
+	@Getter
+	private LinearPriceGenerator priceGenerator;
 
-	public RefinementPhase(boolean refineMarginalEconomies) {
+	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
 		this(DEFAULT_EFFICIENCY_TOLERANCE, DEFAULT_MAX_NUMBER_OF_ROUNDS, refineMarginalEconomies);
+		this.priceGenerator.setTimeLimit(timeLimit);
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 		}
 		
 		this.updateInfo(auction);
-		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info);
+		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info, this.getPriceGenerator());
 	}
 
 	@Override

@@ -29,8 +29,8 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	@Getter
 	private BigDecimal deltaResult;
 
-	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint) {
-		super(domain, bidders, allocation, constraint);
+	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint, double timelimit) {
+		super(domain, bidders, allocation, constraint, timelimit);
 		this.bids = bids;
 	}
 

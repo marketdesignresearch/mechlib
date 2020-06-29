@@ -18,18 +18,23 @@ import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 
 import edu.harvard.econcs.jopt.solver.mip.MIP;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LinearPriceGenerator {
+	
+	@Setter
+    private double timeLimit = -1.0;
+	
+	public LinearPriceGenerator() {}
 
-	public static Prices getPrices(Domain domain, ElicitationEconomy setting,
+	public Prices getPrices(Domain domain, ElicitationEconomy setting,
 			Allocation allocation, List<BundleExactValueBids> valuations, boolean minimizeAllDeltas) {
 		
 		BigDecimal maxValue = valuations.stream().flatMap(b -> b.getBids().stream()).map(BundleExactValueBid::getBundleBids).flatMap(Set::stream)
@@ -63,7 +68,7 @@ public class LinearPriceGenerator {
 			boolean fixNegativeDeltas = !it.hasNext() && minimizeAllDeltas;
 			
 			// minimize overall delta
-			LinearPriceMinimizeDeltaMIP accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(), currentValuation, allocation, constraint);
+			LinearPriceMinimizeDeltaMIP accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(), currentValuation, allocation, constraint, timeLimit);
 			prices = accMip.getPrices();
 			
 			BigDecimal localOffset = offset;
@@ -74,13 +79,13 @@ public class LinearPriceGenerator {
 					// only if positive deltas exist (with some slack to avoid infeasibility of following mips)
 					Map<Bidder,Set<Bundle>> positiveDeltas = setting.getBidders().stream().map(b -> domain.getBidders().stream().filter(bidder -> bidder.getId().equals(b)).findAny().orElseThrow()).collect(Collectors.toMap(b->b, b->new LinkedHashSet<Bundle>(), (e1, e2) -> e1, LinkedHashMap::new));
 					if(accMip.getDeltaResult().compareTo(localOffset.negate()) > 0) {
-						LinearPriceMinimizeNumberOfPositiveDeltasMIP posMip = new LinearPriceMinimizeNumberOfPositiveDeltasMIP(domain, setting.getBidders(), currentValuation, allocation, constraint, accMip.getDeltaResult(), localOffset);
+						LinearPriceMinimizeNumberOfPositiveDeltasMIP posMip = new LinearPriceMinimizeNumberOfPositiveDeltasMIP(domain, setting.getBidders(), currentValuation, allocation, constraint, accMip.getDeltaResult(), localOffset, timeLimit);
 						prices = posMip.getPrices();
 						positiveDeltas = posMip.getPositiveDeltas();
 					}
 					
 					if(positiveDeltas.values().stream().mapToInt(Set::size).sum() > 0 || fixNegativeDeltas) {
-						LinearPriceMinimizeDeltasWithNorm normDelta = new LinearPriceMinimizeDeltasWithNorm(domain, setting.getBidders(), currentValuation, allocation, constraint, accMip.getDeltaResult(), localOffset, fixNegativeDeltas, positiveDeltas);
+						LinearPriceMinimizeDeltasWithNorm normDelta = new LinearPriceMinimizeDeltasWithNorm(domain, setting.getBidders(), currentValuation, allocation, constraint, accMip.getDeltaResult(), localOffset, fixNegativeDeltas, positiveDeltas, timeLimit);
 						prices = normDelta.getPrices();
 						constraint = normDelta.getGeneratedPriceConstraints();
 					} else {
@@ -103,11 +108,11 @@ public class LinearPriceGenerator {
 		
 		try {
 			// Maximize prices
-			LinearPriceMaximizePricesMIP max = new LinearPriceMaximizePricesMIP(domain, setting.getBidders(), allocation, constraint);
+			LinearPriceMaximizePricesMIP max = new LinearPriceMaximizePricesMIP(domain, setting.getBidders(), allocation, constraint, timeLimit);
 			prices = max.getPrices();
 			
 			// Make prices unique
-			LinearPriceMinimizePricesNormMIP euclid = new LinearPriceMinimizePricesNormMIP(domain, setting.getBidders(), allocation, constraint, max.getPriceSum());
+			LinearPriceMinimizePricesNormMIP euclid = new LinearPriceMinimizePricesNormMIP(domain, setting.getBidders(), allocation, constraint, max.getPriceSum(), timeLimit);
 			prices = euclid.getPrices();
 		} catch(RuntimeException e) {
 			log.warn("Unable to maximize prices or minimize euclidean distance", e);

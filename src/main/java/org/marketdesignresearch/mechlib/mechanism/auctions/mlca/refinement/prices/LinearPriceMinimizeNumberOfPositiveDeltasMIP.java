@@ -35,8 +35,8 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 	@Getter
 	private Map<Bidder,Set<Bundle>> positiveDeltas = new LinkedHashMap<>();
 
-	public LinearPriceMinimizeNumberOfPositiveDeltasMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint, BigDecimal maxDelta, BigDecimal offset) {
-		super(domain, bidders, allocation, constraint);
+	public LinearPriceMinimizeNumberOfPositiveDeltasMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint, BigDecimal maxDelta, BigDecimal offset, double timelimit) {
+		super(domain, bidders, allocation, constraint, timelimit);
 		this.bids = bids;
 		this.maxDelta = maxDelta.add(offset);
 		this.zeta = maxDelta.add(offset.multiply(BigDecimal.valueOf(2)));

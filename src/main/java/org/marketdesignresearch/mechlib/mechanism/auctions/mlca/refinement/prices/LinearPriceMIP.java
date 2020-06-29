@@ -25,7 +25,6 @@ import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
@@ -46,12 +45,14 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	@Getter(AccessLevel.PROTECTED)
 	private Set<Bidder> bidders;
 	private PriceConstraints priceConstraint;
+	private double timelimit;
 	
 	private LinearPrices prices;
 	
-	public LinearPriceMIP(Domain domain, List<UUID> bidders, Allocation allocation, PriceConstraints constraint) {
+	public LinearPriceMIP(Domain domain, List<UUID> bidders, Allocation allocation, PriceConstraints constraint, double timelimit) {
 		this.bidders = bidders.stream().map(id -> domain.getBidders().stream().filter(b -> b.getId().equals(id)).findAny().orElseThrow()).collect(Collectors.toCollection(LinkedHashSet::new));
 		this.allocation = allocation;
+		this.timelimit = timelimit;
 		this.priceConstraint = constraint;
 		this.createVariables(domain);
 	}
@@ -112,6 +113,7 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	
 	private LinearPrices solveMIP() {
     	getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+    	if(timelimit>0) getMIP().setSolveParam(SolveParam.TIME_LIMIT, timelimit);
 		this.instrumentation.preMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP());
 		IMIPResult result = CPLEXUtils.SOLVER.solve(getMIP());
 		this.instrumentation.postMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP(), result);

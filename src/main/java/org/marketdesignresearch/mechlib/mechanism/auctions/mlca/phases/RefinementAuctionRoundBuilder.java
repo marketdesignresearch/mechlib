@@ -19,6 +19,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultRefinementQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementHelper.EfficiencyInfo;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator.ICEValidator;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.slf4j.Logger;
@@ -38,10 +39,13 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	private final List<ElicitationEconomy> refinementEconomies;
 
 	private final Map<UUID, BundleBoundValueBid> original = new LinkedHashMap<>();
+	@Getter
+	private LinearPriceGenerator priceGenerator;
 
-	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos) {
+	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos, LinearPriceGenerator generator) {
 		super(auction);
 		this.refinementEconomies = refinementEconomies;
+		this.priceGenerator = generator;
 		
 		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(), efficiencyInfos);
 		
