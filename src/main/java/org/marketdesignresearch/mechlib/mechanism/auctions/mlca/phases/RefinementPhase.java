@@ -37,7 +37,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 	
 	private List<ElicitationEconomy> allRefinementEconomies;
 	@Getter
-	private LinearPriceGenerator priceGenerator;
+	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 
 	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
 		this(DEFAULT_EFFICIENCY_TOLERANCE, DEFAULT_MAX_NUMBER_OF_ROUNDS, refineMarginalEconomies);

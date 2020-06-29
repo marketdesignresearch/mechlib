@@ -29,11 +29,11 @@ public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithE
     @Override
     protected MIPWrapper createKernelSpecificWinnerDeterminationProgram() {
     	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
+    	int varNum = 0;
     	for (UUID b : this.getEconomy().getBidders()){
     		bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
     		   		
 			//Insert variables, one per each good
-    		int varNum = 0;
 			for (Good good : this.getGoods()){
 				if (this.isGenericSetting()) {
 					bidderGoodVariables.get(b).put(good, mipWrapper.makeNewIntegerVar("GoodVar "+(++varNum)));	
