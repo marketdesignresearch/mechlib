@@ -38,7 +38,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	@Setter
 	private MipInstrumentation mipInstrumentation;
 	
-	private IMIP mip;
+	private final IMIP mip;
 	private BundleExactValueBid resultVectors;
 
 	protected Map<Integer, Variable> labeledDataVariables = new HashMap<Integer, Variable>();

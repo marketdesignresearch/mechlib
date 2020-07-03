@@ -18,6 +18,10 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningC
 
 public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {
 
+	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent) {
+		super(mlComponent);
+	}
+
 	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, long seed) {
 		super(mlComponent, seed);
 	}

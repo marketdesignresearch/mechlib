@@ -24,7 +24,7 @@ public class WinnerDeterminationTranslationInvariantKernel extends WinnerDetermi
 	 * Doesn't work with multiple units!
 	 */
 
-    private KernelGaussian kernel;
+    private final KernelGaussian kernel;
     
     public WinnerDeterminationTranslationInvariantKernel(Domain domain, ElicitationEconomy economy,
     		BundleExactValueBids supportVectorsPerBidder,

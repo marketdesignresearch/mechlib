@@ -12,9 +12,9 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public class KernelQuadratic extends Kernel{
 	
-	private double coeff0;
-	private double coeff1;
-	private double coeff2;
+	private final double coeff0;
+	private final double coeff1;
+	private final double coeff2;
 	
 	public KernelQuadratic (double coeff0, double coeff1, double coeff2) {
 		this.coeff0=coeff0;
