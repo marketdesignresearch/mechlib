@@ -21,6 +21,7 @@ import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
+import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
@@ -30,7 +31,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 
-	private final static int NORM_REFERENCE_POINT = 200000;
+	@Override
+	protected LinearPrices solveMIP() {
+		try {
+			return super.solveMIP();
+		} catch(RuntimeException e) {
+			// try different CPLEX Parameters
+			this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+			this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+			return super.solveMIP();
+		}
+	}
+
+	private final static int NORM_REFERENCE_POINT = -100000;
 	
 	private BundleExactValueBids bids;
 	private BigDecimal offset;
@@ -109,17 +122,17 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 						dMap.put(bid.getBundle(), delta);
 						c.addTerm(-1,delta);
 					
-						mipWrapper.addObjectiveTerm(new QuadraticTerm(0.1, delta, delta));
-						mipWrapper.addObjectiveTerm(new LinearTerm(2*NORM_REFERENCE_POINT, delta));
+						mipWrapper.addObjectiveTerm(new QuadraticTerm(0.0001, delta, delta));
+						mipWrapper.addObjectiveTerm(new LinearTerm(-2*NORM_REFERENCE_POINT, delta));
 					}
 					mipWrapper.add(c);
 				}
 			}
 		}
 		
-		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.99999);
-		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
-    	
+		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.9);
+		mipWrapper.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
+		
     	return mipWrapper;
 	}
 	
@@ -167,6 +180,11 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 		log.debug("Number of Deltas: {}",numberOfDeltas);
 		log.debug("Number of Positive Deltas: {}",numberOfPositiveDeltas);
 		return super.adaptMIPResult(result);
+	}
+
+	@Override
+	protected String getMIPName() {
+		return "minimize-norm-delta";
 	}
 
 }

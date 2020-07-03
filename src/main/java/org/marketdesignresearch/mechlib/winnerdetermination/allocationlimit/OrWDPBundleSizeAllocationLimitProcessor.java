@@ -44,6 +44,4 @@ public class OrWDPBundleSizeAllocationLimitProcessor implements OrWDPAllocationL
 	public Class<BundleSizeAllocationLimit> getType() {
 		return BundleSizeAllocationLimit.class;
 	}
-	
-
 }

@@ -100,4 +100,9 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 		return super.adaptMIPResult(result);
 	}
 
+	@Override
+	protected String getMIPName() {
+		return "minimize-number-of-positive-deltas";
+	}
+
 }

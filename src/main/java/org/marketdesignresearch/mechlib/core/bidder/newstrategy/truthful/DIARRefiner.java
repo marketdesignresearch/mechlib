@@ -21,7 +21,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 	 * Even though working with BigDecimal arithmetics some slack
 	 * is needed to avoid validation errors later
 	 */
-	public static BigDecimal roundingDelta = BigDecimal.valueOf(1E-10d);
+	public static BigDecimal roundingDelta = BigDecimal.valueOf(1E-8d);
 	
 	public static double overallRefinement = 0;
 	

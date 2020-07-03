@@ -14,17 +14,20 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryWithMRPARRefinementStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentable;
+import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQueryWithMRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
 public class TruthfulBoundValueQueryStrategy
-		implements BoundValueQueryStrategy, BoundValueQueryWithMRPARRefinementStrategy {
+		implements BoundValueQueryStrategy, BoundValueQueryWithMRPARRefinementStrategy, RefinementInstrumentable {
 
 	private final static BigDecimal defaultStdDeviation = BigDecimal.valueOf(0.5);
 
@@ -32,6 +35,9 @@ public class TruthfulBoundValueQueryStrategy
 	private transient Bidder bidder;
 
 	private final BigDecimal stdDeviation;
+	@Setter
+	@Getter
+	private RefinementInstrumentation refinementInstrumentation;
 
 	public TruthfulBoundValueQueryStrategy() {
 		this(defaultStdDeviation);
@@ -50,8 +56,14 @@ public class TruthfulBoundValueQueryStrategy
 		BundleBoundValueBid newBids = this.applyBoundValueStrategy(query, auction);
 
 		BundleBoundValueBid activeBids = query.getLatestActiveBid().join(newBids);
-		return AutomatedRefiner.refine(new MRPARRefinement(), bidder, activeBids, activeBids, query.getPrices(),
+
+		MRPARRefinement type = new MRPARRefinement();
+		this.getRefinementInstrumentation().preRefinement(type, bidder, activeBids, activeBids, query.getPrices(),
+				query.getProvisionalAllocation());
+		BundleBoundValueBid bids = AutomatedRefiner.refine(type, bidder, activeBids, activeBids, query.getPrices(),
 				query.getProvisionalAllocation(), auction.getCurrentRoundRandom());
+		this.getRefinementInstrumentation().postRefinement(type, bidder, activeBids, bids, query.getPrices(), query.getProvisionalAllocation());
+		return bids;
 	}
 
 	@Override

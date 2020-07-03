@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.pric
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.FileSystems;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -105,14 +107,18 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	}
 	
 	public LinearPrices getPrices() {
-		if(this.prices == null) {
-			this.prices = this.solveMIP();
+		try {
+			if(this.prices == null) {
+				this.prices = this.solveMIP();
+			}
+			return prices;
+		} catch(RuntimeException e) {
+			new CPlexMIPSolver().exportToDisk(this.mip, FileSystems.getDefault().getPath("mip", this.getMIPName()+"-"+System.currentTimeMillis()+".lp"));
+			throw e;
 		}
-		return prices;
 	}
 	
-	private LinearPrices solveMIP() {
-    	getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+	protected LinearPrices solveMIP() {
     	if(timelimit>0) getMIP().setSolveParam(SolveParam.TIME_LIMIT, timelimit);
 		this.instrumentation.preMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP());
 		IMIPResult result = CPLEXUtils.SOLVER.solve(getMIP());
@@ -142,4 +148,6 @@ public abstract class LinearPriceMIP implements MipInstrumentationable{
 	protected Bundle getBidderAllocation(UUID bidder) {
 		return this.getAllocation().getTradesMap().entrySet().stream().filter(b -> b.getKey().getId().equals(bidder)).map(b -> b.getValue().getBundle()).findFirst().orElse(Bundle.EMPTY);
 	}
+	
+	protected abstract String getMIPName();
 }

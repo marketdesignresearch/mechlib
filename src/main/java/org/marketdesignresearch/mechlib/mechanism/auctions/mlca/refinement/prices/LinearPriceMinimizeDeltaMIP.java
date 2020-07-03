@@ -74,4 +74,9 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 		deltaResult = BigDecimal.valueOf(result.getValue(this.delta)).setScale(6,RoundingMode.HALF_UP);
 		return super.adaptMIPResult(result);
 	}
+
+	@Override
+	protected String getMIPName() {
+		return "minimize-max-delta";
+	}
 }

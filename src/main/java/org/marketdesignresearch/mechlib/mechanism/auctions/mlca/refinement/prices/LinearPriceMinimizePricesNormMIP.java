@@ -8,13 +8,27 @@ import java.util.UUID;
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
+
+	@Override
+	protected LinearPrices solveMIP() {
+		try {
+			return super.solveMIP();
+		} catch(RuntimeException e) {
+			// try different CPLEX Parameters
+			this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+			this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+			return super.solveMIP();
+		}
+	}
 
 	private BigDecimal priceSum;
 	
@@ -37,7 +51,13 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 		}
 		
 		mipWrapper.add(constraint);
+		mipWrapper.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
 		return mipWrapper;
+	}
+
+	@Override
+	protected String getMIPName() {
+		return "minimize-price-norm";
 	}
 	
 }

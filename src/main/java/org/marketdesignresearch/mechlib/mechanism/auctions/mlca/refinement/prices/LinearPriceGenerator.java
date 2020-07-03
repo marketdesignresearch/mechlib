@@ -39,7 +39,8 @@ public class LinearPriceGenerator {
 		
 		BigDecimal maxValue = valuations.stream().flatMap(b -> b.getBids().stream()).map(BundleExactValueBid::getBundleBids).flatMap(Set::stream)
 				.map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
+		maxValue = maxValue.max(allocation.getTradesMap().entrySet().stream().map(e -> valuations.stream().map(v -> v.getBid(e.getKey()).getBidForBundle(e.getValue().getBundle()).getAmount()).reduce(BigDecimal.ZERO,BigDecimal::max)).reduce(BigDecimal.ZERO,BigDecimal::max));
+		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.7));
 		
 		BigDecimal scalingFactor = BigDecimal.ONE;
 		if (maxValue.compareTo(maxMipValue) > 0) {
@@ -57,7 +58,7 @@ public class LinearPriceGenerator {
 		
 		Iterator<BundleExactValueBids> it = scaledValues.iterator();
 		
-		BigDecimal offset = BigDecimal.valueOf(1e-5);
+		BigDecimal offset = BigDecimal.valueOf(1e-6);
 		PriceConstraints constraint = new PriceConstraints(setting.getBidders());
 		Prices prices = null;
 		// generate prices according to different targets (valuations)
@@ -99,10 +100,7 @@ public class LinearPriceGenerator {
 					localOffset = localOffset.scaleByPowerOfTen(1);
 					log.warn("Increasing offset due to infeasibility. New offset: {}", offset,re);
 				}
-			} while(localOffset.compareTo(BigDecimal.valueOf(100))<0 && !done);
-			
-			// increase basic offset for next valuation
-			offset = offset.scaleByPowerOfTen(1);
+			} while(localOffset.compareTo(BigDecimal.valueOf(0,1))<0 && !done);
 		}
 		
 		
@@ -111,11 +109,15 @@ public class LinearPriceGenerator {
 			LinearPriceMaximizePricesMIP max = new LinearPriceMaximizePricesMIP(domain, setting.getBidders(), allocation, constraint, timeLimit);
 			prices = max.getPrices();
 			
-			// Make prices unique
-			LinearPriceMinimizePricesNormMIP euclid = new LinearPriceMinimizePricesNormMIP(domain, setting.getBidders(), allocation, constraint, max.getPriceSum(), timeLimit);
-			prices = euclid.getPrices();
+			try {
+				// Make prices unique
+				LinearPriceMinimizePricesNormMIP euclid = new LinearPriceMinimizePricesNormMIP(domain, setting.getBidders(), allocation, constraint, max.getPriceSum(), timeLimit);
+				prices = euclid.getPrices();
+			} catch(RuntimeException e) {
+				log.warn("Unable to minimize euclidean distance of prices");
+			}
 		} catch(RuntimeException e) {
-			log.warn("Unable to maximize prices or minimize euclidean distance", e);
+			log.warn("Unable to maximize prices", e);
 		}
 		
 		return prices.divide(scalingFactor);

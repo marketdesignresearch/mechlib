@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
+import java.nio.file.FileSystems;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,20 +59,25 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	
 	private void solveMIP() {
 		
-		IMIPResult result;
+		IMIPResult result = null;;
 		try {
-			this.mip.setSolveParam(SolveParam.RELATIVE_OBJ_GAP, 1e-5);
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
     		result = CPLEXUtils.SOLVER.solve(this.mip);
     		this.getMipInstrumentation().postMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip, result);
 		} catch(RuntimeException e){
-			// Try Barrier instead
+			this.mip.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
 			try {
-			this.mip.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
-			result = CPLEXUtils.SOLVER.solve(this.mip);
+				result = CPLEXUtils.SOLVER.solve(this.mip);
 			} catch(RuntimeException e2) {
-				// new CPlexMIPSolver().exportToDisk(mipWrapper, FileSystems.getDefault().getPath("mip", "train-"+System.currentTimeMillis()+".lp"));
-				throw e2;
+				this.mip.setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+				this.mip.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+				try {
+					result = CPLEXUtils.SOLVER.solve(this.mip);
+				} catch(RuntimeException e3) {
+					new CPlexMIPSolver().exportToDisk(this.mip, FileSystems.getDefault().getPath("mip", "train-"+System.currentTimeMillis()+".lp"));
+					throw e3;
+					
+				}
 			}
 		}
 		this.adaptMIPResult(result);
