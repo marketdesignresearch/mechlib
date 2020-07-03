@@ -9,6 +9,7 @@ import java.util.Set;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomBundleSampling;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -18,8 +19,12 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 
 	private static final int DEFAULT_NUMBER_OF_INITIAL_QUERIES = 30;
 
-	private long seed;
+	private final long seed;
 	private final int numberOfInitialQueries;
+
+    public RandomQueryPhase() {
+        this(System.currentTimeMillis());
+    }
 
 	public RandomQueryPhase(long seed) {
 		this(seed, DEFAULT_NUMBER_OF_INITIAL_QUERIES);
@@ -36,13 +41,13 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 		Random random = new Random(this.seed);
 		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
 
-		for (Bidder b : auction.getDomain().getBidders()) {
-			bidderRestrictedBids.put(b, new LinkedHashSet<>());
-			while (bidderRestrictedBids.get(b).size() < this.numberOfInitialQueries) {
-				Bundle bundle = auction.getDomain().getRandomBundle(random);
-				bidderRestrictedBids.get(b).add(bundle);
-			}
-		}
+        for (Bidder b : auction.getDomain().getBidders()) {
+            bidderRestrictedBids.put(b, new LinkedHashSet<>());
+            while (bidderRestrictedBids.get(b).size() < this.numberOfInitialQueries) {
+                Bundle bundle = auction.getDomain().getSampledBundle(new UniformRandomBundleSampling(random));
+                bidderRestrictedBids.get(b).add(bundle);
+            }
+        }
 
 		return this.createConcreteAuctionRoundBuilder(auction, bidderRestrictedBids);
 	}

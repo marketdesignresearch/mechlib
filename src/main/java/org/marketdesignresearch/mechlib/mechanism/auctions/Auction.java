@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism implements AuctionInstrumentationable {
 
-    private static int DEFAULT_MAX_ROUNDS = 0;
+    private static final int DEFAULT_MAX_ROUNDS = 0;
 
     @Getter
     private final Domain domain;
@@ -39,10 +39,10 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     private final OutcomeRuleGenerator outcomeRuleGenerator;
 
     /**
-     * maximal number of rounds in this auction
+     * Maximum number of rounds in this auction
      * 
-     * if maxRounds equals to 0 the number of rounds is infinite and the auction
-     * terminates after all auction phases have completed sucessfully
+     * If maxRounds equals to 0, the number of rounds is infinite and the auction
+     * terminates after all auction phases have completed successfully.
      */
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;

@@ -43,7 +43,7 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
-		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> this.getInteraction(auction, b),(e1,e2) -> e1, LinkedHashMap::new)),auction);
+		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(Bidder::getId, b -> this.getInteraction(auction, b),(e1, e2) -> e1, LinkedHashMap::new)),auction);
 	}
 
 	@Override
