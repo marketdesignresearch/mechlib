@@ -20,10 +20,7 @@ import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.SimpleGood;
-import org.marketdesignresearch.mechlib.core.SimpleXORDomain;
+import org.marketdesignresearch.mechlib.core.*;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
@@ -51,7 +48,7 @@ public class MLCATest {
 	private static SimpleXORDomain domain;
 
     @BeforeClass
-    public static void setUp() throws IOException {
+    public static void setUp() {
     	
     	Random random = new Random(1);
     	Set<SimpleGood> goods = new LinkedHashSet<>();
@@ -60,11 +57,11 @@ public class MLCATest {
     		goods.add(new SimpleGood(""+i));
     	}
     	
-    	Set<Bundle> allBundles = Sets.powerSet(goods).stream().map(s -> Bundle.of(s)).collect(Collectors.toSet());
+    	Set<Bundle> allBundles = Sets.powerSet(goods).stream().map(Bundle::of).collect(Collectors.toSet());
     	List<XORBidder> bidders = new ArrayList<>();
     	for(int i=0; i<4; i++) {
     		// draw base values for each bidder
-    		Map<SimpleGood, Double> baseValue = new HashMap<SimpleGood, Double>();
+    		Map<Good, Double> baseValue = new HashMap<>();
     		for(SimpleGood g : goods)
     			baseValue.put(g, random.nextDouble()*100);
     		
@@ -80,7 +77,7 @@ public class MLCATest {
     		bidders.add(new XORBidder("Bidder "+i,new XORValueFunction(values)));
     	}
     	
-    	domain = new SimpleXORDomain(bidders, new ArrayList<SimpleGood>(goods));
+    	domain = new SimpleXORDomain(bidders, new ArrayList<>(goods));
     }
     
     @Test
