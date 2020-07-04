@@ -11,9 +11,9 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.SimpleGood;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
-import org.marketdesignresearch.mechlib.core.allocationlimits.DefaultBundleSizeAllocationLimit;
-import org.marketdesignresearch.mechlib.core.allocationlimits.DefaultBundleSizeAndGoodAllocationLimit;
-import org.marketdesignresearch.mechlib.core.allocationlimits.DefaultGoodAllocationLimit;
+import org.marketdesignresearch.mechlib.core.allocationlimits.BundleSizeAllocationLimit;
+import org.marketdesignresearch.mechlib.core.allocationlimits.BundleSizeAndGoodAllocationLimit;
+import org.marketdesignresearch.mechlib.core.allocationlimits.GoodAllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
@@ -47,7 +47,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid13 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(C), "3");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "4");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "5");
-        AllocationLimit limit1 = new DefaultGoodAllocationLimit(List.of(A,C));
+        AllocationLimit limit1 = new GoodAllocationLimit(List.of(A,B,C),List.of(A,C));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
@@ -69,7 +69,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid13 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(C), "3");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "4");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "5");
-        AllocationLimit limit1 = new DefaultBundleSizeAllocationLimit(2);
+        AllocationLimit limit1 = new BundleSizeAllocationLimit(2, List.of(A,B,C));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
@@ -92,7 +92,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid14 = new BundleExactValuePair(BigDecimal.valueOf(3), Sets.newHashSet(D), "4");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "5");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "6");
-        AllocationLimit limit1 = new DefaultBundleSizeAndGoodAllocationLimit(2, List.of(A,C,D));
+        AllocationLimit limit1 = new BundleSizeAndGoodAllocationLimit(2, List.of(A,B,C,D), List.of(A,C,D));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
@@ -114,7 +114,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid13 = new BundleExactValuePair(BigDecimal.valueOf(3), Sets.newHashSet(C), "3");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "4");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "5");
-        AllocationLimit limit1 = new DefaultGoodAllocationLimit(List.of(A,C));
+        AllocationLimit limit1 = new GoodAllocationLimit(List.of(A,B,C), List.of(A,C));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
@@ -136,7 +136,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid13 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(C), "3");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "4");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "5");
-        AllocationLimit limit1 = new DefaultBundleSizeAllocationLimit(2);
+        AllocationLimit limit1 = new BundleSizeAllocationLimit(2, List.of(A,B,C));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
@@ -159,7 +159,7 @@ public class WinnerDeterminationAllocationLimitTest {
         BundleExactValuePair bid14 = new BundleExactValuePair(BigDecimal.valueOf(3), Sets.newHashSet(D), "4");
         BundleExactValuePair bid21 = new BundleExactValuePair(BigDecimal.valueOf(2), Sets.newHashSet(B, C), "5");
         BundleExactValuePair bid22 = new BundleExactValuePair(BigDecimal.valueOf(1), Sets.newHashSet(B), "6");
-        AllocationLimit limit1 = new DefaultBundleSizeAndGoodAllocationLimit(2, List.of(A,C));
+        AllocationLimit limit1 = new BundleSizeAndGoodAllocationLimit(2, List.of(A,B,C,D), List.of(A,C));
         Bidder bidder1 = new XORBidder("B" + 1,limit1);
         Bidder bidder2 = new XORBidder("B" + 2);
 
