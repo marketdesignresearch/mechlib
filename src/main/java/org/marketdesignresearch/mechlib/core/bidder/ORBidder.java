@@ -5,13 +5,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
@@ -108,7 +106,7 @@ public class ORBidder implements Bidder, Serializable {
     
     @Override
 	public BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits) {
-    	Preconditions.checkArgument(ignoreAllocationLimits || AllocationLimitUtils.HELPER.validate(this.getAllocationLimit(), bundle)); 
+    	Preconditions.checkArgument(ignoreAllocationLimits || this.getAllocationLimit().validate(bundle)); 
     	return valueFunction.getValueFor(bundle);
 	}
     
