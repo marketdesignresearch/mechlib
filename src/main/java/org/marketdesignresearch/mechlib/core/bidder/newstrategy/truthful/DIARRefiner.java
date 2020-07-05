@@ -55,13 +55,17 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 		for(ImmutablePair<Bundle, BigDecimal> diarError : diarErrors) {
 			
 			// check if already reduced by other refinements
-			BigDecimal reductionOnProvisional = BigDecimal.ZERO;
-			// check if provisionalTrade is empty
+			BigDecimal previousReduction = BigDecimal.ZERO;
 			if(! (provisionalTrade.getTotalAmount() == 0)) {
-				reductionOnProvisional = returnBid.getBidForBundle(provisionalTrade).getLowerBound().subtract(activeBids.getBidForBundle(provisionalTrade).getLowerBound());
+				previousReduction = returnBid.getBidForBundle(provisionalTrade).getLowerBound().subtract(activeBids.getBidForBundle(provisionalTrade).getLowerBound());
 			}
-			if(diarError.left != null && activeBids.getBidForBundle(diarError.left).getUpperBound().subtract(returnBid.getBidForBundle(diarError.left).getUpperBound()).add(reductionOnProvisional).compareTo(epsilon) >= 0) break;
-			if(reductionOnProvisional.compareTo(epsilon.add(roundingDelta)) >= 0) break;
+			if(diarError.left != null) {
+				previousReduction = previousReduction.add(
+												activeBids.getBidForBundle(diarError.left).getUpperBound()
+												.subtract(returnBid.getBidForBundle(diarError.left).getUpperBound()));
+													
+			}
+			if(previousReduction.compareTo(epsilon.add(roundingDelta)) >= 0) break;
 			
 			BigDecimal trueValue = BigDecimal.ZERO;
 			if(diarError.left != null) trueValue = b.getValue(diarError.left);
@@ -185,7 +189,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 		}
 		
 		//empty bundle
-		diarError.add(new ImmutablePair<>(null, worstCaseProvisionalTrade.multiply(BigDecimal.valueOf(-1))));
+		diarError.add(new ImmutablePair<>(null, BigDecimal.ZERO.subtract(worstCaseProvisionalTrade)));
 		
 		diarError.sort((e1, e2) -> -e1.getRight().compareTo(e2.getRight()));
 		

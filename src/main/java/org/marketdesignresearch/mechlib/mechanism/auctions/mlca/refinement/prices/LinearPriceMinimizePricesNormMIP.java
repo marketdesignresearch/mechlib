@@ -11,9 +11,11 @@ import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
+import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
@@ -24,9 +26,22 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 			return super.solveMIP();
 		} catch(RuntimeException e) {
 			// try different CPLEX Parameters
-			this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
-			this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
-			return super.solveMIP();
+			try {
+				// try default CPLEX
+				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+				this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+				return super.solveMIP();
+			} catch(RuntimeException e2) {
+				// Force MIQCP problem type (with quadratic constraints)
+				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 0);
+				Variable boolVar = new Variable("boolTest", VarType.INT, 0, 1);
+				this.getMIP().add(boolVar);
+				Constraint quadratic = new Constraint(CompareType.LEQ, 1);
+				quadratic.addTerm(new QuadraticTerm(1, boolVar, boolVar));
+				this.getMIP().add(quadratic);
+				this.getMIP().addObjectiveTerm(1, boolVar);
+				return super.solveMIP();
+			}
 		}
 	}
 

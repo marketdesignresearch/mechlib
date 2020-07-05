@@ -89,7 +89,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP{
 				// do not consider allocated bundle as the delta of this bundle is 0 by definition
 				if(!bid.getBundle().equals(allocated)) {
 					BigDecimal value = allocatedValue.subtract(bid.getAmount());
-					c = mipWrapper.beginNewLEQConstraint(value.add(offset.divide(BigDecimal.valueOf(100))).doubleValue());
+					c = mipWrapper.beginNewLEQConstraint(value.add(offset.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)).doubleValue());
 					this.addPriceVariables(c, allocated, bid.getBundle());
 
 					Variable delta = mipWrapper.makeNewDoubleVar("Bid Delta "+(++varNr));

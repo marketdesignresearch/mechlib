@@ -42,10 +42,10 @@ public class RefinementHelper {
 		Allocation perturbed = new XORWinnerDetermination(
 				bids.getPerturbedBids(lowerBound)).getAllocation();
 
-		log.info("Lowerbound Reported Value: " + lowerBound.getTotalAllocationValue() + "\tTrue value: "
-				+ lowerBound.getTrueSocialWelfare());
-		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue() + "\tTrue value: "
-				+ lowerBound.getTrueSocialWelfare());
+		log.info("Lowerbound Reported Value: " + lowerBound.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP) + "\tTrue value: "
+				+ lowerBound.getTrueSocialWelfare().setScale(2,RoundingMode.HALF_UP));
+		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP) + "\tTrue value: "
+				+ lowerBound.getTrueSocialWelfare().setScale(2,RoundingMode.HALF_UP));
 
 		EfficiencyInfo info = new EfficiencyInfo();
 
