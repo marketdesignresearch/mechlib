@@ -16,6 +16,8 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
+import com.google.common.base.Preconditions;
+
 import edu.harvard.econcs.jopt.solver.SolveParam;
 
 
@@ -77,10 +79,24 @@ public interface Bidder extends MipInstrumentationable {
      *
      * @param bundle the bundle
      * @param alreadyWon the bundle which the bidder already won
+     * @param ignoreAllocationLimits specifies weather the allocation limit should be respected.
+     * @return the value of this bidder for the bundle of goods
+     */
+    default BigDecimal getValue(Bundle bundle, Bundle alreadyWon, boolean ignoreAllocationLimits) {
+    	Preconditions.checkArgument(ignoreAllocationLimits || this.getAllocationLimit().validate(bundle.merge(alreadyWon, true)));
+        return BigDecimal.ZERO.max(getValue(bundle.merge(alreadyWon, true)).subtract(getValue(alreadyWon)));
+    }
+    
+    /**
+     * Asks the bidder a value query: What is your value for a certain bundle of goods,
+     * given a bundle that is assured to be already won?
+     *
+     * @param bundle the bundle
+     * @param alreadyWon the bundle which the bidder already won
      * @return the value of this bidder for the bundle of goods
      */
     default BigDecimal getValue(Bundle bundle, Bundle alreadyWon) {
-        return BigDecimal.ZERO.max(getValue(bundle.merge(alreadyWon, true)).subtract(getValue(alreadyWon)));
+    	return this.getValue(bundle,alreadyWon,false);
     }
 
     /**

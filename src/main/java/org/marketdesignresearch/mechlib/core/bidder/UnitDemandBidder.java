@@ -6,13 +6,11 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.allocationlimits.utils.AllocationLimitUtils;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -63,7 +61,7 @@ public class UnitDemandBidder implements Bidder, Serializable {
 
     @Override
     public BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits) {
-    	Preconditions.checkArgument(ignoreAllocationLimits || AllocationLimitUtils.HELPER.validate(this.getAllocationLimit(), bundle)); 
+    	Preconditions.checkArgument(ignoreAllocationLimits || this.getAllocationLimit().validate(bundle)); 
     	
         if (bundle.getBundleEntries().size() > 0) {
             return value;
