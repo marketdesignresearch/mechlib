@@ -67,7 +67,7 @@ public class ConfigurableCCGFactory implements CCGFactory, ParameterizableCCGFac
 
         BigDecimal scalingFactor = null;
         BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).orElse(BigDecimal.ZERO);
-        BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.8));
+        BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.5));
 
         if (maxValue.compareTo(maxMipValue) > 0) {
             scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);

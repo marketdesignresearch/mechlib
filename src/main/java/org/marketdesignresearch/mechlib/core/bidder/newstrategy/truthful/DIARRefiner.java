@@ -184,7 +184,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 		for(BundleBoundValuePair bid : activeBids.getBundleBids()) {
 			// Error for provisional Trade can be ignored as it can not be improved by definition
 			if(!bid.getBundle().equals(provisionalTrade)) {
-				diarError.add(new ImmutablePair<>(bid.getBundle(), bid.getUpperBound().subtract(prices.getPrice(bid.getBundle()).getAmount().subtract(worstCaseProvisionalTrade))));
+				diarError.add(new ImmutablePair<>(bid.getBundle(), bid.getUpperBound().subtract(prices.getPrice(bid.getBundle()).getAmount()).subtract(worstCaseProvisionalTrade)));
 			}
 		}
 		
