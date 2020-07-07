@@ -39,7 +39,7 @@ public final class SimpleXORDomain implements Domain {
             if (efficientAllocation == null) {
                 XORWinnerDetermination xorWDP = new XORWinnerDetermination(BundleExactValueBids.fromXORBidders(bidders));
                 xorWDP.setMipInstrumentation(getMipInstrumentation());
-                xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+                xorWDP.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION.name());
                 efficientAllocation = xorWDP.getAllocation();
             }
         }

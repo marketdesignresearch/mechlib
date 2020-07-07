@@ -1,24 +1,30 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import com.google.common.collect.Lists;
-import edu.harvard.econcs.jopt.solver.*;
-import edu.harvard.econcs.jopt.solver.mip.MIP;
-import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
-import edu.harvard.econcs.jopt.solver.mip.Variable;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.Allocation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
-import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.marketdesignresearch.mechlib.core.Allocation;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.outcomerules.AllocationRule;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
+
+import com.google.common.collect.Lists;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.ISolution;
+import edu.harvard.econcs.jopt.solver.MIPException;
+import edu.harvard.econcs.jopt.solver.SolveParam;
+import edu.harvard.econcs.jopt.solver.mip.MIP;
+import edu.harvard.econcs.jopt.solver.mip.PoolSolution;
+import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class WinnerDetermination implements AllocationRule {
@@ -166,7 +172,7 @@ public abstract class WinnerDetermination implements AllocationRule {
     @Getter @Setter
     private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
     @Getter @Setter
-    private MipInstrumentation.MipPurpose purpose = MipInstrumentation.MipPurpose.ALLOCATION;
+    private String purpose = MipInstrumentation.MipPurpose.ALLOCATION.name();
     // endregion
 
 }

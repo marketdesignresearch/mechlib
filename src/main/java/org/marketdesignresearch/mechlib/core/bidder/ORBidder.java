@@ -14,6 +14,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
 import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
@@ -84,7 +85,7 @@ public class ORBidder implements Bidder, Serializable {
                 bundleValue.getId())));
         WinnerDetermination orWdp = new ORWinnerDetermination(new BundleExactValueBids(ImmutableMap.of(this, valueMinusPrice)));
         orWdp.setMipInstrumentation(getMipInstrumentation());
-        orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY);
+        orWdp.setPurpose(MipInstrumentation.MipPurpose.DEMAND_QUERY.name());
         List<Allocation> optimalAllocations = orWdp.getBestAllocations(maxNumberOfBundles);
 
         LinkedHashSet<Bundle> result = optimalAllocations.stream()
@@ -116,7 +117,7 @@ public class ORBidder implements Bidder, Serializable {
     
     @Override
 	public <T extends InteractionStrategy> T getStrategy(Class<T> type) {
-		if(!this.strategies.containsKey(type)) this.setStrategy(InteractionStrategy.defaultStrategy(type));
+		if(!this.strategies.containsKey(type)) this.setStrategy(DefaultStrategyHandler.defaultStrategy(type));
 		return  this.strategies.getInstance(type);
 	}
 	// endregion

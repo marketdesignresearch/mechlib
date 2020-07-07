@@ -33,7 +33,7 @@ public abstract class VCGRule implements OutcomeRule {
         long start = System.currentTimeMillis();
         WinnerDetermination allocationWdp = getWinnerDetermination();
         allocationWdp.setMipInstrumentation(getMipInstrumentation());
-        allocationWdp.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION);
+        allocationWdp.setPurpose(MipInstrumentation.MipPurpose.ALLOCATION.name());
         Allocation allocation = allocationWdp.getAllocation();
 
         Map<Bidder, BidderPayment> payments = new HashMap<>(allocation.getWinners().size());
@@ -44,7 +44,7 @@ public abstract class VCGRule implements OutcomeRule {
                 BigDecimal valueWithoutBidder = allocation.getTotalAllocationValue().subtract(allocation.allocationOf(bidder).getValue());
                 WinnerDetermination wdWithoutBidder = getWinnerDeterminationWithout(bidder);
                 wdWithoutBidder.setMipInstrumentation(getMipInstrumentation());
-                wdWithoutBidder.setPurpose(MipInstrumentation.MipPurpose.PAYMENT);
+                wdWithoutBidder.setPurpose(MipInstrumentation.MipPurpose.PAYMENT.name());
                 Allocation allocationWithoutBidder = wdWithoutBidder.getAllocation();
                 metaInfo = metaInfo.join(allocationWithoutBidder.getMetaInfo());
 
