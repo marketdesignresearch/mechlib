@@ -52,10 +52,10 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     private Random roundRandom;
     
     /**
-     * maximal number of rounds in this auction
+     * Maximum number of rounds in this auction
      * 
-     * if maxRounds equals to 0 the number of rounds is infinite and the auction
-     * terminates after all auction phases have completed sucessfully
+     * If maxRounds equals to 0, the number of rounds is infinite and the auction
+     * terminates after all auction phases have completed successfully.
      */
     @Getter @Setter
     private int maxRounds = DEFAULT_MAX_ROUNDS;
@@ -263,6 +263,14 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     	if (rounds.size() == 0) return Outcome.NONE;
         return getOutcomeAtRound(generator,rounds.size() - 1);
     }
+    
+	public Outcome getTemporaryResult() {
+		return this.getTemporaryResult(this.getOutcomeRuleGenerator());
+	}
+	
+	public Outcome getTemporaryResult(OutcomeRuleGenerator generator) {
+		return generator.getOutcomeRule(this.getLatestAggregatedBids().join(current.getTemporaryBids())).getOutcome();
+	}
     
     /**
      * 

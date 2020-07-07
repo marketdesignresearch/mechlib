@@ -95,7 +95,7 @@ public class XORBidder implements Bidder, Serializable {
     	Preconditions.checkArgument(ignoreAllocationLimits || this.getAllocationLimit().validate(bundle)); 
     	return valueFunction.getValueFor(bundle);
 	}
-    
+
     // region strategy
     // TODO handle persistence
     private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();

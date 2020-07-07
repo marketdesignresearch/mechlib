@@ -58,4 +58,9 @@ public class BoundMLQueryWithMRPARAuctionRoundBuilder extends AuctionRoundBuilde
 				
 		return new BoundMLQueryWithMRPARAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext, this.refinementInfos);
 	}
+
+	@Override
+	public BundleBoundValueBids getTemporaryBids() {
+		return new BundleBoundValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new)));
+	}
 }

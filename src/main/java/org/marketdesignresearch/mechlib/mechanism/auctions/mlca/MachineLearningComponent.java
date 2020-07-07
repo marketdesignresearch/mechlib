@@ -10,5 +10,5 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
  * @param <T>
  */
 public interface MachineLearningComponent<T extends BundleValueBids<?>> {
-		public MachineLearningAllocationInferrer getMLFunction(T bids);
+		MachineLearningAllocationInferrer getMLFunction(T bids);
 }

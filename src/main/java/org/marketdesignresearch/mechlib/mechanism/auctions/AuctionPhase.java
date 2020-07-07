@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 
 /**
+<<<<<<< HEAD
  * An AuctionPhase can consists of multiple rounds. The auction 
  * creates an AuctionRoundBuilder for every round that must handle 
  * one round of this phase.

@@ -62,6 +62,6 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 			Map<Bidder, Set<Bundle>> excludedBids) {
 		return this.kernel.getAllocationWithExcludedBundles(domain, economy, this.supportVectorsPerBider, excludedBids);
 	}
-
+	
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);
 }

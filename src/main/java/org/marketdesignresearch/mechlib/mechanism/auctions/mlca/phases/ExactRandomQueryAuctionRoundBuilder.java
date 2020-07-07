@@ -35,4 +35,10 @@ public class ExactRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 				new BundleExactValueBids(this.interactions.entrySet().stream().collect(
 						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1,LinkedHashMap::new))));
 	}
+
+	@Override
+	public BundleExactValueBids getTemporaryBids() {
+		return new BundleExactValueBids(this.interactions.entrySet().stream().collect(
+				Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1,LinkedHashMap::new)));
+	}
 }

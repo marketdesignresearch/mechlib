@@ -46,5 +46,10 @@ public class SimpleBidAuctionRoundBuilder extends AuctionRoundBuilder<BundleExac
 	private BundleExactValueBids collectBids() {
 		return new BundleExactValueBids(interactions.values().stream().filter(e -> e.getBid() != null).collect(Collectors.toMap(e -> e.getBidder(), e-> e.getBid(), (e1,e2)->e1, LinkedHashMap::new)));
 	}
+
+	@Override
+	public BundleExactValueBids getTemporaryBids() {
+		return this.collectBids();
+	}
 	
 }

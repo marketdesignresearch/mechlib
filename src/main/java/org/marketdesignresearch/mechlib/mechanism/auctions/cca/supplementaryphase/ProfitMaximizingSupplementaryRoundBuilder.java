@@ -44,4 +44,9 @@ public class ProfitMaximizingSupplementaryRoundBuilder extends AuctionRoundBuild
 		return new BundleExactValueBids(interactions.entrySet().stream().filter(e -> e.getValue().getBid() != null)
 				.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1,e2)->e1, LinkedHashMap::new)));
 	}
+
+	@Override
+	public BundleExactValueBids getTemporaryBids() {
+		return this.collectBids();
+	}
 }

@@ -35,4 +35,10 @@ public class BoundRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 				new BundleBoundValueBids(this.interactions.entrySet().stream().collect(
 						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))));
 	}
+
+	@Override
+	public BundleBoundValueBids getTemporaryBids() {
+		return new BundleBoundValueBids(this.interactions.entrySet().stream().collect(
+				Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new)));
+	}
 }

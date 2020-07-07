@@ -175,5 +175,5 @@ public interface Bidder extends MipInstrumentationable {
     default AllocationLimit getAllocationLimit() {
     	return AllocationLimit.NO;
     }
-    
+
 }
