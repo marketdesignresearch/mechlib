@@ -27,6 +27,14 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 
+/**
+ * 
+ * TODO add documentation
+ * 
+ * @author Manuel
+ *
+ * @param <BB>
+ */
 @ToString(callSuper = true) 
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
@@ -72,7 +80,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
         this.outcomeRuleGenerator = outcomeRuleGenerator;
         this.phases.add(firstPhase);
         this.prepareNextAuctionRoundBuilder();
-        // TODO
+        // TODO pass through of MIP Instrumentation to AuctionPhases and/or AuctionRoundBuilders
         //current.setMipInstrumentation(getMipInstrumentation());
     }
     
@@ -162,11 +170,6 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 		}
 		return roundRandom;
 	}
-    
-    public Outcome getTemporaryResult() {
-        return current.computeTemporaryResult(this.outcomeRuleGenerator);
-    }
-
 
     public BB getAggregatedBidsAt(int round) {
         Preconditions.checkArgument(round >= 0 && round < rounds.size());
@@ -227,19 +230,13 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
     public void resetToRound(int round) {
         Preconditions.checkArgument(round >= 1 && round <= rounds.size()+1);
         rounds = rounds.subList(0, round-1);
-        if(round > 0) {
-        	this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
-        	this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
-        } else {
-        	this.currentPhaseNumber = 0;
-        	this.currentPhaseRoundNumber = 0;
-        }
+        this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
+        this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
         this.prepareNextAuctionRoundBuilder();
     }
 
     /**
      * By default, the bids for the auction results are aggregated in each round
-     * TODO: does it make sense to store outcomes in the auction rounds? rounds can be accessed directly and then some rounds contain outcomes some other don't
      */
     public Outcome getOutcomeAtRound(int index) {
     	return this.getOutcomeAtRound(this.getOutcomeRuleGenerator(),index);

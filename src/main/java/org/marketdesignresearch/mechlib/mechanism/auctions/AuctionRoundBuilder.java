@@ -40,5 +40,4 @@ public abstract class AuctionRoundBuilder<BB extends BundleValueBids<?>> {
 	
 	public abstract Map<UUID, ? extends Interaction> getInteractions();
 	public abstract AuctionRound<BB> build();
-	protected abstract Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator);
 }

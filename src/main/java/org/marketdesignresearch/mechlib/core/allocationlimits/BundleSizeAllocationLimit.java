@@ -13,6 +13,12 @@ import com.google.common.base.Preconditions;
 
 import lombok.Getter;
 
+/**
+ * TODO add documentation
+ * 
+ * @author Manuel
+ *
+ */
 public class BundleSizeAllocationLimit extends AllocationLimit {
 	@Getter
 	private final int bundleSizeLimit;

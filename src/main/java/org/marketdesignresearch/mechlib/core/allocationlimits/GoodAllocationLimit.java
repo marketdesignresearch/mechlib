@@ -14,6 +14,12 @@ import com.google.common.base.Preconditions;
 
 import lombok.Getter;
 
+/**
+ * TODO add documentation
+ * 
+ * @author Manuel
+ *
+ */
 public class GoodAllocationLimit extends AllocationLimit{
 	@Getter
 	private final List<? extends Good> domainGoods;

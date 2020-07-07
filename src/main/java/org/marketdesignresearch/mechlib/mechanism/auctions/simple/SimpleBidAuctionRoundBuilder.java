@@ -42,11 +42,6 @@ public class SimpleBidAuctionRoundBuilder extends AuctionRoundBuilder<BundleExac
 	public AuctionRound<BundleExactValueBids> build() {
 		return new SimpleBidRound(this.getAuction(), this.collectBids());
 	}
-
-	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		return outcomeRuleGenerator.getOutcomeRule(this.collectBids()).getOutcome();
-	}
 	
 	private BundleExactValueBids collectBids() {
 		return new BundleExactValueBids(interactions.values().stream().filter(e -> e.getBid() != null).collect(Collectors.toMap(e -> e.getBidder(), e-> e.getBid(), (e1,e2)->e1, LinkedHashMap::new)));

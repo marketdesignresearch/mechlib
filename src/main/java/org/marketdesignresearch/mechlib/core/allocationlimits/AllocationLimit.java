@@ -10,6 +10,12 @@ import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomBundleS
 
 import lombok.Getter;
 
+/**
+ * TODO add documentation
+ * 
+ * @author Manuel
+ *
+ */
 public class AllocationLimit {
 	
 	@Getter

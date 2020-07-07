@@ -40,11 +40,4 @@ public class ExactMLQueryAuctionRoundBuilder extends AuctionRoundBuilder<BundleE
 		// TODO check if all interactions completed
 		return new MLQueryAuctionRound<>(this.getAuction(), new BundleExactValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext);
 	}
-
-	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -16,6 +16,12 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * TODO add documentation
+ * 
+ * @author Manuel
+ *
+ */
 @RequiredArgsConstructor
 public class AllocationLimitConstraint {
 	@RequiredArgsConstructor

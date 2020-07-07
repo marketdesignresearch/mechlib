@@ -6,6 +6,8 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 /**
  * Also check activity rules and validity here for submitted bids
  * 
+ * TODO documentation
+ * 
  * @author Manuel Beyeler
  *
  * @param <T>

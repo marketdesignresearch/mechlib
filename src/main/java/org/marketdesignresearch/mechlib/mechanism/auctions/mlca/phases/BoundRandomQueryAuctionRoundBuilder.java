@@ -35,10 +35,4 @@ public class BoundRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 				new BundleBoundValueBids(this.interactions.entrySet().stream().collect(
 						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))));
 	}
-
-	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -78,12 +78,6 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	}
 
 	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Set<RefinementType> createRefinementType(BundleBoundValueBids bids) {
 		return RefinementHelper.getMRPARAndDIAR(bids);
 	}

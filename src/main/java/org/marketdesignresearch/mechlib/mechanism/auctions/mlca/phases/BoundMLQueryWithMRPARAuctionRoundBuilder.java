@@ -58,10 +58,4 @@ public class BoundMLQueryWithMRPARAuctionRoundBuilder extends AuctionRoundBuilde
 				
 		return new BoundMLQueryWithMRPARAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1, LinkedHashMap::new))),marginalsToQueryNext, this.refinementInfos);
 	}
-
-	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
