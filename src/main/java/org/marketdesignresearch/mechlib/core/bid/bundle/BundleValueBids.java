@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
@@ -51,6 +52,13 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
      * @return New bids not including the bid of the specified bidder
      */
     public abstract BundleValueBids<T> without(Bidder bidder);
+    
+    /**
+     * 
+     * @param bidders bids for the respective bidders
+     * @return New bids only including specified bidders
+     */
+    public abstract BundleValueBids<T> only(Set<UUID> bidders);
 
     /**
      *

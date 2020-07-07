@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,32 +25,32 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningA
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T>{
 
 	private static final int DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND = 5;
+	private static final int DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES = 100;
 
 	private final MachineLearningComponent<T> machineLearningComponent;
-	@Setter @Getter
-	private int numberOfMarginalQueriesPerRound = DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND;
-	@Setter @Getter
-	private int maxQueries;
-
+	@Getter
+	private final long seed;
+	@Getter
+	private final int maxQueries;
+	@Getter
+	private final int numberOfMarginalQueriesPerRound;
 	private ElicitationEconomy mainEconomy;
 	private List<ElicitationEconomy> marginalEconomies;
-
-	private final long seed;
 
 	public MLQueryPhase(MachineLearningComponent<T> mlComponent) {
 		this(mlComponent, System.currentTimeMillis());
 	}
 
 	public MLQueryPhase(MachineLearningComponent<T> mlComponent, long seed) {
-		this.machineLearningComponent = mlComponent;
-		this.seed = seed;
+		this(mlComponent,seed,DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES,DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -144,10 +143,4 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 	public boolean phaseFinished(Auction<T> auction) {
 		return auction.getMaximumSubmittedBids() >= this.getMaxQueries();
 	}
-
-	@Override
-	public String getType() {
-		return "ML Query Phase";
-	}
-
 }

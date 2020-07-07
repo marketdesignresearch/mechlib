@@ -33,4 +33,9 @@ public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids
             Auction<BundleExactValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids) {
         return new ExactRandomQueryAuctionRoundBuilder(auction, auction.getDomain().getBidders().stream().collect(Collectors.toMap(Bidder::getId, b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction), (e1, e2) -> e1, LinkedHashMap::new)));
     }
+
+	@Override
+	public String getType() {
+		return "Exact Random Query Phase";
+	}
 }

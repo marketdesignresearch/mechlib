@@ -59,10 +59,4 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 	public boolean phaseFinished(Auction<T> auction) {
 		return auction.getCurrentPhaseRoundNumber() == 1;
 	}
-
-	@Override
-	public String getType() {
-		return "RANDOM QUERY GENERATOR";
-	}
-
 }
