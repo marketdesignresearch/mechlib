@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism implements AuctionInstrumentationable {
-
+	
     private static final int DEFAULT_MAX_ROUNDS = 0;
 
     @Getter

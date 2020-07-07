@@ -44,6 +44,7 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 		Preconditions.checkState(auction.getLastRound() instanceof PricedAuctionRound);
 
 		PricedAuctionRound<BundleExactValueBids> pricedRound = (PricedAuctionRound<BundleExactValueBids>) auction.getLastRound();
+		
 		return new ProfitMaximizingSupplementaryRoundBuilder(
 				auction.getDomain().getBidders().stream()
 						.collect(
