@@ -94,6 +94,7 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
             ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
             for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
             	// An unallocatable bundle might not be added to the mip at all
+            	// therefore check if a variable for this bundle exists
             	if(getBidVariable(bundleBid) != null) {
             		if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
                     	bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());

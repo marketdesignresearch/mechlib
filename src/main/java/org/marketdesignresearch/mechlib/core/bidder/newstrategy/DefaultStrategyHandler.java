@@ -32,6 +32,7 @@ public class DefaultStrategyHandler {
 	 * @param type
 	 * @param implementation
 	 */
+	
 	public static void addDefaultHandler(Class<? extends InteractionStrategy> type, Class<? extends InteractionStrategy> implementation) {
 		defaultStrategies.put(type, implementation);
 	}
