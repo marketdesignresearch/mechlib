@@ -20,7 +20,8 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class DefaultBoundValueQueryInteraction extends DefaultInteraction<BundleBoundValueBid> implements BoundValueQuery {
+public class DefaultBoundValueQueryInteraction extends DefaultInteraction<BundleBoundValueBid>
+		implements BoundValueQuery {
 
 	@Getter
 	private final Set<Bundle> queriedBundles;
@@ -30,7 +31,7 @@ public class DefaultBoundValueQueryInteraction extends DefaultInteraction<Bundle
 		super(bidder);
 		this.queriedBundles = bundles;
 	}
-	
+
 	public DefaultBoundValueQueryInteraction(Set<Bundle> bundles, UUID bidder, Auction<?> auction) {
 		super(bidder, auction);
 		this.queriedBundles = bundles;
@@ -38,13 +39,15 @@ public class DefaultBoundValueQueryInteraction extends DefaultInteraction<Bundle
 
 	@Override
 	public BundleBoundValueBid proposeBid() {
-		return this.getBidder().getStrategy(BoundValueQueryStrategy.class).applyBoundValueStrategy(this, this.getAuction());
+		return this.getBidder().getStrategy(BoundValueQueryStrategy.class).applyBoundValueStrategy(this,
+				this.getAuction());
 	}
 
 	@Override
 	public void submitBid(BundleBoundValueBid bid) {
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getGoods()));
-		Preconditions.checkArgument(this.getQueriedBundles().containsAll(bid.getBundleBids().stream().map(b -> b.getBundle()).collect(Collectors.toList())));
+		Preconditions.checkArgument(this.getQueriedBundles()
+				.containsAll(bid.getBundleBids().stream().map(b -> b.getBundle()).collect(Collectors.toList())));
 		Preconditions.checkArgument(this.getQueriedBundles().size() == bid.getBundleBids().size());
 		super.submitBid(bid);
 	}

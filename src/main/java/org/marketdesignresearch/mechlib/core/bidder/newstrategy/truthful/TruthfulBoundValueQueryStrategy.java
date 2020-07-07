@@ -45,9 +45,8 @@ public class TruthfulBoundValueQueryStrategy
 
 	@Override
 	public BundleBoundValueBid applyBoundValueStrategy(BoundValueQuery interaction, Auction<?> auction) {
-		return new BundleBoundValueBid(interaction.getQueriedBundles().stream()
-				.map(bundle -> this.getValueBoundsForBundle(bidder, bundle,
-						auction.getCurrentRoundRandom(), stdDeviation))
+		return new BundleBoundValueBid(interaction.getQueriedBundles().stream().map(
+				bundle -> this.getValueBoundsForBundle(bidder, bundle, auction.getCurrentRoundRandom(), stdDeviation))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
 
@@ -62,7 +61,8 @@ public class TruthfulBoundValueQueryStrategy
 				query.getProvisionalAllocation());
 		BundleBoundValueBid bids = AutomatedRefiner.refine(type, bidder, activeBids, activeBids, query.getPrices(),
 				query.getProvisionalAllocation(), auction.getCurrentRoundRandom());
-		this.getRefinementInstrumentation().postRefinement(type, bidder, activeBids, bids, query.getPrices(), query.getProvisionalAllocation());
+		this.getRefinementInstrumentation().postRefinement(type, bidder, activeBids, bids, query.getPrices(),
+				query.getProvisionalAllocation());
 		return bids;
 	}
 
@@ -74,25 +74,21 @@ public class TruthfulBoundValueQueryStrategy
 		return types;
 	}
 
-	
 	/**
 	 * Generate random truthful bounds
+	 * 
 	 * @param bundle
 	 * @return
 	 */
-	private BundleBoundValuePair getValueBoundsForBundle(Bidder bidder, Bundle bundle, Random random, BigDecimal stdDeviation) {
-		
+	private BundleBoundValuePair getValueBoundsForBundle(Bidder bidder, Bundle bundle, Random random,
+			BigDecimal stdDeviation) {
+
 		BigDecimal value = bidder.getValue(bundle);
-		BigDecimal lowerBound = value.subtract(BigDecimal.valueOf(random.nextGaussian())
-														 .abs()
-														 .multiply(stdDeviation
-																 .multiply(value)))
-						              .max(BigDecimal.ZERO);
-		BigDecimal upperBound = value.add(BigDecimal.valueOf(random.nextGaussian())
-													.abs()
-													.multiply(stdDeviation
-															.multiply(value))
-										);
+		BigDecimal lowerBound = value
+				.subtract(BigDecimal.valueOf(random.nextGaussian()).abs().multiply(stdDeviation.multiply(value)))
+				.max(BigDecimal.ZERO);
+		BigDecimal upperBound = value
+				.add(BigDecimal.valueOf(random.nextGaussian()).abs().multiply(stdDeviation.multiply(value)));
 		return new BundleBoundValuePair(lowerBound, upperBound, bundle, UUID.randomUUID().toString());
 	}
 }

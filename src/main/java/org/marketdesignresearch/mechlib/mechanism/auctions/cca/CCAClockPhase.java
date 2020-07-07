@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 
 	private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
@@ -37,7 +37,7 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 		this(initialPrices);
 		this.priceUpdater = priceUpdater;
 	}
-	
+
 	public CCAClockPhase(Domain domain, boolean proposeStartingPrices) {
 		if (proposeStartingPrices) {
 			this.initialPrices = domain.proposeStartingPrices();
@@ -45,9 +45,9 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 			this.initialPrices = new LinearPrices(domain.getGoods());
 		}
 	}
-	
+
 	public CCAClockPhase(Domain domain, boolean proposeStartingPrices, PriceUpdater priceUpdater) {
-		this(domain,proposeStartingPrices);
+		this(domain, proposeStartingPrices);
 		this.priceUpdater = priceUpdater;
 	}
 
@@ -55,13 +55,9 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Prices newPrices = this.getPrices(auction);
 		Map<UUID, DemandQuery> map = Collections.unmodifiableMap(auction.getDomain().getBidders().stream()
-				.collect(Collectors.toMap(
-						Bidder::getId,
-						b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction),
-						(e1, e2) -> e1,
-						LinkedHashMap::new)
-				)
-		);
+				.collect(Collectors.toMap(Bidder::getId,
+						b -> new DefaultDemandQueryInteraction(b.getId(), newPrices, auction), (e1, e2) -> e1,
+						LinkedHashMap::new)));
 		return new CCAClockRoundBuilder(map, auction);
 	}
 
@@ -70,18 +66,20 @@ public class CCAClockPhase implements AuctionPhase<BundleExactValueBids> {
 			return this.initialPrices;
 		} else {
 			CCAClockRound previousRound = (CCAClockRound) auction.getLastRound();
-			return priceUpdater.updatePrices(previousRound.getPrices(), auction.getDomain().getGoods().stream()
-					.collect(Collectors.toMap(g -> g, g -> previousRound.getDemandBids().getDemand(g), (e1,e2)->e1,LinkedHashMap::new)));
+			return priceUpdater.updatePrices(previousRound.getPrices(),
+					auction.getDomain().getGoods().stream().collect(Collectors.toMap(g -> g,
+							g -> previousRound.getDemandBids().getDemand(g), (e1, e2) -> e1, LinkedHashMap::new)));
 		}
 	}
 
 	@Override
 	public boolean phaseFinished(Auction<BundleExactValueBids> auction) {
-		if(auction.getNumberOfRounds() == 0) {
+		if (auction.getNumberOfRounds() == 0) {
 			return false;
 		} else {
 			CCAClockRound previousRound = (CCAClockRound) auction.getLastRound();
-			return previousRound.getOverDemand().values().stream().map(i -> i <= 0).reduce(Boolean::logicalAnd).orElse(true);
+			return previousRound.getOverDemand().values().stream().map(i -> i <= 0).reduce(Boolean::logicalAnd)
+					.orElse(true);
 		}
 	}
 

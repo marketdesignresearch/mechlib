@@ -19,8 +19,7 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
-		implements DemandQuery {
+public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid> implements DemandQuery {
 
 	@Getter
 	private final Prices prices;
@@ -36,12 +35,11 @@ public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
 		this.prices = prices;
 	}
 
-
 	@Override
 	public void submitBid(DemandBid bid) {
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getDemandedBundle()
 				.getBundleEntries().stream().map(e -> e.getGood()).collect(Collectors.toList())));
-		
+
 		// TODO add Activity Rule framework
 		super.submitBid(bid);
 	}

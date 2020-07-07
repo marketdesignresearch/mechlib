@@ -15,23 +15,22 @@ public class LastBidsTrueValueSupplementaryRound extends DefaultAuctionRound<Bun
 
 	@Getter
 	private final BundleExactValueBids bids;
-	
-    public LastBidsTrueValueSupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
-        super(auction);
-        this.bids = bids;
-    }
-    
-    @PersistenceConstructor
-    protected LastBidsTrueValueSupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, BundleExactValueBids bids) {
-		super(roundNumber,auctionPhaseNumber,auctionPhaseRoundNumber);
+
+	public LastBidsTrueValueSupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
+		super(auction);
 		this.bids = bids;
 	}
 
-    @Override
-    public String getDescription() {
-        return "Supplementary Round";
-    }
+	@PersistenceConstructor
+	protected LastBidsTrueValueSupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber,
+			BundleExactValueBids bids) {
+		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber);
+		this.bids = bids;
+	}
 
+	@Override
+	public String getDescription() {
+		return "Supplementary Round";
+	}
 
 }
-

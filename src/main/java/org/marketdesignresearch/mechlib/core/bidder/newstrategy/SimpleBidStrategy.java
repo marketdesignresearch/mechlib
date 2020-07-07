@@ -8,7 +8,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.SimpleBi
 
 public interface SimpleBidStrategy extends InteractionStrategy {
 	BundleExactValueBid applySimpleBidStrategy(SimpleBidInteraction interaction, Auction<?> auction);
-	
+
 	default Set<Class<? extends InteractionStrategy>> getTypes() {
 		return Set.of(SimpleBidStrategy.class);
 	}

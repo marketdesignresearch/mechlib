@@ -18,44 +18,45 @@ import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFuncti
 
 public class CATSAdapter {
 
-    public BundleExactValueBids adaptCATSAuction(CATSAuction catsAuction) {
-        SimpleXORDomain domain = adaptToDomain(catsAuction);
-        return BundleExactValueBids.fromXORBidders(domain.getBidders());
-    }
+	public BundleExactValueBids adaptCATSAuction(CATSAuction catsAuction) {
+		SimpleXORDomain domain = adaptToDomain(catsAuction);
+		return BundleExactValueBids.fromXORBidders(domain.getBidders());
+	}
 
-    private List<SimpleGood> adaptGoods(CATSAuction catsAuction) {
-        List<SimpleGood> goods = new ArrayList<>();
-        for (int i = 0; i < catsAuction.getNumberOfGoods() + catsAuction.getNumberOfDummyGoods(); ++i) {
-            if (i < catsAuction.getNumberOfGoods()) {
-                goods.add(new SimpleGood(String.valueOf(i), false));
-            } else {
-                goods.add(new SimpleGood(String.valueOf(i), true));
-            }
-        }
-        return goods;
-    }
+	private List<SimpleGood> adaptGoods(CATSAuction catsAuction) {
+		List<SimpleGood> goods = new ArrayList<>();
+		for (int i = 0; i < catsAuction.getNumberOfGoods() + catsAuction.getNumberOfDummyGoods(); ++i) {
+			if (i < catsAuction.getNumberOfGoods()) {
+				goods.add(new SimpleGood(String.valueOf(i), false));
+			} else {
+				goods.add(new SimpleGood(String.valueOf(i), true));
+			}
+		}
+		return goods;
+	}
 
-    public SimpleXORDomain adaptToDomain(CATSAuction catsAuction) {
-        List<SimpleGood> goods = adaptGoods(catsAuction);
-        Map<String, Set<BundleValue>> values = new LinkedHashMap<>();
-        for (CATSBid catsBid : catsAuction.getCatsBids()) {
-            Set<Good> goodsPerBid = new LinkedHashSet<>();
-            String bidderId = "SB" + catsBid.getId();
-            for (Integer id : catsBid.getGoodIds()) {
-                goodsPerBid.add(goods.get(id));
-                if (goods.get(id).isDummyGood()) {
-                    bidderId = "DB" + id;
-                }
-            }
-            BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid, String.valueOf(catsBid.getId()));
-            if (!values.containsKey(bidderId)) {
-                values.put(bidderId, new HashSet<>());
-            }
-            values.get(bidderId).add(bundleValue);
-        }
-        List<XORBidder> bidders = new ArrayList<>();
-        values.forEach((k, v) -> bidders.add(new XORBidder(k, new XORValueFunction(v))));
-        return new SimpleXORDomain(bidders, new ArrayList<>(goods));
+	public SimpleXORDomain adaptToDomain(CATSAuction catsAuction) {
+		List<SimpleGood> goods = adaptGoods(catsAuction);
+		Map<String, Set<BundleValue>> values = new LinkedHashMap<>();
+		for (CATSBid catsBid : catsAuction.getCatsBids()) {
+			Set<Good> goodsPerBid = new LinkedHashSet<>();
+			String bidderId = "SB" + catsBid.getId();
+			for (Integer id : catsBid.getGoodIds()) {
+				goodsPerBid.add(goods.get(id));
+				if (goods.get(id).isDummyGood()) {
+					bidderId = "DB" + id;
+				}
+			}
+			BundleValue bundleValue = new BundleValue(catsBid.getAmount(), goodsPerBid,
+					String.valueOf(catsBid.getId()));
+			if (!values.containsKey(bidderId)) {
+				values.put(bidderId, new HashSet<>());
+			}
+			values.get(bidderId).add(bundleValue);
+		}
+		List<XORBidder> bidders = new ArrayList<>();
+		values.forEach((k, v) -> bidders.add(new XORBidder(k, new XORValueFunction(v))));
+		return new SimpleXORDomain(bidders, new ArrayList<>(goods));
 
-    }
+	}
 }

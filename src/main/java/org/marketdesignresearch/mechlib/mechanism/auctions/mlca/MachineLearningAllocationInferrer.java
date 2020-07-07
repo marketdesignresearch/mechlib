@@ -13,5 +13,7 @@ public interface MachineLearningAllocationInferrer {
 	default Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy) {
 		return this.getInferredEfficientAllocation(domain, economy, new LinkedHashMap<Bidder, Set<Bundle>>());
 	}
-	public Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy, Map<Bidder,Set<Bundle>> excludedBundles);
+
+	public Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy,
+			Map<Bidder, Set<Bundle>> excludedBundles);
 }

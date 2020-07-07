@@ -37,103 +37,111 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination{
+public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
 
 	// TODO ??
 	public double relSolutionGap;
 	@Getter(AccessLevel.PACKAGE)
-    protected Map<UUID,Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
-	
-    @Getter
-    private final Domain domain;
+	protected Map<UUID, Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
+
+	@Getter
+	private final Domain domain;
 	@Getter
 	private final ElicitationEconomy economy;
 	@Getter
 	private final BundleExactValueBids supportVectors;
 	@Getter
-	private final Map<Bidder,Set<Bundle>> excludedBundles;
+	private final Map<Bidder, Set<Bundle>> excludedBundles;
 	@Getter
 	private final boolean genericSetting;
-	
+
 	private IMIP winnerDeterminationProgram = null;
 
-	public WinnerDeterminationWithExcludedBundles(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors, Map<Bidder,Set<Bundle>> excludedBundles, double timelimit) {
+	public WinnerDeterminationWithExcludedBundles(Domain domain, ElicitationEconomy economy,
+			BundleExactValueBids supportVectors, Map<Bidder, Set<Bundle>> excludedBundles, double timelimit) {
 		this.domain = domain;
 		this.economy = economy;
 		this.supportVectors = supportVectors;
 		this.excludedBundles = excludedBundles;
-		this.genericSetting = this.getDomain().getGoods().stream().map(g -> g.getQuantity() > 1).reduce(Boolean::logicalOr).get();
+		this.genericSetting = this.getDomain().getGoods().stream().map(g -> g.getQuantity() > 1)
+				.reduce(Boolean::logicalOr).get();
 		this.setPurpose(MipPurpose.KERNEL_WINNERDETERMINATION.name());
 		this.setTimeLimit(timelimit);
 	}
-	
+
 	protected Bidder getBidder(UUID id) {
-		return this.domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst().orElseThrow(NoSuchElementException::new);
+		return this.domain.getBidders().stream().filter(b -> b.getId().equals(id)).findFirst()
+				.orElseThrow(NoSuchElementException::new);
 	}
-    
-    protected Allocation adaptMIPResult(ISolution mipResult) {
-    	
-    	if (mipResult instanceof  IMIPResult)	relSolutionGap = ((IMIPResult) mipResult).getRelativeGap();
-	    ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
-       
-        for (UUID bidder : this.getEconomy().getBidders()) {
-        	Set<BundleEntry> entries = new LinkedHashSet<>();
-    		for (Good good : this.getGoods()) {
+
+	protected Allocation adaptMIPResult(ISolution mipResult) {
+
+		if (mipResult instanceof IMIPResult)
+			relSolutionGap = ((IMIPResult) mipResult).getRelativeGap();
+		ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
+
+		for (UUID bidder : this.getEconomy().getBidders()) {
+			Set<BundleEntry> entries = new LinkedHashSet<>();
+			for (Good good : this.getGoods()) {
 				double value = mipResult.getValue(bidderGoodVariables.get(bidder).get(good));
-    			if (value >= 1 - 1e-3 && value <= 1 + 1e-3)
-    				entries.add(new BundleEntry(good, (int) Math.floor(mipResult.getValue(bidderGoodVariables.get(bidder).get(good))+0.5)));
-    		}
-    		trades.put(this.getBidder(bidder), new BidderAllocation(BigDecimal.ZERO, new Bundle(entries), Collections.emptySet()));
-    	}
-      
-        MetaInfo metaInfo = new MetaInfo();
-        metaInfo.setNumberOfMIPs(1);
-        metaInfo.setMipSolveTime(mipResult.getSolveTime());
-        // if (TimeUnit.MILLISECONDS.toSeconds(mipResult.getSolveTime()) >= cplexTimeLimit)	metainfo.setHitTimeLimit(true);
-        return new Allocation(BigDecimal.valueOf(mipResult.getObjectiveValue()),trades.build(),new BundleExactValueBids(),metaInfo);
-    }  
-    
-    private IMIP createWinnerDeterminationProgram() {
-    	IMIP mip = this.createKernelSpecificWinnerDeterminationProgram();
-    	
-    	for(Map.Entry<Bidder, Set<Bundle>> bidderEntry : this.excludedBundles.entrySet()) {
-    		for (Bundle bundle : bidderEntry.getValue()) {
-    			Constraint intCut = new Constraint(CompareType.LEQ, bundle.getTotalAmount() - 1 + 1e-8);
-    			mip.add(intCut);
-    			for (Good good : this.getGoods()) {
-    				if (bundle.contains(good)) 
-    					intCut.addTerm(1, this.bidderGoodVariables.get(bidderEntry.getKey().getId()).get(good));
-    				else 
-    					intCut.addTerm(-1, this.bidderGoodVariables.get(bidderEntry.getKey().getId()).get(good));
-    			}
-    		}
-    	}
-    	
-    	// apply AllocationLimits
-    	for(UUID bUUID : this.getEconomy().getBidders()) {
-    		for(AllocationLimitConstraint alc : this.getBidder(bUUID).getAllocationLimit().getConstraints()) {
-    			mip.add(alc.createCPLEXConstraint(this.bidderGoodVariables.get(bUUID)));
-    		}
-    	}
-    	
-    	return mip;
-    }
-    
-    @Override
-    protected IMIP getMIP() {
-    	if(this.winnerDeterminationProgram == null)
-    		this.winnerDeterminationProgram = this.createWinnerDeterminationProgram();
-    	return this.winnerDeterminationProgram;
-    }
-    
-    protected abstract IMIP createKernelSpecificWinnerDeterminationProgram();
-    
-    @Override
+				if (value >= 1 - 1e-3 && value <= 1 + 1e-3)
+					entries.add(new BundleEntry(good,
+							(int) Math.floor(mipResult.getValue(bidderGoodVariables.get(bidder).get(good)) + 0.5)));
+			}
+			trades.put(this.getBidder(bidder),
+					new BidderAllocation(BigDecimal.ZERO, new Bundle(entries), Collections.emptySet()));
+		}
+
+		MetaInfo metaInfo = new MetaInfo();
+		metaInfo.setNumberOfMIPs(1);
+		metaInfo.setMipSolveTime(mipResult.getSolveTime());
+		// if (TimeUnit.MILLISECONDS.toSeconds(mipResult.getSolveTime()) >=
+		// cplexTimeLimit) metainfo.setHitTimeLimit(true);
+		return new Allocation(BigDecimal.valueOf(mipResult.getObjectiveValue()), trades.build(),
+				new BundleExactValueBids(), metaInfo);
+	}
+
+	private IMIP createWinnerDeterminationProgram() {
+		IMIP mip = this.createKernelSpecificWinnerDeterminationProgram();
+
+		for (Map.Entry<Bidder, Set<Bundle>> bidderEntry : this.excludedBundles.entrySet()) {
+			for (Bundle bundle : bidderEntry.getValue()) {
+				Constraint intCut = new Constraint(CompareType.LEQ, bundle.getTotalAmount() - 1 + 1e-8);
+				mip.add(intCut);
+				for (Good good : this.getGoods()) {
+					if (bundle.contains(good))
+						intCut.addTerm(1, this.bidderGoodVariables.get(bidderEntry.getKey().getId()).get(good));
+					else
+						intCut.addTerm(-1, this.bidderGoodVariables.get(bidderEntry.getKey().getId()).get(good));
+				}
+			}
+		}
+
+		// apply AllocationLimits
+		for (UUID bUUID : this.getEconomy().getBidders()) {
+			for (AllocationLimitConstraint alc : this.getBidder(bUUID).getAllocationLimit().getConstraints()) {
+				mip.add(alc.createCPLEXConstraint(this.bidderGoodVariables.get(bUUID)));
+			}
+		}
+
+		return mip;
+	}
+
+	@Override
+	protected IMIP getMIP() {
+		if (this.winnerDeterminationProgram == null)
+			this.winnerDeterminationProgram = this.createWinnerDeterminationProgram();
+		return this.winnerDeterminationProgram;
+	}
+
+	protected abstract IMIP createKernelSpecificWinnerDeterminationProgram();
+
+	@Override
 	public WinnerDetermination join(WinnerDetermination other) {
 		throw new UnsupportedOperationException();
-	}   
-    
-    protected List<? extends Good> getGoods() {
-    	return this.getDomain().getGoods();
-    }
+	}
+
+	protected List<? extends Good> getGoods() {
+		return this.getDomain().getGoods();
+	}
 }

@@ -15,14 +15,15 @@ public class SimpleBidRound extends DefaultAuctionRound<BundleExactValueBids> {
 
 	@Getter
 	private final BundleExactValueBids bids;
-	
+
 	public SimpleBidRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
 		super(auction);
 		this.bids = bids;
 	}
-	
+
 	@PersistenceConstructor
-	protected SimpleBidRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, BundleExactValueBids bids) {
+	protected SimpleBidRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber,
+			BundleExactValueBids bids) {
 		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber);
 		this.bids = bids;
 	}

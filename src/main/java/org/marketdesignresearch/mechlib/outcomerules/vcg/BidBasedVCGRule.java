@@ -9,23 +9,23 @@ import lombok.Getter;
 
 public abstract class BidBasedVCGRule extends VCGRule {
 
-    @Getter(AccessLevel.PROTECTED)
-    private final BundleValueBids<?> bids;
+	@Getter(AccessLevel.PROTECTED)
+	private final BundleValueBids<?> bids;
 
-    protected BidBasedVCGRule(BundleValueBids<?> bids) {
-        this.bids = bids;
-    }
+	protected BidBasedVCGRule(BundleValueBids<?> bids) {
+		this.bids = bids;
+	}
 
-    @Override
-    protected WinnerDetermination getWinnerDetermination() {
-        return getWinnerDetermination(getBids());
-    }
+	@Override
+	protected WinnerDetermination getWinnerDetermination() {
+		return getWinnerDetermination(getBids());
+	}
 
-    @Override
-    protected WinnerDetermination getWinnerDeterminationWithout(Bidder bidder) {
-        return getWinnerDetermination(getBids().without(bidder));
-    }
+	@Override
+	protected WinnerDetermination getWinnerDeterminationWithout(Bidder bidder) {
+		return getWinnerDetermination(getBids().without(bidder));
+	}
 
-    protected abstract WinnerDetermination getWinnerDetermination(BundleValueBids<?> bids);
+	protected abstract WinnerDetermination getWinnerDetermination(BundleValueBids<?> bids);
 
 }

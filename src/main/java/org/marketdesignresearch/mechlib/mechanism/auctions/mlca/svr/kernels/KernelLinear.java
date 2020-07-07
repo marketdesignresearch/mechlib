@@ -32,8 +32,9 @@ public class KernelLinear extends Kernel {
 	}
 
 	@Override
-	protected WinnerDetermination createWinnerDetermination(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectorsPerBidder,
-			Map<Bidder,Set<Bundle>> excludedBundles) {
-		return new WinnerDeterminationLinearKernel(domain, economy, supportVectorsPerBidder, excludedBundles, this.getWdpTimeLimit());
+	protected WinnerDetermination createWinnerDetermination(Domain domain, ElicitationEconomy economy,
+			BundleExactValueBids supportVectorsPerBidder, Map<Bidder, Set<Bundle>> excludedBundles) {
+		return new WinnerDeterminationLinearKernel(domain, economy, supportVectorsPerBidder, excludedBundles,
+				this.getWdpTimeLimit());
 	}
 }

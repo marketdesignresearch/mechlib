@@ -29,49 +29,50 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	@Getter
 	private BigDecimal deltaResult;
 
-	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint, double timelimit) {
+	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
+			Allocation allocation, PriceConstraints constraint, double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
 		this.bids = bids;
 	}
 
 	@Override
 	protected MIPWrapper createMIP() {
-		MIPWrapper mipWrapper = MIPWrapper.makeNewMinMIP();	    	
+		MIPWrapper mipWrapper = MIPWrapper.makeNewMinMIP();
 		delta = mipWrapper.makeNewDoubleVar("Delta");
-		
-		//Objective
+
+		// Objective
 		mipWrapper.addObjectiveTerm(1, delta);
-    	
+
 		// Constraints
 		Constraint c;
-		for(Bidder bidder: this.getBidders()) {
+		for (Bidder bidder : this.getBidders()) {
 			BundleExactValueBid values = bids.getBid(bidder);
-			
+
 			Bundle allocated = this.getAllocation().allocationOf(bidder).getBundle();
 			BigDecimal allocatedValue = values.getBidForBundle(allocated).getAmount();
-	
-			for(BundleExactValuePair bid : values.getBundleBids()) {
+
+			for (BundleExactValuePair bid : values.getBundleBids()) {
 				// do not restrict the allocated bundle
-				if(!bid.getBundle().equals(allocated)) {
+				if (!bid.getBundle().equals(allocated)) {
 					BigDecimal value = allocatedValue.subtract(bid.getAmount());
 					c = mipWrapper.beginNewLEQConstraint(value.doubleValue());
 					this.addPriceVariables(c, allocated, bid.getBundle());
-					c.addTerm(-1,delta);
+					c.addTerm(-1, delta);
 
 					mipWrapper.add(c);
 				}
 			}
 		}
-		
+
 		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9d);
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
-		
-    	return mipWrapper;
+
+		return mipWrapper;
 	}
 
 	@Override
 	protected LinearPrices adaptMIPResult(ISolution result) {
-		deltaResult = BigDecimal.valueOf(result.getValue(this.delta)).setScale(6,RoundingMode.HALF_UP);
+		deltaResult = BigDecimal.valueOf(result.getValue(this.delta)).setScale(6, RoundingMode.HALF_UP);
 		return super.adaptMIPResult(result);
 	}
 

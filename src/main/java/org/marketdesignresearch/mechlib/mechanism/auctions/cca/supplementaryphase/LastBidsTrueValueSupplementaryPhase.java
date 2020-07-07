@@ -22,24 +22,29 @@ import lombok.ToString;
 @ToString
 public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
-    public LastBidsTrueValueSupplementaryPhase() {
-    }
+	public LastBidsTrueValueSupplementaryPhase() {
+	}
 
-    public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
-        BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
-        if (bid == null) return new DefaultExactValueQueryInteraction(new LinkedHashSet<>(),bidder.getId(),auction);
-        Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle).collect(Collectors.toCollection(LinkedHashSet::new));
-        return new DefaultExactValueQueryInteraction(result,bidder.getId(),auction);
-    }
+	public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
+		BundleExactValueBid bid = auction.getLatestAggregatedBids().getBid(bidder);
+		if (bid == null)
+			return new DefaultExactValueQueryInteraction(new LinkedHashSet<>(), bidder.getId(), auction);
+		Set<Bundle> result = bid.getBundleBids().stream().map(BundleExactValuePair::getBundle)
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new DefaultExactValueQueryInteraction(result, bidder.getId(), auction);
+	}
 
-    @Override
-    public String getDescription() {
-        return "Supplementary round to submit the true values of the available bids";
-    }
+	@Override
+	public String getDescription() {
+		return "Supplementary round to submit the true values of the available bids";
+	}
 
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
-		return new LastBidsTrueValueSupplementaryRoundBuilder(auction.getDomain().getBidders().stream().collect(Collectors.toMap(Bidder::getId, b -> this.getInteraction(auction, b),(e1, e2) -> e1, LinkedHashMap::new)),auction);
+		return new LastBidsTrueValueSupplementaryRoundBuilder(
+				auction.getDomain().getBidders().stream().collect(Collectors.toMap(Bidder::getId,
+						b -> this.getInteraction(auction, b), (e1, e2) -> e1, LinkedHashMap::new)),
+				auction);
 	}
 
 	@Override

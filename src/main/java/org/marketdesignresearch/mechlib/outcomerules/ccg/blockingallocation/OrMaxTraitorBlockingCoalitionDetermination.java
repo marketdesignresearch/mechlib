@@ -11,14 +11,14 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 public class OrMaxTraitorBlockingCoalitionDetermination extends BlockingCoalitionDetermination {
 
-    public OrMaxTraitorBlockingCoalitionDetermination(BundleValueBids<?> bids, Outcome previousOutcome) {
-        super(bids, previousOutcome);
-        MIPWrapper mip = getMIP();
-        Allocation previousAllocation = previousOutcome.getAllocation();
-        for (Bidder winningBidder : previousAllocation.getWinners()) {
-            Variable traitor = mip.getVar(TRAITOR + winningBidder.getId());
-            // EPSILON adds Secondary Objective
-            mip.addObjectiveTerm(PrecisionUtils.EPSILON.doubleValue(), traitor);
-        }
-    }
+	public OrMaxTraitorBlockingCoalitionDetermination(BundleValueBids<?> bids, Outcome previousOutcome) {
+		super(bids, previousOutcome);
+		MIPWrapper mip = getMIP();
+		Allocation previousAllocation = previousOutcome.getAllocation();
+		for (Bidder winningBidder : previousAllocation.getWinners()) {
+			Variable traitor = mip.getVar(TRAITOR + winningBidder.getId());
+			// EPSILON adds Secondary Objective
+			mip.addObjectiveTerm(PrecisionUtils.EPSILON.doubleValue(), traitor);
+		}
+	}
 }

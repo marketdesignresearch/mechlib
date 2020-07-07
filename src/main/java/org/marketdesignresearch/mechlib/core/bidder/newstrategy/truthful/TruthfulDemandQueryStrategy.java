@@ -10,11 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public class TruthfulDemandQueryStrategy implements DemandQueryStrategy{
+public class TruthfulDemandQueryStrategy implements DemandQueryStrategy {
 
 	@Setter
 	private transient Bidder bidder;
-	
+
 	@Override
 	public DemandBid applyDemandStrategy(DemandQuery interaction, Auction<?> auction) {
 		return new DemandBid(bidder.getBestBundle(interaction.getPrices()));

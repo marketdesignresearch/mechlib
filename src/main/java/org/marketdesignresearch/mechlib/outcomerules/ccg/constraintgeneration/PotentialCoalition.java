@@ -17,36 +17,36 @@ import org.springframework.data.annotation.PersistenceConstructor;
  */
 public class PotentialCoalition {
 
-    private final Bundle bundle;
-    private final Bidder bidder;
-    private final BigDecimal value;
+	private final Bundle bundle;
+	private final Bidder bidder;
+	private final BigDecimal value;
 
-    public PotentialCoalition(Set<Good> goods, Bidder bidder, BigDecimal value) {
-        this(Bundle.of(goods), bidder, value);
-    }
+	public PotentialCoalition(Set<Good> goods, Bidder bidder, BigDecimal value) {
+		this(Bundle.of(goods), bidder, value);
+	}
 
-    @PersistenceConstructor
-    public PotentialCoalition(Bundle bundle, Bidder bidder, BigDecimal value) {
-        this.bundle = bundle;
-        this.bidder = bidder;
-        this.value = value;
-    }
+	@PersistenceConstructor
+	public PotentialCoalition(Bundle bundle, Bidder bidder, BigDecimal value) {
+		this.bundle = bundle;
+		this.bidder = bidder;
+		this.value = value;
+	}
 
-    public Bundle getBundle() {
-        return bundle;
-    }
+	public Bundle getBundle() {
+		return bundle;
+	}
 
-    public Bidder getBidder() {
-        return bidder;
-    }
+	public Bidder getBidder() {
+		return bidder;
+	}
 
-    public BigDecimal getValue() {
-        return value;
-    }
+	public BigDecimal getValue() {
+		return value;
+	}
 
-    @Override
-    public String toString() {
-        return "PotentialCoalition[bidder=" + bidder + " ,value=" + value + "]";
-    }
+	@Override
+	public String toString() {
+		return "PotentialCoalition[bidder=" + bidder + " ,value=" + value + "]";
+	}
 
 }

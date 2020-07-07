@@ -4,9 +4,7 @@ import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 
-
-
-public class KernelDotProductExponential extends KernelDotProduct{
+public class KernelDotProductExponential extends KernelDotProduct {
 	private double bandwidth;
 	private double scalingFactor;
 
@@ -14,16 +12,16 @@ public class KernelDotProductExponential extends KernelDotProduct{
 		this.bandwidth = bandwidth;
 		this.scalingFactor = scalingFactor;
 	}
-	
-	public KernelDotProductExponential(Map<String, Double> parameters){
+
+	public KernelDotProductExponential(Map<String, Double> parameters) {
 		this(parameters.get("eb"), parameters.get("es"));
 	}
-	
-	public Double getValue(Bundle bundle, Bundle bundle2){
-		return scalingFactor*Math.exp(BundleEncoder.getIntersectionSizeWith(bundle, bundle2)/bandwidth);
+
+	public Double getValue(Bundle bundle, Bundle bundle2) {
+		return scalingFactor * Math.exp(BundleEncoder.getIntersectionSizeWith(bundle, bundle2) / bandwidth);
 	}
 
-	public Double getValueGivenDotProduct(int dotProduct){
-		return scalingFactor*Math.exp(dotProduct/bandwidth);
-	}	
+	public Double getValueGivenDotProduct(int dotProduct) {
+		return scalingFactor * Math.exp(dotProduct / bandwidth);
+	}
 }

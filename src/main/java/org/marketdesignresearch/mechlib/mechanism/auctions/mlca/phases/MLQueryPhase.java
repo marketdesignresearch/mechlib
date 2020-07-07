@@ -28,11 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T>{
-	
+public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T> {
+
 	private static final int DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND = 5;
 	private static final int DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES = 100;
-	
+
 	private final MachineLearningComponent<T> machineLearningComponent;
 	@Getter
 	private final int maxQueries;
@@ -40,28 +40,29 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 	private final int numberOfMarginalQueriesPerRound;
 	private ElicitationEconomy mainEconomy;
 	private List<ElicitationEconomy> marginalEconomies;
-	
+
 	public MLQueryPhase(MachineLearningComponent<T> mlComponent) {
-		this(mlComponent,DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES,DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND);
+		this(mlComponent, DEFAULT_MAXIMAL_NUMBER_OF_TOTAL_QUERIES, DEFAULT_NUMBER_OF_MARGINAL_QUERIES_PER_ROUND);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
-		if(mainEconomy == null) {
+		if (mainEconomy == null) {
 			this.mainEconomy = new ElicitationEconomy(auction.getDomain());
 			this.marginalEconomies = new ArrayList<>();
-			auction.getDomain().getBidders().forEach(bidder -> this.marginalEconomies.add(new ElicitationEconomy(auction.getDomain(),bidder)));
+			auction.getDomain().getBidders()
+					.forEach(bidder -> this.marginalEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		}
-		
+
 		Map<Bidder, Set<Bundle>> restrictedBids = new LinkedHashMap<>();
 		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new LinkedHashMap<>();
-		
-		for(int i = auction.getNumberOfRounds()-1; i>=0; i--) {
+
+		for (int i = auction.getNumberOfRounds() - 1; i >= 0; i--) {
 			AuctionRound<T> auctionRound = auction.getRound(i);
 			// Find last MLQueryAuctionRound
-			if(MLQueryAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
-				bidderMarginalsTemp = ((MLQueryAuctionRound)auctionRound).getMarginalsToQueryNext();
+			if (MLQueryAuctionRound.class.isAssignableFrom(auctionRound.getClass())) {
+				bidderMarginalsTemp = ((MLQueryAuctionRound) auctionRound).getMarginalsToQueryNext();
 				break;
 			}
 		}
@@ -76,11 +77,11 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 		// Marginal Elicitation
 		for (Bidder bidder : auction.getDomain().getBidders()) {
-			log.info("Add marginal queries for Bidder {}",bidder.getName());
-			
+			log.info("Add marginal queries for Bidder {}", bidder.getName());
+
 			bidderMarginalsTemp.putIfAbsent(bidder.getId(), new ArrayList<>());
 			restrictedBids.putIfAbsent(bidder, new LinkedHashSet<>());
-			
+
 			for (int i = 0; i < marginalQueries; i++) {
 				// If all marginals were processed refill marginal list
 				if (bidderMarginalsTemp.get(bidder.getId()).isEmpty())
@@ -88,17 +89,19 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 							.filter(me -> me.getBidders().contains(bidder.getId())).collect(Collectors.toList()));
 
 				// choose random setting and remove from setting list
-				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId())
-						.remove(auction.getCurrentRoundRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
+				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId()).remove(
+						auction.getCurrentRoundRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
 
-				Allocation inferredEfficientAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(), economy,
-						Map.of(bidder,
-								Stream.concat(
-										Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
-												.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
-										, Stream.of(Bundle.EMPTY))
+				Allocation inferredEfficientAllocation = mlai
+						.getInferredEfficientAllocation(auction.getDomain(), economy,
+								Map.of(bidder, Stream
+										.concat(Stream.concat(
+												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
+														.stream().map(bb -> bb.getBundle()),
+												restrictedBids.get(bidder).stream()), Stream.of(Bundle.EMPTY))
 										.collect(Collectors.toCollection(LinkedHashSet::new))));
-				log.info(economy.toString() + " New bundle: "+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
+				log.info(economy.toString() + " New bundle: "
+						+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 				// TODO
 				// printElicitationInfo(inferredEfficientAllocation, bidder,
 				// marginalSetting,temporaryMetainfo);
@@ -109,24 +112,28 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 				restrictedBids.get(bidder).add(inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 			}
 		}
-		
+
 		// Main Elicitation
 		for (Bidder bidder : auction.getDomain().getBidders()) {
-			Allocation infAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy,
-					Map.of(bidder,
-							Stream.concat(
-									Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids().stream()
-											.map(bb -> bb.getBundle()), restrictedBids.get(bidder).stream())
-									,Stream.of(Bundle.EMPTY))
-									.collect(Collectors.toCollection(LinkedHashSet::new))));
-			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(),infAllocation.getTradesMap().get(bidder).getBundle());
+			Allocation infAllocation = mlai
+					.getInferredEfficientAllocation(
+							auction.getDomain(), this.mainEconomy, Map
+									.of(bidder, Stream
+											.concat(Stream.concat(
+													auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
+															.stream().map(bb -> bb.getBundle()),
+													restrictedBids.get(bidder).stream()), Stream.of(Bundle.EMPTY))
+											.collect(Collectors.toCollection(LinkedHashSet::new))));
+			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(),
+					infAllocation.getTradesMap().get(bidder).getBundle());
 			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
 		}
-		
+
 		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp);
 	}
-	
-	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction, Map<Bidder, Set<Bundle>> restrictedBids, Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp);
+
+	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction,
+			Map<Bidder, Set<Bundle>> restrictedBids, Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp);
 
 	@Override
 	public boolean phaseFinished(Auction<T> auction) {

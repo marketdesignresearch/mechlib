@@ -10,19 +10,19 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 public abstract class DefaultAuctionRound<BB extends BundleValueBids<?>> implements AuctionRound<BB> {
 
-    @Getter
-    private final int roundNumber;
-    @Getter
-    private final int auctionPhaseNumber;
-    @Getter
-    private final int auctionPhaseRoundNumber;
-    
-    public DefaultAuctionRound(Auction<BB> auction) {
-    	this.roundNumber = auction.getNumberOfRounds()+1;
-    	this.auctionPhaseNumber = auction.getCurrentPhaseNumber();
-    	this.auctionPhaseRoundNumber = auction.getCurrentPhaseRoundNumber();
-    }
+	@Getter
+	private final int roundNumber;
+	@Getter
+	private final int auctionPhaseNumber;
+	@Getter
+	private final int auctionPhaseRoundNumber;
+
+	public DefaultAuctionRound(Auction<BB> auction) {
+		this.roundNumber = auction.getNumberOfRounds() + 1;
+		this.auctionPhaseNumber = auction.getCurrentPhaseNumber();
+		this.auctionPhaseRoundNumber = auction.getCurrentPhaseRoundNumber();
+	}
 }

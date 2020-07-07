@@ -9,14 +9,16 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultAuctionRound;
 
 import lombok.Getter;
 
-public class DefaultRefinementAuctionRound extends DefaultAuctionRound<BundleBoundValueBids> implements RefinementAuctionRound {
+public class DefaultRefinementAuctionRound extends DefaultAuctionRound<BundleBoundValueBids>
+		implements RefinementAuctionRound {
 
 	@Getter
 	private final BundleBoundValueBids bids;
 	@Getter
 	private final Map<UUID, BidderRefinementRoundInfo> refinementInfos;
-	
-	public DefaultRefinementAuctionRound(Auction<BundleBoundValueBids> auction, BundleBoundValueBids bids, Map<UUID,BidderRefinementRoundInfo> refinementRoundInfos) {
+
+	public DefaultRefinementAuctionRound(Auction<BundleBoundValueBids> auction, BundleBoundValueBids bids,
+			Map<UUID, BidderRefinementRoundInfo> refinementRoundInfos) {
 		super(auction);
 		this.bids = bids;
 		this.refinementInfos = refinementRoundInfos;

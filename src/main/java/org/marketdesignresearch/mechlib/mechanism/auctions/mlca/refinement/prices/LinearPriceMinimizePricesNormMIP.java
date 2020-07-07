@@ -24,14 +24,14 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 	protected LinearPrices solveMIP() {
 		try {
 			return super.solveMIP();
-		} catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			// try different CPLEX Parameters
 			try {
 				// try default CPLEX
 				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
 				this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
 				return super.solveMIP();
-			} catch(RuntimeException e2) {
+			} catch (RuntimeException e2) {
 				// Force MIQCP problem type (with quadratic constraints)
 				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 0);
 				Variable boolVar = new Variable("boolTest", VarType.INT, 0, 1);
@@ -46,25 +46,25 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 	}
 
 	private BigDecimal priceSum;
-	
+
 	public LinearPriceMinimizePricesNormMIP(Domain domain, List<UUID> bidders, Allocation allocation,
 			PriceConstraints constraint, BigDecimal priceSum, double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
-		
+
 		this.priceSum = priceSum;
 	}
 
 	@Override
 	protected MIPWrapper createMIP() {
-		MIPWrapper mipWrapper = MIPWrapper.makeNewMinMIP();	  
+		MIPWrapper mipWrapper = MIPWrapper.makeNewMinMIP();
 		Constraint constraint = mipWrapper.beginNewGEQConstraint(priceSum.doubleValue() - 0.1);
-		
+
 		// Create Variables and Objective
-		for(Map.Entry<Good, Variable> entry : this.getPriceVariables().entrySet()) {
-			constraint.addTerm(entry.getKey().getQuantity(),entry.getValue());
+		for (Map.Entry<Good, Variable> entry : this.getPriceVariables().entrySet()) {
+			constraint.addTerm(entry.getKey().getQuantity(), entry.getValue());
 			mipWrapper.addObjectiveTerm(new QuadraticTerm(1, entry.getValue(), entry.getValue()));
 		}
-		
+
 		mipWrapper.add(constraint);
 		mipWrapper.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
 		return mipWrapper;
@@ -74,5 +74,5 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 	protected String getMIPName() {
 		return "minimize-price-norm";
 	}
-	
+
 }

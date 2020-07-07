@@ -25,48 +25,50 @@ import lombok.ToString;
 
 /**
  * Class that represents an XORValue of one {@link Bidder} on one bundle of
- * {@link Good}s in a mechanism. The object is immutable. compareTo, equals
- * and hashCode are all based on the id.
+ * {@link Good}s in a mechanism. The object is immutable. compareTo, equals and
+ * hashCode are all based on the id.
  * 
  * @author Benedikt Buenz
  * 
  */
 
-@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 @EqualsAndHashCode(of = "id")
 @ToString
 public class BundleValue implements Comparable<BundleValue>, Serializable {
-    public static final BundleValue ZERO = new BundleValue(BigDecimal.ZERO, Collections.emptySet(), "ZEROBUNDLE");
+	public static final BundleValue ZERO = new BundleValue(BigDecimal.ZERO, Collections.emptySet(), "ZEROBUNDLE");
 
-    private static final long serialVersionUID = 1037198522505712712L;
+	private static final long serialVersionUID = 1037198522505712712L;
 
-    @Getter
-    private final BigDecimal amount;
-    @Getter
-    private final Bundle bundle;
-    @Getter
-    private final String id;
+	@Getter
+	private final BigDecimal amount;
+	@Getter
+	private final Bundle bundle;
+	@Getter
+	private final String id;
 
-    public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, new Bundle(bundle.stream().collect(Collectors.toMap(good -> good, good -> 1, (e1, e2) -> e1, LinkedHashMap::new))), id);
-    }
+	public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
+		this(amount, new Bundle(
+				bundle.stream().collect(Collectors.toMap(good -> good, good -> 1, (e1, e2) -> e1, LinkedHashMap::new))),
+				id);
+	}
 
-    public BundleValue(BigDecimal amount, Bundle bundle) {
-        this(amount, bundle, UUID.randomUUID().toString());
-    }
+	public BundleValue(BigDecimal amount, Bundle bundle) {
+		this(amount, bundle, UUID.randomUUID().toString());
+	}
 
-    public long nonDummySize() {
-        Predicate<Good> isDummy = Good::isDummyGood;
-        return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();
-    }
+	public long nonDummySize() {
+		Predicate<Good> isDummy = Good::isDummyGood;
+		return bundle.getBundleEntries().stream().map(BundleEntry::getGood).filter(isDummy.negate()).count();
+	}
 
-    public BundleExactValuePair toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
-        return new BundleExactValuePair(valueToBidFunction.apply(amount), bundle, id);
-    }
+	public BundleExactValuePair toBid(UnaryOperator<BigDecimal> valueToBidFunction) {
+		return new BundleExactValuePair(valueToBidFunction.apply(amount), bundle, id);
+	}
 
-    @Override
-    public int compareTo(BundleValue o) {
-        return Comparator.comparing(BundleValue::getAmount).compare(this, o);
-    }
+	@Override
+	public int compareTo(BundleValue o) {
+		return Comparator.comparing(BundleValue::getAmount).compare(this, o);
+	}
 
 }

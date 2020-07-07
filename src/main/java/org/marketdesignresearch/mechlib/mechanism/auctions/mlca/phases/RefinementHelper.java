@@ -28,7 +28,7 @@ public class RefinementHelper {
 		public BigDecimal alpha;
 		public BigDecimal efficiency;
 	}
-	
+
 	public static EfficiencyInfo getRefinementInfo(Auction<BundleBoundValueBids> auction, ElicitationEconomy economy) {
 		return getRefinementInfo(auction.getLatestAggregatedBids().only(new LinkedHashSet<>(economy.getBidders())));
 	}
@@ -36,16 +36,15 @@ public class RefinementHelper {
 	public static EfficiencyInfo getRefinementInfo(Auction<BundleBoundValueBids> auction) {
 		return getRefinementInfo(auction.getLatestAggregatedBids());
 	}
-	
+
 	public static EfficiencyInfo getRefinementInfo(BundleBoundValueBids bids) {
 		Allocation lowerBound = new XORWinnerDetermination(bids).getAllocation();
-		Allocation perturbed = new XORWinnerDetermination(
-				bids.getPerturbedBids(lowerBound)).getAllocation();
+		Allocation perturbed = new XORWinnerDetermination(bids.getPerturbedBids(lowerBound)).getAllocation();
 
-		log.info("Lowerbound Reported Value: " + lowerBound.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP) + "\tTrue value: "
-				+ lowerBound.getTrueSocialWelfare().setScale(2,RoundingMode.HALF_UP));
-		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP) + "\tTrue value: "
-				+ lowerBound.getTrueSocialWelfare().setScale(2,RoundingMode.HALF_UP));
+		log.info("Lowerbound Reported Value: " + lowerBound.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP)
+				+ "\tTrue value: " + lowerBound.getTrueSocialWelfare().setScale(2, RoundingMode.HALF_UP));
+		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP)
+				+ "\tTrue value: " + lowerBound.getTrueSocialWelfare().setScale(2, RoundingMode.HALF_UP));
 
 		EfficiencyInfo info = new EfficiencyInfo();
 
@@ -63,15 +62,15 @@ public class RefinementHelper {
 		BigDecimal epsilon = BigDecimal.ZERO;
 		for (Bidder b : bids.getBidders()) {
 			BundleBoundValueBid bid = bids.getBid(b);
-			for(BundleBoundValuePair value : bid.getBundleBids()) {
+			for (BundleBoundValuePair value : bid.getBundleBids()) {
 				epsilon = epsilon.add(value.getUpperBound().subtract(value.getLowerBound())
 						.divide(BigDecimal.valueOf(bid.getBundleBids().size()), RoundingMode.HALF_UP));
 			}
 		}
-		epsilon = epsilon.divide(BigDecimal.valueOf(2*bids.getBidders().size()),RoundingMode.HALF_UP);
+		epsilon = epsilon.divide(BigDecimal.valueOf(2 * bids.getBidders().size()), RoundingMode.HALF_UP);
 		return epsilon;
 	}
-	
+
 	public static Set<RefinementType> getMRPARAndDIAR(BundleBoundValueBids bids) {
 		// Linked Hash set - the order of the refinement is deterministic
 		Set<RefinementType> refinements = new LinkedHashSet<>();
@@ -79,7 +78,7 @@ public class RefinementHelper {
 		refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
 		return refinements;
 	}
-	
+
 	public static Set<RefinementType> getMRPAR() {
 		return Set.of(new MRPARRefinement());
 	}

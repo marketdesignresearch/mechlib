@@ -5,13 +5,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.AccessLevel;
@@ -23,8 +21,9 @@ public class ExactRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 
 	@Getter
 	private final Map<UUID, ExactValueQuery> interactions;
-	
-	public ExactRandomQueryAuctionRoundBuilder(Auction<BundleExactValueBids> auction, Map<UUID, ExactValueQuery> interactions) {
+
+	public ExactRandomQueryAuctionRoundBuilder(Auction<BundleExactValueBids> auction,
+			Map<UUID, ExactValueQuery> interactions) {
 		super(auction);
 		this.interactions = interactions;
 	}
@@ -32,13 +31,15 @@ public class ExactRandomQueryAuctionRoundBuilder extends AuctionRoundBuilder<Bun
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
 		return new RandomQueryAuctionRound<>(this.getAuction(),
-				new BundleExactValueBids(this.interactions.entrySet().stream().collect(
-						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1,LinkedHashMap::new))));
+				new BundleExactValueBids(this.interactions.entrySet().stream()
+						.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()),
+								e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))));
 	}
 
 	@Override
 	public BundleExactValueBids getTemporaryBids() {
-		return new BundleExactValueBids(this.interactions.entrySet().stream().collect(
-				Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),(e1,e2)->e1,LinkedHashMap::new)));
+		return new BundleExactValueBids(this.interactions.entrySet().stream()
+				.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),
+						(e1, e2) -> e1, LinkedHashMap::new)));
 	}
 }

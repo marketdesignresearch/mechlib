@@ -16,44 +16,44 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
-public abstract class DefaultInteraction<T extends Bid> implements TypedInteraction<T>{
-	
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({ @PersistenceConstructor }))
+public abstract class DefaultInteraction<T extends Bid> implements TypedInteraction<T> {
+
 	@Transient
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
 	@Getter
 	// TODO may compare auction ID
 	protected Auction<?> auction;
-	
+
 	private final UUID bidderUuid;
 	private T submittedBid;
-	
+
 	public DefaultInteraction(UUID bidderUuid, Auction<?> auction) {
 		this.bidderUuid = bidderUuid;
 		this.auction = auction;
 	}
-	
+
 	public void submitBid(T bid) {
 		this.submittedBid = bid;
 	}
-	
+
 	public T getBid() {
 		return this.submittedBid;
 	}
-	
+
 	public Bidder getBidder() {
 		return auction.getBidder(this.bidderUuid);
 	}
-	
+
 	public void setAuction(Auction<?> auction) {
 		this.auction = auction;
 	}
-	
+
 	public void submitProposedBid() {
-		if(this.submittedBid == null) {
+		if (this.submittedBid == null) {
 			this.submitBid(this.proposeBid());
 		}
 	}
-	
+
 }

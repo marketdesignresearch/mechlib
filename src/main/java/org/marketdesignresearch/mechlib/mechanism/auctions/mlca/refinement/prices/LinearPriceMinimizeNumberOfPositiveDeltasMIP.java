@@ -25,17 +25,19 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 
-public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP{
+public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP {
 
-	private Map<Bidder,Map<Bundle,Variable>> zVariables = new LinkedHashMap<>();
+	private Map<Bidder, Map<Bundle, Variable>> zVariables = new LinkedHashMap<>();
 	private BundleExactValueBids bids;
 	private BigDecimal maxDelta;
 	private BigDecimal zeta;
-	
-	@Getter
-	private Map<Bidder,Set<Bundle>> positiveDeltas = new LinkedHashMap<>();
 
-	public LinearPriceMinimizeNumberOfPositiveDeltasMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation, PriceConstraints constraint, BigDecimal maxDelta, BigDecimal offset, double timelimit) {
+	@Getter
+	private Map<Bidder, Set<Bundle>> positiveDeltas = new LinkedHashMap<>();
+
+	public LinearPriceMinimizeNumberOfPositiveDeltasMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
+			Allocation allocation, PriceConstraints constraint, BigDecimal maxDelta, BigDecimal offset,
+			double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
 		this.bids = bids;
 		this.maxDelta = maxDelta.add(offset);
@@ -45,57 +47,59 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 	@Override
 	protected MIPWrapper createMIP() {
 
-		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();	    	
-    	
-		//Constraints
+		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
+
+		// Constraints
 		Constraint constraint;
 		int varNum = 0;
-		for(Bidder bidder: this.getBidders()) {
-			
+		for (Bidder bidder : this.getBidders()) {
+
 			this.zVariables.put(bidder, new LinkedHashMap<>());
-			
+
 			BundleExactValueBid values = bids.getBid(bidder);
-			
+
 			Bundle allocated = this.getAllocation().allocationOf(bidder).getBundle();
 			BigDecimal allocatedValue = values.getBidForBundle(allocated).getAmount();
-			
-			for(BundleExactValuePair bid : bids.getBid(bidder).getBundleBids()) {
-				// do not consider allocated bundle as the delta of this bundle is 0 by definition
-				if(!bid.getBundle().equals(allocated)) {
+
+			for (BundleExactValuePair bid : bids.getBid(bidder).getBundleBids()) {
+				// do not consider allocated bundle as the delta of this bundle is 0 by
+				// definition
+				if (!bid.getBundle().equals(allocated)) {
 
 					BigDecimal allocatedMinusBundleValue = allocatedValue.subtract(bid.getAmount());
-					constraint = mipWrapper.beginNewLEQConstraint(allocatedMinusBundleValue.add(maxDelta).doubleValue());
+					constraint = mipWrapper
+							.beginNewLEQConstraint(allocatedMinusBundleValue.add(maxDelta).doubleValue());
 					this.addPriceVariables(constraint, allocated, bid.getBundle());
-				
-					Variable zVariable = mipWrapper.makeNewBooleanVar("Bid Delta "+ (++varNum));
+
+					Variable zVariable = mipWrapper.makeNewBooleanVar("Bid Delta " + (++varNum));
 					LinearTerm lt = new LinearTerm(1, zVariable);
 					mipWrapper.addObjectiveTerm(lt);
 
-					constraint.addTerm(zeta.doubleValue(),zVariable);
+					constraint.addTerm(zeta.doubleValue(), zVariable);
 
 					mipWrapper.add(constraint);
 					this.zVariables.get(bidder).put(bid.getBundle(), zVariable);
 				}
 			}
 		}
-		
+
 		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-7d);
-		
+
 		return mipWrapper;
 	}
-	
+
 	@Override
 	protected LinearPrices adaptMIPResult(ISolution result) {
-		for(Bidder bidder: this.getBidders()) {
+		for (Bidder bidder : this.getBidders()) {
 			Set<Bundle> pDelta = new LinkedHashSet<>();
 			this.positiveDeltas.put(bidder, pDelta);
-			for(Map.Entry<Bundle,Variable> var : this.zVariables.get(bidder).entrySet()) {
-				if(result.getValue(var.getValue()) == 0) {
+			for (Map.Entry<Bundle, Variable> var : this.zVariables.get(bidder).entrySet()) {
+				if (result.getValue(var.getValue()) == 0) {
 					pDelta.add(var.getKey());
 				}
 			}
 		}
-		
+
 		return super.adaptMIPResult(result);
 	}
 

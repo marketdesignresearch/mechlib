@@ -6,10 +6,8 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 
 public abstract class ActivityRuleValidator<E extends RefinementType> {
-	
-	public abstract void validateRefinement(E type,
-			BundleBoundValueBid activeBids,
-			BundleBoundValueBid refinedBids, Prices bidderPrices,
-			Bundle provisionalAllocation) throws ValidatorException;
+
+	public abstract void validateRefinement(E type, BundleBoundValueBid activeBids, BundleBoundValueBid refinedBids,
+			Prices bidderPrices, Bundle provisionalAllocation) throws ValidatorException;
 
 }

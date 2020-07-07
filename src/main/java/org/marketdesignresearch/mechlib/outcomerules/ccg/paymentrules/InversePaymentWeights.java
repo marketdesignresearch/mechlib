@@ -7,21 +7,21 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 
 public class InversePaymentWeights implements CorePaymentWeights {
-    private final Payment payment;
+	private final Payment payment;
 
-    public InversePaymentWeights(Allocation allocation, Payment payment) {
-        this.payment = payment;
-    }
+	public InversePaymentWeights(Allocation allocation, Payment payment) {
+		this.payment = payment;
+	}
 
-    @Override
-    public double getWeight(Bidder bidder) {
-        double bidderPayment = payment.paymentOf(bidder).getAmount().doubleValue();
-        if (bidderPayment <= 0) {
+	@Override
+	public double getWeight(Bidder bidder) {
+		double bidderPayment = payment.paymentOf(bidder).getAmount().doubleValue();
+		if (bidderPayment <= 0) {
 
-            return payment.getTotalPayments().signum()==0?1d: MIP.MAX_VALUE;
-        } else {
-            return 1d / bidderPayment;
-        }
-    }
+			return payment.getTotalPayments().signum() == 0 ? 1d : MIP.MAX_VALUE;
+		} else {
+			return 1d / bidderPayment;
+		}
+	}
 
 }

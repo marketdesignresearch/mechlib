@@ -6,22 +6,21 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public abstract class DistributedSVR<T extends BundleValueBids<?>> implements MachineLearningComponent<T>, MipInstrumentationable {
+public abstract class DistributedSVR<T extends BundleValueBids<?>>
+		implements MachineLearningComponent<T>, MipInstrumentationable {
 
 	@Getter
 	private final SupportVectorSetup setup;
-	
+
 	@Getter
 	@Setter
 	private MipInstrumentation mipInstrumentation;
 
-	
 	public DistributedSVR(Kernel kernel) {
 		this(new SupportVectorSetup(kernel));
 	}

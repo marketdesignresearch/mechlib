@@ -14,54 +14,57 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 
 /**
  * Interface for automated refiners for one activity rule
+ * 
  * @author Manuel
  *
  * @param <E>
  */
 public abstract class AutomatedRefiner<E extends RefinementType> {
 	/**
-	 * @param type refinement type
-	 * @param b bidder
-	 * @param activeBids bids active at the beginning of this refinement round
-	 * @param refinedBids bids that might have been refined by a previous called refiner (otherwise equals activeBids) 
-	 * @param bidderPrices prices
+	 * @param type                  refinement type
+	 * @param b                     bidder
+	 * @param activeBids            bids active at the beginning of this refinement
+	 *                              round
+	 * @param refinedBids           bids that might have been refined by a previous
+	 *                              called refiner (otherwise equals activeBids)
+	 * @param bidderPrices          prices
 	 * @param provisionalAllocation provisional allocation of given bidder
 	 * @return refined bids
 	 */
-	public abstract BundleBoundValueBid refineBids(E type, Bidder b,
-			BundleBoundValueBid activeBids,
-			BundleBoundValueBid refinedBids, Prices prices,
-			Bundle provisionalAllocation, Random random);
-	
-	
+	public abstract BundleBoundValueBid refineBids(E type, Bidder b, BundleBoundValueBid activeBids,
+			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random);
+
 	/**
 	 * Generates a random number using the central limit theorem
+	 * 
 	 * @return
 	 */
 	protected double getNextGuassianLikeDouble(Bidder b, Random random) {
 		double value = 0;
 		int j = 2;
-		for(int i =0; i<j; i++) {
+		for (int i = 0; i < j; i++) {
 			value += random.nextDouble();
 		}
 		return value / j;
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Map<Class<? extends RefinementType>,AutomatedRefiner> refiners;
-	
+	private static Map<Class<? extends RefinementType>, AutomatedRefiner> refiners;
+
 	static {
 		refiners = new HashMap<>();
 		refiners.put(DIARRefinement.class, new DIARRefiner());
 		refiners.put(MRPARRefinement.class, new MRPARRefiner());
 	}
-	
-	@SuppressWarnings("unchecked" )
+
+	@SuppressWarnings("unchecked")
 	public static <E extends RefinementType> AutomatedRefiner<E> getRefiner(E type) {
 		return refiners.get(type.getClass());
 	}
-	
-	public static BundleBoundValueBid refine(RefinementType type, Bidder bidder, BundleBoundValueBid activeBids, BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
-		return getRefiner(type).refineBids(type, bidder, activeBids, refinedBids, prices, provisionalAllocation, random);
+
+	public static BundleBoundValueBid refine(RefinementType type, Bidder bidder, BundleBoundValueBid activeBids,
+			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
+		return getRefiner(type).refineBids(type, bidder, activeBids, refinedBids, prices, provisionalAllocation,
+				random);
 	}
 }

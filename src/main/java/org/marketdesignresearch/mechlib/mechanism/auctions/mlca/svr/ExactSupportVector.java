@@ -4,9 +4,10 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
-public class ExactSupportVector extends SupportVector<BundleExactValueBid,BundleExactValueBids>{
+public class ExactSupportVector extends SupportVector<BundleExactValueBid, BundleExactValueBids> {
 
-	public ExactSupportVector(SupportVectorSetup setup, BundleExactValueBids bids, MipInstrumentation mipInstrumentation) {
+	public ExactSupportVector(SupportVectorSetup setup, BundleExactValueBids bids,
+			MipInstrumentation mipInstrumentation) {
 		super(setup, bids, mipInstrumentation);
 	}
 

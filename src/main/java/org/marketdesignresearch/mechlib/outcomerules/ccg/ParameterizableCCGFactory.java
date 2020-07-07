@@ -6,26 +6,27 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.Bloc
 
 public interface ParameterizableCCGFactory extends MechanismFactory {
 
-    BlockingAllocationFinder getBlockingAllocationFinder();
+	BlockingAllocationFinder getBlockingAllocationFinder();
 
-    String lubinParkesName();
+	String lubinParkesName();
 
-    boolean enforceMRC();
+	boolean enforceMRC();
 
-    BigDecimal getDelta();
+	BigDecimal getDelta();
 
-    BigDecimal getEpsilon();
+	BigDecimal getEpsilon();
 
-    String tieBreaker();
+	String tieBreaker();
 
-    String getReferencePoint();
+	String getReferencePoint();
 
-    boolean referencePointBelowCore();
+	boolean referencePointBelowCore();
 
-    @Override
-    default String getOutcomeRuleName() {
-        String mrc = enforceMRC() ? "MRC" : "";
-        return getEpsilon() + "e" + getDelta() + "d" + mrc + lubinParkesName() + "tiebrk" + tieBreaker() + getReferencePoint();
-    }
+	@Override
+	default String getOutcomeRuleName() {
+		String mrc = enforceMRC() ? "MRC" : "";
+		return getEpsilon() + "e" + getDelta() + "d" + mrc + lubinParkesName() + "tiebrk" + tieBreaker()
+				+ getReferencePoint();
+	}
 
 }

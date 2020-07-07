@@ -6,13 +6,13 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 public class ORVCGRule extends BidBasedVCGRule {
 
-    public ORVCGRule(BundleValueBids<?> bids) {
-        super(bids);
-    }
+	public ORVCGRule(BundleValueBids<?> bids) {
+		super(bids);
+	}
 
-    @Override
-    protected final WinnerDetermination getWinnerDetermination(BundleValueBids<?> bids) {
-        return new ORWinnerDetermination(bids);
-    }
+	@Override
+	protected final WinnerDetermination getWinnerDetermination(BundleValueBids<?> bids) {
+		return new ORWinnerDetermination(bids);
+	}
 
 }

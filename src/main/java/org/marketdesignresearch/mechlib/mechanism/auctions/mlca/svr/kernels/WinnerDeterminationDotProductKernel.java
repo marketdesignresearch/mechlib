@@ -23,8 +23,9 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 
 	private KernelDotProduct kernel;
 
-	public WinnerDeterminationDotProductKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors,
-			Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel, double timelimit) {
+	public WinnerDeterminationDotProductKernel(Domain domain, ElicitationEconomy economy,
+			BundleExactValueBids supportVectors, Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel,
+			double timelimit) {
 		super(domain, economy, supportVectors, excludedBundles, timelimit);
 		this.kernel = kernel;
 	}
@@ -41,8 +42,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 
 			// Insert variables, one per each good
 			for (Good good : this.getDomain().getGoods()) {
-				bidderGoodVariables.get(b).put(good,
-						mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
+				bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
 			}
 
 			// Define objective
@@ -53,7 +53,7 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 				int svSize = bv.getBundle().getTotalAmount();
 				for (int i = 0; i <= svSize; i++) {
 					bidderSVSizeVariables.get(b).get(bv.getBundle()).put(i,
-							mipWrapper.makeNewBooleanVar("SVSize "+ (++varNum)));
+							mipWrapper.makeNewBooleanVar("SVSize " + (++varNum)));
 					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue() * kernel.getValueGivenDotProduct(i),
 							bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));
 					cSize.addTerm(i + 1, bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));

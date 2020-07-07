@@ -13,12 +13,12 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids>{
+public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids> {
 
 	public ExactRandomQueryPhase() {
 		super();
 	}
-	
+
 	@PersistenceConstructor
 	public ExactRandomQueryPhase(int numberOfQueries) {
 		super(numberOfQueries);
@@ -27,7 +27,11 @@ public class ExactRandomQueryPhase extends RandomQueryPhase<BundleExactValueBids
 	@Override
 	protected AuctionRoundBuilder<BundleExactValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleExactValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids) {
-		return new ExactRandomQueryAuctionRoundBuilder(auction,auction.getDomain().getBidders().stream().collect(Collectors.toMap(b -> b.getId(), b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction),(e1,e2)->e1,LinkedHashMap::new)));
+		return new ExactRandomQueryAuctionRoundBuilder(auction,
+				auction.getDomain().getBidders().stream()
+						.collect(Collectors.toMap(b -> b.getId(),
+								b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction),
+								(e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	@Override

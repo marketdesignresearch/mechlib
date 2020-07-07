@@ -14,7 +14,10 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
  */
 public interface Interaction {
 	Bidder getBidder();
+
 	void setAuction(Auction<?> auction);
+
 	void submitProposedBid();
+
 	Class<? extends Interaction> getType();
 }

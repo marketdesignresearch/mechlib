@@ -9,19 +9,20 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBids;
 
 public class FirstPriceRule extends SingleItemOutcomeRule {
 
-    public FirstPriceRule(SingleItemBids bids) {
-        super(bids);
-    }
+	public FirstPriceRule(SingleItemBids bids) {
+		super(bids);
+	}
 
-    public FirstPriceRule(BundleValueBids<?> bids) {
-        super(bids);
-    }
+	public FirstPriceRule(BundleValueBids<?> bids) {
+		super(bids);
+	}
 
-    @Override
-    protected BidderPayment getSingleItemPayment(SingleItemBids bids) {
-        Iterator<SingleItemBid> iterator = bids.getDescendingHighestBids().iterator();
-        if (!iterator.hasNext()) return BidderPayment.ZERO_PAYMENT;
-        SingleItemBid highestBid = iterator.next();
-        return new BidderPayment(highestBid.getBundleBid().getAmount());
-    }
+	@Override
+	protected BidderPayment getSingleItemPayment(SingleItemBids bids) {
+		Iterator<SingleItemBid> iterator = bids.getDescendingHighestBids().iterator();
+		if (!iterator.hasNext())
+			return BidderPayment.ZERO_PAYMENT;
+		SingleItemBid highestBid = iterator.next();
+		return new BidderPayment(highestBid.getBundleBid().getAmount());
+	}
 }

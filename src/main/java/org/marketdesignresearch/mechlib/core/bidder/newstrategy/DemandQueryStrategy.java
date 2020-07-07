@@ -8,7 +8,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQu
 
 public interface DemandQueryStrategy extends InteractionStrategy {
 	DemandBid applyDemandStrategy(DemandQuery query, Auction<?> auction);
-	
+
 	default Set<Class<? extends InteractionStrategy>> getTypes() {
 		return Set.of(DemandQueryStrategy.class);
 	}

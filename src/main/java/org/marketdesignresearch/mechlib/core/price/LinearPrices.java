@@ -23,50 +23,53 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({ @PersistenceConstructor }))
 @ToString
 @EqualsAndHashCode
 public class LinearPrices implements Prices {
-    private final Map<UUID, Price> priceMap;
-    private final Set<Good> goods;
+	private final Map<UUID, Price> priceMap;
+	private final Set<Good> goods;
 
-    public LinearPrices(List<? extends Good> goods) {
-        this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO, (e1, e2) -> e1, LinkedHashMap::new)));
-    }
+	public LinearPrices(List<? extends Good> goods) {
+		this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO, (e1, e2) -> e1, LinkedHashMap::new)));
+	}
 
-    public LinearPrices(Map<Good, Price> goodPriceMap) {
-        this.goods = ImmutableSet.copyOf(goodPriceMap.keySet());
-        Map<UUID, Price> map = new LinkedHashMap<>();
-        goodPriceMap.forEach((g, p) -> map.put(g.getUuid(), p));
-        this.priceMap = ImmutableMap.copyOf(map);
-    }
+	public LinearPrices(Map<Good, Price> goodPriceMap) {
+		this.goods = ImmutableSet.copyOf(goodPriceMap.keySet());
+		Map<UUID, Price> map = new LinkedHashMap<>();
+		goodPriceMap.forEach((g, p) -> map.put(g.getUuid(), p));
+		this.priceMap = ImmutableMap.copyOf(map);
+	}
 
+	public Price get(Good good) {
+		return priceMap.getOrDefault(good.getUuid(), Price.ZERO);
+	}
 
-    public Price get(Good good) {
-        return priceMap.getOrDefault(good.getUuid(), Price.ZERO);
-    }
+	@Override
+	public Price getPrice(Bundle bundle) {
+		BigDecimal price = BigDecimal.ZERO;
+		for (BundleEntry entry : bundle.getBundleEntries()) {
+			price = price.add(get(entry.getGood()).getAmount().multiply(BigDecimal.valueOf(entry.getAmount())));
+		}
+		return new Price(price);
+	}
 
-    @Override
-    public Price getPrice(Bundle bundle) {
-        BigDecimal price = BigDecimal.ZERO;
-        for (BundleEntry entry : bundle.getBundleEntries()) {
-            price = price.add(get(entry.getGood()).getAmount().multiply(BigDecimal.valueOf(entry.getAmount())));
-        }
-        return new Price(price);
-    }
+	public Map<Good, Price> getPriceMap() {
+		Map<Good, Price> map = new LinkedHashMap<>();
+		priceMap.forEach((k, v) -> map.put(getGood(k), v));
+		return map;
+	}
 
-    public Map<Good, Price> getPriceMap() {
-        Map<Good, Price> map = new LinkedHashMap<>();
-        priceMap.forEach((k, v) -> map.put(getGood(k), v));
-        return map;
-    }
-
-    private Good getGood(UUID id) {
-        return goods.stream().filter(g -> g.getUuid().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
-    }
+	private Good getGood(UUID id) {
+		return goods.stream().filter(g -> g.getUuid().equals(id)).findAny().orElseThrow(NoSuchElementException::new);
+	}
 
 	@Override
 	public Prices divide(BigDecimal divisor) {
-		return new LinearPrices(this.priceMap.entrySet().stream().collect(Collectors.toMap(e -> this.goods.stream().filter(g -> g.getUuid().equals(e.getKey())).findAny().orElseThrow(), e -> new Price(e.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)), (e1, e2) -> e1, LinkedHashMap::new)));
+		return new LinearPrices(this.priceMap.entrySet().stream()
+				.collect(Collectors.toMap(
+						e -> this.goods.stream().filter(g -> g.getUuid().equals(e.getKey())).findAny().orElseThrow(),
+						e -> new Price(e.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)), (e1, e2) -> e1,
+						LinkedHashMap::new)));
 	}
 }

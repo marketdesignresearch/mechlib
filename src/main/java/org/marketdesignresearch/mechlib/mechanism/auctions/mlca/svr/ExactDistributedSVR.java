@@ -4,12 +4,12 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
-public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids>{
+public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids> {
 
 	public ExactDistributedSVR(SupportVectorSetup setup) {
 		super(setup);
 	}
-	
+
 	public ExactDistributedSVR(Kernel kernel) {
 		super(kernel);
 	}

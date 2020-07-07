@@ -26,65 +26,65 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
-    private final PaymentNorm primaryNorm;
-    private final PaymentNorm[] additionalNorms;
-    private final IMIP program;
-    private MetaInfo metaInfo = new MetaInfo();
-    private Payment result;
-    private final Allocation allocation;
+	private final PaymentNorm primaryNorm;
+	private final PaymentNorm[] additionalNorms;
+	private final IMIP program;
+	private MetaInfo metaInfo = new MetaInfo();
+	private Payment result;
+	private final Allocation allocation;
 
-    public MultiNormCorePaymentRule(Outcome referencePoint, PaymentNorm primaryNorm, PaymentNorm... additionalNorms) {
-        this.primaryNorm = primaryNorm;
-        this.additionalNorms = additionalNorms;
-        this.result = referencePoint.getPayment();
-        this.allocation = referencePoint.getAllocation();
-        program = createProgram(referencePoint.getAllocation(), result);
-    }
+	public MultiNormCorePaymentRule(Outcome referencePoint, PaymentNorm primaryNorm, PaymentNorm... additionalNorms) {
+		this.primaryNorm = primaryNorm;
+		this.additionalNorms = additionalNorms;
+		this.result = referencePoint.getPayment();
+		this.allocation = referencePoint.getAllocation();
+		program = createProgram(referencePoint.getAllocation(), result);
+	}
 
-    @Override
-    public Payment getPayment() {
-        if (result == null) {
-            try {
-                IMIP tempProgram = MIPWrapper.makeMIPWithoutObjective(program);
-                primaryNorm.addNormObjective(tempProgram);
-                for (PaymentNorm paymentNorm : additionalNorms) {
-                    paymentNorm.addNormObjective(tempProgram);
-                }
-                getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram);
-                IMIPResult mipResult = CPLEXUtils.SOLVER.solve(tempProgram);
-                getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram, mipResult);
-                MetaInfo tempMetaInfo = new MetaInfo();
-                tempMetaInfo.setNumberOfQPs(1);
-                result = primaryNorm.adaptProgram(allocation.getWinners(), mipResult, tempMetaInfo);
-                metaInfo = metaInfo.join(result.getMetaInfo());
-            } catch (MIPException ex) {
-                for (Constraint constraint : program.getConstraints()) {
-                    double sumOfUpperBounds = 0;
-                    for (LinearTerm term : constraint.getLinearTerms()) {
-                        sumOfUpperBounds += program.getVar(term.getVarName()).getUpperBound();
-                    }
-                    log.debug("Upper Bounds " + sumOfUpperBounds + " Constraint " + constraint.getConstant());
-                    if (sumOfUpperBounds - constraint.getConstant() < 1e-4) {
-                        log.error("Constraint is invalid {}", constraint);
-                    }
-                }
-                log.error("BPO infeasible", ex);
-                throw new MIPException("BPO infeasible", ex);
-            }
+	@Override
+	public Payment getPayment() {
+		if (result == null) {
+			try {
+				IMIP tempProgram = MIPWrapper.makeMIPWithoutObjective(program);
+				primaryNorm.addNormObjective(tempProgram);
+				for (PaymentNorm paymentNorm : additionalNorms) {
+					paymentNorm.addNormObjective(tempProgram);
+				}
+				getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram);
+				IMIPResult mipResult = CPLEXUtils.SOLVER.solve(tempProgram);
+				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram, mipResult);
+				MetaInfo tempMetaInfo = new MetaInfo();
+				tempMetaInfo.setNumberOfQPs(1);
+				result = primaryNorm.adaptProgram(allocation.getWinners(), mipResult, tempMetaInfo);
+				metaInfo = metaInfo.join(result.getMetaInfo());
+			} catch (MIPException ex) {
+				for (Constraint constraint : program.getConstraints()) {
+					double sumOfUpperBounds = 0;
+					for (LinearTerm term : constraint.getLinearTerms()) {
+						sumOfUpperBounds += program.getVar(term.getVarName()).getUpperBound();
+					}
+					log.debug("Upper Bounds " + sumOfUpperBounds + " Constraint " + constraint.getConstant());
+					if (sumOfUpperBounds - constraint.getConstant() < 1e-4) {
+						log.error("Constraint is invalid {}", constraint);
+					}
+				}
+				log.error("BPO infeasible", ex);
+				throw new MIPException("BPO infeasible", ex);
+			}
 
-        }
-        return new Payment(result.getPaymentMap(), metaInfo);
-    }
+		}
+		return new Payment(result.getPaymentMap(), metaInfo);
+	}
 
-    @Override
-    public void resetResult() {
-        result = null;
-    }
+	@Override
+	public void resetResult() {
+		result = null;
+	}
 
-    @Override
-    public void addBlockingConstraint(BlockedBidders blockedBidders, Payment lastPayment) {
-        MetaInfo newMetaInfo = addBlockingConstraint(program, blockedBidders, lastPayment);
-        metaInfo = metaInfo.join(newMetaInfo);
-    }
+	@Override
+	public void addBlockingConstraint(BlockedBidders blockedBidders, Payment lastPayment) {
+		MetaInfo newMetaInfo = addBlockingConstraint(program, blockedBidders, lastPayment);
+		metaInfo = metaInfo.join(newMetaInfo);
+	}
 
 }

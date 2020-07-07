@@ -17,8 +17,6 @@ import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
-import com.google.common.collect.Sets;
-
 public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	public BundleExactValueBids() {
@@ -88,17 +86,21 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	@Override
 	public BundleExactValueBids of(Set<Bidder> bidders) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b-> bidders.contains(b.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	@Override
 	public BundleExactValueBids without(Bidder bidder) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
 	}
-	
+
 	@Override
 	public BundleExactValueBids only(Set<UUID> bidders) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey().getId())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1,e2)->e1,LinkedHashMap::new)));
+		return new BundleExactValueBids(
+				this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey().getId())).collect(
+						Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,

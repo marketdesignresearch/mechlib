@@ -5,7 +5,7 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 
 public interface MechanismFactory {
 
-    OutcomeRule getOutcomeRule(BundleValueBids<?> bids);
+	OutcomeRule getOutcomeRule(BundleValueBids<?> bids);
 
-    String getOutcomeRuleName();
+	String getOutcomeRuleName();
 }

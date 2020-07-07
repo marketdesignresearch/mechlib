@@ -11,8 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class DemandBid implements Bid{
-	
+public class DemandBid implements Bid {
+
 	@Getter
 	private final Bundle demandedBundle;
 

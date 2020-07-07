@@ -49,10 +49,10 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 						+ "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
 			}
 		}
-		
-		for(Map.Entry<Bidder,B> entry : bids.getBidMap().entrySet()) {
+
+		for (Map.Entry<Bidder, B> entry : bids.getBidMap().entrySet()) {
 			this.supportVectorsPerBider.setBid(entry.getKey(),
-					this.createSupportVectorMIP(setup, (B)entry.getValue().multiply(scalingFactor)).getVectors());
+					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(scalingFactor)).getVectors());
 		}
 		kernel = setup.getKernel();
 	}
@@ -62,6 +62,6 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 			Map<Bidder, Set<Bundle>> excludedBids) {
 		return this.kernel.getAllocationWithExcludedBundles(domain, economy, this.supportVectorsPerBider, excludedBids);
 	}
-	
+
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);
 }

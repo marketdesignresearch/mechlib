@@ -27,14 +27,14 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 
 	private static final BigDecimal DEFAULT_EFFICIENCY_TOLERANCE = BigDecimal.valueOf(0.99);
 	private static final int DEFAULT_MAX_NUMBER_OF_ROUNDS = 30;
-	
+
 	private transient int refinementInfoRound = -1;
-	private transient Map<ElicitationEconomy,EfficiencyInfo> info = new LinkedHashMap<>();
+	private transient Map<ElicitationEconomy, EfficiencyInfo> info = new LinkedHashMap<>();
 
 	private final BigDecimal efficientyTolerance;
 	private final int maxNumberOfRounds;
 	private final boolean refineMarginalEconomies;
-	
+
 	private List<ElicitationEconomy> allRefinementEconomies;
 	@Getter
 	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
@@ -46,24 +46,25 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 
 	@Override
 	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
-		if(this.allRefinementEconomies == null) {
+		if (this.allRefinementEconomies == null) {
 			this.allRefinementEconomies = this.createAllRefinementEconomies(auction);
 		}
-		
+
 		this.updateInfo(auction);
-		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info, this.getPriceGenerator());
+		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info,
+				this.getPriceGenerator());
 	}
 
 	@Override
 	public boolean phaseFinished(Auction<BundleBoundValueBids> auction) {
 		this.updateInfo(auction);
-		return info.values().stream().map(i -> i.efficiency.compareTo(this.efficientyTolerance) >= 0).reduce(false, Boolean::logicalOr)				
-				|| auction.getCurrentPhaseRoundNumber() == this.maxNumberOfRounds;
+		return info.values().stream().map(i -> i.efficiency.compareTo(this.efficientyTolerance) >= 0).reduce(false,
+				Boolean::logicalOr) || auction.getCurrentPhaseRoundNumber() == this.maxNumberOfRounds;
 	}
 
 	private void updateInfo(Auction<BundleBoundValueBids> auction) {
 		if (this.refinementInfoRound != auction.getMaxRounds()) {
-			for(ElicitationEconomy economy : this.allRefinementEconomies) {
+			for (ElicitationEconomy economy : this.allRefinementEconomies) {
 				info.put(economy, RefinementHelper.getRefinementInfo(auction, economy));
 			}
 		}
@@ -73,12 +74,13 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 	public String getType() {
 		return "Refinement Phase";
 	}
-	
+
 	protected List<ElicitationEconomy> createAllRefinementEconomies(Auction<BundleBoundValueBids> auction) {
 		List<ElicitationEconomy> elicitationEconomies = new ArrayList<>();
 		elicitationEconomies.add(new ElicitationEconomy(auction.getDomain()));
-		if(this.refineMarginalEconomies)
-			auction.getDomain().getBidders().forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(),bidder)));
+		if (this.refineMarginalEconomies)
+			auction.getDomain().getBidders()
+					.forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		return elicitationEconomies;
 	}
 
@@ -86,7 +88,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids>, Bidd
 	public List<ElicitationEconomy> getRefinementEconomies() {
 		return this.allRefinementEconomies;
 	}
-	
+
 	public Logger getLogger() {
 		return log;
 	}

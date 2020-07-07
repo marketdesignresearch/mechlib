@@ -14,22 +14,23 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class DefaultSimpleBidInteraction extends DefaultInteraction<BundleExactValueBid> implements SimpleBidInteraction{
-	
+public class DefaultSimpleBidInteraction extends DefaultInteraction<BundleExactValueBid>
+		implements SimpleBidInteraction {
+
 	public DefaultSimpleBidInteraction(UUID bidder, Auction<?> auction) {
 		super(bidder, auction);
 	}
-	
+
 	@PersistenceConstructor
 	protected DefaultSimpleBidInteraction(UUID bidder) {
 		super(bidder);
 	}
-	
+
 	@Override
 	public BundleExactValueBid proposeBid() {
 		return this.getBidder().getStrategy(SimpleBidStrategy.class).applySimpleBidStrategy(this, this.getAuction());
 	}
-	
+
 	@Override
 	public void submitBid(BundleExactValueBid bid) {
 		// TODO check Preconditions

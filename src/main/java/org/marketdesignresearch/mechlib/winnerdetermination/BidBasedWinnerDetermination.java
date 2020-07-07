@@ -30,49 +30,50 @@ import lombok.Getter;
 
 public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 
-    private BundleValueBids<?> bids;
-    // TODO: Make sure we're not running in the same issue as back with SATS with this HashMap
-    protected Map<BundleExactValuePair, Variable> bidVariables = new LinkedHashMap<>();
-    
-    @Getter(AccessLevel.PROTECTED)
-    private BigDecimal scalingFactor = BigDecimal.ONE;
+	private BundleValueBids<?> bids;
+	// TODO: Make sure we're not running in the same issue as back with SATS with
+	// this HashMap
+	protected Map<BundleExactValuePair, Variable> bidVariables = new LinkedHashMap<>();
 
-    public BidBasedWinnerDetermination(BundleValueBids<?> bids) {
-        this.bids = bids;
-        
-        
-        BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-        BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
-        
-        if (maxValue.compareTo(maxMipValue) > 0) {
-            this.scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
-            if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
-                throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because" +
-                        "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
-            }
-        }
-    }
-    
-    @Override
-    public void setLowerBound(double lowerBound) {
-    	super.setLowerBound(BigDecimal.valueOf(lowerBound).multiply(this.scalingFactor).doubleValue());
-    }
-    
-    protected BigDecimal getScaledBundleBidAmount(BundleExactValuePair bundleBid) {
-    	return bundleBid.getAmount().multiply(this.scalingFactor);
-    }
+	@Getter(AccessLevel.PROTECTED)
+	private BigDecimal scalingFactor = BigDecimal.ONE;
 
-    protected BundleValueBids<?> getBids() {
-        return bids;
-    }
+	public BidBasedWinnerDetermination(BundleValueBids<?> bids) {
+		this.bids = bids;
 
-    @Override
-    protected Allocation solveWinnerDetermination() {
-        if (bids.getBidders().isEmpty()) {
-            return Allocation.EMPTY_ALLOCATION;
-        }
-        return super.solveWinnerDetermination();
-    }
+		BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream)
+				.map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
+		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
+
+		if (maxValue.compareTo(maxMipValue) > 0) {
+			this.scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
+			if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
+				throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because"
+						+ "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
+			}
+		}
+	}
+
+	@Override
+	public void setLowerBound(double lowerBound) {
+		super.setLowerBound(BigDecimal.valueOf(lowerBound).multiply(this.scalingFactor).doubleValue());
+	}
+
+	protected BigDecimal getScaledBundleBidAmount(BundleExactValuePair bundleBid) {
+		return bundleBid.getAmount().multiply(this.scalingFactor);
+	}
+
+	protected BundleValueBids<?> getBids() {
+		return bids;
+	}
+
+	@Override
+	protected Allocation solveWinnerDetermination() {
+		if (bids.getBidders().isEmpty()) {
+			return Allocation.EMPTY_ALLOCATION;
+		}
+		return super.solveWinnerDetermination();
+	}
 
 //    @Override
 //    public List<Allocation> getBestAllocations(int k) {
@@ -85,40 +86,40 @@ public abstract class BidBasedWinnerDetermination extends WinnerDetermination {
 //        return allocations;
 //    }
 
-    @Override
-    public Allocation adaptMIPResult(ISolution mipResult) {
-        ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
-        for (Bidder bidder : bids.getBidders()) {
-            BigDecimal totalValue = BigDecimal.ZERO;
-            Set<BundleEntry> bundleEntries = new LinkedHashSet<>();
-            ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
-            for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
-            	// An unallocatable bundle might not be added to the mip at all
-            	// therefore check if a variable for this bundle exists
-            	if(getBidVariable(bundleBid) != null) {
-            		if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
-                    	bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
-                    	bundleBids.add(bundleBid);
-                    	totalValue = totalValue.add(bundleBid.getAmount());
-                	}
-            	}
-            }
-            if (!bundleEntries.isEmpty()) {
-                trades.put(bidder, new BidderAllocation(totalValue, new Bundle(bundleEntries), bundleBids.build()));
-            }
-        }
+	@Override
+	public Allocation adaptMIPResult(ISolution mipResult) {
+		ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
+		for (Bidder bidder : bids.getBidders()) {
+			BigDecimal totalValue = BigDecimal.ZERO;
+			Set<BundleEntry> bundleEntries = new LinkedHashSet<>();
+			ImmutableSet.Builder<BundleExactValuePair> bundleBids = ImmutableSet.builder();
+			for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
+				// An unallocatable bundle might not be added to the mip at all
+				// therefore check if a variable for this bundle exists
+				if (getBidVariable(bundleBid) != null) {
+					if (DoubleMath.fuzzyEquals(mipResult.getValue(getBidVariable(bundleBid)), 1, 1e-3)) {
+						bundleEntries.addAll(bundleBid.getBundle().getBundleEntries());
+						bundleBids.add(bundleBid);
+						totalValue = totalValue.add(bundleBid.getAmount());
+					}
+				}
+			}
+			if (!bundleEntries.isEmpty()) {
+				trades.put(bidder, new BidderAllocation(totalValue, new Bundle(bundleEntries), bundleBids.build()));
+			}
+		}
 
-        MetaInfo metaInfo = new MetaInfo();
-        metaInfo.setNumberOfMIPs(1);
-        metaInfo.setMipSolveTime(mipResult.getSolveTime());
-        return new Allocation(trades.build(), bids, metaInfo);
-    }
+		MetaInfo metaInfo = new MetaInfo();
+		metaInfo.setNumberOfMIPs(1);
+		metaInfo.setMipSolveTime(mipResult.getSolveTime());
+		return new Allocation(trades.build(), bids, metaInfo);
+	}
 
-    protected Variable getBidVariable(BundleExactValuePair bundleBid) {
-        return bidVariables.get(bundleBid);
-    }
+	protected Variable getBidVariable(BundleExactValuePair bundleBid) {
+		return bidVariables.get(bundleBid);
+	}
 
-    protected Collection<Variable> getBidVariables() {
-        return bidVariables.values();
-    }
+	protected Collection<Variable> getBidVariables() {
+		return bidVariables.values();
+	}
 }

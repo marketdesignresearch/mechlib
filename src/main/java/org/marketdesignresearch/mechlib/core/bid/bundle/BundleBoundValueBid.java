@@ -62,7 +62,7 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 						b.getId()))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
-	
+
 	public BundleBoundValueBid copy() {
 		return new BundleBoundValueBid(new LinkedHashSet<>(this.getBundleBids()));
 	}

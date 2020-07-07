@@ -8,7 +8,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 
 public interface RefinementStrategy extends InteractionStrategy {
 	BundleBoundValueBid applyRefinementStrategy(RefinementQuery query, Auction<?> auction);
-	
+
 	default Set<Class<? extends InteractionStrategy>> getTypes() {
 		return Set.of(RefinementStrategy.class);
 	}

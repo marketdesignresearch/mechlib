@@ -16,27 +16,27 @@ public class ProfitMaximizingSupplementaryRound extends DefaultPricedAuctionRoun
 
 	@Getter
 	private final BundleExactValueBids bids;
-	
-    public ProfitMaximizingSupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids, Prices prices) {
-        super(auction, prices);
-        this.bids = bids;
-    }
-    
-    @PersistenceConstructor
-    protected ProfitMaximizingSupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, Prices prices, BundleExactValueBids bids) {
+
+	public ProfitMaximizingSupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids,
+			Prices prices) {
+		super(auction, prices);
+		this.bids = bids;
+	}
+
+	@PersistenceConstructor
+	protected ProfitMaximizingSupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber,
+			Prices prices, BundleExactValueBids bids) {
 		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber, prices);
 		this.bids = bids;
 	}
 
-    @Override
-    public String getDescription() {
-        return "Supplementary Profit Maximizing Round";
-    }
+	@Override
+	public String getDescription() {
+		return "Supplementary Profit Maximizing Round";
+	}
 
-    public String getType() {
-        return "SUPPLEMENTARY PROFITMAX";
-    }
-
+	public String getType() {
+		return "SUPPLEMENTARY PROFITMAX";
+	}
 
 }
-

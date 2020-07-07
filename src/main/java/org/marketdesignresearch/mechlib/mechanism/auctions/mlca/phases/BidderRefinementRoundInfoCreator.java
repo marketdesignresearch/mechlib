@@ -43,18 +43,20 @@ public interface BidderRefinementRoundInfoCreator {
 
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			List<ElicitationEconomy> bidderRefinementEconomies = new ArrayList<>();
-			if(previousRoundRefinementInfo != null) {
-				bidderRefinementEconomies = previousRoundRefinementInfo.get(bidder.getId()).getEconomiesToRefineNext(); 
+			if (previousRoundRefinementInfo != null) {
+				bidderRefinementEconomies = previousRoundRefinementInfo.get(bidder.getId()).getEconomiesToRefineNext();
 			}
-			// Make sure that the refinement conducted in this round is requested by this phase
-			bidderRefinementEconomies = bidderRefinementEconomies.stream().filter(b-> this.getRefinementEconomies().contains(b)).collect(Collectors.toList());
-			if(bidderRefinementEconomies.isEmpty()) {
+			// Make sure that the refinement conducted in this round is requested by this
+			// phase
+			bidderRefinementEconomies = bidderRefinementEconomies.stream()
+					.filter(b -> this.getRefinementEconomies().contains(b)).collect(Collectors.toList());
+			if (bidderRefinementEconomies.isEmpty()) {
 				bidderRefinementEconomies = this.getRefinementEconomies(bidder.getId());
 			}
 			ElicitationEconomy refinementEconomy = bidderRefinementEconomies
 					.remove(random.nextInt(bidderRefinementEconomies.size()));
-			
-			getLogger().info("Bidder {} uses refinement economy {}",bidder.getName(),refinementEconomy);
+
+			getLogger().info("Bidder {} uses refinement economy {}", bidder.getName(), refinementEconomy);
 
 			if (!refinementInfos.containsKey(refinementEconomy)) {
 				BundleExactValueBids alphaValuation = auction.getLatestAggregatedBids()
@@ -79,12 +81,15 @@ public interface BidderRefinementRoundInfoCreator {
 	}
 
 	default List<ElicitationEconomy> getRefinementEconomies(UUID bidder) {
-		return this.getRefinementEconomies().stream().filter(e -> e.getBidders().contains(bidder)).collect(Collectors.toList());
+		return this.getRefinementEconomies().stream().filter(e -> e.getBidders().contains(bidder))
+				.collect(Collectors.toList());
 	}
-	
+
 	LinearPriceGenerator getPriceGenerator();
-	
+
 	Set<RefinementType> createRefinementType(BundleBoundValueBids bids);
+
 	List<ElicitationEconomy> getRefinementEconomies();
+
 	Logger getLogger();
 }

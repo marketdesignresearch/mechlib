@@ -23,22 +23,24 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
  * 
  */
 public class SeparabilityConstraintGenerator implements PartialConstraintGenerator {
-    @Override
-    public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
+	@Override
+	public void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint,
+			Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule) {
 
-    }
+	}
 
-    @Override
-    public void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,
-                                   ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition, Outcome lastResult) {
+	@Override
+	public void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,
+			ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition,
+			Outcome lastResult) {
 
-        // For each independent sub graph
-        for (Set<PotentialCoalition> subGraph : connectivityInspector.connectedSets()) {
+		// For each independent sub graph
+		for (Set<PotentialCoalition> subGraph : connectivityInspector.connectedSets()) {
 
-            BlockedBidders blockedBidders = BlockedBidders.from(subGraph, blockingCoalition.getPotentialCoalitions());
-            corePaymentRule.addBlockingConstraint(blockedBidders, lastResult.getPayment());
+			BlockedBidders blockedBidders = BlockedBidders.from(subGraph, blockingCoalition.getPotentialCoalitions());
+			corePaymentRule.addBlockingConstraint(blockedBidders, lastResult.getPayment());
 
-        }
-    }
+		}
+	}
 
 }

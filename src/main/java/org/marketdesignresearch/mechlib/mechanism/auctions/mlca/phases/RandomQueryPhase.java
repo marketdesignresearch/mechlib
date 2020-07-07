@@ -35,8 +35,9 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
 
 		for (Bidder b : auction.getDomain().getBidders()) {
-			int bidderMaxQueries = Math.min(this.numberOfInitialQueries, b.getAllocationLimit().calculateAllocationBundleSpace(auction.getDomain().getGoods()));
-			
+			int bidderMaxQueries = Math.min(this.numberOfInitialQueries,
+					b.getAllocationLimit().calculateAllocationBundleSpace(auction.getDomain().getGoods()));
+
 			bidderRestrictedBids.put(b, new LinkedHashSet<>());
 			while (bidderRestrictedBids.get(b).size() < bidderMaxQueries) {
 				Bundle bundle = b.getAllocationLimit().getUniformRandomBundle(random, auction.getDomain().getGoods());

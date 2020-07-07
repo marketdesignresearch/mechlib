@@ -25,69 +25,71 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Class that represents a Bid of one {@link Bidder} on one bundle of
  * {@link Good}s in a Combinatorial Auction The object is immutable
- * </p>compareTo, equals and hashCode are all based on the id.
+ * </p>
+ * compareTo, equals and hashCode are all based on the id.
  * 
  * @author Benedikt Buenz
  * 
  */
-@RequiredArgsConstructor(onConstructor = @__({@PersistenceConstructor}))
+@RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 @Slf4j
 @EqualsAndHashCode
 @ToString
 public class BundleExactValuePair {
 
-    @Getter
-    private final BigDecimal amount;
-    @Getter
-    private final Bundle bundle;
-    @Getter
-    private final String id;
+	@Getter
+	private final BigDecimal amount;
+	@Getter
+	private final Bundle bundle;
+	@Getter
+	private final String id;
 
-    /**
-     * @param amount Bid amount
-     * @param bundle Goods to bid on
-     * @param id Same id as BundleValue
-     */
-    public BundleExactValuePair(BigDecimal amount, Set<Good> bundle, String id) {
-        this(amount, Bundle.of(bundle), id);
-    }
+	/**
+	 * @param amount Bid amount
+	 * @param bundle Goods to bid on
+	 * @param id     Same id as BundleValue
+	 */
+	public BundleExactValuePair(BigDecimal amount, Set<Good> bundle, String id) {
+		this(amount, Bundle.of(bundle), id);
+	}
 
-    /**
-     * @return The {@link Good}s that this Bid bids on
-     */
-    @Deprecated
-    public Set<Good> getGoods() {
-        if (bundle.getBundleEntries().stream().anyMatch(entry -> entry.getAmount() > 1)) {
-            log.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
-        }
-        Set<Good> goods = bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toCollection(LinkedHashSet::new));
-        return Collections.unmodifiableSet(goods);
-    }
+	/**
+	 * @return The {@link Good}s that this Bid bids on
+	 */
+	@Deprecated
+	public Set<Good> getGoods() {
+		if (bundle.getBundleEntries().stream().anyMatch(entry -> entry.getAmount() > 1)) {
+			log.error("Retrieving simple bundle when there are quantities greater than 1 involved!");
+		}
+		Set<Good> goods = bundle.getBundleEntries().stream().map(BundleEntry::getGood)
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return Collections.unmodifiableSet(goods);
+	}
 
-    public BundleExactValuePair reducedBy(BigDecimal amount) {
-        return new BundleExactValuePair(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
-    }
-    
-    public BundleExactValuePair multiply(BigDecimal amount) {
-        return new BundleExactValuePair(getAmount().multiply(amount), bundle, id);
-    }
+	public BundleExactValuePair reducedBy(BigDecimal amount) {
+		return new BundleExactValuePair(getAmount().subtract(amount).max(BigDecimal.ZERO), bundle, id);
+	}
 
-    public BundleExactValuePair withAmount(BigDecimal amount) {
-        return new BundleExactValuePair(amount, bundle, id);
-    }
+	public BundleExactValuePair multiply(BigDecimal amount) {
+		return new BundleExactValuePair(getAmount().multiply(amount), bundle, id);
+	}
 
-    public PotentialCoalition getPotentialCoalition(Bidder bidder) {
-        return new PotentialCoalition(getBundle(), bidder, amount);
-    }
+	public BundleExactValuePair withAmount(BigDecimal amount) {
+		return new BundleExactValuePair(amount, bundle, id);
+	}
 
-    public int countGood(Good good) {
-        return bundle.countGood(good);
-    }
+	public PotentialCoalition getPotentialCoalition(Bidder bidder) {
+		return new PotentialCoalition(getBundle(), bidder, amount);
+	}
 
+	public int countGood(Good good) {
+		return bundle.countGood(good);
+	}
 
 	BundleExactValuePair joinWith(BundleExactValuePair otherBid) {
-    	Preconditions.checkArgument(otherBid.getClass().equals(BundleExactValuePair.class));
-    	Preconditions.checkArgument(this.getBundle().equals(otherBid.getBundle()));
-    	return new BundleExactValuePair(this.getAmount().max(otherBid.getAmount()), this.getBundle(), UUID.randomUUID().toString());
-    }
+		Preconditions.checkArgument(otherBid.getClass().equals(BundleExactValuePair.class));
+		Preconditions.checkArgument(this.getBundle().equals(otherBid.getBundle()));
+		return new BundleExactValuePair(this.getAmount().max(otherBid.getAmount()), this.getBundle(),
+				UUID.randomUUID().toString());
+	}
 }

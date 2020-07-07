@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @RequiredArgsConstructor
 public class TruthfulExactValueQueryStrategy implements ExactValueQueryStrategy {
-	
+
 	@Setter
 	private transient Bidder bidder;
 

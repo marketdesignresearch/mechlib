@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class TruthfulRefinementStrategy implements RefinementStrategy, RefinementInstrumentable {
-	
+
 	@Setter
 	private transient Bidder bidder;
 	@Setter
@@ -23,11 +23,14 @@ public class TruthfulRefinementStrategy implements RefinementStrategy, Refinemen
 	@Override
 	public BundleBoundValueBid applyRefinementStrategy(RefinementQuery query, Auction<?> auction) {
 		BundleBoundValueBid refinedBid = query.getLatestActiveBid().copy();
-		
-		for(RefinementType type : query.getRefinementTypes()) {
-			this.getRefinementInstrumentation().preRefinement(type, bidder, query.getLatestActiveBid(), refinedBid, query.getPrices(), query.getProvisonalAllocation());
-			refinedBid = AutomatedRefiner.refine(type, bidder, query.getLatestActiveBid(), refinedBid, query.getPrices(), query.getProvisonalAllocation(), auction.getCurrentRoundRandom());
-			this.getRefinementInstrumentation().postRefinement(type, bidder, query.getLatestActiveBid(), refinedBid, query.getPrices(), query.getProvisonalAllocation());
+
+		for (RefinementType type : query.getRefinementTypes()) {
+			this.getRefinementInstrumentation().preRefinement(type, bidder, query.getLatestActiveBid(), refinedBid,
+					query.getPrices(), query.getProvisonalAllocation());
+			refinedBid = AutomatedRefiner.refine(type, bidder, query.getLatestActiveBid(), refinedBid,
+					query.getPrices(), query.getProvisonalAllocation(), auction.getCurrentRoundRandom());
+			this.getRefinementInstrumentation().postRefinement(type, bidder, query.getLatestActiveBid(), refinedBid,
+					query.getPrices(), query.getProvisonalAllocation());
 		}
 		return refinedBid;
 	}

@@ -18,20 +18,21 @@ import lombok.extern.log4j.Log4j2;
 
 @RequiredArgsConstructor
 @Log4j2
-public class TruthfulProfitMaxQueryStrategy implements ProfitMaxStrategy{
+public class TruthfulProfitMaxQueryStrategy implements ProfitMaxStrategy {
 
 	@Setter
 	private transient Bidder bidder;
-	
+
 	@Override
 	public BundleExactValueBid applyProfitMaxStrategy(ProfitMaxQuery interaction, Auction<?> auction) {
-		 Set<Bundle> bestBundles = bidder.getBestBundles(interaction.getPrices(), interaction.getNumberOfBids(), true);
-	     Set<BundleExactValuePair> bestBundleBids = new LinkedHashSet<>();
-	     for (Bundle bundle : bestBundles) {
-	         bestBundleBids.add(new BundleExactValuePair(bidder.getValue(bundle), bundle, UUID.randomUUID().toString()));
-	     }
-	     log.info("Bidder: {} demand query for {} bundles and reports {} bundles", bidder.getName(),interaction.getNumberOfBids(),bestBundles.size());
-	     return new BundleExactValueBid(bestBundleBids);
+		Set<Bundle> bestBundles = bidder.getBestBundles(interaction.getPrices(), interaction.getNumberOfBids(), true);
+		Set<BundleExactValuePair> bestBundleBids = new LinkedHashSet<>();
+		for (Bundle bundle : bestBundles) {
+			bestBundleBids.add(new BundleExactValuePair(bidder.getValue(bundle), bundle, UUID.randomUUID().toString()));
+		}
+		log.info("Bidder: {} demand query for {} bundles and reports {} bundles", bidder.getName(),
+				interaction.getNumberOfBids(), bestBundles.size());
+		return new BundleExactValueBid(bestBundleBids);
 	}
 
 }

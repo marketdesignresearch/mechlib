@@ -19,80 +19,85 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
-public class WinnerDeterminationTranslationInvariantKernel extends WinnerDeterminationWithExcludedBundles{
+public class WinnerDeterminationTranslationInvariantKernel extends WinnerDeterminationWithExcludedBundles {
 	/*
 	 * Doesn't work with multiple units!
 	 */
 
-    private KernelGaussian kernel;
-    
-    public WinnerDeterminationTranslationInvariantKernel(Domain domain, ElicitationEconomy economy,
-    		BundleExactValueBids supportVectorsPerBidder,
-			Map<Bidder, Set<Bundle>> excludedBids,
+	private KernelGaussian kernel;
+
+	public WinnerDeterminationTranslationInvariantKernel(Domain domain, ElicitationEconomy economy,
+			BundleExactValueBids supportVectorsPerBidder, Map<Bidder, Set<Bundle>> excludedBids,
 			KernelGaussian kernelGaussian, double timelimit) {
-    	super(domain,economy,supportVectorsPerBidder,excludedBids, timelimit);
+		super(domain, economy, supportVectorsPerBidder, excludedBids, timelimit);
 		this.kernel = kernelGaussian;
 	}
 
-    @Override
+	@Override
 	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
-    	
-    	Map<UUID,Map<Bundle, Map<Good, Variable>>> bidderSVDiffVariables = new LinkedHashMap<>();
-    	
-    	MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();	    		      	
-    	
-    	int varNum = 0;
-    	for (UUID b : this.getEconomy().getBidders()){
-    		bidderGoodVariables.put(b, new LinkedHashMap<>()); 
-    		bidderSVDiffVariables.put(b,new LinkedHashMap<>());
-    		
-			//Insert variables, one per each good     		
-			for (Good good : this.getDomain().getGoods()){
+
+		Map<UUID, Map<Bundle, Map<Good, Variable>>> bidderSVDiffVariables = new LinkedHashMap<>();
+
+		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
+
+		int varNum = 0;
+		for (UUID b : this.getEconomy().getBidders()) {
+			bidderGoodVariables.put(b, new LinkedHashMap<>());
+			bidderSVDiffVariables.put(b, new LinkedHashMap<>());
+
+			// Insert variables, one per each good
+			for (Good good : this.getDomain().getGoods()) {
 				bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
 			}
-   			  			
-			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()){
+
+			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()) {
 				bidderSVDiffVariables.get(b).put(bv.getBundle(), new LinkedHashMap<>());
-				Constraint cSet = mipWrapper.beginNewEQConstraint(1+bv.getBundle().getTotalAmount());
+				Constraint cSet = mipWrapper.beginNewEQConstraint(1 + bv.getBundle().getTotalAmount());
 				Constraint cSize = mipWrapper.beginNewEQConstraint(1);
-				
+
 				int goodIdx = 0;
-				for (Good good : this.getDomain().getGoods()){
-					bidderSVDiffVariables.get(b).get(bv.getBundle()).put(good, mipWrapper.makeNewBooleanVar("SV Diff "+ (++varNum)));
-					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue()*kernel.getValueGivenDifference(goodIdx),bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
-					cSet.addTerm(goodIdx+1, bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
+				for (Good good : this.getDomain().getGoods()) {
+					bidderSVDiffVariables.get(b).get(bv.getBundle()).put(good,
+							mipWrapper.makeNewBooleanVar("SV Diff " + (++varNum)));
+					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue() * kernel.getValueGivenDifference(goodIdx),
+							bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
+					cSet.addTerm(goodIdx + 1, bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
 					cSize.addTerm(1, bidderSVDiffVariables.get(b).get(bv.getBundle()).get(good));
 					goodIdx++;
 				}
-				
+
 				Set<Good> complementSet = new LinkedHashSet<>();
-				//TODO: Implement multiple units!
-				for (Good good : this.getDomain().getGoods()){
-					if (bv.getBundle().countGood(good)==0) complementSet.add(good);
-					if (bv.getBundle().countGood(good)>1) System.out.println("I am ignoring multiple units!");
+				// TODO: Implement multiple units!
+				for (Good good : this.getDomain().getGoods()) {
+					if (bv.getBundle().countGood(good) == 0)
+						complementSet.add(good);
+					if (bv.getBundle().countGood(good) > 1)
+						System.out.println("I am ignoring multiple units!");
 				}
-				for (Good good : this.getDomain().getGoods()){
-					if (bv.getBundle().countGood(good)==1) cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));
-					if (bv.getBundle().countGood(good)>1) {
+				for (Good good : this.getDomain().getGoods()) {
+					if (bv.getBundle().countGood(good) == 1)
+						cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));
+					if (bv.getBundle().countGood(good) > 1) {
 						cSet.addTerm(+1.0, bidderGoodVariables.get(b).get(good));
 						throw new IllegalStateException("Generic domains are not supported");
 					}
 				}
-				for (Good good : complementSet) cSet.addTerm(-1.0, bidderGoodVariables.get(b).get(good));
-				
+				for (Good good : complementSet)
+					cSet.addTerm(-1.0, bidderGoodVariables.get(b).get(good));
+
 				mipWrapper.endConstraint(cSet);
 				mipWrapper.endConstraint(cSize);
 			}
-    	}
-    	    	
-    	for (Good good : this.getDomain().getGoods()){
-    		Constraint c = mipWrapper.beginNewLEQConstraint(1);
-    		for (UUID b : this.getEconomy().getBidders()){
-    			c.addTerm(1, bidderGoodVariables.get(b).get(good));
-    		}
-    		mipWrapper.endConstraint(c);
-    	}
-    		
-    	return mipWrapper;
-    } 
+		}
+
+		for (Good good : this.getDomain().getGoods()) {
+			Constraint c = mipWrapper.beginNewLEQConstraint(1);
+			for (UUID b : this.getEconomy().getBidders()) {
+				c.addTerm(1, bidderGoodVariables.get(b).get(good));
+			}
+			mipWrapper.endConstraint(c);
+		}
+
+		return mipWrapper;
+	}
 }

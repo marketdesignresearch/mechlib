@@ -42,12 +42,13 @@ public class DemandBids extends Bids<DemandBid> {
 	}
 
 	public BundleExactValueBids transformToBundleValueBids(Prices prices) {
-    	BundleExactValueBids ret = new BundleExactValueBids();
-    	for(Map.Entry<Bidder, DemandBid> entry : this.getBidMap().entrySet()) {
-    		ret.setBid(entry.getKey(), new BundleExactValueBid(
-				Set.of(new BundleExactValuePair(prices.getPrice(entry.getValue().getDemandedBundle()).getAmount(),
-						entry.getValue().getDemandedBundle(), UUID.randomUUID().toString()))));
-    	}
-    	return ret;
+		BundleExactValueBids ret = new BundleExactValueBids();
+		for (Map.Entry<Bidder, DemandBid> entry : this.getBidMap().entrySet()) {
+			ret.setBid(entry.getKey(),
+					new BundleExactValueBid(Set.of(
+							new BundleExactValuePair(prices.getPrice(entry.getValue().getDemandedBundle()).getAmount(),
+									entry.getValue().getDemandedBundle(), UUID.randomUUID().toString()))));
+		}
+		return ret;
 	}
 }

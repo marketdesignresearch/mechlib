@@ -6,14 +6,14 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.Bloc
 
 public interface CorePaymentRule extends PaymentRule {
 
-    void resetResult();
+	void resetResult();
 
-    /**
-     * 
-     * @param blockedBidders
-     * @param lastPayment
-     * @return null if no constraint was added otherwise the added constraint
-     */
-    void addBlockingConstraint(BlockedBidders blockedBidders, Payment lastPayment);
+	/**
+	 * 
+	 * @param blockedBidders
+	 * @param lastPayment
+	 * @return null if no constraint was added otherwise the added constraint
+	 */
+	void addBlockingConstraint(BlockedBidders blockedBidders, Payment lastPayment);
 
 }

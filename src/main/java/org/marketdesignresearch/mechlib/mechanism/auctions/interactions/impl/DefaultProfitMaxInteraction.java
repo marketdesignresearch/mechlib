@@ -18,20 +18,20 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class DefaultProfitMaxInteraction extends DefaultInteraction<BundleExactValueBid> implements ProfitMaxQuery{
+public class DefaultProfitMaxInteraction extends DefaultInteraction<BundleExactValueBid> implements ProfitMaxQuery {
 
 	@Getter
 	private final Prices prices;
 	@Getter
 	private final int numberOfBids;
-	
+
 	@PersistenceConstructor
 	protected DefaultProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid) {
 		super(bidderUuid);
 		this.prices = prices;
 		this.numberOfBids = numberOfBids;
 	}
-	
+
 	public DefaultProfitMaxInteraction(Prices prices, int numberOfBids, UUID bidderUuid, Auction<?> auction) {
 		super(bidderUuid, auction);
 		this.prices = prices;

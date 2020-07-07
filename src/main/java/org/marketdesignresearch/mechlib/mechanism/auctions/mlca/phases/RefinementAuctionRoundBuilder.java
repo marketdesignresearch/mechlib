@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -21,7 +20,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEcono
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementHelper.EfficiencyInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator.ICEValidator;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
@@ -30,11 +28,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBoundValueBids> implements BidderRefinementRoundInfoCreator{
+public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBoundValueBids>
+		implements BidderRefinementRoundInfoCreator {
 
 	@Getter
 	private final Map<UUID, RefinementQuery> interactions;
-	private final Map<UUID,BidderRefinementRoundInfo> refinementInfos;
+	private final Map<UUID, BidderRefinementRoundInfo> refinementInfos;
 	@Getter
 	private final List<ElicitationEconomy> refinementEconomies;
 
@@ -42,21 +41,25 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	@Getter
 	private LinearPriceGenerator priceGenerator;
 
-	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction, List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos, LinearPriceGenerator generator) {
+	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction,
+			List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos,
+			LinearPriceGenerator generator) {
 		super(auction);
 		this.refinementEconomies = refinementEconomies;
 		this.priceGenerator = generator;
-		
-		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(), efficiencyInfos);
-		
+
+		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(),
+				efficiencyInfos);
+
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
 		this.interactions = new LinkedHashMap<>();
 
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			BidderRefinementRoundInfo info = this.refinementInfos.get(bidder.getId());
-			interactions.put(bidder.getId(),new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements(),
-					info.getAlphaAllocation().allocationOf(bidder).getBundle(), info.getPrices(),
-					latestAggregatedBids.getBid(bidder)));
+			interactions.put(bidder.getId(),
+					new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements(),
+							info.getAlphaAllocation().allocationOf(bidder).getBundle(), info.getPrices(),
+							latestAggregatedBids.getBid(bidder)));
 			this.original.put(bidder.getId(), latestAggregatedBids.getBid(bidder).copy());
 		}
 	}
@@ -69,11 +72,16 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 						e.getValue().getPrices(), e.getValue().getProvisonalAllocation(),
 						e.getValue().getRefinementTypes()));
 		// check if no new bids were added
-		// consistency of the bid was already validated before (i.e. if for every bundle of the original bid a bid was submitted)
-		interactions.entrySet().forEach(e -> Preconditions.checkState(e.getValue().getBid().getBundleBids().size() == original.get(e.getKey()).getBundleBids().size()));
-		
-		return new DefaultRefinementAuctionRound(this.getAuction(), new BundleBoundValueBids(interactions.entrySet().stream().collect(
-						Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))),
+		// consistency of the bid was already validated before (i.e. if for every bundle
+		// of the original bid a bid was submitted)
+		interactions.entrySet().forEach(e -> Preconditions.checkState(
+				e.getValue().getBid().getBundleBids().size() == original.get(e.getKey()).getBundleBids().size()));
+
+		return new DefaultRefinementAuctionRound(this.getAuction(),
+				new BundleBoundValueBids(
+						interactions.entrySet().stream()
+								.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()),
+										e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))),
 				refinementInfos);
 	}
 
@@ -89,8 +97,9 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 
 	@Override
 	public BundleBoundValueBids getTemporaryBids() {
-		return new BundleBoundValueBids(interactions.entrySet().stream().collect(
-				Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new)));
+		return new BundleBoundValueBids(
+				interactions.entrySet().stream().collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()),
+						e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 }

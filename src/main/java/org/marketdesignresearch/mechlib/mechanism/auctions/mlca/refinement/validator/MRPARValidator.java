@@ -5,19 +5,18 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 
 public class MRPARValidator extends ActivityRuleValidator<MRPARRefinement> {
 
 	@Override
-	public void validateRefinement(MRPARRefinement type,
-			BundleBoundValueBid activeBids,
-			BundleBoundValueBid refinedBids, Prices bidderPrices,
-			Bundle provisionalAllocation) throws ValidatorException{
+	public void validateRefinement(MRPARRefinement type, BundleBoundValueBid activeBids,
+			BundleBoundValueBid refinedBids, Prices bidderPrices, Bundle provisionalAllocation)
+			throws ValidatorException {
 
 		Bundle candidatePassingTrade = computeCandidatePassingTrade(refinedBids, bidderPrices, provisionalAllocation);
 
@@ -26,28 +25,33 @@ public class MRPARValidator extends ActivityRuleValidator<MRPARRefinement> {
 		BigDecimal utility;
 		Bundle witnessTrade = null;
 		for (BundleBoundValuePair bid : refinedBids.getBundleBids()) {
-			utility = this.getPerturbedValuation(bid, candidatePassingTrade).subtract(bidderPrices.getPrice(bid.getBundle()).getAmount());
+			utility = this.getPerturbedValuation(bid, candidatePassingTrade)
+					.subtract(bidderPrices.getPrice(bid.getBundle()).getAmount());
 			if (utility.compareTo(maxUtility) > 0) {
 				witnessTrade = bid.getBundle();
 				maxUtility = utility;
 			}
 		}
-		
+
 		BigDecimal candidateMinUtility = BigDecimal.ZERO;
-		if(candidatePassingTrade != null) {
-			candidateMinUtility = refinedBids.getBidForBundle(candidatePassingTrade).getLowerBound().subtract(bidderPrices.getPrice(candidatePassingTrade).getAmount());
+		if (candidatePassingTrade != null) {
+			candidateMinUtility = refinedBids.getBidForBundle(candidatePassingTrade).getLowerBound()
+					.subtract(bidderPrices.getPrice(candidatePassingTrade).getAmount());
 		}
 
-		if ((witnessTrade == null && candidateMinUtility.compareTo(BigDecimal.ZERO) >= 0) || candidateMinUtility.compareTo(this
-				.getPerturbedValuation(refinedBids.getBidForBundle(witnessTrade), candidatePassingTrade).subtract(bidderPrices.getPrice(witnessTrade).getAmount())) >= 0) {
-			if ((candidatePassingTrade == null && provisionalAllocation.getTotalAmount() == 0) || (candidatePassingTrade != null && candidatePassingTrade.equals(provisionalAllocation))) {
+		if ((witnessTrade == null && candidateMinUtility.compareTo(BigDecimal.ZERO) >= 0) || candidateMinUtility
+				.compareTo(this.getPerturbedValuation(refinedBids.getBidForBundle(witnessTrade), candidatePassingTrade)
+						.subtract(bidderPrices.getPrice(witnessTrade).getAmount())) >= 0) {
+			if ((candidatePassingTrade == null && provisionalAllocation.getTotalAmount() == 0)
+					|| (candidatePassingTrade != null && candidatePassingTrade.equals(provisionalAllocation))) {
 				return;
 			}
 			if (provisionalAllocation.getTotalAmount() == 0) {
 				return;
 			}
 			if (candidateMinUtility.compareTo(this
-					.getPerturbedValuation(refinedBids.getBidForBundle(provisionalAllocation), candidatePassingTrade).subtract(bidderPrices.getPrice(provisionalAllocation).getAmount())) > 0) {
+					.getPerturbedValuation(refinedBids.getBidForBundle(provisionalAllocation), candidatePassingTrade)
+					.subtract(bidderPrices.getPrice(provisionalAllocation).getAmount())) > 0) {
 				return;
 			}
 		}
@@ -55,9 +59,9 @@ public class MRPARValidator extends ActivityRuleValidator<MRPARRefinement> {
 		throw new ValidatorException("MRPAR Validation failed");
 	}
 
-	public Bundle computeCandidatePassingTrade(BundleValueBid<BundleBoundValuePair> refinedBids,
-			Prices bidderPrices, Bundle provisionalAllocation) {
-		
+	public Bundle computeCandidatePassingTrade(BundleValueBid<BundleBoundValuePair> refinedBids, Prices bidderPrices,
+			Bundle provisionalAllocation) {
+
 		// No trade has 0 utility
 		BigDecimal maxUtility = BigDecimal.ZERO;
 		BigDecimal utilityLowerBound;

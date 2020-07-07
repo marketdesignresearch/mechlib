@@ -7,5 +7,6 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 
 public interface RefinementAuctionRound {
 	BundleBoundValueBids getBids();
+
 	Map<UUID, BidderRefinementRoundInfo> getRefinementInfos();
 }

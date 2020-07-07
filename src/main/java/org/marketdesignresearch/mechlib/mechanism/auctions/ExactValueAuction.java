@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.mechanism.auctions;
 
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
-import org.marketdesignresearch.mechlib.mechanism.auctions.simple.SimpleBidPhase;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 

@@ -25,44 +25,53 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBids> implements BidderRefinementRoundInfoCreator {
+public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBids>
+		implements BidderRefinementRoundInfoCreator {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
-	
+
 	private final boolean refineMarginalEconomies;
 	private final boolean intermediateRefinements;
-	
+
 	private List<ElicitationEconomy> refinementEconomies;
 	@Getter
 	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
-	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries, double timeLimit) {
-		this(mlComponent, maxQueries, numberOfmarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
+
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
+			int numberOfmarginalQueries, double timeLimit) {
+		this(mlComponent, maxQueries, numberOfmarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES,
+				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
-	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries, boolean refineMarginalEconomies, double timeLimit) {
-		this(mlComponent, maxQueries, numberOfmarginalQueries, refineMarginalEconomies, DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
+
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
+			int numberOfmarginalQueries, boolean refineMarginalEconomies, double timeLimit) {
+		this(mlComponent, maxQueries, numberOfmarginalQueries, refineMarginalEconomies,
+				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
-	
-	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries, int numberOfmarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinments, double timeLimit) {
+
+	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
+			int numberOfmarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinments,
+			double timeLimit) {
 		super(mlComponent, maxQueries, numberOfmarginalQueries);
 		this.refineMarginalEconomies = refineMarginalEconomies;
 		this.intermediateRefinements = intermediateRefinments;
 		this.priceGenerator.setTimeLimit(timeLimit);
 	}
-	
+
 	@Override
 	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
-		if(this.refinementEconomies == null) {
+		if (this.refinementEconomies == null) {
 			this.refinementEconomies = this.createAllRefinementEconomies(auction);
 		}
-		
+
 		// check if requested and perform intermediate refinement
-		if(intermediateRefinements && BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
-			return new RefinementAuctionRoundBuilder(auction, refinementEconomies, this.createEfficiencyInfo(auction), this.getPriceGenerator());
+		if (intermediateRefinements
+				&& BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
+			return new RefinementAuctionRoundBuilder(auction, refinementEconomies, this.createEfficiencyInfo(auction),
+					this.getPriceGenerator());
 		}
-		
+
 		return super.createNextRoundBuilder(auction);
 	}
 
@@ -70,38 +79,41 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	protected AuctionRoundBuilder<BundleBoundValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleBoundValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
 			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
-		
-		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(), this.createEfficiencyInfo(auction));
+
+		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction,
+				auction.getCurrentRoundRandom(), this.createEfficiencyInfo(auction));
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
-		
+
 		return new BoundMLQueryWithMRPARAuctionRoundBuilder(auction,
 				auction.getDomain().getBidders().stream()
 						.collect(Collectors.toMap(Bidder::getId,
 								b -> new DefaultBoundValueQueryWithMRPARRefinementInteraction(b.getId(), auction,
-										bidderRefinementInfos.get(b.getId()).getAlphaAllocation().allocationOf(b).getBundle(), bidderRefinementInfos.get(b.getId()).getPrices(),
+										bidderRefinementInfos.get(b.getId()).getAlphaAllocation().allocationOf(b)
+												.getBundle(),
+										bidderRefinementInfos.get(b.getId()).getPrices(),
 										latestAggregatedBids.getBid(b), restrictedBids.get(b)),
 								(e1, e2) -> e1, LinkedHashMap::new)),
 				bidderMarginalsTemp, bidderRefinementInfos);
 	}
-	
+
 	private Map<ElicitationEconomy, EfficiencyInfo> createEfficiencyInfo(Auction<BundleBoundValueBids> auction) {
 		Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos = new LinkedHashMap<>();
-		for(ElicitationEconomy economy : this.getRefinementEconomies()) {
+		for (ElicitationEconomy economy : this.getRefinementEconomies()) {
 			efficiencyInfos.put(economy, RefinementHelper.getRefinementInfo(auction, economy));
 		}
 		return efficiencyInfos;
 	}
-	
+
 	protected List<ElicitationEconomy> createAllRefinementEconomies(Auction<BundleBoundValueBids> auction) {
 		List<ElicitationEconomy> elicitationEconomies = new ArrayList<>();
 		elicitationEconomies.add(new ElicitationEconomy(auction.getDomain()));
-		if(this.refineMarginalEconomies)
-			auction.getDomain().getBidders().forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(),bidder)));
+		if (this.refineMarginalEconomies)
+			auction.getDomain().getBidders()
+					.forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		return elicitationEconomies;
 	}
 
-	
 	@Override
 	public List<ElicitationEconomy> getRefinementEconomies() {
 		return refinementEconomies;
