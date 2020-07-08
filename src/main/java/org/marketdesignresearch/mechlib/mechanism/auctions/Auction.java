@@ -238,8 +238,13 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 	public void resetToRound(int round) {
 		Preconditions.checkArgument(round >= 1 && round <= rounds.size() + 1);
 		rounds = rounds.subList(0, round - 1);
-		this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
-		this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
+		if(round == 1) {
+			this.currentPhaseNumber = 0;
+			this.currentPhaseRoundNumber = 0;
+		} else {
+			this.currentPhaseNumber = this.getLastRound().getAuctionPhaseNumber();
+			this.currentPhaseRoundNumber = this.getLastRound().getAuctionPhaseRoundNumber();
+		}
 		this.prepareNextAuctionRoundBuilder();
 	}
 
