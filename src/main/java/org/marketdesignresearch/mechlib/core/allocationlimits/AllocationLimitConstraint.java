@@ -45,8 +45,13 @@ public class AllocationLimitConstraint {
 		public List<LinearTerm> getLinearTerms(
 				Map<Good, List<Variable>> goodVariables) {
 			List<LinearTerm> result = new ArrayList<>();
-			for(Variable var : goodVariables.get(good)) {
-				result.add(new edu.harvard.econcs.jopt.solver.mip.LinearTerm(this.getCoefficient(), var));
+			// Do not add constraint for goods where no variable is available
+			// (i.e. the good seems to be not allocatable in this MIP and therefore 
+			// this good = 0 is always true)
+			if(goodVariables.containsKey(good)) {
+				for(Variable var : goodVariables.get(good)) {
+					result.add(new edu.harvard.econcs.jopt.solver.mip.LinearTerm(this.getCoefficient(), var));
+				}
 			}
 			return result;
 		}
