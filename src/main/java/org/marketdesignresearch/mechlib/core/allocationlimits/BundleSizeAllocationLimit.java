@@ -6,11 +6,11 @@ import java.util.Random;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint.Type;
 import org.marketdesignresearch.mechlib.core.bundlesampling.LimitedSizeRandomBundleSampling;
 
 import com.google.common.base.Preconditions;
 
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import lombok.Getter;
 
 /**
@@ -26,9 +26,10 @@ public class BundleSizeAllocationLimit extends AllocationLimit {
 	private final List<? extends Good> goods;
 
 	public BundleSizeAllocationLimit(int bundleSizeLimit, List<? extends Good> goods) {
+		super(goods);
 		this.bundleSizeLimit = bundleSizeLimit;
 		this.goods = goods;
-		AllocationLimitConstraint constraint = new AllocationLimitConstraint(Type.LEQ, bundleSizeLimit);
+		AllocationLimitConstraint constraint = new AllocationLimitConstraint(CompareType.LEQ, bundleSizeLimit);
 		for (Good g : goods) {
 			constraint.addTerm(1, g);
 		}
@@ -50,10 +51,5 @@ public class BundleSizeAllocationLimit extends AllocationLimit {
 			maxNumberOfBundlesInterestedIn += CombinatoricsUtils.binomialCoefficient(numberOfItems, i);
 		}
 		return maxNumberOfBundlesInterestedIn;
-	}
-
-	@Override
-	public boolean validateDomainCompatiblity(List<? extends Good> domainGoods) {
-		return this.goods.containsAll(domainGoods);
 	}
 }

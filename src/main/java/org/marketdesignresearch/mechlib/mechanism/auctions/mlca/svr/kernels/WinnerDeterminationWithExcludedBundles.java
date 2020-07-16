@@ -16,6 +16,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -119,9 +120,11 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 		// apply AllocationLimits
 		for (UUID bUUID : this.getEconomy().getBidders()) {
-			for (AllocationLimitConstraint alc : this.getBidder(bUUID).getAllocationLimit().getConstraints()) {
+			AllocationLimit limit = this.getBidder(bUUID).getAllocationLimit();
+			for (AllocationLimitConstraint alc : limit.getConstraints()) {
 				mip.add(alc.createCPLEXConstraint(this.bidderGoodVariables.get(bUUID)));
 			}
+			limit.getAdditionalVariables().forEach(mip::add);
 		}
 
 		return mip;

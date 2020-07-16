@@ -1,17 +1,17 @@
 package org.marketdesignresearch.mechlib.core.allocationlimits;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Good;
-
-import com.google.common.math.DoubleMath;
 
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
+import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,68 +24,84 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class AllocationLimitConstraint {
+
 	@RequiredArgsConstructor
-	public static enum Type {
-		LEQ((l, r) -> DoubleMath.fuzzyCompare(l, r, 1e-10) <= 0, CompareType.LEQ),
-		EQ((l, r) -> DoubleMath.fuzzyEquals(l, r, 1e-10), CompareType.EQ),
-		GEQ((l, r) -> DoubleMath.fuzzyCompare(l, r, 1e-10) >= 0, CompareType.GEQ);
-
-		private final BiFunction<Double, Double, Boolean> comparator;
+	public static abstract class AllocationLimitLinearTerm {
 		@Getter
-		private final CompareType cplexType;
+		private final double coefficient;
+		public abstract List<edu.harvard.econcs.jopt.solver.mip.LinearTerm> getLinearTerms(Map<Good, List<Variable>> goodVariables);
+	}
+	
+	public static class LinearGoodTerm extends AllocationLimitLinearTerm {
+		@Getter
+		private final Good good;
+		
+		public LinearGoodTerm(double coefficient, Good good) {
+			super(coefficient);
+			this.good = good;
+		}
 
-		public boolean compare(double leftSide, double rightSide) {
-			return comparator.apply(leftSide, rightSide);
+		@Override
+		public List<LinearTerm> getLinearTerms(
+				Map<Good, List<Variable>> goodVariables) {
+			List<LinearTerm> result = new ArrayList<>();
+			for(Variable var : goodVariables.get(good)) {
+				result.add(new edu.harvard.econcs.jopt.solver.mip.LinearTerm(this.getCoefficient(), var));
+			}
+			return result;
+		}
+		
+	}
+	
+	public static class LinearVarTerm extends AllocationLimitLinearTerm {
+		@Getter
+		private final Variable variable;
+		
+		public LinearVarTerm(double coefficient, Variable variable) {
+			super(coefficient);
+			this.variable = variable;
+		}
+
+		@Override
+		public List<LinearTerm> getLinearTerms(
+				Map<Good, List<Variable>> goodVariables) {
+			return List.of(this.getLinearTerm());
+		}
+		
+		public LinearTerm getLinearTerm() {
+			return new LinearTerm(this.getCoefficient(),this.getVariable());
 		}
 	}
 
-	@RequiredArgsConstructor
-	public static class LinearTerm {
-		@Getter
-		private final double coefficient;
-		@Getter
-		private final Good good;
-	}
-
 	@Getter
-	private final Type type;
+	private final CompareType type;
 	@Getter
 	private final double constant;
 	@Getter
-	private List<LinearTerm> linearTerms = new ArrayList<>();
+	private List<AllocationLimitLinearTerm> linearTerms = new ArrayList<>();
+	@Getter
+	private LinkedHashSet<Variable> additionalVariables = new LinkedHashSet<>();
 
 	public void addTerm(double coefficient, Good good) {
-		this.addTerm(new LinearTerm(coefficient, good));
+		this.linearTerms.add(new LinearGoodTerm(coefficient, good));
+	}
+	
+	public void addTerm(double coefficient, Variable variable) {
+		this.linearTerms.add(new LinearVarTerm(coefficient, variable));
+		this.additionalVariables.add(variable);
 	}
 
-	public void addTerm(LinearTerm term) {
-		this.linearTerms.add(term);
-	}
-
-	public boolean validateConstraint(Bundle bundle) {
-		double sum = linearTerms.stream().mapToDouble(l -> l.coefficient * bundle.countGood(l.getGood())).sum();
-		return type.compare(sum, this.constant);
-	}
-
-	public Constraint createCPLEXConstraintList(Map<Good, List<Variable>> goodVariables) {
-		Constraint c = new Constraint(type.getCplexType(), this.constant);
-		for (LinearTerm lt : this.linearTerms) {
-			// TODO a MIP might not contain variables for all goods (e.g. sats MIPS might
-			// not contain
-			// variables for goods with zero base value
-			for (Variable v : goodVariables.getOrDefault((lt.getGood()), new ArrayList<>())) {
-				c.addTerm(lt.coefficient, v);
+	public Constraint createCPLEXConstraintWithMultiVarsPerGood(Map<Good, List<Variable>> goodVariables) {
+		Constraint c = new Constraint(type, this.constant);
+		for (AllocationLimitLinearTerm lt : this.linearTerms) {
+			for (LinearTerm cplexLt : lt.getLinearTerms(goodVariables)) {
+				c.addTerm(cplexLt);
 			}
 		}
 		return c;
 	}
 
 	public Constraint createCPLEXConstraint(Map<Good, Variable> map) {
-		Constraint c = new Constraint(type.getCplexType(), this.constant);
-		for (LinearTerm lt : this.linearTerms) {
-			c.addTerm(lt.coefficient, map.get(lt.getGood()));
-		}
-		return c;
+		return this.createCPLEXConstraintWithMultiVarsPerGood(map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> List.of(e.getValue()), (e1, e2) -> e1, LinkedHashMap::new)));
 	}
-
 }

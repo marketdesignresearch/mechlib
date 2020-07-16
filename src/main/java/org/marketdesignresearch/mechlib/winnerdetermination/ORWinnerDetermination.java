@@ -8,6 +8,8 @@ import java.util.Map;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint.LinearGoodTerm;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint.LinearVarTerm;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -86,14 +88,23 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
 
 				// add AllocationLimit constraint
 				for (AllocationLimitConstraint alc : bidder.getAllocationLimit().getConstraints()) {
-					Constraint alConstraint = new Constraint(alc.getType().getCplexType(), alc.getConstant());
-					for (AllocationLimitConstraint.LinearTerm lt : alc.getLinearTerms()) {
-						for (Pair<Integer, Variable> p : bundleGoodVariables.get(lt.getGood())) {
-							alConstraint.addTerm(lt.getCoefficient() * p.getFirst(), p.getSecond());
+					Constraint alConstraint = new Constraint(alc.getType(), alc.getConstant());
+					for (AllocationLimitConstraint.AllocationLimitLinearTerm lt : alc.getLinearTerms()) {
+						if(lt instanceof LinearGoodTerm) {
+							LinearGoodTerm goodTerm = (LinearGoodTerm) lt;
+							for (Pair<Integer, Variable> p : bundleGoodVariables.get(goodTerm.getGood())) {
+								alConstraint.addTerm(lt.getCoefficient() * p.getFirst(), p.getSecond());
+							}
+						} else if(lt instanceof LinearVarTerm) {
+							alConstraint.addTerm(((LinearVarTerm)lt).getLinearTerm());
+						} else {
+							throw new IllegalStateException("Unknow AllocationLimit Linear Term type");
 						}
 					}
 					winnerDeterminationProgram.add(alConstraint);
 				}
+				// add additional variables
+				bidder.getAllocationLimit().getAdditionalVariables().forEach(winnerDeterminationProgram::add);
 			}
 		}
 
