@@ -1,7 +1,5 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,7 +7,6 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -19,7 +16,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEcono
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
-import edu.harvard.econcs.jopt.solver.mip.MIP;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,22 +33,9 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 		this.mipInstrumentation = mipInstrumentation;
 		this.supportVectorsPerBider = new BundleExactValueBids();
 
-		BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream)
-				.map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
-
-		BigDecimal scalingFactor = BigDecimal.ONE;
-		if (maxValue.compareTo(maxMipValue) > 0) {
-			scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
-			if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
-				throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because"
-						+ "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
-			}
-		}
-
 		for (Map.Entry<Bidder, B> entry : bids.getBidMap().entrySet()) {
 			this.supportVectorsPerBider.setBid(entry.getKey(),
-					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(scalingFactor)).getVectors());
+					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(setup.getValueScalingFactor())).getVectors());
 		}
 		kernel = setup.getKernel();
 	}

@@ -16,6 +16,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AdditiveValueBidder extends ORBidder {
 
+	private static final long serialVersionUID = -4775422936024336326L;
+
 	public AdditiveValueBidder(String name, ORValueFunction value) {
 		this(UUID.randomUUID(), name, value);
 	}

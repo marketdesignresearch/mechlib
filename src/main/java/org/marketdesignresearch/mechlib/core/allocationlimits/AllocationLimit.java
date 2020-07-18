@@ -19,7 +19,6 @@ import com.google.common.base.Preconditions;
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.MIPInfeasibleException;
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.client.SolverClient;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;

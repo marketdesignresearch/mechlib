@@ -34,7 +34,6 @@ public class DefaultStrategyHandler {
 	 * @param type
 	 * @param implementation
 	 */
-
 	public static void addDefaultHandler(Class<? extends InteractionStrategy> type,
 			Class<? extends InteractionStrategy> implementation) {
 		defaultStrategies.put(type, implementation);
@@ -43,7 +42,7 @@ public class DefaultStrategyHandler {
 	@SuppressWarnings("unchecked")
 	public static <T extends InteractionStrategy> T defaultStrategy(Class<T> type) {
 		try {
-			return (T) defaultStrategies.get(type).newInstance();
+			return (T) defaultStrategies.get(type).getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
