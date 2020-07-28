@@ -60,7 +60,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	private void solveMIP() {
 
 		IMIPResult result = null;
-		;
+		
 		try {
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
 			result = CPLEXUtils.SOLVER.solve(this.mip);

@@ -40,6 +40,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
 
+	private static final double DEFAULT_EPSILON = 0d;
+	
 	// TODO ??
 	public double relSolutionGap;
 	@Getter(AccessLevel.PACKAGE)
@@ -68,6 +70,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 				.reduce(Boolean::logicalOr).get();
 		this.setPurpose(MipPurpose.KERNEL_WINNERDETERMINATION.name());
 		this.setTimeLimit(timelimit);
+		this.setEpsilon(DEFAULT_EPSILON);
 	}
 
 	protected Bidder getBidder(UUID id) {
