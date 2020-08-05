@@ -38,7 +38,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	private final B bid;
 	@Getter
 	@Setter
-	private MipInstrumentation mipInstrumentation;
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
 	private IMIP mip;
 	private BundleExactValueBid resultVectors;

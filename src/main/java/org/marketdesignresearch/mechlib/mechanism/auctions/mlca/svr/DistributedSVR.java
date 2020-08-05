@@ -19,7 +19,7 @@ public abstract class DistributedSVR<T extends BundleValueBids<?>>
 
 	@Getter
 	@Setter
-	private MipInstrumentation mipInstrumentation;
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
 	public DistributedSVR(Kernel kernel) {
 		this(new SupportVectorSetup(kernel));
