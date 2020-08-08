@@ -99,13 +99,13 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 			} else
 				fbMap.put(b, value);
 		}
-		ImmutableMap.Builder<Bundle, Double> fb = new ImmutableMap.Builder<>();
+		Map<Bundle, Double> fb = new LinkedHashMap<>();
 		for (Bundle b : fbMap.keySet()) {
 			if (!DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, 1e-5))
 				fb.put(b, fbMap.get(b));
 		}
 		this.resultVectors = new BundleExactValueBid();
-		fbMap.forEach((b, d) -> this.resultVectors
+		fb.forEach((b, d) -> this.resultVectors
 				.addBundleBid(new BundleExactValuePair(BigDecimal.valueOf(d), b, b.toString())));
 	}
 
