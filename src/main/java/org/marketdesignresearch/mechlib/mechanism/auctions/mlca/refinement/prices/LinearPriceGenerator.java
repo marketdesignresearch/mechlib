@@ -64,7 +64,7 @@ public class LinearPriceGenerator {
 
 		Iterator<BundleExactValueBids> it = scaledValues.iterator();
 
-		BigDecimal offset = BigDecimal.valueOf(1e-6);
+		BigDecimal offset = BigDecimal.valueOf(1e-5);
 		PriceConstraints constraint = new PriceConstraints(setting.getBidders());
 		Prices prices = null;
 		// generate prices according to different targets (valuations)
@@ -116,7 +116,7 @@ public class LinearPriceGenerator {
 					done = true;
 				} catch (RuntimeException re) {
 					localOffset = localOffset.scaleByPowerOfTen(1);
-					log.warn("Increasing offset due to infeasibility. New offset: {}", offset, re);
+					log.warn("Increasing offset due to infeasibility. New offset: {}", localOffset, re);
 				}
 			} while (localOffset.compareTo(BigDecimal.valueOf(0, 1)) < 0 && !done);
 		}
