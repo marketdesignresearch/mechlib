@@ -16,8 +16,11 @@ import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.SolveParam;
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
+import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 
@@ -33,6 +36,22 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 			Allocation allocation, PriceConstraints constraint, double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
 		this.bids = bids;
+	}
+
+	@Override
+	protected LinearPrices solveMIP() {
+		int alg = 1;
+		while(true) {
+			try {
+				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, alg);
+				return super.solveMIP();
+			} catch (RuntimeException e) {
+				if(alg == 4) {
+					throw e;
+				}
+				alg++;
+			}
+		}
 	}
 
 	@Override

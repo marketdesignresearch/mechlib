@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
@@ -16,6 +17,22 @@ public class LinearPriceMaximizePricesMIP extends LinearPriceMIP {
 	public LinearPriceMaximizePricesMIP(Domain domain, List<UUID> bidders, Allocation allocation,
 			PriceConstraints constraint, double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
+	}
+	
+	@Override
+	protected LinearPrices solveMIP() {
+		int alg = 1;
+		while(true) {
+			try {
+				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, alg);
+				return super.solveMIP();
+			} catch (RuntimeException e) {
+				if(alg == 4) {
+					throw e;
+				}
+				alg++;
+			}
+		}
 	}
 
 	@Override
