@@ -46,7 +46,7 @@ public class LinearPriceGenerator {
 						.map(v -> v.getBid(e.getKey()).getBidForBundle(e.getValue().getBundle()).getAmount())
 						.reduce(BigDecimal.ZERO, BigDecimal::max))
 				.reduce(BigDecimal.ZERO, BigDecimal::max));
-		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.7));
+		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.5));
 
 		BigDecimal scalingFactor = BigDecimal.ONE;
 		if (maxValue.compareTo(maxMipValue) > 0) {
