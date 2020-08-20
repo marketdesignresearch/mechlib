@@ -41,12 +41,7 @@ public class LinearPriceGenerator {
 		BigDecimal maxValue = valuations.stream().flatMap(b -> b.getBids().stream())
 				.map(BundleExactValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount)
 				.reduce(BigDecimal::max).get();
-		maxValue = maxValue.max(allocation.getTradesMap().entrySet().stream()
-				.map(e -> valuations.stream()
-						.map(v -> v.getBid(e.getKey()).getBidForBundle(e.getValue().getBundle()).getAmount())
-						.reduce(BigDecimal.ZERO, BigDecimal::max))
-				.reduce(BigDecimal.ZERO, BigDecimal::max));
-		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.5));
+		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.7));
 
 		BigDecimal scalingFactor = BigDecimal.ONE;
 		if (maxValue.compareTo(maxMipValue) > 0) {
@@ -75,13 +70,27 @@ public class LinearPriceGenerator {
 					new BundleExactValuePair(BigDecimal.ZERO, Bundle.EMPTY, UUID.randomUUID().toString())));
 			boolean fixNegativeDeltas = !it.hasNext() && minimizeAllDeltas;
 
-			// minimize overall delta
-			LinearPriceMinimizeDeltaMIP accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(),
-					currentValuation, allocation, constraint, timeLimit);
-			prices = accMip.getPrices();
-
 			BigDecimal localOffset = offset;
 			boolean done = false;
+			LinearPriceMinimizeDeltaMIP accMip = null;
+			do {
+				try {
+				// minimize overall delta
+				 accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(),
+					currentValuation, allocation, constraint, timeLimit);
+				prices = accMip.getPrices();
+				done = true;
+				} catch(RuntimeException re) {
+					constraint.addSlack(localOffset);
+					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}", localOffset, re);
+					localOffset.scaleByPowerOfTen(1);
+					if(localOffset.compareTo(BigDecimal.ONE) > 0) 
+						throw re;
+				}
+			} while(!done);
+
+			localOffset = offset;
+			done = false;
 			do {
 				try {
 					// find all deltas that can not be set negative

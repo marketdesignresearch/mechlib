@@ -64,4 +64,10 @@ public class PriceConstraints {
 	public Set<Bundle> getConstrainedBids(UUID bidder) {
 		return this.rightHandSides.get(bidder).keySet();
 	}
+
+	public void addSlack(BigDecimal slack) {
+		for(Map<Bundle, BigDecimal> map : this.rightHandSides.values()) {
+			map.replaceAll((b,d) -> d.add(slack));
+		}
+	}
 }
