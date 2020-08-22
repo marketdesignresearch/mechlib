@@ -39,22 +39,6 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	}
 
 	@Override
-	protected LinearPrices solveMIP() {
-		int alg = 1;
-		while(true) {
-			try {
-				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, alg);
-				return super.solveMIP();
-			} catch (RuntimeException e) {
-				if(alg == 4) {
-					throw e;
-				}
-				alg++;
-			}
-		}
-	}
-
-	@Override
 	protected MIPWrapper createMIP() {
 		MIPWrapper mipWrapper = MIPWrapper.makeNewMinMIP();
 		delta = mipWrapper.makeNewDoubleVar("Delta");

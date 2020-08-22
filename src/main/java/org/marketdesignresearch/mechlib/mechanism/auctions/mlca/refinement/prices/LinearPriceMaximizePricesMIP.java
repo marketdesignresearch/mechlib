@@ -18,22 +18,6 @@ public class LinearPriceMaximizePricesMIP extends LinearPriceMIP {
 			PriceConstraints constraint, double timelimit) {
 		super(domain, bidders, allocation, constraint, timelimit);
 	}
-	
-	@Override
-	protected LinearPrices solveMIP() {
-		int alg = 1;
-		while(true) {
-			try {
-				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, alg);
-				return super.solveMIP();
-			} catch (RuntimeException e) {
-				if(alg == 4) {
-					throw e;
-				}
-				alg++;
-			}
-		}
-	}
 
 	@Override
 	protected MIPWrapper createMIP() {
