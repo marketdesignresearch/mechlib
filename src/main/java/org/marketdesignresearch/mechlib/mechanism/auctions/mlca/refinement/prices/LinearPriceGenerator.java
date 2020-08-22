@@ -127,7 +127,7 @@ public class LinearPriceGenerator {
 					localOffset = localOffset.scaleByPowerOfTen(1);
 					log.warn("Increasing offset due to infeasibility. New offset: {}", localOffset, re);
 				}
-			} while (localOffset.compareTo(BigDecimal.valueOf(0, 1)) < 0 && !done);
+			} while (localOffset.compareTo(BigDecimal.ONE) < 0 && !done);
 		}
 
 		try {
