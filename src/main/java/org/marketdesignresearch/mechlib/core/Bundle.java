@@ -65,8 +65,8 @@ public final class Bundle {
 	 * @param map a good -> quantity map
 	 */
 	public Bundle(Map<? extends Good, Integer> map) {
-		this(map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toCollection(LinkedHashSet::new)));
+		this(new LinkedHashSet<>((map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue()))
+				.collect(Collectors.toCollection(LinkedHashSet::new)))));
 	}
 
 	/**
@@ -78,8 +78,8 @@ public final class Bundle {
 	 * @return A bundle consisting of the goods at quantity 1
 	 */
 	public static Bundle of(List<? extends Good> bundle) {
-		return new Bundle(
-				bundle.stream().collect(Collectors.toMap(g -> g, g -> 1, (e1, e2) -> e1, LinkedHashMap::new)));
+		LinkedHashMap<Good, Integer> map = bundle.stream().collect(Collectors.toMap(g -> g, g -> 1, (e1, e2) -> e1, LinkedHashMap::new));
+		return new Bundle(map);
 	}
 
 	/**
