@@ -83,7 +83,7 @@ public class LinearPriceGenerator {
 				} catch(RuntimeException re) {
 					constraint.addSlack(localOffset);
 					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}", localOffset, re);
-					localOffset.scaleByPowerOfTen(1);
+					localOffset = localOffset.scaleByPowerOfTen(1);
 					if(localOffset.compareTo(BigDecimal.ONE) > 0) 
 						throw re;
 				}
