@@ -75,8 +75,8 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 				try {
 					result = CPLEXUtils.SOLVER.solve(this.mip);
 				} catch (RuntimeException e3) {
-					new CPlexMIPSolver().exportToDisk(this.mip,
-							FileSystems.getDefault().getPath("mip", "train-" + System.currentTimeMillis() + ".lp"));
+					//new CPlexMIPSolver().exportToDisk(this.mip,
+					//		FileSystems.getDefault().getPath("mip", "train-" + System.currentTimeMillis() + ".lp"));
 					throw e3;
 
 				}

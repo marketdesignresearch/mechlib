@@ -116,8 +116,8 @@ public abstract class LinearPriceMIP implements MipInstrumentationable {
 			}
 			return prices;
 		} catch (RuntimeException e) {
-			new CPlexMIPSolver().exportToDisk(this.mip, FileSystems.getDefault().getPath("mip",
-					this.getMIPName() + "-" + System.currentTimeMillis() + ".lp"));
+			//new CPlexMIPSolver().exportToDisk(this.mip, FileSystems.getDefault().getPath("mip",
+			//		this.getMIPName() + "-" + System.currentTimeMillis() + ".lp"));
 			throw e;
 		}
 	}
