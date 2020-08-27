@@ -30,7 +30,7 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	private Variable delta;
 	private BundleExactValueBids bids;
 	@Getter
-	private BigDecimal deltaResult;
+	private BigDecimal deltaResult = BigDecimal.valueOf(MIPWrapper.MAX_VALUE);
 
 	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
 			Allocation allocation, PriceConstraints constraint, double timelimit) {
@@ -68,6 +68,7 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 		}
 
 		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9d);
+		mipWrapper.setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
 
 		return mipWrapper;

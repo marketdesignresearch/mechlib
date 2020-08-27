@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
@@ -27,6 +26,8 @@ public class LinearPriceMaximizePricesMIP extends LinearPriceMIP {
 			mipWrapper.addObjectiveTerm(1, priceVar);
 		}
 		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.2);
+		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
+		mipWrapper.setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
 		return mipWrapper;
 	}
 

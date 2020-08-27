@@ -84,8 +84,12 @@ public class LinearPriceGenerator {
 					constraint.addSlack(localOffset);
 					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}", localOffset, re);
 					localOffset = localOffset.scaleByPowerOfTen(1);
-					if(localOffset.compareTo(BigDecimal.ONE) > 0) 
-						throw re;
+					// happens rarely that such a high offset needs to be added, 
+					// but for domains with high values it might occur 
+					// continue anyway
+					if(localOffset.compareTo(BigDecimal.valueOf(100)) > 0) {
+						done = true;
+					}
 				}
 			} while(!done);
 

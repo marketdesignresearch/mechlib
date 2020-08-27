@@ -138,12 +138,12 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 						Constraint c2 = mipWrapper.beginNewLEQConstraint(maxDeltaValue.doubleValue());
 						c2.addTerm(1, delta);
 						mipWrapper.add(c2);
+						
+						c.addTerm(-1, delta);
 					}
 
 					if (this.fixNegativeDeltas || this.positiveDeltas.get(bidder).contains(bid.getBundle())) {
 						dMap.put(bid.getBundle(), delta);
-						c.addTerm(-1, delta);
-
 						mipWrapper.addObjectiveTerm(new QuadraticTerm(0.0001, delta, delta));
 						mipWrapper.addObjectiveTerm(new LinearTerm(-2 * NORM_REFERENCE_POINT, delta));
 					}
@@ -154,6 +154,8 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 
 		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.9);
 		mipWrapper.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
+		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
+		mipWrapper.setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
 
 		return mipWrapper;
 	}
@@ -184,7 +186,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 					delta = BigDecimal.valueOf(result.getValue(this.deltas.get(bidder).get(bid.getBundle())))
 							.setScale(6, RoundingMode.HALF_UP);
 					// fancy rounding to avoid infeasibility of next MIP but remain accurate
-					if (delta.compareTo(BigDecimal.ZERO) > 0)
+					if (delta.compareTo(BigDecimal.ZERO) > 0 || this.positiveDeltas.get(bidder).contains(bid.getBundle()))
 						delta = delta.add(offset);
 					else
 						delta = BigDecimal.ZERO.min(delta.add(offset));
@@ -196,8 +198,17 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 					if (delta.compareTo(maxValue) > 0)
 						maxValue = delta;
 				}
+				
+				BigDecimal rightHandSide = value.add(delta);
+				if(this.priceConstraints.getConstrainedBids(bidder.getId()).contains(bid.getBundle())) {
+					BigDecimal rh2 = this.priceConstraints.getRightHandSide(bidder.getId(), bid.getBundle()).add(this.offset.multiply(BigDecimal.valueOf(2)));
+					if(rh2.compareTo(rightHandSide) < 0 ) {
+						System.out.println("here");
+					}
+					rightHandSide = rightHandSide.min(rh2);
+				}
 
-				constraints.get(bidder.getId()).put(bid.getBundle(), value.add(delta));
+				constraints.get(bidder.getId()).put(bid.getBundle(), rightHandSide);
 			}
 		}
 
