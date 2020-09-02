@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
 public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids> {
@@ -15,7 +14,7 @@ public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids> {
 	}
 
 	@Override
-	public MachineLearningAllocationInferrer getMLFunction(BundleExactValueBids bids) {
+	public ExactSupportVector getMLFunction(BundleExactValueBids bids) {
 		return new ExactSupportVector(this.getSetup(), bids, this.getMipInstrumentation());
 	}
 }
