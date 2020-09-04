@@ -41,4 +41,6 @@ public abstract class Kernel implements MipInstrumentationable {
 	protected int getStandardEncodedValue(Bundle bundle, Bundle bundle2) {
 		return BundleEncoder.getStandardDotProdWith(bundle, bundle2);
 	}
+	
+	public abstract KernelType getKernelType();
 }

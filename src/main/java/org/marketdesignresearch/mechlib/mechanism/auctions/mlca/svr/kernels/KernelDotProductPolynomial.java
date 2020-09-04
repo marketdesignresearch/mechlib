@@ -45,4 +45,9 @@ public class KernelDotProductPolynomial extends KernelDotProduct {
 		}
 		return value;
 	}
+
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Polynomial;
+	}
 }

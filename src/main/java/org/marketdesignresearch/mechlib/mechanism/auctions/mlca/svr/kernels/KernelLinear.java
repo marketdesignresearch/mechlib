@@ -37,4 +37,9 @@ public class KernelLinear extends Kernel {
 		return new WinnerDeterminationLinearKernel(domain, economy, supportVectorsPerBidder, excludedBundles,
 				this.getWdpTimeLimit());
 	}
+
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Linear;
+	}
 }

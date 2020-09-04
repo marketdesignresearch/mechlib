@@ -53,4 +53,9 @@ public class KernelQuadratic extends Kernel {
 				this.getWdpTimeLimit());
 	}
 
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Quadratic;
+	}
+	
 }

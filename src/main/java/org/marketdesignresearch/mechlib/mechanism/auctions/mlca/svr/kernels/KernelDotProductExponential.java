@@ -24,4 +24,9 @@ public class KernelDotProductExponential extends KernelDotProduct {
 	public Double getValueGivenDotProduct(int dotProduct) {
 		return scalingFactor * Math.exp(dotProduct / bandwidth);
 	}
+
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Exponential;
+	}
 }

@@ -43,4 +43,9 @@ public class KernelGaussian extends Kernel {
 				this, this.getWdpTimeLimit());
 	}
 
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Gaussian;
+	}
+
 }
