@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
-import java.nio.file.FileSystems;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,17 +14,20 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Formulation by Smola and Schoelkopf 2003
+ * 
+ * @author Gianluca Brero
+ */
 public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements MipInstrumentationable {
 
 	@Getter
@@ -75,8 +77,6 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 				try {
 					result = CPLEXUtils.SOLVER.solve(this.mip);
 				} catch (RuntimeException e3) {
-					//new CPlexMIPSolver().exportToDisk(this.mip,
-					//		FileSystems.getDefault().getPath("mip", "train-" + System.currentTimeMillis() + ".lp"));
 					throw e3;
 
 				}

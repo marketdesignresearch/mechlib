@@ -28,7 +28,6 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import com.google.common.collect.ImmutableMap;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
@@ -42,8 +41,6 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 	private static final double DEFAULT_EPSILON = 0d;
 	
-	// TODO ??
-	public double relSolutionGap;
 	@Getter(AccessLevel.PACKAGE)
 	protected Map<UUID, Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
 
@@ -80,8 +77,6 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 	protected Allocation adaptMIPResult(ISolution mipResult) {
 
-		if (mipResult instanceof IMIPResult)
-			relSolutionGap = ((IMIPResult) mipResult).getRelativeGap();
 		ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
 
 		for (UUID bidder : this.getEconomy().getBidders()) {

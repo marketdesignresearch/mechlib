@@ -18,6 +18,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Default implementation of a BoundValueQueryInteraction
+ * 
+ * @author Manuel Beyeler
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class DefaultBoundValueQueryInteraction extends DefaultInteraction<BundleBoundValueBid>

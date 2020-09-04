@@ -6,6 +6,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kern
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 public class SupportVectorSetup {
@@ -15,13 +16,17 @@ public class SupportVectorSetup {
 	private final static BigDecimal DEFAULT_VALUE_SCALING_FACTOR = BigDecimal.ONE;
 
 	@Getter
-	private final double interpolationWeight;
+	@Setter
+	private  double interpolationWeight;
 	@Getter
-	private final double insensitivityThreshold;
+	@Setter
+	private double insensitivityThreshold;
 	@Getter
-	private final BigDecimal valueScalingFactor;
+	@Setter
+	private BigDecimal valueScalingFactor;
 	@Getter
-	private final Kernel kernel;
+	@Setter
+	private Kernel kernel;
 
 	public SupportVectorSetup(Kernel kernel) {
 		this(DEFAULT_INTERPOLATION_WEIGHT, DEFAULT_INSENSIVITY_THRESHOLD, DEFAULT_VALUE_SCALING_FACTOR, kernel);

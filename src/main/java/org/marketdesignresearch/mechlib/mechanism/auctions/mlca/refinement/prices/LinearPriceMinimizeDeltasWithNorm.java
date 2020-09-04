@@ -74,7 +74,8 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 	public LinearPriceMinimizeDeltasWithNorm(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
 			Allocation allocation, PriceConstraints priceConstraints, BigDecimal delta, BigDecimal offset,
 			boolean fixNegativeDeltas, Map<Bidder, Set<Bundle>> positiveDeltas, double timelimit) {
-		// TODO set price constraints to emtpy constraint for super class
+		// set price constraints to emtpy constraint for super class
+		// price constraints will be added in this class directly
 		super(domain, bidders, allocation, new PriceConstraints(bidders), timelimit);
 		this.bids = bids;
 		this.delta = delta.add(offset.multiply(BigDecimal.valueOf(2)));

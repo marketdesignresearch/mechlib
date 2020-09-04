@@ -10,19 +10,21 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
-public class KernelLinear extends Kernel {
+import lombok.Getter;
+import lombok.Setter;
 
+public class KernelLinear extends Kernel {
+	
+	@Getter
+	@Setter
 	private double coeff0;
+	@Getter
+	@Setter
 	private double coeff1;
 
 	public KernelLinear(double coeff0, double coeff1) {
 		this.coeff0 = coeff0;
 		this.coeff1 = coeff1;
-	}
-
-	public KernelLinear(Map<String, Double> kernelParameters) {
-		this.coeff0 = kernelParameters.get("p0");
-		this.coeff1 = kernelParameters.get("p1");
 	}
 
 	@Override

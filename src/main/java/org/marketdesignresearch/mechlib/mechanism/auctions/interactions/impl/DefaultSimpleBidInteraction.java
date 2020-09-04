@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.mechanism.auctions.simple;
+package org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl;
 
 import java.util.UUID;
 

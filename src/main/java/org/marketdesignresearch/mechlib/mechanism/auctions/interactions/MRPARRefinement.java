@@ -3,8 +3,9 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 /**
  * Asks a bidder to perform a MRPAR refinement
  * 
- * @author Manuel
- *
+ * MRPAR by Lubin et. al. (2008).
+ * 
+ * @author Manuel Beyeler
  */
 public final class MRPARRefinement extends RefinementType {
 

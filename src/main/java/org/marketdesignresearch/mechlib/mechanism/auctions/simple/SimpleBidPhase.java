@@ -7,6 +7,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultSimpleBidInteraction;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

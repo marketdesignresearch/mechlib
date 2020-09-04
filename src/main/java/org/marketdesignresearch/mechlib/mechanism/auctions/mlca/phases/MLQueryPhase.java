@@ -101,13 +101,6 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 										.collect(Collectors.toCollection(LinkedHashSet::new))));
 				log.info(economy.toString() + " New bundle: "
 						+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
-				// TODO
-				// printElicitationInfo(inferredEfficientAllocation, bidder,
-				// marginalSetting,temporaryMetainfo);
-				// Bundle newQuery = inferredEfficientAllocation.allocationOf(bidder);
-				// this.addReport("New query: " + bidder + " " + newQuery);
-				// elicitationResult.insertQuery(bidder, newQuery);
-				// addReport(this.elicitationResult.toString());
 				restrictedBids.get(bidder).add(inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 			}
 		}

@@ -4,8 +4,16 @@ import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class KernelDotProductExponential extends KernelDotProduct {
+	
+	@Getter
+	@Setter
 	private double bandwidth;
+	@Getter
+	@Setter
 	private double scalingFactor;
 
 	public KernelDotProductExponential(double bandwidth, double scalingFactor) {

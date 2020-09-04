@@ -8,6 +8,11 @@ import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * Formulation by Smola and Schoelkopf 2003
+ * 
+ * @author Gianluca Brero
+ */
 public class ExactSupportVectorMIP extends SupportVectorMIP<BundleExactValueBid> {
 
 	public ExactSupportVectorMIP(SupportVectorSetup setup, BundleExactValueBid bid,

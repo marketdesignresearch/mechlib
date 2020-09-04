@@ -12,6 +12,11 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * Formulation by Smola and Schoelkopf 2003
+ * 
+ * @author Gianluca Brero
+ */
 public class BoundSupportVectorMIP extends SupportVectorMIP<BundleBoundValueBid> {
 
 	public BoundSupportVectorMIP(SupportVectorSetup setup, BundleBoundValueBid bid,

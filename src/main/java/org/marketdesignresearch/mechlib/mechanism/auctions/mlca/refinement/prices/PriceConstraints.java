@@ -31,7 +31,6 @@ public class PriceConstraints {
 
 	public PriceConstraints(Domain domain, List<UUID> bidders, BundleExactValueBids bids, Allocation allocation,
 			PriceConstraints baseline) {
-		// TODO check update
 		this.rightHandSides = new LinkedHashMap<>();
 
 		for (Bidder bidder : bidders.stream()
