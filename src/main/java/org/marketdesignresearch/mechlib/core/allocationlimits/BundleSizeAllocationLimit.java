@@ -14,17 +14,23 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import lombok.Getter;
 
 /**
- * TODO add documentation
+ * An allocation limit that allows only to allocate bundles up to a given size.
  * 
- * @author Manuel
- *
+ * @author Manuel Beyeler
  */
 public class BundleSizeAllocationLimit extends AllocationLimit {
+
 	@Getter
 	private final int bundleSizeLimit;
+
 	@Getter
 	private final List<? extends Good> goods;
 
+	/**
+	 * Creates a new BundleSizeAllocationLimit
+	 * @param bundleSizeLimit the maximum number of items in any allocated bundle
+	 * @param goods all goods of this domain
+	 */
 	public BundleSizeAllocationLimit(int bundleSizeLimit, List<? extends Good> goods) {
 		super(goods);
 		this.bundleSizeLimit = bundleSizeLimit;

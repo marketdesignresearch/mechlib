@@ -14,10 +14,9 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import lombok.Getter;
 
 /**
- * TODO add documentation
+ * Limits the allocation of any bidder to the given set of goods.
  * 
  * @author Manuel
- *
  */
 public class GoodAllocationLimit extends AllocationLimit {
 	@Getter
@@ -25,6 +24,12 @@ public class GoodAllocationLimit extends AllocationLimit {
 	@Getter
 	private final List<? extends Good> limitedGoods;
 
+	/**
+	 * Create a new GoodAllocationLimit
+	 * 
+	 * @param domainGoods all goods in this domain
+	 * @param limitedGoods a limited set of goods that may be allocated to this bidder
+	 */
 	public GoodAllocationLimit(List<? extends Good> domainGoods, List<? extends Good> limitedGoods) {
 		super(domainGoods);
 		Preconditions.checkArgument(domainGoods.containsAll(limitedGoods));

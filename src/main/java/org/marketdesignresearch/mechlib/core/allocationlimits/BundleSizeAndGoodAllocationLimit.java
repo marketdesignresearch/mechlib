@@ -15,10 +15,9 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import lombok.Getter;
 
 /**
- * TODO add documentation
+ * Limit the allocation of this bidder to a limited set of goods and a maximum number of items.
  * 
- * @author Manuel
- *
+ * @author Manuel Beyeler
  */
 public class BundleSizeAndGoodAllocationLimit extends AllocationLimit {
 	@Getter
@@ -28,6 +27,12 @@ public class BundleSizeAndGoodAllocationLimit extends AllocationLimit {
 	@Getter
 	private final List<? extends Good> limitedGoods;
 
+	/**
+	 * Creates a new BundleSizeAndGoodAllocationLimit
+	 * @param bundleSizeLimit the maximum number of items allocated to this bidder
+	 * @param domainGoods all goods in this domain
+	 * @param limitedGoods a limited set of goods that may be allocated to this bidder
+	 */
 	public BundleSizeAndGoodAllocationLimit(int bundleSizeLimit, List<? extends Good> domainGoods,
 			List<? extends Good> limitedGoods) {
 		super(domainGoods);
