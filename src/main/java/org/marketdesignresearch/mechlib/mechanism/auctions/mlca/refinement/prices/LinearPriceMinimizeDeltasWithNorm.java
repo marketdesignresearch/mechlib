@@ -155,7 +155,6 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.9);
 		mipWrapper.setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
 		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
-		mipWrapper.setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
 
 		return mipWrapper;
 	}
@@ -201,10 +200,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 				
 				BigDecimal rightHandSide = value.add(delta);
 				if(this.priceConstraints.getConstrainedBids(bidder.getId()).contains(bid.getBundle())) {
-					BigDecimal rh2 = this.priceConstraints.getRightHandSide(bidder.getId(), bid.getBundle()).add(this.offset.multiply(BigDecimal.valueOf(2)));
-					if(rh2.compareTo(rightHandSide) < 0 ) {
-						System.out.println("here");
-					}
+					BigDecimal rh2 = this.priceConstraints.getRightHandSide(bidder.getId(), bid.getBundle()).add(this.offset.scaleByPowerOfTen(1));
 					rightHandSide = rightHandSide.min(rh2);
 				}
 

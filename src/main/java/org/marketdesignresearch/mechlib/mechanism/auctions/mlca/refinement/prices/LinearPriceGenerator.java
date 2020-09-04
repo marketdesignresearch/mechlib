@@ -132,6 +132,7 @@ public class LinearPriceGenerator {
 					log.warn("Increasing offset due to infeasibility. New offset: {}", localOffset, re);
 				}
 			} while (localOffset.compareTo(BigDecimal.ONE) < 0 && !done);
+			offset = offset.scaleByPowerOfTen(1);
 		}
 
 		try {
@@ -149,7 +150,7 @@ public class LinearPriceGenerator {
 				log.warn("Unable to minimize euclidean distance of prices");
 			}
 		} catch (RuntimeException e) {
-			log.warn("Unable to maximize prices", e);
+			log.warn("Unable to maximize prices");
 		}
 
 		return prices.divide(scalingFactor);
