@@ -3,7 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 
 /**
- * <<<<<<< HEAD An AuctionPhase can consists of multiple rounds. The auction
+ * An AuctionPhase can consists of multiple rounds. The auction
  * creates an AuctionRoundBuilder for every round that must handle one round of
  * this phase.
  * 
@@ -18,6 +18,15 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
  */
 public interface AuctionPhase<BB extends BundleValueBids<?>> {
 
+	/**
+	 * creates the AuctionRoundBuilder for the next round
+	 * 
+	 * Note that the state of this method is not defined if {@link #phaseFinished(Auction)}
+	 * returns true.
+	 * 
+	 * @param auction the corresponding auction
+	 * @return an AuctionBuilder
+	 */
 	AuctionRoundBuilder<BB> createNextRoundBuilder(Auction<BB> auction);
 
 	/**
@@ -32,5 +41,8 @@ public interface AuctionPhase<BB extends BundleValueBids<?>> {
 	 */
 	boolean phaseFinished(Auction<BB> auction);
 
+	/**
+	 * @return the type name of this AuctionPhase
+	 */
 	String getType();
 }

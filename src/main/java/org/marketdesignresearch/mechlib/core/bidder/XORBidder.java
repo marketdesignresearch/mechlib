@@ -98,7 +98,6 @@ public class XORBidder implements Bidder, Serializable {
 	}
 
 	// region strategy
-	// TODO handle persistence
 	private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
 
 	@Override
