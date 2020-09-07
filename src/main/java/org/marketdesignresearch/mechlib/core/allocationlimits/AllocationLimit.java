@@ -24,7 +24,9 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * A bidder specific allocation limit. Using this allocation limit it is possible to restrict 
@@ -36,6 +38,8 @@ import lombok.Getter;
  * 
  * @author Manuel Beyeler
  */
+@ToString
+@EqualsAndHashCode
 public abstract class AllocationLimit {
 
 	/**
@@ -82,7 +86,14 @@ public abstract class AllocationLimit {
 	/**
 	 * Default AllocationLimit which allows a bidder to win any bundle.
 	 */
-	public static AllocationLimit NO = new AllocationLimit(new ArrayList<>()) {
+	public static AllocationLimit NO = new NoAllocationLimit();
+			
+			
+	public static final class NoAllocationLimit extends AllocationLimit {
+		protected NoAllocationLimit() {
+			super(new ArrayList<>());
+		}
+
 		@Override
 		public boolean validate(Bundle bundle) {
 			return true;

@@ -13,8 +13,10 @@ import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.LinearTerm;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * A linear constraint used to restrict a bidders allocatable bundle space.
@@ -22,6 +24,8 @@ import lombok.RequiredArgsConstructor;
  * @author Manuel Beyeler
  * @see AllocationLimit
  */
+@ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class AllocationLimitConstraint {
 
@@ -29,6 +33,8 @@ public class AllocationLimitConstraint {
 	 * A linear term of an AllocationLimitConstraint. You can use linear terms formulated on Goods or on 
 	 * additional JOpt Variables.
 	 */
+	@ToString
+	@EqualsAndHashCode
 	@RequiredArgsConstructor
 	public static abstract class AllocationLimitLinearTerm {
 		/**
@@ -52,6 +58,8 @@ public class AllocationLimitConstraint {
 	/**
 	 * A linear term formulated with respect of a single good.
 	 */
+	@ToString(callSuper = true)
+	@EqualsAndHashCode(callSuper = true)
 	public static class LinearGoodTerm extends AllocationLimitLinearTerm {
 		@Getter
 		private final Good good;
@@ -94,6 +102,8 @@ public class AllocationLimitConstraint {
 	 * However, note that you need to make sure that your variable (names) are unique. Of course you can use
 	 * the same varialbe in multiple constraints and terms to formulate your problem.
 	 */
+	@ToString(callSuper = true)
+	@EqualsAndHashCode(callSuper = true)
 	public static class LinearVarTerm extends AllocationLimitLinearTerm {
 		/**
 		 * The JOpt variable

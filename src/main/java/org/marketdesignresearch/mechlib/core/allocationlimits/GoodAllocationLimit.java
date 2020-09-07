@@ -11,13 +11,17 @@ import org.marketdesignresearch.mechlib.core.bundlesampling.UniformRandomBundleS
 import com.google.common.base.Preconditions;
 
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Limits the allocation of any bidder to the given set of goods.
  * 
  * @author Manuel
  */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class GoodAllocationLimit extends AllocationLimit {
 	@Getter
 	private final List<? extends Good> domainGoods;

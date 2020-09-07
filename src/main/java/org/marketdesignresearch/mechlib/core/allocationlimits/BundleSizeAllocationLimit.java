@@ -11,13 +11,17 @@ import org.marketdesignresearch.mechlib.core.bundlesampling.LimitedSizeRandomBun
 import com.google.common.base.Preconditions;
 
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * An allocation limit that allows only to allocate bundles up to a given size.
  * 
  * @author Manuel Beyeler
  */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class BundleSizeAllocationLimit extends AllocationLimit {
 
 	@Getter

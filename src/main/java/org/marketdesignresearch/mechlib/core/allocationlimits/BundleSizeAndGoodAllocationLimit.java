@@ -12,13 +12,17 @@ import org.marketdesignresearch.mechlib.core.bundlesampling.LimitedSizeRandomBun
 import com.google.common.base.Preconditions;
 
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Limit the allocation of this bidder to a limited set of goods and a maximum number of items.
  * 
  * @author Manuel Beyeler
  */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class BundleSizeAndGoodAllocationLimit extends AllocationLimit {
 	@Getter
 	private final int bundleSizeLimit;
