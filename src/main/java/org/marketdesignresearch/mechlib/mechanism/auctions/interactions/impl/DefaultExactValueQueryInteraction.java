@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ExactValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.ExactValueQueryStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;

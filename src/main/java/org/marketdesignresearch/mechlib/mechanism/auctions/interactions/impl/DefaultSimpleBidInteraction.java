@@ -3,7 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl;
 import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.SimpleBidStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.SimpleBidStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.SimpleBidInteraction;

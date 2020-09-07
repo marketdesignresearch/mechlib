@@ -1,8 +1,8 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.RefinementStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.RefinementStrategy;
 import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentable;
 import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;

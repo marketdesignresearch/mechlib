@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.interactions;
 
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 
 /**

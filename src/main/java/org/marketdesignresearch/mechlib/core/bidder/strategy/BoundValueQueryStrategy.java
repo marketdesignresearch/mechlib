@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy;
+package org.marketdesignresearch.mechlib.core.bidder.strategy;
 
 import java.util.Set;
 

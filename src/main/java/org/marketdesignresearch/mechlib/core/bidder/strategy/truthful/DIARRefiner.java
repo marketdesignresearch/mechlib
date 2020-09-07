@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

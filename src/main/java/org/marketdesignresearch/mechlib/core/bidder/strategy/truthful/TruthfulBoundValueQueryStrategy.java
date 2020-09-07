@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -11,9 +11,9 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryWithMRPARRefinementStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.BoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.BoundValueQueryWithMRPARRefinementStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentable;
 import org.marketdesignresearch.mechlib.instrumentation.RefinementInstrumentation;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;

@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
 
 import java.util.LinkedHashSet;
 import java.util.UUID;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.ExactValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.ExactValueQueryStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
 

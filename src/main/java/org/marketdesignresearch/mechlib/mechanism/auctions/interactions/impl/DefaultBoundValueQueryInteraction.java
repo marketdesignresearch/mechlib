@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.BoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.BoundValueQueryStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;

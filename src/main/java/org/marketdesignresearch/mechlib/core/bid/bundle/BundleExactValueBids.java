@@ -14,7 +14,6 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
@@ -51,7 +50,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	 * Gives truthful bids
 	 */
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders) {
-		return fromXORBidders(bidders, Strategy.TRUTHFUL::apply);
+		return fromXORBidders(bidders);
 	}
 
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders,
@@ -64,7 +63,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders) {
-		return fromORBidders(bidders, Strategy.TRUTHFUL::apply);
+		return fromORBidders(bidders);
 	}
 
 	@Override

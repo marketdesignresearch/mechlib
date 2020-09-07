@@ -1,8 +1,8 @@
-package org.marketdesignresearch.mechlib.core.bidder.newstrategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
 
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DemandQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.DemandQueryStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
 
