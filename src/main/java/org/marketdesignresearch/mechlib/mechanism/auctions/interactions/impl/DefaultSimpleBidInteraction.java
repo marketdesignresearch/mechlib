@@ -33,8 +33,6 @@ public class DefaultSimpleBidInteraction extends DefaultInteraction<BundleExactV
 
 	@Override
 	public void submitBid(BundleExactValueBid bid) {
-		// TODO check Preconditions
-		// e.g. a bidder is might not allowed to lower his bids
 		super.submitBid(bid);
 	}
 }

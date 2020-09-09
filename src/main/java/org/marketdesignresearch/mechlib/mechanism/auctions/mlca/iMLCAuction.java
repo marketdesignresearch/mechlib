@@ -19,26 +19,26 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MLCAWithBounds extends Auction<BundleBoundValueBids> {
+public class iMLCAuction extends Auction<BundleBoundValueBids> {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
 
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
 				new BoundDistributedSVR(svrSetup), DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS,
 				seed, timeLimit);
 	}
 
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies,
 			boolean intermediateRefinement, Long seed, double timeLimit) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
 				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit);
 	}
 
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
 			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit) {
 		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
@@ -47,7 +47,7 @@ public class MLCAWithBounds extends Auction<BundleBoundValueBids> {
 				new RefinementPhase(refineMarginalEconomies, timeLimit), seed);
 	}
 
-	public MLCAWithBounds(Domain domain, OutcomeRuleGenerator outcomeRule,
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
 			RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase,
 			RefinementPhase refinement, Long seed) {
 		super(domain, outcomeRule, initialPhase, seed);

@@ -40,7 +40,6 @@ public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getDemandedBundle()
 				.getBundleEntries().stream().map(e -> e.getGood()).collect(Collectors.toList())));
 
-		// TODO add Activity Rule framework
 		super.submitBid(bid);
 	}
 

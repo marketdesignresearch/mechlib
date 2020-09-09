@@ -35,6 +35,8 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	@Getter
 	private final double insensitivityThreshold;
 	@Getter
+	private final boolean removeSmallSupportVectors;
+	@Getter
 	private final Kernel kernel;
 	@Getter
 	private final B bid;
@@ -50,6 +52,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	public SupportVectorMIP(SupportVectorSetup setup, B bid, MipInstrumentation mipInstrumentation) {
 		this.interpolationWeight = setup.getInterpolationWeight();
 		this.insensitivityThreshold = setup.getInsensitivityThreshold();
+		this.removeSmallSupportVectors = setup.isRemoveSmallSupportVectors();
 		this.kernel = setup.getKernel();
 		this.bid = bid;
 
@@ -101,7 +104,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 		}
 		Map<Bundle, Double> fb = new LinkedHashMap<>();
 		for (Bundle b : fbMap.keySet()) {
-			if (!DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, 1e-5))
+			if (!this.removeSmallSupportVectors || !DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, 1e-5))
 				fb.put(b, fbMap.get(b));
 		}
 		this.resultVectors = new BundleExactValueBid();
