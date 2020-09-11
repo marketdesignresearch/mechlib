@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.core.bidder.valuefunction;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,51 +27,50 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class XORValueFunction implements ValueFunction {
-    private static final long serialVersionUID = -2661282710326907817L;
+	private static final long serialVersionUID = -2661282710326907817L;
 
-    @Getter
-    private final Set<BundleValue> bundleValues;
+	@Getter
+	private final Set<BundleValue> bundleValues;
 
-    public XORValueFunction() {
-        this(new HashSet<>());
-    }
+	public XORValueFunction() {
+		this(new LinkedHashSet<>());
+	}
 
-    @PersistenceConstructor
-    public XORValueFunction(Set<BundleValue> bundleValues) {
-        this.bundleValues = ImmutableSet.copyOf(bundleValues);
-    }
+	@PersistenceConstructor
+	public XORValueFunction(Set<BundleValue> bundleValues) {
+		this.bundleValues = ImmutableSet.copyOf(bundleValues);
+	}
 
-    @Override
-    public BigDecimal getValueFor(Bundle bundle) {
-        return bundleValues.stream()
-                .filter(bundleValue -> bundleValue.getBundle().equals(bundle))
-                .max(BundleValue::compareTo).orElse(BundleValue.ZERO).getAmount();
-    }
+	@Override
+	public BigDecimal getValueFor(Bundle bundle) {
+		return bundleValues.stream().filter(bundleValue -> bundleValue.getBundle().equals(bundle))
+				.max(BundleValue::compareTo).orElse(BundleValue.ZERO).getAmount();
+	}
 
-    @Override
-    public BundleExactValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
-        Set<BundleExactValuePair> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator)).collect(Collectors.toCollection(LinkedHashSet::new));
-        return new BundleExactValueBid(bundleBids);
-    }
+	@Override
+	public BundleExactValueBid toBid(UnaryOperator<BigDecimal> bundleBidOperator) {
+		Set<BundleExactValuePair> bundleBids = getBundleValues().stream().map(bb -> bb.toBid(bundleBidOperator))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleExactValueBid(bundleBids);
+	}
 
-    public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles) {
-        return this.getOptimalBundleValueAt(prices, maxNumberOfBundles, false);
-    }
-    
-    public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
-        return bundleValues.stream().filter(b -> allowNegative || b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount()).signum() >= 0)
-                .sorted((a, b) -> {
-                    BigDecimal first = a.getAmount().subtract(prices.getPrice(a.getBundle()).getAmount());
-                    BigDecimal second = b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount());
-                    return second.compareTo(first);
-                })
-                .limit(maxNumberOfBundles)
-                .collect(Collectors.toList());
-    }
+	public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles) {
+		return this.getOptimalBundleValueAt(prices, maxNumberOfBundles, false);
+	}
 
-    @Override
-    public WinnerDetermination toWDP(Bidder bidder) {
-        return new XORWinnerDetermination(new BundleExactValueBids(Collections.singletonMap(bidder, toBid())));
-    }
+	public List<BundleValue> getOptimalBundleValueAt(Prices prices, int maxNumberOfBundles, boolean allowNegative) {
+		return bundleValues.stream()
+				.filter(b -> allowNegative
+						|| b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount()).signum() >= 0)
+				.sorted((a, b) -> {
+					BigDecimal first = a.getAmount().subtract(prices.getPrice(a.getBundle()).getAmount());
+					BigDecimal second = b.getAmount().subtract(prices.getPrice(b.getBundle()).getAmount());
+					return second.compareTo(first);
+				}).limit(maxNumberOfBundles).collect(Collectors.toList());
+	}
+
+	@Override
+	public WinnerDetermination toWDP(Bidder bidder) {
+		return new XORWinnerDetermination(new BundleExactValueBids(Collections.singletonMap(bidder, toBid())));
+	}
 }
-

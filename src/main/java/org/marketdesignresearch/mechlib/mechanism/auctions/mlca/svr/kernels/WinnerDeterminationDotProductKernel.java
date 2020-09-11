@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -19,41 +19,49 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * WDP based on SVR dot product kernel 
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ * @see KernelDotProductExponential
+ * @see KernelDotProductPolynomial
+ */
 public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWithExcludedBundles {
 
 	private KernelDotProduct kernel;
 
-	public WinnerDeterminationDotProductKernel(Domain domain, ElicitationEconomy economy, BundleExactValueBids supportVectors,
-			Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel) {
-		super(domain, economy, supportVectors, excludedBundles);
+	public WinnerDeterminationDotProductKernel(Domain domain, ElicitationEconomy economy,
+			BundleExactValueBids supportVectors, Map<Bidder, Set<Bundle>> excludedBundles, KernelDotProduct kernel,
+			double timelimit) {
+		super(domain, economy, supportVectors, excludedBundles, timelimit);
 		this.kernel = kernel;
 	}
 
 	@Override
 	protected IMIP createKernelSpecificWinnerDeterminationProgram() {
-		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new HashMap<>();
+		Map<UUID, Map<Bundle, Map<Integer, Variable>>> bidderSVSizeVariables = new LinkedHashMap<>();
 
 		MIPWrapper mipWrapper = MIPWrapper.makeNewMaxMIP();
-
+		int varNum = 0;
 		for (UUID b : this.getEconomy().getBidders()) {
-			bidderGoodVariables.put(b, new HashMap<Good, Variable>());
-			bidderSVSizeVariables.put(b, new HashMap<Bundle, Map<Integer, Variable>>());
+			bidderGoodVariables.put(b, new LinkedHashMap<Good, Variable>());
+			bidderSVSizeVariables.put(b, new LinkedHashMap<Bundle, Map<Integer, Variable>>());
 
 			// Insert variables, one per each good
 			for (Good good : this.getDomain().getGoods()) {
-				bidderGoodVariables.get(b).put(good,
-						mipWrapper.makeNewBooleanVar(b.toString() + " Good " + good.toString()));
+				bidderGoodVariables.get(b).put(good, mipWrapper.makeNewBooleanVar("Bidder Good " + (++varNum)));
 			}
 
 			// Define objective
 			for (BundleExactValuePair bv : this.getSupportVectors().getBid(this.getBidder(b)).getBundleBids()) {
-				bidderSVSizeVariables.get(b).put(bv.getBundle(), new HashMap<Integer, Variable>());
+				bidderSVSizeVariables.get(b).put(bv.getBundle(), new LinkedHashMap<Integer, Variable>());
 				Constraint cSize = mipWrapper.beginNewEQConstraint(1);
 				Constraint cSet = mipWrapper.beginNewEQConstraint(1);
 				int svSize = bv.getBundle().getTotalAmount();
 				for (int i = 0; i <= svSize; i++) {
 					bidderSVSizeVariables.get(b).get(bv.getBundle()).put(i,
-							mipWrapper.makeNewBooleanVar(b.toString() + " " + bv.toString() + " Size " + i));
+							mipWrapper.makeNewBooleanVar("SVSize " + (++varNum)));
 					mipWrapper.addObjectiveTerm(bv.getAmount().doubleValue() * kernel.getValueGivenDotProduct(i),
 							bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));
 					cSize.addTerm(i + 1, bidderSVSizeVariables.get(b).get(bv.getBundle()).get(i));
@@ -64,8 +72,8 @@ public class WinnerDeterminationDotProductKernel extends WinnerDeterminationWith
 					if (be.getAmount() == 1)
 						cSize.addTerm(-1.0, bidderGoodVariables.get(b).get(be.getGood()));
 					if (be.getAmount() > 1) {
-						System.out.println("I am ignoring multiple units!");
 						cSize.addTerm(-1.0, bidderGoodVariables.get(b).get(be.getGood()));
+						throw new IllegalStateException("Generic Domains are not supported");
 					}
 				}
 				mipWrapper.endConstraint(cSize);

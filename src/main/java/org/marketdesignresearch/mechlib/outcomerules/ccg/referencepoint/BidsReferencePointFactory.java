@@ -14,20 +14,21 @@ import com.google.common.collect.Maps;
 
 public class BidsReferencePointFactory implements ReferencePointFactory {
 
-    @Override
-    public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
-        Map<Bidder, BidderPayment> paymentMap = ImmutableMap.copyOf(Maps.transformValues(allocation.getTradesMap(), ba -> new BidderPayment(ba.getValue())));
-        return new Payment(paymentMap, new MetaInfo());
-    }
+	@Override
+	public Payment computeReferencePoint(BundleValueBids<?> bids, Allocation allocation) {
+		Map<Bidder, BidderPayment> paymentMap = ImmutableMap
+				.copyOf(Maps.transformValues(allocation.getTradesMap(), ba -> new BidderPayment(ba.getValue())));
+		return new Payment(paymentMap, new MetaInfo());
+	}
 
-    @Override
-    public String getName() {
-        return "BIDS";
-    }
+	@Override
+	public String getName() {
+		return "BIDS";
+	}
 
-    @Override
-    public boolean belowCore() {
-        return false;
-    }
+	@Override
+	public boolean belowCore() {
+		return false;
+	}
 
 }

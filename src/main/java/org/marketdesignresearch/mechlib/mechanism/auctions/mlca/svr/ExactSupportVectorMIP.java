@@ -3,18 +3,21 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import lombok.Getter;
-import lombok.Setter;
 
+/**
+ * Trains support vectors based on given bids and kernel.
+ * Formulation by Smola and Schoelkopf 2003
+ * 
+ * @author Gianluca Brero
+ */
 public class ExactSupportVectorMIP extends SupportVectorMIP<BundleExactValueBid> {
 
-	
-	public ExactSupportVectorMIP(SupportVectorSetup setup, BundleExactValueBid bid, MipInstrumentation mipInstrumentation) {
+	public ExactSupportVectorMIP(SupportVectorSetup setup, BundleExactValueBid bid,
+			MipInstrumentation mipInstrumentation) {
 		super(setup, bid, mipInstrumentation);
 	}
 

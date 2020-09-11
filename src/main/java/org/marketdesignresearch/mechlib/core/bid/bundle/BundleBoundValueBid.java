@@ -52,7 +52,7 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 						bid.getLowerBound().multiply(alpha)
 								.add(bid.getUpperBound().multiply(BigDecimal.ONE.subtract(alpha))),
 						bid.getBundle(), bid.getId()))
-				.collect(Collectors.toSet()));
+				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
 
 	public BundleExactValueBid getPerturbedBid(Bundle allocated) {
@@ -60,9 +60,9 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 				.map(b -> new BundleExactValuePair(
 						b.getBundle().equals(allocated) ? b.getLowerBound() : b.getUpperBound(), b.getBundle(),
 						b.getId()))
-				.collect(Collectors.toSet()));
+				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
-	
+
 	public BundleBoundValueBid copy() {
 		return new BundleBoundValueBid(new LinkedHashSet<>(this.getBundleBids()));
 	}

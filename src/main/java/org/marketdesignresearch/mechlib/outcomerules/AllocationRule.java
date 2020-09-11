@@ -10,5 +10,5 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
  *
  */
 public interface AllocationRule extends MipInstrumentationable {
-    Allocation getAllocation();
+	Allocation getAllocation();
 }

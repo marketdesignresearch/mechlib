@@ -1,7 +1,7 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,58 +20,58 @@ import lombok.Getter;
 import lombok.Setter;
 
 public abstract class PaymentNorm implements CorePaymentNorm {
-    protected static final String BIDDER = "bidder_";
+	protected static final String BIDDER = "bidder_";
 
-    protected void setProposedValues(IMIPResult result, IMIP mip) {
-        result.getValues().forEach((n, v) -> mip.proposeValue(mip.getVar(n), v));
+	protected void setProposedValues(IMIPResult result, IMIP mip) {
+		result.getValues().forEach((n, v) -> mip.proposeValue(mip.getVar(n), v));
 
-    }
+	}
 
-    protected IMIPResult solveProgram(IMIP program) {
-    	int currentSolver = 1;
-    	while(true) {
-    		try {
-    			getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program);
-    			IMIPResult result = CPLEXUtils.SOLVER.solve(program);
-    			getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program, result);
-    			return result; 
-    		} catch(MIPException ex) {
-    			// try different CPLEX solver
-    			if(currentSolver > 4)
-    				throw ex;
-    			program.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, currentSolver);
-    			currentSolver++;
-    		}
-    	} 
-    }
+	protected IMIPResult solveProgram(IMIP program) {
+		int currentSolver = 1;
+		while (true) {
+			try {
+				getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program);
+				IMIPResult result = CPLEXUtils.SOLVER.solve(program);
+				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program, result);
+				return result;
+			} catch (MIPException ex) {
+				// try different CPLEX solver
+				if (currentSolver > 4)
+					throw ex;
+				program.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, currentSolver);
+				currentSolver++;
+			}
+		}
+	}
 
-    public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
-        Map<Bidder, BidderPayment> newBidderPayments = new HashMap<>();
-        for (Bidder winningBidder : winners) {
-            String variableId = BIDDER + winningBidder.getId();
-            BigDecimal newPayment = BigDecimal.ZERO;
+	public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
+		Map<Bidder, BidderPayment> newBidderPayments = new LinkedHashMap<>();
+		for (Bidder winningBidder : winners) {
+			String variableId = BIDDER + winningBidder.getId();
+			BigDecimal newPayment = BigDecimal.ZERO;
 
-            if (mipResult.getValues().containsKey(variableId)) {
-                newPayment = BigDecimal.valueOf(mipResult.getValue(variableId));
-            }
-            newBidderPayments.put(winningBidder, new BidderPayment(newPayment));
+			if (mipResult.getValues().containsKey(variableId)) {
+				newPayment = BigDecimal.valueOf(mipResult.getValue(variableId));
+			}
+			newBidderPayments.put(winningBidder, new BidderPayment(newPayment));
 
-        }
+		}
 
-        return new Payment(newBidderPayments, metaInfo);
-    }
+		return new Payment(newBidderPayments, metaInfo);
+	}
 
-    /**
-     * adds the norms objective to the program may also add additional
-     * constraints
-     * 
-     * @param program
-     * @return something but mostly nothing really bad solution
-     */
-    public abstract Object addNormObjective(IMIP program);
+	/**
+	 * adds the norms objective to the program may also add additional constraints
+	 * 
+	 * @param program
+	 * @return something but mostly nothing really bad solution
+	 */
+	public abstract Object addNormObjective(IMIP program);
 
-    // region instrumentation
-    @Getter @Setter
-    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
-    // endregion
+	// region instrumentation
+	@Getter
+	@Setter
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+	// endregion
 }

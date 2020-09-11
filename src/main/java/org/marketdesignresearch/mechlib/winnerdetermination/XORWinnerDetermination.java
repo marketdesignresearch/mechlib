@@ -1,6 +1,6 @@
 package org.marketdesignresearch.mechlib.winnerdetermination;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.BundleEntry;
@@ -24,50 +24,52 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
  */
 public class XORWinnerDetermination extends BidBasedWinnerDetermination {
 
-    private final MIPWrapper winnerDeterminationProgram;
+	private final MIPWrapper winnerDeterminationProgram;
 
-    public XORWinnerDetermination(BundleValueBids<?> bids) {
-        super(bids);
-        winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
-    }
+	public XORWinnerDetermination(BundleValueBids<?> bids) {
+		super(bids);
+		winnerDeterminationProgram = createWinnerDeterminationMIP(bids);
+	}
 
-    private MIPWrapper createWinnerDeterminationMIP(BundleValueBids<?> bids) {
-        MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
-        // Add decision variables and objective terms:
-        Map<Good, Constraint> goods = new HashMap<>();
-        for (Bidder bidder : bids.getBidders()) {
-            Constraint exclusiveBids = new Constraint(CompareType.LEQ, 1);
+	private MIPWrapper createWinnerDeterminationMIP(BundleValueBids<?> bids) {
+		MIPWrapper winnerDeterminationProgram = MIPWrapper.makeNewMaxMIP();
+		// Add decision variables and objective terms:
+		Map<Good, Constraint> goods = new LinkedHashMap<>();
+		for (Bidder bidder : bids.getBidders()) {
+			Constraint exclusiveBids = new Constraint(CompareType.LEQ, 1);
 
-            for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
+			for (BundleExactValuePair bundleBid : bids.getBid(bidder).getBundleBids()) {
+				if (bidder.getAllocationLimit().validate(bundleBid.getBundle())) {
+					Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
+					bidVariables.put(bundleBid, bidI);
+					double bidAmount = this.getScaledBundleBidAmount(bundleBid).doubleValue();
+					winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
+					exclusiveBids.addTerm(1, bidI);
+					for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
+						Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(),
+								g -> new Constraint(CompareType.LEQ, g.getQuantity()));
+						noDoubleAssignment.addTerm(entry.getAmount(), bidI);
+					}
+				}
+			}
+			winnerDeterminationProgram.add(exclusiveBids);
+		}
 
-                Variable bidI = winnerDeterminationProgram.makeNewBooleanVar("Bid_" + bundleBid.getId());
-                bidVariables.put(bundleBid, bidI);
-                double bidAmount = this.getScaledBundleBidAmount(bundleBid).doubleValue();
-                winnerDeterminationProgram.addObjectiveTerm(bidAmount, bidI);
-                exclusiveBids.addTerm(1, bidI);
-                for (BundleEntry entry : bundleBid.getBundle().getBundleEntries()) {
-                    Constraint noDoubleAssignment = goods.computeIfAbsent(entry.getGood(), g -> new Constraint(CompareType.LEQ, g.getQuantity()));
-                    noDoubleAssignment.addTerm(entry.getAmount(), bidI);
-                }
-            }
-            winnerDeterminationProgram.add(exclusiveBids);
-        }
+		goods.values().forEach(winnerDeterminationProgram::add);
 
-        goods.values().forEach(winnerDeterminationProgram::add);
+		return winnerDeterminationProgram;
+	}
 
-        return winnerDeterminationProgram;
-    }
+	@Override
+	public WinnerDetermination join(WinnerDetermination other) {
+		Preconditions.checkArgument(other instanceof BidBasedWinnerDetermination);
+		BidBasedWinnerDetermination otherBidBased = (BidBasedWinnerDetermination) other;
+		return new XORWinnerDetermination(otherBidBased.getBids().join(getBids()));
+	}
 
-    @Override
-    public WinnerDetermination join(WinnerDetermination other) {
-        Preconditions.checkArgument(other instanceof BidBasedWinnerDetermination);
-        BidBasedWinnerDetermination otherBidBased = (BidBasedWinnerDetermination) other;
-        return new XORWinnerDetermination(otherBidBased.getBids().join(getBids()));
-    }
-
-    @Override
-    public MIPWrapper getMIP() {
-        return winnerDeterminationProgram;
-    }
+	@Override
+	public MIPWrapper getMIP() {
+		return winnerDeterminationProgram;
+	}
 
 }

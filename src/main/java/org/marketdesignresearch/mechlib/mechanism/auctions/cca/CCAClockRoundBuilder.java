@@ -5,15 +5,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DemandQuery;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.AccessLevel;
@@ -40,17 +37,18 @@ public class CCAClockRoundBuilder extends AuctionRoundBuilder<BundleExactValueBi
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
 		log.info("Building Clock Round {}", this.getAuction().getNumberOfRounds() + 1);
-		return new CCAClockRound(this.getAuction(), this.collectBids() , interactions.values().iterator().next().getPrices(),
-				this.getAuction().getDomain().getGoods());
+		return new CCAClockRound(this.getAuction(), this.collectBids(),
+				interactions.values().iterator().next().getPrices(), this.getAuction().getDomain().getGoods());
 	}
-	
+
 	private DemandBids collectBids() {
 		return new DemandBids(this.interactions.entrySet().stream().filter(e -> e.getValue().getBid() != null)
-				.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(), (e1,e2)->e1, LinkedHashMap::new)));
+				.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()), e -> e.getValue().getBid(),
+						(e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	@Override
-	protected Outcome computeTemporaryResult(OutcomeRuleGenerator outcomeRuleGenerator) {
-		return outcomeRuleGenerator.getOutcomeRule(this.collectBids().transformToBundleValueBids(this.interactions.values().iterator().next().getPrices())).getOutcome();
+	public BundleExactValueBids getTemporaryBids() {
+		return this.collectBids().transformToBundleValueBids(interactions.values().iterator().next().getPrices());
 	}
 }

@@ -5,7 +5,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.Referenc
 
 public interface CorePaymentWeightsFactory {
 
-    CorePaymentWeights createWeights(Outcome referencepoint);
+	CorePaymentWeights createWeights(Outcome referencepoint);
 
-    String getLubinParkesName(Norm norm, ReferencePointFactory referencePoint);
+	String getLubinParkesName(Norm norm, ReferencePointFactory referencePoint);
 }

@@ -24,15 +24,16 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
  * 
  */
 interface PartialConstraintGenerator {
-    /**
-     * 
-     * @param corePaymentRule
-     *            Needs to be reset if a constraint is added
-     * @param goodToBidderMap
-     * @param bids
-     */
-    void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint, Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule);
+	/**
+	 * 
+	 * @param corePaymentRule Needs to be reset if a constraint is added
+	 * @param goodToBidderMap
+	 * @param bids
+	 */
+	void generateFirstRoundConstraints(BundleValueBids<?> bids, Outcome referencePoint,
+			Map<Good, Set<PotentialCoalition>> goodToBidderMap, CorePaymentRule corePaymentRule);
 
-    void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,
-                            ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition, Outcome priorResult);
+	void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,
+			ConnectivityInspector<PotentialCoalition, DefaultEdge> connectivityInspector, Allocation blockingCoalition,
+			Outcome priorResult);
 }

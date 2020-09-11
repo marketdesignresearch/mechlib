@@ -13,16 +13,19 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
 public class VariableAlgorithmCCGFactory extends ConfigurableCCGFactory implements MechanismFactory {
-    /**
-     * 
-     */
+	/**
+	 * 
+	 */
 
-    public VariableAlgorithmCCGFactory(ReferencePointFactory rpFactory, BlockingAllocationFinder blockingAllocationFinder, Set<ConstraintGenerationAlgorithm> algorithms) {
-        super(blockingAllocationFinder, rpFactory, ImmutableList.of(NormFactory.withEqualWeights(Norm.MANHATTAN), NormFactory.withEqualWeights(Norm.EUCLIDEAN)), algorithms);
-    }
+	public VariableAlgorithmCCGFactory(ReferencePointFactory rpFactory,
+			BlockingAllocationFinder blockingAllocationFinder, Set<ConstraintGenerationAlgorithm> algorithms) {
+		super(blockingAllocationFinder, rpFactory, ImmutableList.of(NormFactory.withEqualWeights(Norm.MANHATTAN),
+				NormFactory.withEqualWeights(Norm.EUCLIDEAN)), algorithms);
+	}
 
-    public VariableAlgorithmCCGFactory(BlockingAllocationFinder blockingAllocationFinder, ConstraintGenerationAlgorithm algorithm, ConstraintGenerationAlgorithm... algorithms) {
-        this(new VCGReferencePointFactory(), blockingAllocationFinder, Sets.immutableEnumSet(algorithm, algorithms));
-    }
+	public VariableAlgorithmCCGFactory(BlockingAllocationFinder blockingAllocationFinder,
+			ConstraintGenerationAlgorithm algorithm, ConstraintGenerationAlgorithm... algorithms) {
+		this(new VCGReferencePointFactory(), blockingAllocationFinder, Sets.immutableEnumSet(algorithm, algorithms));
+	}
 
 }

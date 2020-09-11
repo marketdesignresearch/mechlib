@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBids;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -23,33 +22,36 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class CCAClockRound extends DefaultPricedAuctionRound<BundleExactValueBids> {
 
-    @Getter
-    private final Map<UUID, Integer> overDemand;
-    
-    @Getter
-    private final DemandBids demandBids;
+	@Getter
+	private final Map<UUID, Integer> overDemand;
 
-    public CCAClockRound(Auction<BundleExactValueBids> auction, DemandBids bids, Prices prices, List<? extends Good> goods) {
-        super(auction, prices);
-        this.demandBids = bids;
-        this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid, good -> bids.getDemand(good) - good.getQuantity(),(e1,e2)->e1, LinkedHashMap::new));
-    }
-    
-    @PersistenceConstructor
-    protected CCAClockRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, Prices prices, DemandBids bids, Map<UUID, Integer> overDemand) {
-        super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber, prices);
-        this.demandBids = bids;
-        this.overDemand = overDemand;
-    }
+	@Getter
+	private final DemandBids demandBids;
+
+	public CCAClockRound(Auction<BundleExactValueBids> auction, DemandBids bids, Prices prices,
+			List<? extends Good> goods) {
+		super(auction, prices);
+		this.demandBids = bids;
+		this.overDemand = goods.stream().collect(Collectors.toMap(Good::getUuid,
+				good -> bids.getDemand(good) - good.getQuantity(), (e1, e2) -> e1, LinkedHashMap::new));
+	}
+
+	@PersistenceConstructor
+	protected CCAClockRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, Prices prices,
+			DemandBids bids, Map<UUID, Integer> overDemand) {
+		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber, prices);
+		this.demandBids = bids;
+		this.overDemand = overDemand;
+	}
 
 	@Override
-    public String getDescription() {
-        return "Clock Round " + getRoundNumber();
-    }
+	public String getDescription() {
+		return "Clock Round " + getRoundNumber();
+	}
 
-    public String getType() {
-        return "CLOCK";
-    }
+	public String getType() {
+		return "CLOCK";
+	}
 
 	@Override
 	public BundleExactValueBids getBids() {
@@ -57,4 +59,3 @@ public class CCAClockRound extends DefaultPricedAuctionRound<BundleExactValueBid
 	}
 
 }
-

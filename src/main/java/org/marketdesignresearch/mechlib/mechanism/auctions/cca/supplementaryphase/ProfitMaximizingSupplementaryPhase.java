@@ -3,12 +3,10 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementarypha
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.DefaultPricedAuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.PricedAuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultProfitMaxInteraction;
 
@@ -19,6 +17,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Supplementary round for the combinatorial clock phase. Each bidder can 
+ * submit {@link #getNumberOfSupplementaryBids()} additional bids based
+ * on the last priced round in this auction (i.e. the last round of the
+ * clock phase). 
+ * 
+ * @author Manuel Beyeler
+ */
 @ToString
 @EqualsAndHashCode
 public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
@@ -43,15 +49,14 @@ public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
 		Preconditions.checkState(auction.getLastRound() instanceof PricedAuctionRound);
 
-		PricedAuctionRound<BundleExactValueBids> pricedRound = (PricedAuctionRound<BundleExactValueBids>) auction.getLastRound();
-		
-		return new ProfitMaximizingSupplementaryRoundBuilder(
-				auction.getDomain().getBidders().stream()
-						.collect(
-								Collectors
-										.toMap(Bidder::getId,
-												b -> new DefaultProfitMaxInteraction(pricedRound.getPrices(),
-														this.getNumberOfSupplementaryBids(), b.getId(), auction), (e1,e2)->e1, LinkedHashMap::new)),
+		PricedAuctionRound<BundleExactValueBids> pricedRound = (PricedAuctionRound<BundleExactValueBids>) auction
+				.getLastRound();
+
+		return new ProfitMaximizingSupplementaryRoundBuilder(auction.getDomain().getBidders().stream()
+				.collect(Collectors.toMap(Bidder::getId,
+						b -> new DefaultProfitMaxInteraction(pricedRound.getPrices(),
+								this.getNumberOfSupplementaryBids(), b.getId(), auction),
+						(e1, e2) -> e1, LinkedHashMap::new)),
 				auction);
 	}
 

@@ -7,19 +7,19 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 import lombok.Getter;
 
-public class RandomQueryAuctionRound<T extends BundleValueBids<?>> extends DefaultAuctionRound<T>{
+public class RandomQueryAuctionRound<T extends BundleValueBids<?>> extends DefaultAuctionRound<T> {
 
 	@Getter
 	private final T bids;
-	
+
 	public RandomQueryAuctionRound(Auction<T> auction, T bids) {
 		super(auction);
 		this.bids = bids;
 	}
-	
+
 	@PersistenceConstructor
 	public RandomQueryAuctionRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber, T bids) {
-		super(roundNumber,auctionPhaseNumber,auctionPhaseRoundNumber);
+		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber);
 		this.bids = bids;
 	}
 }

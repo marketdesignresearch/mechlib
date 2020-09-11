@@ -5,6 +5,6 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 
 public interface PaymentRule extends MipInstrumentationable {
 
-    Payment getPayment();
+	Payment getPayment();
 
 }

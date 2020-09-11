@@ -12,11 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({@PersistenceConstructor}))
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({ @PersistenceConstructor }))
 public abstract class Mechanism implements OutcomeRule {
-    @Getter @Setter
-    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
-    @Getter @Setter
-    private AuctionInstrumentation auctionInstrumentation = new AuctionInstrumentation();
+	@Getter
+	@Setter
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+	@Getter
+	@Setter
+	private AuctionInstrumentation auctionInstrumentation = new AuctionInstrumentation();
 }

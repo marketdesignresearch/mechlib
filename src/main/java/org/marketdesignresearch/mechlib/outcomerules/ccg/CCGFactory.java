@@ -5,9 +5,9 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 
 public interface CCGFactory extends MechanismFactory {
-    @Override
-    OutcomeRule getOutcomeRule(BundleValueBids<?> bids);
+	@Override
+	OutcomeRule getOutcomeRule(BundleValueBids<?> bids);
 
-    void setReferencePoint(Outcome cachedReferencePoint);
+	void setReferencePoint(Outcome cachedReferencePoint);
 
 }

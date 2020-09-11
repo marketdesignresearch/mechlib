@@ -6,6 +6,6 @@ import lombok.Value;
 
 @Value
 public class SingleItemBid {
-    Bidder bidder;
-    BundleExactValuePair bundleBid;
+	Bidder bidder;
+	BundleExactValuePair bundleBid;
 }

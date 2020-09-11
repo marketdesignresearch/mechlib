@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,48 +31,49 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class SingleItemOutcomeRule implements OutcomeRule {
 
-    protected final Set<SingleItemBids> bidsPerGood = new HashSet<>();
+	protected final Set<SingleItemBids> bidsPerGood = new LinkedHashSet<>();
 
-    public SingleItemOutcomeRule(BundleValueBids<?> bids) {
-        for (Good good : bids.getGoods()) {
-            this.bidsPerGood.add(bids.getBidsPerSingleGood(good));
-        }
-    }
+	public SingleItemOutcomeRule(BundleValueBids<?> bids) {
+		for (Good good : bids.getGoods()) {
+			this.bidsPerGood.add(bids.getBidsPerSingleGood(good));
+		}
+	}
 
-    @Override
-    public final Outcome getOutcome() {
-        Outcome result = Outcome.NONE;
-        for (SingleItemBids bids : bidsPerGood) {
-            Iterator<SingleItemBid> iterator = bids.getDescendingHighestBids().iterator();
-            if (!iterator.hasNext()) {
-                return new Outcome(Payment.ZERO, Allocation.EMPTY_ALLOCATION);
-            }
-            List<SingleItemBid> firstBids = new ArrayList<>();
-            firstBids.add(iterator.next());
-            while(iterator.hasNext()) {
-                SingleItemBid next = iterator.next();
-                if (next.getBundleBid().getAmount().equals(firstBids.get(0).getBundleBid().getAmount())) {
-                    firstBids.add(next);
-                } else {
-                    break;
-                }
-            }
-            SingleItemBid firstBid = firstBids.stream()
-                    .sorted((a, b) -> new AlphabeticTieBreaker().compare(a, b)).collect(Collectors.toList()).get(0);
-            BundleExactValuePair winningBid = firstBid.getBundleBid();
-            Bidder winner = firstBid.getBidder();
-            BidderAllocation bidderAllocation = new BidderAllocation(winningBid.getAmount(), Sets.newHashSet(bids.getItem()), Sets.newHashSet(winningBid));
-            Allocation allocation = new Allocation(ImmutableMap.of(winner, bidderAllocation), bids, new MetaInfo());
-            Payment payment = new Payment(ImmutableMap.of(winner, getSingleItemPayment(bids)), new MetaInfo());
-            result = result.merge(new Outcome(payment, allocation));
-        }
-        return result;
-    }
+	@Override
+	public final Outcome getOutcome() {
+		Outcome result = Outcome.NONE;
+		for (SingleItemBids bids : bidsPerGood) {
+			Iterator<SingleItemBid> iterator = bids.getDescendingHighestBids().iterator();
+			if (!iterator.hasNext()) {
+				return new Outcome(Payment.ZERO, Allocation.EMPTY_ALLOCATION);
+			}
+			List<SingleItemBid> firstBids = new ArrayList<>();
+			firstBids.add(iterator.next());
+			while (iterator.hasNext()) {
+				SingleItemBid next = iterator.next();
+				if (next.getBundleBid().getAmount().equals(firstBids.get(0).getBundleBid().getAmount())) {
+					firstBids.add(next);
+				} else {
+					break;
+				}
+			}
+			SingleItemBid firstBid = firstBids.stream().sorted((a, b) -> new AlphabeticTieBreaker().compare(a, b))
+					.collect(Collectors.toList()).get(0);
+			BundleExactValuePair winningBid = firstBid.getBundleBid();
+			Bidder winner = firstBid.getBidder();
+			BidderAllocation bidderAllocation = new BidderAllocation(winningBid.getAmount(),
+					Sets.newHashSet(bids.getItem()), Sets.newHashSet(winningBid));
+			Allocation allocation = new Allocation(ImmutableMap.of(winner, bidderAllocation), bids, new MetaInfo());
+			Payment payment = new Payment(ImmutableMap.of(winner, getSingleItemPayment(bids)), new MetaInfo());
+			result = result.merge(new Outcome(payment, allocation));
+		}
+		return result;
+	}
 
-    protected abstract BidderPayment getSingleItemPayment(SingleItemBids bids);
+	protected abstract BidderPayment getSingleItemPayment(SingleItemBids bids);
 
-    @Override
-    public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
-        // No MIP is going to be run
-    }
+	@Override
+	public void setMipInstrumentation(MipInstrumentation mipInstrumentation) {
+		// No MIP is going to be run
+	}
 }

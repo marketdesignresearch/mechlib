@@ -5,16 +5,23 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class ExactValueAuction extends Auction<BundleExactValueBids>{
+/**
+ * An Auction that supports BundleExactValueBids (i.e. bids with an exact value)
+ * 
+ * @author Manuel Beyeler
+ * @see Auction
+ */
+public class ExactValueAuction extends Auction<BundleExactValueBids> {
 
 	public ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator,
-			AuctionPhase<BundleExactValueBids> firstPhase) {
-		super(domain, outcomeRuleGenerator, firstPhase);
+			AuctionPhase<BundleExactValueBids> firstPhase, Long seed) {
+		super(domain, outcomeRuleGenerator, firstPhase, seed);
 	}
-	
+
 	@PersistenceConstructor
-	protected ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, AuctionRoundBuilder<BundleExactValueBids> current) {
-		super(domain,outcomeRuleGenerator,current);
+	protected ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator,
+			AuctionRoundBuilder<BundleExactValueBids> current) {
+		super(domain, outcomeRuleGenerator, current);
 	}
 
 	@Override

@@ -12,34 +12,36 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 
+/**
+ * ML query phase of MLCA that queries exact values (i.e. uses {@link ExactValueQuery}s).
+ * @author Manuel Beyeler
+ */
 public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {
 
 	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent) {
 		super(mlComponent);
 	}
 
-	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, long seed) {
-		super(mlComponent, seed);
-	}
-	
-	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, long seed, int maxQueries, int numberOfMarginalQueriesPerRound) {
-		super(mlComponent, seed, maxQueries, numberOfMarginalQueriesPerRound);
+	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent, int maxQueries,
+			int numberOfMarginalQueriesPerRound) {
+		super(mlComponent, maxQueries, numberOfMarginalQueriesPerRound);
 	}
 
 	@Override
 	protected AuctionRoundBuilder<BundleExactValueBids> createConcreteAuctionRoundBuilder(
 			Auction<BundleExactValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
-			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp, long nextRandomSeed) {
+			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
 		return new ExactMLQueryAuctionRoundBuilder(auction,
 				auction.getDomain().getBidders().stream()
 						.collect(Collectors.toMap(Bidder::getId,
 								b -> new DefaultExactValueQueryInteraction(restrictedBids.get(b), b.getId(), auction),
 								(e1, e2) -> e1, LinkedHashMap::new)),
-				bidderMarginalsTemp, nextRandomSeed);
+				bidderMarginalsTemp);
 	}
 
 	@Override

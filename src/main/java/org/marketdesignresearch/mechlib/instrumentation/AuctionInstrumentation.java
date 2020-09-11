@@ -6,5 +6,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class AuctionInstrumentation {
-    public void postRound(AuctionRound<?> auctionRound) {}
+	public void postRound(AuctionRound<?> auctionRound) {
+	}
 }

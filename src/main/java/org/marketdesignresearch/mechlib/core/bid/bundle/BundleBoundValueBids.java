@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.core.bid.bundle;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -11,8 +12,6 @@ import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-
-import com.google.common.collect.Sets;
 
 public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 
@@ -35,11 +34,12 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b -> !b.getKey().equals(bidder))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
 	}
-	
+
 	@Override
 	public BundleBoundValueBids only(Set<UUID> bidders) {
-		return new BundleBoundValueBids(this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey().getId()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
+		return new BundleBoundValueBids(
+				this.getBidMap().entrySet().stream().filter(b -> bidders.contains(b.getKey().getId())).collect(
+						Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	@Override
@@ -48,7 +48,9 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 			throw new IllegalArgumentException("Currently unable to join non BundleBoundValueBids");
 
 		BundleBoundValueBids result = new BundleBoundValueBids();
-		Set<Bidder> bidders = Sets.union(getBidders(), other.getBidders());
+		Set<Bidder> bidders = new LinkedHashSet<>();
+		bidders.addAll(bidders);
+		bidders.addAll(other.getBidders());
 		bidders.forEach(b -> {
 			BundleBoundValueBid joined = new BundleBoundValueBid();
 			if (getBid(b) != null)
@@ -84,17 +86,17 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 	}
 
 	public BundleExactValueBids getAlphaBids(BigDecimal alpha) {
-		return new BundleExactValueBids(this.getBidMap().entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getAlphaBid(alpha))));
+		return new BundleExactValueBids(this.getBidMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+				e -> e.getValue().getAlphaBid(alpha), (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 
 	public BundleExactValueBids getPerturbedBids(Allocation allocation) {
 		Map<Bidder, BundleExactValueBid> perturbedBids = new LinkedHashMap<>();
-		for(Map.Entry<Bidder,BundleBoundValueBid> entry : this.getBidMap().entrySet()) {
+		for (Map.Entry<Bidder, BundleBoundValueBid> entry : this.getBidMap().entrySet()) {
 			Bundle allocated = allocation.allocationOf(entry.getKey()).getBundle();
 			perturbedBids.put(entry.getKey(), entry.getValue().getPerturbedBid(allocated));
 		}
-		
+
 		return new BundleExactValueBids(perturbedBids);
 	}
 
