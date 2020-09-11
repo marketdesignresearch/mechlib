@@ -17,6 +17,11 @@ import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ShaveTransformation;
 
+/**
+ * Bids for bundles with exact values of multiple bidders (i.e. all bidders of an auction).
+ * 
+ * @author Manuel Beyeler
+ */
 public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	public BundleExactValueBids() {
