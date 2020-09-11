@@ -40,7 +40,7 @@ public class BundleSamplingTest {
 		Domain domain = adapter.adaptToDomain(catsAuction);
 		BundleSampling sampling = new LimitedSizeRandomBundleSampling(2, new Random(2));
 		Bundle sampled = domain.getSampledBundle(sampling);
-		assertThat(sampled.getSingleQuantityGoods(), is(List.of(domain.getGood("0"), domain.getGood("1"))));
+		assertThat(sampled.getSingleQuantityGoods(), is(List.of(domain.getGood("0"))));
 		System.out.println(sampled);
 	}
 

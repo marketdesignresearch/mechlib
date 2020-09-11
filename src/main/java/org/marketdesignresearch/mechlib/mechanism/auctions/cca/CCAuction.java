@@ -60,7 +60,6 @@ public class CCAuction extends ExactValueAuction {
 
 	/**
 	 * Overrides the default method to have outcomes only based on each round's bids
-	 * TODO ?? Why ??
 	 */
 	@Override
 	public Outcome getOutcomeAtRound(OutcomeRuleGenerator generator, int index) {
