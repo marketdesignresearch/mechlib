@@ -35,7 +35,6 @@ public class ExactMLQueryAuctionRoundBuilder extends AuctionRoundBuilder<BundleE
 
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
-		// TODO check if all interactions completed
 		return new MLQueryAuctionRound<>(this.getAuction(),
 				new BundleExactValueBids(interactions.entrySet().stream()
 						.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()),

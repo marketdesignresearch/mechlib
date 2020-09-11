@@ -5,6 +5,12 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import org.springframework.data.annotation.PersistenceConstructor;
 
+/**
+ * An Auction that supports BundleExactValueBids (i.e. bids with an exact value)
+ * 
+ * @author Manuel Beyeler
+ * @see Auction
+ */
 public class ExactValueAuction extends Auction<BundleExactValueBids> {
 
 	public ExactValueAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator,

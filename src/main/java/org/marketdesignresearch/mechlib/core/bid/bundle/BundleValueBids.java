@@ -19,6 +19,13 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * Collection of BundleValueBids per bidder (i.e. holds all bids of all bidders in an auction).
+ * 
+ * @author Manuel Beyeler
+ *
+ * @param <T> type of bids
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleExactValuePair>> extends Bids<T> {
@@ -61,16 +68,23 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 	public abstract BundleValueBids<T> only(Set<UUID> bidders);
 
 	/**
-	 *
 	 * @param bidders to be included
 	 * @return New bids consisting only of the bids of the specified bidders
 	 */
 	public abstract BundleValueBids<T> of(Set<Bidder> bidders);
 
+	/**
+	 * @param other BundleValueBids.
+	 * @return a new BundleValueBids containing all bids of this and other.
+	 */
 	public abstract BundleValueBids<T> join(BundleValueBids<?> other);
 
 	public abstract BundleValueBids<T> reducedBy(Outcome outcome);
 
+	/**
+	 * @param factor multiplication factor
+	 * @return a new BundleValueBids where each (bundle) value is multiplied with the given multiplication factor.
+	 */
 	public abstract BundleValueBids<T> multiply(BigDecimal factor);
 
 	public SingleItemBids getBidsPerSingleGood(Good good) {

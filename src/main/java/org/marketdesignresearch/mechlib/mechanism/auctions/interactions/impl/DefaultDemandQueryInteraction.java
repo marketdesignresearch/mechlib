@@ -4,7 +4,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DemandQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.DemandQueryStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;
@@ -40,7 +40,6 @@ public class DefaultDemandQueryInteraction extends DefaultInteraction<DemandBid>
 		Preconditions.checkArgument(this.auction.getDomain().getGoods().containsAll(bid.getDemandedBundle()
 				.getBundleEntries().stream().map(e -> e.getGood()).collect(Collectors.toList())));
 
-		// TODO add Activity Rule framework
 		super.submitBid(bid);
 	}
 

@@ -8,6 +8,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * A default implementation for the PricedAuctionRound interface. 
+ * It is based on {@link DefaultAuctionRound} and handles most 
+ * mendatory attributes of an AuctionRound.
+ * 
+ * @author Manuel Beyeler
+ *
+ * @param <BB> the bundle bid type of this DefaultPricesAuctionRound
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public abstract class DefaultPricedAuctionRound<BB extends BundleValueBids<?>> extends DefaultAuctionRound<BB>

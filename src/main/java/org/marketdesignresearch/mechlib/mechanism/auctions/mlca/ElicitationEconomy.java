@@ -11,6 +11,12 @@ import com.google.common.base.Preconditions;
 
 import lombok.Getter;
 
+/**
+ * An elicitation economy (i.e. main or marginal economy). 
+ * Holds a list of all bidders' UUIDs belonging to this economy.
+ * 
+ * @author Manuel Beyeler
+ */
 public class ElicitationEconomy {
 
 	@Getter
@@ -18,11 +24,17 @@ public class ElicitationEconomy {
 
 	private final String name;
 
+	/**
+	 * Creates the main economy for the given domain.
+	 */
 	public ElicitationEconomy(Domain domain) {
 		this.bidders = domain.getBidders().stream().map(b -> b.getId()).collect(Collectors.toList());
 		this.name = "Main Economy";
 	}
 
+	/**
+	 * Creates a marginal economy for the given domain where the given bidder is excluded. 
+	 */
 	public ElicitationEconomy(Domain domain, Bidder bidder) {
 		Preconditions.checkArgument(domain.getBidders().contains(bidder));
 		this.bidders = domain.getBidders().stream().filter(b -> !b.equals(bidder)).map(b -> b.getId())

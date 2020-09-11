@@ -83,8 +83,9 @@ public class LinearPriceMinimizeNumberOfPositiveDeltasMIP extends LinearPriceMIP
 			}
 		}
 
-		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-7d);
-
+		mipWrapper.setSolveParam(SolveParam.ABSOLUTE_VAR_BOUND_GAP, 1e-9d);
+		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 3);
+		
 		return mipWrapper;
 	}
 

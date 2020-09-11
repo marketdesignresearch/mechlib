@@ -369,7 +369,7 @@ public class CCATest {
 
 		temp = cca.getTemporaryResult();
 		assertThat(temp.getAllocation().getTotalAllocationValue()).isEqualTo(BigDecimal.valueOf(30));
-		assertThat(temp.getPayment().getTotalPayments()).isEqualTo(BigDecimal.valueOf(0));
+		assertThat(temp.getPayment().getTotalPayments()).isEqualTo(BigDecimal.valueOf(9));
 
 		cca.closeRound();
 		// No change anymore, no over-demand

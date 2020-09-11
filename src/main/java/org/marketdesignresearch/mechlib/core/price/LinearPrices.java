@@ -31,10 +31,10 @@ public class LinearPrices implements Prices {
 	private final Set<Good> goods;
 
 	public LinearPrices(List<? extends Good> goods) {
-		this(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO, (e1, e2) -> e1, LinkedHashMap::new)));
+		this((LinkedHashMap<? extends Good, ? extends Price>) new LinkedHashMap<>(goods.stream().collect(Collectors.toMap(g -> g, g -> Price.ZERO, (e1, e2) -> e1, LinkedHashMap::new))));
 	}
 
-	public LinearPrices(Map<Good, Price> goodPriceMap) {
+	public LinearPrices(Map<? extends Good, ? extends Price> goodPriceMap) {
 		this.goods = ImmutableSet.copyOf(goodPriceMap.keySet());
 		Map<UUID, Price> map = new LinkedHashMap<>();
 		goodPriceMap.forEach((g, p) -> map.put(g.getUuid(), p));
@@ -66,10 +66,11 @@ public class LinearPrices implements Prices {
 
 	@Override
 	public Prices divide(BigDecimal divisor) {
-		return new LinearPrices(this.priceMap.entrySet().stream()
-				.collect(Collectors.toMap(
-						e -> this.goods.stream().filter(g -> g.getUuid().equals(e.getKey())).findAny().orElseThrow(),
-						e -> new Price(e.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)), (e1, e2) -> e1,
-						LinkedHashMap::new)));
+		LinkedHashMap<Good, Price> map = new LinkedHashMap<>();
+		for (Map.Entry<UUID, Price> entry : this.priceMap.entrySet()) {
+			map.put(this.goods.stream().filter(g -> g.getUuid().equals(entry.getKey())).findAny().orElseThrow(),
+                    new Price(entry.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)));
+		}
+		return new LinearPrices(map);
 	}
 }

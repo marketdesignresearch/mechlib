@@ -10,18 +10,27 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * A gaussian SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelGaussian extends Kernel {
 
-	private final double bandwidth;
-	private final double scalingFactor;
+	@Getter
+	@Setter
+	private double bandwidth;
+	@Getter
+	@Setter
+	private double scalingFactor;
 
 	public KernelGaussian(double bandwidth, double scalingFactor) {
 		this.bandwidth = bandwidth;
 		this.scalingFactor = scalingFactor;
-	}
-
-	public KernelGaussian(Map<String, Double> kernelParameters) {
-		this(kernelParameters.get("gb"), kernelParameters.get("gs"));
 	}
 
 	@Override
@@ -41,6 +50,11 @@ public class KernelGaussian extends Kernel {
 			BundleExactValueBids supportVectorsPerBidder, Map<Bidder, Set<Bundle>> excludedBids) {
 		return new WinnerDeterminationTranslationInvariantKernel(domain, economy, supportVectorsPerBidder, excludedBids,
 				this, this.getWdpTimeLimit());
+	}
+
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Gaussian;
 	}
 
 }

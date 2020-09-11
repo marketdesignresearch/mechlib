@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.DefaultStrategyHandler;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.XORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -98,7 +98,6 @@ public class XORBidder implements Bidder, Serializable {
 	}
 
 	// region strategy
-	// TODO handle persistence
 	private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
 
 	@Override

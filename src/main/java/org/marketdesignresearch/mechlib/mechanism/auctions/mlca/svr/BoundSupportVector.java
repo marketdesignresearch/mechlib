@@ -11,6 +11,10 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 import edu.harvard.econcs.jopt.solver.mip.MIP;
 
+/**
+ * See {@link SupportVector}. This version works with {@link BundleBoundValueBids}.
+ * @author Manuel Beyeler
+ */
 public class BoundSupportVector extends SupportVector<BundleBoundValueBid, BundleBoundValueBids> {
 
 	public BoundSupportVector(SupportVectorSetup setup, BundleBoundValueBids bids,

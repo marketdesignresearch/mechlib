@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.RefinementStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.RefinementStrategy;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DefaultInteraction;

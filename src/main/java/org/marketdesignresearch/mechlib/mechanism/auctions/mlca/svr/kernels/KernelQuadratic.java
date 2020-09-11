@@ -10,10 +10,25 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
-public class KernelQuadratic extends Kernel {
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * A quadratic SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
+public class KernelQuadratic extends Kernel {
+	
+	@Getter
+	@Setter
 	private double coeff0;
+	@Getter
+	@Setter
 	private double coeff1;
+	@Getter
+	@Setter
 	private double coeff2;
 
 	public KernelQuadratic(double coeff0, double coeff1, double coeff2) {
@@ -21,16 +36,10 @@ public class KernelQuadratic extends Kernel {
 		this.coeff1 = coeff1;
 		this.coeff2 = coeff2;
 	}
-
-	public KernelQuadratic(Map<String, Double> kernelParameters) {
-		this.coeff0 = kernelParameters.get("p0");
-		this.coeff1 = kernelParameters.get("p1");
-		this.coeff2 = kernelParameters.get("p2");
-	}
-
+	
 	@Override
 	public Double getValue(Bundle bundle, Bundle bundle2) {
-		int value = this.getStandardEncodedValue(bundle, bundle2);
+		int value = BundleEncoder.getStandardDotProdWith(bundle, bundle2);
 		return coeff0 + coeff1 * value + coeff2 * Math.pow(value, 2);
 	}
 
@@ -53,4 +62,9 @@ public class KernelQuadratic extends Kernel {
 				this.getWdpTimeLimit());
 	}
 
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Quadratic;
+	}
+	
 }

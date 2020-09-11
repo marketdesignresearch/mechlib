@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Default machine learning component for MLCA based on support vector regression (SVR)
+ * @author Manuel Beyeler
+ *
+ * @param <T> the type of bids supported by this SVR implementation
+ */
 @RequiredArgsConstructor
 public abstract class DistributedSVR<T extends BundleValueBids<?>>
 		implements MachineLearningComponent<T>, MipInstrumentationable {
@@ -19,7 +25,7 @@ public abstract class DistributedSVR<T extends BundleValueBids<?>>
 
 	@Getter
 	@Setter
-	private MipInstrumentation mipInstrumentation;
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
 	public DistributedSVR(Kernel kernel) {
 		this(new SupportVectorSetup(kernel));

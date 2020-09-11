@@ -23,7 +23,6 @@ public abstract class DefaultInteraction<T extends Bid> implements TypedInteract
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
 	@Getter
-	// TODO may compare auction ID
 	protected Auction<?> auction;
 
 	private final UUID bidderUuid;

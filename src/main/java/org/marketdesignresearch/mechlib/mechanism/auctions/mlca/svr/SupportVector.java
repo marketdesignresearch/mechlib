@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,13 +18,19 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEcono
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
-import edu.harvard.econcs.jopt.solver.mip.MIP;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * MachineLearningAllocationInferrer. Trains the support vectors for all bidders 
+ * and solved WDP based on the learned value functions.
+ * 
+ * @author Manuel Beyeler
+ */
 public abstract class SupportVector<B extends BundleValueBid<?>, T extends BundleValueBids<B>>
 		implements MachineLearningAllocationInferrer, MipInstrumentationable {
 
+	@Getter
 	private final BundleExactValueBids supportVectorsPerBider;
 	private final Kernel kernel;
 	@Getter
@@ -37,22 +42,9 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 		this.mipInstrumentation = mipInstrumentation;
 		this.supportVectorsPerBider = new BundleExactValueBids();
 
-		BigDecimal maxValue = bids.getBids().stream().map(BundleValueBid::getBundleBids).flatMap(Set::stream)
-				.map(BundleExactValuePair::getAmount).reduce(BigDecimal::max).get();
-		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.9));
-
-		BigDecimal scalingFactor = BigDecimal.ONE;
-		if (maxValue.compareTo(maxMipValue) > 0) {
-			scalingFactor = maxMipValue.divide(maxValue, 10, RoundingMode.HALF_UP);
-			if (scalingFactor.compareTo(BigDecimal.ZERO) == 0) {
-				throw new IllegalArgumentException("Bids are are too large, scaling will not make sense because"
-						+ "it would result in a very imprecise solution. Scaling factor would be smaller than 1e-10.");
-			}
-		}
-
 		for (Map.Entry<Bidder, B> entry : bids.getBidMap().entrySet()) {
 			this.supportVectorsPerBider.setBid(entry.getKey(),
-					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(scalingFactor)).getVectors());
+					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(setup.getValueScalingFactor())).getVectors());
 		}
 		kernel = setup.getKernel();
 	}
@@ -61,6 +53,15 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 	public Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy,
 			Map<Bidder, Set<Bundle>> excludedBids) {
 		return this.kernel.getAllocationWithExcludedBundles(domain, economy, this.supportVectorsPerBider, excludedBids);
+	}
+	
+	public double getModelPredictedValueOf(Bidder bidder, Bundle bundle) {
+		if (supportVectorsPerBider==null || supportVectorsPerBider.getBid(bidder) == null) return 0d;
+		Double value = 0.0;
+		for (BundleExactValuePair bv : supportVectorsPerBider.getBid(bidder).getBundleBids()){
+			value+=bv.getAmount().doubleValue()*kernel.getValue(bv.getBundle(),bundle);
+		}
+		return value;
 	}
 
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);

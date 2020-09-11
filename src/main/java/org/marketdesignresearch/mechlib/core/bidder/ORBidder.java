@@ -13,8 +13,8 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.DefaultStrategyHandler;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.DefaultStrategyHandler;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BundleValue;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ORValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
@@ -113,7 +113,6 @@ public class ORBidder implements Bidder, Serializable {
 	}
 
 	// region strategy
-	// TODO handle persistence
 	private ClassToInstanceMap<InteractionStrategy> strategies = MutableClassToInstanceMap.create();
 
 	@Override

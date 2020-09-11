@@ -16,8 +16,11 @@ import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.SolveParam;
+import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
+import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
+import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 
@@ -27,7 +30,7 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	private Variable delta;
 	private BundleExactValueBids bids;
 	@Getter
-	private BigDecimal deltaResult;
+	private BigDecimal deltaResult = BigDecimal.valueOf(MIPWrapper.MAX_VALUE);
 
 	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
 			Allocation allocation, PriceConstraints constraint, double timelimit) {

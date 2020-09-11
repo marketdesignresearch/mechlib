@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -26,6 +27,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The machine learning phase of MLCA. See Brero et. al. (2020) for details.
+ * 
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
+ * are issued.
+ * 
+ * @author Manuel Beyeler
+ *
+ * @param <T> the bid type of this auction
+ */
 @Slf4j
 @RequiredArgsConstructor
 public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T> {
@@ -94,21 +105,13 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				Allocation inferredEfficientAllocation = mlai
 						.getInferredEfficientAllocation(auction.getDomain(), economy,
-								Map.of(bidder, Stream
-										.concat(Stream.concat(
+								Map.of(bidder, Stream.concat(
 												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
 														.stream().map(bb -> bb.getBundle()),
-												restrictedBids.get(bidder).stream()), Stream.of(Bundle.EMPTY))
+												restrictedBids.get(bidder).stream())
 										.collect(Collectors.toCollection(LinkedHashSet::new))));
 				log.info(economy.toString() + " New bundle: "
 						+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
-				// TODO
-				// printElicitationInfo(inferredEfficientAllocation, bidder,
-				// marginalSetting,temporaryMetainfo);
-				// Bundle newQuery = inferredEfficientAllocation.allocationOf(bidder);
-				// this.addReport("New query: " + bidder + " " + newQuery);
-				// elicitationResult.insertQuery(bidder, newQuery);
-				// addReport(this.elicitationResult.toString());
 				restrictedBids.get(bidder).add(inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
 			}
 		}

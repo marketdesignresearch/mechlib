@@ -16,6 +16,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.BundleEntry;
 import org.marketdesignresearch.mechlib.core.Domain;
 import org.marketdesignresearch.mechlib.core.Good;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimitConstraint;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
@@ -27,7 +28,6 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import com.google.common.collect.ImmutableMap;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
@@ -36,11 +36,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Kernel WDP that excludes certain allocation (based on allocated bundles) from the feasible set of allocations.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 @RequiredArgsConstructor
 public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
 
-	// TODO ??
-	public double relSolutionGap;
+	private static final double DEFAULT_EPSILON = 0d;
+	
 	@Getter(AccessLevel.PACKAGE)
 	protected Map<UUID, Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
 
@@ -67,6 +73,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 				.reduce(Boolean::logicalOr).get();
 		this.setPurpose(MipPurpose.KERNEL_WINNERDETERMINATION.name());
 		this.setTimeLimit(timelimit);
+		this.setEpsilon(DEFAULT_EPSILON);
 	}
 
 	protected Bidder getBidder(UUID id) {
@@ -76,8 +83,6 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 	protected Allocation adaptMIPResult(ISolution mipResult) {
 
-		if (mipResult instanceof IMIPResult)
-			relSolutionGap = ((IMIPResult) mipResult).getRelativeGap();
 		ImmutableMap.Builder<Bidder, BidderAllocation> trades = ImmutableMap.builder();
 
 		for (UUID bidder : this.getEconomy().getBidders()) {
@@ -119,9 +124,11 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 
 		// apply AllocationLimits
 		for (UUID bUUID : this.getEconomy().getBidders()) {
-			for (AllocationLimitConstraint alc : this.getBidder(bUUID).getAllocationLimit().getConstraints()) {
+			AllocationLimit limit = this.getBidder(bUUID).getAllocationLimit();
+			for (AllocationLimitConstraint alc : limit.getConstraints()) {
 				mip.add(alc.createCPLEXConstraint(this.bidderGoodVariables.get(bUUID)));
 			}
+			limit.getAdditionalVariables().forEach(mip::add);
 		}
 
 		return mip;

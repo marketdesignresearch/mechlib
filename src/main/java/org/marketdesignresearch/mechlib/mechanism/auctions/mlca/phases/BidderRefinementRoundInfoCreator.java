@@ -68,6 +68,7 @@ public interface BidderRefinementRoundInfoCreator {
 				Prices prices = this.getPriceGenerator().getPrices(auction.getDomain(),
 						new ElicitationEconomy(auction.getDomain()), alphaAllocation,
 						List.of(alphaValuation, perturbedValuation), true);
+						//List.of(alphaValuation), false);
 
 				refinementInfos.put(refinementEconomy,
 						new BidderRefinementRoundInfo(

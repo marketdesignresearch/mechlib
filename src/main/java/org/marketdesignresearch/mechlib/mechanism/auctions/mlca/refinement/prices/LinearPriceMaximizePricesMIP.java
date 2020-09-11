@@ -26,6 +26,7 @@ public class LinearPriceMaximizePricesMIP extends LinearPriceMIP {
 			mipWrapper.addObjectiveTerm(1, priceVar);
 		}
 		mipWrapper.setSolveParam(SolveParam.MARKOWITZ_TOLERANCE, 0.2);
+		mipWrapper.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 1);
 		return mipWrapper;
 	}
 

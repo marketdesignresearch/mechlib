@@ -7,6 +7,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
+
+/**
+ * Bids for bundles with exact values (of one bidder).
+ * 
+ * @author Manuel Beyeler
+ */
 public class BundleExactValueBid extends BundleValueBid<BundleExactValuePair> {
 	public static BundleExactValueBid singleBundleBid(BundleExactValuePair bundleBid) {
 		return new BundleExactValueBid(ImmutableSet.of(bundleBid));

@@ -41,11 +41,6 @@ public class LinearPriceGenerator {
 		BigDecimal maxValue = valuations.stream().flatMap(b -> b.getBids().stream())
 				.map(BundleExactValueBid::getBundleBids).flatMap(Set::stream).map(BundleExactValuePair::getAmount)
 				.reduce(BigDecimal::max).get();
-		maxValue = maxValue.max(allocation.getTradesMap().entrySet().stream()
-				.map(e -> valuations.stream()
-						.map(v -> v.getBid(e.getKey()).getBidForBundle(e.getValue().getBundle()).getAmount())
-						.reduce(BigDecimal.ZERO, BigDecimal::max))
-				.reduce(BigDecimal.ZERO, BigDecimal::max));
 		BigDecimal maxMipValue = BigDecimal.valueOf(MIP.MAX_VALUE).multiply(BigDecimal.valueOf(.7));
 
 		BigDecimal scalingFactor = BigDecimal.ONE;
@@ -64,7 +59,7 @@ public class LinearPriceGenerator {
 
 		Iterator<BundleExactValueBids> it = scaledValues.iterator();
 
-		BigDecimal offset = BigDecimal.valueOf(1e-6);
+		BigDecimal offset = BigDecimal.valueOf(1e-5);
 		PriceConstraints constraint = new PriceConstraints(setting.getBidders());
 		Prices prices = null;
 		// generate prices according to different targets (valuations)
@@ -75,13 +70,31 @@ public class LinearPriceGenerator {
 					new BundleExactValuePair(BigDecimal.ZERO, Bundle.EMPTY, UUID.randomUUID().toString())));
 			boolean fixNegativeDeltas = !it.hasNext() && minimizeAllDeltas;
 
-			// minimize overall delta
-			LinearPriceMinimizeDeltaMIP accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(),
-					currentValuation, allocation, constraint, timeLimit);
-			prices = accMip.getPrices();
-
 			BigDecimal localOffset = offset;
 			boolean done = false;
+			LinearPriceMinimizeDeltaMIP accMip = null;
+			do {
+				try {
+				// minimize overall delta
+				 accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(),
+					currentValuation, allocation, constraint, timeLimit);
+				prices = accMip.getPrices();
+				done = true;
+				} catch(RuntimeException re) {
+					constraint.addSlack(localOffset);
+					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}", localOffset, re);
+					localOffset = localOffset.scaleByPowerOfTen(1);
+					// happens rarely that such a high offset needs to be added, 
+					// but for domains with high values it might occur 
+					// continue anyway
+					if(localOffset.compareTo(BigDecimal.valueOf(100)) > 0) {
+						done = true;
+					}
+				}
+			} while(!done);
+
+			localOffset = offset;
+			done = false;
 			do {
 				try {
 					// find all deltas that can not be set negative
@@ -116,9 +129,10 @@ public class LinearPriceGenerator {
 					done = true;
 				} catch (RuntimeException re) {
 					localOffset = localOffset.scaleByPowerOfTen(1);
-					log.warn("Increasing offset due to infeasibility. New offset: {}", offset, re);
+					log.warn("Increasing offset due to infeasibility. New offset: {}", localOffset, re);
 				}
-			} while (localOffset.compareTo(BigDecimal.valueOf(0, 1)) < 0 && !done);
+			} while (localOffset.compareTo(BigDecimal.ONE) < 0 && !done);
+			offset = offset.scaleByPowerOfTen(1);
 		}
 
 		try {
@@ -136,7 +150,7 @@ public class LinearPriceGenerator {
 				log.warn("Unable to minimize euclidean distance of prices");
 			}
 		} catch (RuntimeException e) {
-			log.warn("Unable to maximize prices", e);
+			log.warn("Unable to maximize prices");
 		}
 
 		return prices.divide(scalingFactor);

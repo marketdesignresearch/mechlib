@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
-import java.nio.file.FileSystems;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,17 +14,20 @@ import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.IMIPResult;
 import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Formulation by Smola and Schoelkopf 2003
+ * 
+ * @author Gianluca Brero
+ */
 public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements MipInstrumentationable {
 
 	@Getter
@@ -33,12 +35,14 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	@Getter
 	private final double insensitivityThreshold;
 	@Getter
+	private final boolean removeSmallSupportVectors;
+	@Getter
 	private final Kernel kernel;
 	@Getter
 	private final B bid;
 	@Getter
 	@Setter
-	private MipInstrumentation mipInstrumentation;
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
 
 	private IMIP mip;
 	private BundleExactValueBid resultVectors;
@@ -48,6 +52,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	public SupportVectorMIP(SupportVectorSetup setup, B bid, MipInstrumentation mipInstrumentation) {
 		this.interpolationWeight = setup.getInterpolationWeight();
 		this.insensitivityThreshold = setup.getInsensitivityThreshold();
+		this.removeSmallSupportVectors = setup.isRemoveSmallSupportVectors();
 		this.kernel = setup.getKernel();
 		this.bid = bid;
 
@@ -60,7 +65,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	private void solveMIP() {
 
 		IMIPResult result = null;
-		;
+		
 		try {
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
 			result = CPLEXUtils.SOLVER.solve(this.mip);
@@ -75,8 +80,6 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 				try {
 					result = CPLEXUtils.SOLVER.solve(this.mip);
 				} catch (RuntimeException e3) {
-					new CPlexMIPSolver().exportToDisk(this.mip,
-							FileSystems.getDefault().getPath("mip", "train-" + System.currentTimeMillis() + ".lp"));
 					throw e3;
 
 				}
@@ -99,13 +102,13 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 			} else
 				fbMap.put(b, value);
 		}
-		ImmutableMap.Builder<Bundle, Double> fb = new ImmutableMap.Builder<>();
+		Map<Bundle, Double> fb = new LinkedHashMap<>();
 		for (Bundle b : fbMap.keySet()) {
-			if (!DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, 1e-5))
+			if (!this.removeSmallSupportVectors || !DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, 1e-5))
 				fb.put(b, fbMap.get(b));
 		}
 		this.resultVectors = new BundleExactValueBid();
-		fbMap.forEach((b, d) -> this.resultVectors
+		fb.forEach((b, d) -> this.resultVectors
 				.addBundleBid(new BundleExactValuePair(BigDecimal.valueOf(d), b, b.toString())));
 	}
 

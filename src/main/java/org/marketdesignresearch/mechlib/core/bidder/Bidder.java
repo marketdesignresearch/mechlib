@@ -7,8 +7,7 @@ import java.util.UUID;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
-import org.marketdesignresearch.mechlib.core.bidder.newstrategy.InteractionStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
@@ -28,7 +27,7 @@ import com.google.common.base.Preconditions;
  * maximizing bundle(s) of this bidder?</li>
  * </ol>
  * <br>
- * Lastly, a bidder has a default {@link Strategy} based on which she would turn
+ * Lastly, a bidder has a default {@link org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ValueTransformation} based on which she would turn
  * her true valuations into bids.
  */
 public interface Bidder extends MipInstrumentationable {
@@ -102,7 +101,6 @@ public interface Bidder extends MipInstrumentationable {
 	 * 
 	 * @return a LinkedHashSet that contains the bundles ordered by decreasing
 	 *         utility
-	 * @see #getBestBundles(Prices, int, boolean, double, double, double)
 	 */
 	LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
 

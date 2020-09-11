@@ -14,9 +14,14 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.Strategy;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ShaveTransformation;
 
+/**
+ * Bids for bundles with exact values of multiple bidders (i.e. all bidders of an auction).
+ * 
+ * @author Manuel Beyeler
+ */
 public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 
 	public BundleExactValueBids() {
@@ -51,7 +56,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	 * Gives truthful bids
 	 */
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders) {
-		return fromXORBidders(bidders, Strategy.TRUTHFUL::apply);
+		return fromXORBidders(bidders, ShaveTransformation.TRUTHFUL::apply);
 	}
 
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders,
@@ -64,7 +69,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders) {
-		return fromORBidders(bidders, Strategy.TRUTHFUL::apply);
+		return fromORBidders(bidders, ShaveTransformation.TRUTHFUL::apply);
 	}
 
 	@Override

@@ -10,9 +10,22 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
-public class KernelLinear extends Kernel {
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * A linear SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
+public class KernelLinear extends Kernel {
+	
+	@Getter
+	@Setter
 	private double coeff0;
+	@Getter
+	@Setter
 	private double coeff1;
 
 	public KernelLinear(double coeff0, double coeff1) {
@@ -20,14 +33,9 @@ public class KernelLinear extends Kernel {
 		this.coeff1 = coeff1;
 	}
 
-	public KernelLinear(Map<String, Double> kernelParameters) {
-		this.coeff0 = kernelParameters.get("p0");
-		this.coeff1 = kernelParameters.get("p1");
-	}
-
 	@Override
 	public Double getValue(Bundle bundle, Bundle bundle2) {
-		int value = getStandardEncodedValue(bundle, bundle2);
+		int value = BundleEncoder.getStandardDotProdWith(bundle, bundle2);
 		return coeff0 + coeff1 * value;
 	}
 
@@ -36,5 +44,10 @@ public class KernelLinear extends Kernel {
 			BundleExactValueBids supportVectorsPerBidder, Map<Bidder, Set<Bundle>> excludedBundles) {
 		return new WinnerDeterminationLinearKernel(domain, economy, supportVectorsPerBidder, excludedBundles,
 				this.getWdpTimeLimit());
+	}
+
+	@Override
+	public KernelType getKernelType() {
+		return KernelType.Linear;
 	}
 }
