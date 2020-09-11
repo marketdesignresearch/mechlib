@@ -17,7 +17,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymen
 import com.google.common.collect.Sets;
 
 /**
- * Generates all possibly interesting constraints.</br>
+ * Generates all possibly interesting constraints.<br>
  * This is exponential in the number of winners and is thus only interesting for
  * theoretical purposes
  * 

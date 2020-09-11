@@ -30,7 +30,7 @@ public class StandardCCGConstraintGenerator implements PartialConstraintGenerato
 	 * as well as the winners payment linearly. The payments of W/\C can thus be
 	 * treated as constant. The non-colluding bidders therefore need to increase
 	 * their payments until it surpasses the coalition value minus the payment of
-	 * the traitors at point t. W\C >= v_t(C)-p_t(W/\C)
+	 * the traitors at point t. W\C is greater than or equal to v_t(C)-p_t(W/\C)
 	 */
 	@Override
 	public void generateConstraint(CorePaymentRule corePaymentRule, Graph<PotentialCoalition, DefaultEdge> graph,

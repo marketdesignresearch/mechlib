@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
  * maximizing bundle(s) of this bidder?</li>
  * </ol>
  * <br>
- * Lastly, a bidder has a default {@link ValueTransformation} based on which she would turn
+ * Lastly, a bidder has a default {@link org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ValueTransformation} based on which she would turn
  * her true valuations into bids.
  */
 public interface Bidder extends MipInstrumentationable {
@@ -101,7 +101,6 @@ public interface Bidder extends MipInstrumentationable {
 	 * 
 	 * @return a LinkedHashSet that contains the bundles ordered by decreasing
 	 *         utility
-	 * @see #getBestBundles(Prices, int, boolean, double, double, double)
 	 */
 	LinkedHashSet<Bundle> getBestBundles(Prices prices, int maxNumberOfBundles, boolean allowNegative);
 

@@ -31,7 +31,7 @@ import lombok.ToString;
  * This class represents the Allocation after a WinnerDetermination. It contains
  * the total welfare of the Allocation as well as a Map of Bidders to their
  * tradesMap.
- * </p>
+ * 
  * Each winning bidder has exactly one associated trade. Non winning bidders are
  * not included
  *

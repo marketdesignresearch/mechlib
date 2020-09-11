@@ -38,7 +38,7 @@ public class MLCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * This is a shortcut to finish all rounds & calculate the final result
+	 * This is a shortcut to finish all rounds and calculate the final result
 	 */
 	@Override
 	public Outcome getOutcome() {

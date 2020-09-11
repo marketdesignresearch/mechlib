@@ -27,8 +27,9 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 	 *                              round
 	 * @param refinedBids           bids that might have been refined by a previous
 	 *                              called refiner (otherwise equals activeBids)
-	 * @param bidderPrices          prices
+	 * @param prices          		prices
 	 * @param provisionalAllocation provisional allocation of given bidder
+	 * @param random    			Random instance
 	 * @return refined bids
 	 */
 	public abstract BundleBoundValueBid refineBids(E type, Bidder b, BundleBoundValueBid activeBids,

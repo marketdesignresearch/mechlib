@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Class that represents a Bid of one {@link Bidder} on one bundle of
  * {@link Good}s in a Combinatorial Auction The object is immutable
- * </p>
+ *
  * compareTo, equals and hashCode are all based on the id.
  * 
  * @author Benedikt Buenz
