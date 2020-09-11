@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -16,6 +17,10 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 /**
  * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries} random value queries.
+ * 
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
+ * are issued.
+ * 
  * @author Manuel Beyeler
  *
  * @param <T> the bid type of this auction

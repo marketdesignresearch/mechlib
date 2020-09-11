@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
 import org.marketdesignresearch.mechlib.core.Bundle;
+import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
@@ -28,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * The machine learning phase of MLCA. See Brero et. al. (2020) for details.
+ * 
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
+ * are issued.
  * 
  * @author Manuel Beyeler
  *
