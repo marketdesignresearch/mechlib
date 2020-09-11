@@ -13,6 +13,12 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A gaussian SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelGaussian extends Kernel {
 
 	@Getter

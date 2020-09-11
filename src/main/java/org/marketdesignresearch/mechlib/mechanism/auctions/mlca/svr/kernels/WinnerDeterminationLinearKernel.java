@@ -18,6 +18,13 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * WDP based on SVR linear kernel 
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ * @see KernelLinear
+ */
 public class WinnerDeterminationLinearKernel extends WinnerDeterminationWithExcludedBundles {
 
 	public WinnerDeterminationLinearKernel(Domain domain, ElicitationEconomy economy,

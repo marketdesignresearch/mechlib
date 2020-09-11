@@ -9,6 +9,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 /**
+ * Trains support vectors based on given bids and kernel.
  * Formulation by Smola and Schoelkopf 2003
  * 
  * @author Gianluca Brero

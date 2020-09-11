@@ -7,6 +7,12 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * An exponential SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelDotProductExponential extends KernelDotProduct {
 	
 	@Getter

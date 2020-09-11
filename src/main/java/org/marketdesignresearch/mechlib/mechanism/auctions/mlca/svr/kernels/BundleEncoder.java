@@ -2,6 +2,13 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 
+/**
+ * SVR Kernel encodings.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ *
+ */
 public class BundleEncoder {
 	private BundleEncoder() {
 	};

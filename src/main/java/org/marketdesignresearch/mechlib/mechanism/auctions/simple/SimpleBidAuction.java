@@ -10,6 +10,11 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * Simple example of an auction where each bidder just submits one bid.
+ * 
+ * @author Manuel Beyeler
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class SimpleBidAuction extends ExactValueAuction {

@@ -90,18 +90,27 @@ public class CCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * Creates a CCAuction for the given domain
+	 * Creates a CCAuction for the given domain.
 	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
 		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices), null);
 	}
 
+	/**
+	 * Creates a CCAuction for the given domain.
+	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
+	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices,
 			PriceUpdater priceUpdater) {
 		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater), null);
 	}
 
+	/**
+	 * Adds a new supplementary phase to the end of the auction.
+	 * Note that you can add multiple supplementary rounds to an auction
+	 * @param supplementaryRound the supplementary phase to add
+	 */
 	public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {
 		this.addAuctionPhase(supplementaryRound);
 	}
@@ -133,18 +142,26 @@ public class CCAuction extends ExactValueAuction {
 		return this.getCurrentPhase().getType();
 	}
 
+	/**
+	 * @return true if the clock phase has completed
+	 */
 	public boolean isClockPhaseCompleted() {
 		return this.currentPhaseNumber > 0;
 	}
 
 	public boolean currentPhaseFinished() {
-		return this.getNumberOfRounds() != 0 && this.getLastRound().getAuctionPhaseNumber() != this.currentPhaseNumber;
+		return this.getCurrentPhase().phaseFinished(this);
 	}
 
 	public boolean hasNextSupplementaryRound() {
 		return !this.finished() && this.phases.size() > 1;
 	}
 
+	/**
+	 * Resets the auction to the end of the clock phase if the clock phase
+	 * has already finished and replaces all supplementary phases with the given phase
+	 * @param newSuppPhase the new supplementary phase
+	 */
 	public void replaceSupplementaryPhases(SupplementaryPhase newSuppPhase) {
 		this.phases = Stream.of(this.phases.get(0)).collect(Collectors.toList());
 		this.phases.add(newSuppPhase);

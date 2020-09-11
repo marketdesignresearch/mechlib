@@ -13,16 +13,24 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * A supplementary phase where each bidder can submit new bids for all bundles
+ * demanded in rounds before (i.e. they receive a {@link ValueQuery} for these
+ * bundles.
+ * 
+ * @author Manuel Beyeler
+ */
 @EqualsAndHashCode
 @ToString
-public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
+public class LastBidValueQuerySupplementaryPhase implements SupplementaryPhase {
 
-	public LastBidsTrueValueSupplementaryPhase() {
+	public LastBidValueQuerySupplementaryPhase() {
 	}
 
 	public ExactValueQuery getInteraction(Auction<BundleExactValueBids> auction, Bidder bidder) {
@@ -41,7 +49,7 @@ public class LastBidsTrueValueSupplementaryPhase implements SupplementaryPhase {
 
 	@Override
 	public AuctionRoundBuilder<BundleExactValueBids> createNextRoundBuilder(Auction<BundleExactValueBids> auction) {
-		return new LastBidsTrueValueSupplementaryRoundBuilder(
+		return new LastBidsValueQuerySupplementaryRoundBuilder(
 				auction.getDomain().getBidders().stream().collect(Collectors.toMap(Bidder::getId,
 						b -> this.getInteraction(auction, b), (e1, e2) -> e1, LinkedHashMap::new)),
 				auction);

@@ -21,6 +21,12 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kern
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * MachineLearningAllocationInferrer. Trains the support vectors for all bidders 
+ * and solved WDP based on the learned value functions.
+ * 
+ * @author Manuel Beyeler
+ */
 public abstract class SupportVector<B extends BundleValueBid<?>, T extends BundleValueBids<B>>
 		implements MachineLearningAllocationInferrer, MipInstrumentationable {
 

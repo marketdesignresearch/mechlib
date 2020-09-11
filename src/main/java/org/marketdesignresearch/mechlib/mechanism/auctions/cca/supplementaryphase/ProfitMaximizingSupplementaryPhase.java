@@ -17,6 +17,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Supplementary round for the combinatorial clock phase. Each bidder can 
+ * submit {@link #getNumberOfSupplementaryBids()} additional bids based
+ * on the last priced round in this auction (i.e. the last round of the
+ * clock phase). 
+ * 
+ * @author Manuel Beyeler
+ */
 @ToString
 @EqualsAndHashCode
 public class ProfitMaximizingSupplementaryPhase implements SupplementaryPhase {

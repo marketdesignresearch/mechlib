@@ -19,6 +19,13 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * WDP based on SVR gaussian kernel 
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ * @see KernelGaussian
+ */
 public class WinnerDeterminationTranslationInvariantKernel extends WinnerDeterminationWithExcludedBundles {
 	/*
 	 * Doesn't work with multiple units!

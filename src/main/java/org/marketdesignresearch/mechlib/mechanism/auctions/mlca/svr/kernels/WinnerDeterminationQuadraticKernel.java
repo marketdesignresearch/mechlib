@@ -17,6 +17,13 @@ import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
+/**
+ * WDP based on SVR quadratic kernel 
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ * @see KernelQuadratic
+ */
 public class WinnerDeterminationQuadraticKernel extends WinnerDeterminationWithExcludedBundles {
 
 	private final KernelQuadratic kernel;

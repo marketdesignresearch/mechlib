@@ -13,6 +13,12 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A quadratic SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelQuadratic extends Kernel {
 	
 	@Getter
@@ -33,7 +39,7 @@ public class KernelQuadratic extends Kernel {
 	
 	@Override
 	public Double getValue(Bundle bundle, Bundle bundle2) {
-		int value = this.getStandardEncodedValue(bundle, bundle2);
+		int value = BundleEncoder.getStandardDotProdWith(bundle, bundle2);
 		return coeff0 + coeff1 * value + coeff2 * Math.pow(value, 2);
 	}
 

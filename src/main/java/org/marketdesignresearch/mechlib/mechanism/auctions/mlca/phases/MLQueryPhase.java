@@ -26,6 +26,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The machine learning phase of MLCA. See Brero et. al. (2020) for details.
+ * 
+ * @author Manuel Beyeler
+ *
+ * @param <T> the bid type of this auction
+ */
 @Slf4j
 @RequiredArgsConstructor
 public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T> {

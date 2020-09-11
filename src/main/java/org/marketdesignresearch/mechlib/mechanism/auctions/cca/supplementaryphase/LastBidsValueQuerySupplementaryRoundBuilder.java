@@ -21,12 +21,12 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({ @PersistenceConstructor }))
-public class LastBidsTrueValueSupplementaryRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
+public class LastBidsValueQuerySupplementaryRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
 
 	@Getter
 	private final Map<UUID, ExactValueQuery> interactions;
 
-	public LastBidsTrueValueSupplementaryRoundBuilder(Map<UUID, ExactValueQuery> interactions,
+	public LastBidsValueQuerySupplementaryRoundBuilder(Map<UUID, ExactValueQuery> interactions,
 			Auction<BundleExactValueBids> auction) {
 		super(auction);
 		this.interactions = interactions;
@@ -34,7 +34,7 @@ public class LastBidsTrueValueSupplementaryRoundBuilder extends AuctionRoundBuil
 
 	@Override
 	public AuctionRound<BundleExactValueBids> build() {
-		return new LastBidsTrueValueSupplementaryRound(this.getAuction(), this.collectBids());
+		return new LastBidsValueQuerySupplementaryRound(this.getAuction(), this.collectBids());
 	}
 
 	private BundleExactValueBids collectBids() {

@@ -36,6 +36,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Kernel WDP that excludes certain allocation (based on allocated bundles) from the feasible set of allocations.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 @RequiredArgsConstructor
 public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
 

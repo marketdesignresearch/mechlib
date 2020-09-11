@@ -5,6 +5,12 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * An polynomial SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelDotProductPolynomial extends KernelDotProduct {
 
 	public static int maxPoly = 10;

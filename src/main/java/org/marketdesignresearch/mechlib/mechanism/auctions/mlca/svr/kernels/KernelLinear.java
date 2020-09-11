@@ -13,6 +13,12 @@ import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A linear SVR kernel.
+ * 
+ * @author Gianluca Brero
+ * @author Manuel Beyeler
+ */
 public class KernelLinear extends Kernel {
 	
 	@Getter
@@ -29,7 +35,7 @@ public class KernelLinear extends Kernel {
 
 	@Override
 	public Double getValue(Bundle bundle, Bundle bundle2) {
-		int value = getStandardEncodedValue(bundle, bundle2);
+		int value = BundleEncoder.getStandardDotProdWith(bundle, bundle2);
 		return coeff0 + coeff1 * value;
 	}
 

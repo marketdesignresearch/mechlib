@@ -11,18 +11,18 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class LastBidsTrueValueSupplementaryRound extends DefaultAuctionRound<BundleExactValueBids> {
+public class LastBidsValueQuerySupplementaryRound extends DefaultAuctionRound<BundleExactValueBids> {
 
 	@Getter
 	private final BundleExactValueBids bids;
 
-	public LastBidsTrueValueSupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
+	public LastBidsValueQuerySupplementaryRound(Auction<BundleExactValueBids> auction, BundleExactValueBids bids) {
 		super(auction);
 		this.bids = bids;
 	}
 
 	@PersistenceConstructor
-	protected LastBidsTrueValueSupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber,
+	protected LastBidsValueQuerySupplementaryRound(int roundNumber, int auctionPhaseNumber, int auctionPhaseRoundNumber,
 			BundleExactValueBids bids) {
 		super(roundNumber, auctionPhaseNumber, auctionPhaseRoundNumber);
 		this.bids = bids;

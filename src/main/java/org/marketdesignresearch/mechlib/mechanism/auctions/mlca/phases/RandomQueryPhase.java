@@ -14,6 +14,12 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.springframework.data.annotation.PersistenceConstructor;
 
+/**
+ * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries} random value queries.
+ * @author Manuel Beyeler
+ *
+ * @param <T> the bid type of this auction
+ */
 public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements AuctionPhase<T> {
 
 	private static final int DEFAULT_NUMBER_OF_INITIAL_QUERIES = 30;
@@ -24,6 +30,9 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 		this(DEFAULT_NUMBER_OF_INITIAL_QUERIES);
 	}
 
+	/**
+	 * @param numberOfQueries the number of initial queries per bidder.
+	 */
 	@PersistenceConstructor
 	public RandomQueryPhase(int numberOfQueries) {
 		this.numberOfInitialQueries = numberOfQueries;

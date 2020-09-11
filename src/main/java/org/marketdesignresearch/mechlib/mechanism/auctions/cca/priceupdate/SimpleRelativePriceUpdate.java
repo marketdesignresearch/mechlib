@@ -16,6 +16,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * A simple price updater that just updates prices for items with 
+ * overdemand by some procentual surplus. 
+ * 
+ * If prices are 0 a fixed initial stepsize is used on the first update
+ * 
+ * @author Fabio Isler
+ */
 @ToString
 @EqualsAndHashCode
 public class SimpleRelativePriceUpdate implements PriceUpdater {
@@ -23,8 +31,14 @@ public class SimpleRelativePriceUpdate implements PriceUpdater {
 	private static final BigDecimal DEFAULT_PRICE_UPDATE = BigDecimal.valueOf(0.1);
 	private static final BigDecimal DEFAULT_INITIAL_UPDATE = BigDecimal.valueOf(1e5);
 
+	/**
+	 * The price update for items with overdemand (0.01 = 1%)
+	 */
 	@Setter
 	private BigDecimal priceUpdate = DEFAULT_PRICE_UPDATE;
+	/**
+	 * The new price if there is overdemand for items with price 0
+	 */
 	@Setter
 	private BigDecimal initialUpdate = DEFAULT_INITIAL_UPDATE;
 

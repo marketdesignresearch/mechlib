@@ -12,10 +12,15 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultExactValueQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 
+/**
+ * ML query phase of MLCA that queries exact values (i.e. uses {@link ExactValueQuery}s).
+ * @author Manuel Beyeler
+ */
 public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {
 
 	public ExactMLQueryPhase(MachineLearningComponent<BundleExactValueBids> mlComponent) {
