@@ -62,7 +62,7 @@ public final class Bundle {
 	/**
 	 * Instantiates a new Bundle.
 	 *
-	 * @param map a good -> quantity map
+	 * @param map a good to quantity map
 	 */
 	public Bundle(Map<? extends Good, Integer> map) {
 		this(new LinkedHashSet<>((map.entrySet().stream().map(entry -> new BundleEntry(entry.getKey(), entry.getValue()))

@@ -24,7 +24,8 @@ public class BundleBoundValuePair extends BundleExactValuePair {
 	private final BigDecimal upperBound;
 
 	/**
-	 * @param amount Bid amount
+	 * @param lowerBound lower bound of bid
+	 * @param upperBound upper bound of bid
 	 * @param bundle Goods to bid on
 	 * @param id     Same id as BundleValue
 	 */

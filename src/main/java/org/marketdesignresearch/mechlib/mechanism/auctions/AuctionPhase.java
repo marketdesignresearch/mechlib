@@ -14,7 +14,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
  * 
  * @author Manuel Beyeler
  *
- * @param <T>
+ * @param <BB>
  */
 public interface AuctionPhase<BB extends BundleValueBids<?>> {
 

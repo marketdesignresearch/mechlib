@@ -43,5 +43,4 @@ public class BundleSamplingTest {
 		assertThat(sampled.getSingleQuantityGoods(), is(List.of(domain.getGood("0"))));
 		System.out.println(sampled);
 	}
-
 }
