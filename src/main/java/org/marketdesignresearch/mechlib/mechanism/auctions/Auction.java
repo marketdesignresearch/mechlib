@@ -58,6 +58,8 @@ import lombok.extern.slf4j.Slf4j;
  * (i.e. changed an upcoming AuctionPhase) the result will be the same, as if the auction was run from the 
  * beginning directly. 
  * 
+ * If you are interested in creating an auction with exact value bids you may consider extending {@link ExactValueAuction}.
+ * 
  * @author Manuel Beyeler
  * 
  * FIXME: MipInstrumetation should be handled properly. 
