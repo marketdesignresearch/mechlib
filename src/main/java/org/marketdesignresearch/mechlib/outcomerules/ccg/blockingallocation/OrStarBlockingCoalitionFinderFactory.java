@@ -1,31 +1,32 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation;
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import java.math.BigDecimal;
+
 import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
-import java.math.BigDecimal;
-
 public class OrStarBlockingCoalitionFinderFactory implements BlockingAllocationFinder {
-    /**
-     * 
-     */
-    private final BigDecimal epsilon;
+	/**
+	 * 
+	 */
+	private final BigDecimal epsilon;
 
-    public OrStarBlockingCoalitionFinderFactory(BigDecimal epsilon) {
-        this.epsilon = epsilon;
-    }
+	public OrStarBlockingCoalitionFinderFactory(BigDecimal epsilon) {
+		this.epsilon = epsilon;
+	}
 
-    public OrStarBlockingCoalitionFinderFactory() {
-        this.epsilon = PrecisionUtils.EPSILON;
-    }
+	public OrStarBlockingCoalitionFinderFactory() {
+		this.epsilon = PrecisionUtils.EPSILON.scaleByPowerOfTen(2);
+	}
 
-    @Override
-    public BlockingAllocation findBlockingAllocation(Bids bids, Outcome priorResult) {
-        WinnerDetermination blockingCoalitionFinder = new BlockingCoalitionDetermination(bids, priorResult);
-        blockingCoalitionFinder.setLowerBound(priorResult.getPayment().getTotalPayments().subtract(epsilon).doubleValue());
-        return BlockingAllocation.of(blockingCoalitionFinder.getAllocation());
-    }
+	@Override
+	public BlockingAllocation findBlockingAllocation(BundleValueBids<?> bids, Outcome priorResult) {
+		WinnerDetermination blockingCoalitionFinder = new BlockingCoalitionDetermination(bids, priorResult);
+		blockingCoalitionFinder
+				.setLowerBound(priorResult.getPayment().getTotalPayments().subtract(epsilon).doubleValue());
+		return BlockingAllocation.of(blockingCoalitionFinder.getAllocation());
+	}
 
 }

@@ -4,16 +4,16 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 public class PayoffWeights implements CorePaymentWeights {
-    private final Outcome referencePoint;
+	private final Outcome referencePoint;
 
-    public PayoffWeights(Outcome referencePoint) {
-        this.referencePoint = referencePoint;
-    }
+	public PayoffWeights(Outcome referencePoint) {
+		this.referencePoint = referencePoint;
+	}
 
-    @Override
-    public double getWeight(Bidder bidder) {
+	@Override
+	public double getWeight(Bidder bidder) {
 
-        return referencePoint.payoffOf(bidder).doubleValue();
-    }
+		return referencePoint.payoffOf(bidder).doubleValue();
+	}
 
 }

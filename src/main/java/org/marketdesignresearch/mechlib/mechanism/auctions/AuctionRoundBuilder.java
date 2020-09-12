@@ -1,45 +1,71 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
-import lombok.*;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentationable;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+import java.util.Map;
+import java.util.UUID;
 
-@ToString
+import org.apache.commons.lang3.builder.EqualsExclude;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Interaction;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
+
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+/**
+ * The AuctionRoundBuilder is responsible to conduct a single round. I.e. it holds
+ * the bidder interactions and collects bidder responses in this round. When the 
+ * round is completed (i.e. this round is built {@link #build()}) the AuctionRoundBuilder
+ * should collect all bids and create an AuctionRound that holds the submitted bids
+ * and all other relevant state of this round.
+ * 
+ * @author Manuel Beyeler
+ *
+ * @param <BB> the bundle bid type of this AuctionRoundBuilder
+ */
 @EqualsAndHashCode
-@RequiredArgsConstructor
-public class AuctionRoundBuilder implements MipInstrumentationable {
-    private final OutcomeRuleGenerator outcomeRuleType;
-    @Setter
-    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+@ToString
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor = @__({ @PersistenceConstructor }))
+public abstract class AuctionRoundBuilder<BB extends BundleValueBids<?>> {
 
-    @Getter
-    private Bids bids = new Bids();
-    private Outcome outcome;
+	@Getter(AccessLevel.PROTECTED)
+	@Transient
+	@EqualsExclude
+	@ToString.Exclude
+	// Circular reference
+	private Auction<BB> auction;
 
-    public void setBid(Bidder bidder, Bid bid) {
-        outcome = null;
-        bids.setBid(bidder, bid);
-    }
+	public AuctionRoundBuilder(Auction<BB> auction) {
+		this.auction = auction;
+	}
 
-    public Outcome getOutcome() {
-        if (outcome == null) {
-            outcome = outcomeRuleType.getOutcomeRule(bids, getMipInstrumentation()).getOutcome();
-        }
-        return outcome;
-    }
+	/**
+	 * May be used on persistence to handle circular references.
+	 * Normally the auction will be set in the constructor.
+	 * 
+	 */
+	void setAuction(Auction<BB> auction) {
+		this.auction = auction;
+		this.getInteractions().forEach((b, i) -> i.setAuction(auction));
+	}
 
-    public boolean hasMechanismResult() {
-        return outcome != null;
-    }
+	/**
+	 * @return the bidder interactions of the current round
+	 */
+	public abstract Map<UUID, ? extends Interaction> getInteractions();
 
-    public void setBids(Bids bids) {
-        outcome = null;
-        this.bids = bids;
-    }
+	/**
+	 * Is called when this round is over. I.e. the round should be built.
+	 * @return 
+	 */
+	public abstract AuctionRound<BB> build();
+
+	/**
+	 * Does not close the round. Bidders are allowed to change their bids afterwards.
+	 * @return collects and returns all submitted bids in this round
+	 */
+	public abstract BB getTemporaryBids();
 }

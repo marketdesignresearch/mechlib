@@ -1,8 +1,8 @@
 package org.marketdesignresearch.mechlib.outcomerules.itemlevel.tiebreaker;
 
-import org.marketdesignresearch.mechlib.core.bid.SingleItemBid;
-
 import java.util.Comparator;
+
+import org.marketdesignresearch.mechlib.core.bid.bundle.SingleItemBid;
 
 public interface TieBreaker extends Comparator<SingleItemBid> {
 

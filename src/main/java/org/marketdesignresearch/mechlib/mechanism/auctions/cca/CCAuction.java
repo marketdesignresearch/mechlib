@@ -1,233 +1,171 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.cca;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.marketdesignresearch.mechlib.core.Domain;
+import org.marketdesignresearch.mechlib.core.Outcome;
+import org.marketdesignresearch.mechlib.core.price.Prices;
+import org.marketdesignresearch.mechlib.mechanism.auctions.ExactValueAuction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
+import org.marketdesignresearch.mechlib.mechanism.auctions.cca.supplementaryphase.SupplementaryPhase;
+import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
+
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.marketdesignresearch.mechlib.core.BundleBid;
-import org.marketdesignresearch.mechlib.core.Domain;
-import org.marketdesignresearch.mechlib.core.Good;
-import org.marketdesignresearch.mechlib.core.Outcome;
-import org.marketdesignresearch.mechlib.core.bid.Bid;
-import org.marketdesignresearch.mechlib.core.bid.Bids;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.price.LinearPrices;
-import org.marketdesignresearch.mechlib.core.price.Prices;
-import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
-import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
-import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.ClockPhaseBidCollector;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.SupplementaryBidCollector;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.bidcollection.supplementaryround.SupplementaryRound;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.PriceUpdater;
-import org.marketdesignresearch.mechlib.mechanism.auctions.cca.priceupdate.SimpleRelativePriceUpdate;
-import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
-import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-@ToString(callSuper = true) @EqualsAndHashCode(callSuper = true)
+/**
+ * An Implementation of the well-known Combinatorial Clock Auction.
+ * By default it has only a clock phase and can be extended with different
+ * SupplementaryRounds ({@link SupplementaryPhase}).
+ * 
+ * Initial prices for the clock phase are obtained from the domain 
+ * ({@link Domain#proposeStartingPrices()}) or set to 0 for all goods.
+ * ({@link #CCAuction(Domain, OutcomeRuleGenerator, boolean)})
+ * 
+ * PriceUpdates in the clock round can be configured by using a decent
+ * {@link PriceUpdater}
+ * 
+ * @author Manuel Beyeler
+ */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class CCAuction extends Auction {
+public class CCAuction extends ExactValueAuction {
 
-    @Getter
-    private Prices currentPrices;
+	/**
+	 * Creates a new CCA auction for the given domain.
+	 * Setting initial prices to 0 and using the default 
+	 * PriceUpater of the {@link CCAClockPhase}
+	 * 
+	 * Default Outcomerule is {@link OutcomeRuleGenerator#CCG}.
+	 */
+	public CCAuction(Domain domain) {
+		this(domain, OutcomeRuleGenerator.CCG);
+	}
 
-    @Setter
-    private PriceUpdater priceUpdater = new SimpleRelativePriceUpdate();
-    private final List<SupplementaryRound> supplementaryRounds;
-    private LinkedList<SupplementaryRound> supplementaryRoundQueue = new LinkedList<>();
+	/**
+	 * Creates a new CCA auction for the given domain.
+	 * Initial prices are set to 0 and the given {@link PriceUpdater}
+	 * is used.
+	 */
+	public CCAuction(Domain domain, PriceUpdater priceUpdater) {
+		this(domain, OutcomeRuleGenerator.CCG, priceUpdater);
+	}
 
-    @Getter
-    private boolean clockPhaseCompleted = false;
+	/**
+	 * Creates a new CCA auction for the given domain.
+	 * Initial prices are set to 0.
+	 * Default Price Updater of {@link CCAClockPhase} is used.
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
+		this(domain, outcomeRuleGenerator, false);
+	}
 
-    public CCAuction(Domain domain) {
-        this(domain, OutcomeRuleGenerator.CCG);
-    }
+	/**
+	 * Creates a new CCA auction with initial prices set to 0.
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, PriceUpdater priceUpdater) {
+		this(domain, outcomeRuleGenerator, false, priceUpdater);
+	}
 
-    public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
-        this(domain, outcomeRuleGenerator, false);
-    }
+	/**
+	 * Creates a new CCA auction with the default {@link PriceUpdater} of 
+	 * the {@link CCAClockPhase}.
+	 * 
+	 * @param currentPrices initial prices
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices) {
+		super(domain, mechanismType, new CCAClockPhase(currentPrices), null);
+	}
 
-    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices) {
-        this(domain, mechanismType, false);
-        this.currentPrices = currentPrices;
-    }
+	/**
+	 * Creates a new CCAuction for the given domain.
+	 * @param currentPrices initial prices
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices,
+			PriceUpdater priceUpdater) {
+		super(domain, mechanismType, new CCAClockPhase(currentPrices, priceUpdater), null);
+	}
 
-    public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
-        super(domain, mechanismType);
-        this.supplementaryRounds = new ArrayList<>();
-        setMaxRounds(100);
-        if (proposeStartingPrices) {
-            this.currentPrices = getDomain().proposeStartingPrices();
-        } else {
-            this.currentPrices = new LinearPrices(getDomain().getGoods());
-        }
-    }
+	/**
+	 * Creates a CCAuction for the given domain.
+	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
+		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices), null);
+	}
 
-    @PersistenceConstructor
-    private CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator, Prices currentPrices, PriceUpdater priceUpdater, List<SupplementaryRound> supplementaryRounds, LinkedList<SupplementaryRound> supplementaryRoundQueue, boolean clockPhaseCompleted) {
-        super(domain, outcomeRuleGenerator);
-        this.currentPrices = currentPrices;
-        this.priceUpdater = priceUpdater;
-        this.supplementaryRounds = supplementaryRounds;
-        this.supplementaryRoundQueue = supplementaryRoundQueue;
-        this.clockPhaseCompleted = clockPhaseCompleted;
-    }
+	/**
+	 * Creates a CCAuction for the given domain.
+	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
+	 */
+	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices,
+			PriceUpdater priceUpdater) {
+		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices, priceUpdater), null);
+	}
 
-    @Override
-    public int allowedNumberOfBids() {
-        if (!clockPhaseCompleted) return 1;
-        SupplementaryRound next = supplementaryRoundQueue.peek();
-        return next == null ? 0 : next.getNumberOfSupplementaryBids();
-    }
+	/**
+	 * Adds a new supplementary phase to the end of the auction.
+	 * Note that you can add multiple supplementary rounds to an auction
+	 * @param supplementaryRound the supplementary phase to add
+	 */
+	public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {
+		this.addAuctionPhase(supplementaryRound);
+	}
 
-    public ImmutableList<SupplementaryRound> getSupplementaryRounds() {
-        return ImmutableList.copyOf(supplementaryRounds);
-    }
+	/**
+	 * Overrides the default method to have outcomes only based on each round's bids
+	 */
+	@Override
+	public Outcome getOutcomeAtRound(OutcomeRuleGenerator generator, int index) {
+		if (getBidsAt(index).isEmpty())
+			return Outcome.NONE;
+		return generator.getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome();
+	}
 
-    public void addSupplementaryRound(SupplementaryRound supplementaryRound) {
-        supplementaryRounds.add(supplementaryRound);
-        supplementaryRoundQueue.add(supplementaryRound);
-    }
+	/**
+	 * This is a shortcut to finish all rounds and calculate the final result
+	 */
+	@Override
+	public Outcome getOutcome(OutcomeRuleGenerator generator) {
+		log.info("Finishing all rounds...");
+		while (!finished()) {
+			advanceRound();
+		}
+		log.info("Collected all bids. Running {} Auction to determine allocation & payments.", generator);
+		return generator.getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
+	}
 
-    /**
-     * Overrides the default method to have outcomes only based on each round's bids
-     */
-    @Override
-    public Outcome getOutcomeAtRound(int index) {
-        if (getBidsAt(index).isEmpty()) return Outcome.NONE;
-        if (getRound(index).getOutcome() == null) {
-            getRound(index).setOutcome(getOutcomeRuleGenerator().getOutcomeRule(getBidsAt(index), getMipInstrumentation()).getOutcome());
-        }
-        return getRound(index).getOutcome();
-    }
+	public String getCurrentRoundType() {
+		return this.getCurrentPhase().getType();
+	}
 
-    /**
-     * This is a shortcut to finish all rounds & calculate the final result
-     */
-    @Override
-    public Outcome getOutcome() {
-        log.info("Finishing all rounds...");
-        while (!finished()) {
-            advanceRound();
-        }
-        log.info("Collected all bids. Running {} Auction to determine allocation & payments.", getOutcomeRuleGenerator());
-        return getOutcomeRuleGenerator().getOutcomeRule(getAggregatedBidsAt(rounds.size() - 1), getMipInstrumentation()).getOutcome();
-    }
+	/**
+	 * @return true if the clock phase has completed
+	 */
+	public boolean isClockPhaseCompleted() {
+		return this.currentPhaseNumber > 0;
+	}
 
-    public String getCurrentRoundType() {
-        if (clockPhaseCompleted) return "SUPPLEMENTARY";
-        return "CLOCK";
-    }
+	public boolean currentPhaseFinished() {
+		return this.getCurrentPhase().phaseFinished(this);
+	}
 
-    @Override
-    public boolean currentPhaseFinished() {
-        if (rounds.isEmpty()) return false;
-        AuctionRound lastRound = rounds.get(rounds.size() - 1);
-        if (lastRound instanceof CCAClockRound && clockPhaseCompleted) {
-            return true;
-        } else {
-            return finished();
-        }
-    }
+	public boolean hasNextSupplementaryRound() {
+		return !this.finished() && this.phases.size() > 1;
+	}
 
-    @Override
-    public void closeRound() {
-        Preconditions.checkState(!finished());
-        Bids bids = current.getBids();
-        Preconditions.checkArgument(getDomain().getBidders().containsAll(bids.getBidders()));
-        Preconditions.checkArgument(getDomain().getGoods().containsAll(bids.getGoods()));
-        int roundNumber = rounds.size() + 1;
-        AuctionRound round;
-        if (clockPhaseCompleted) {
-            round = new CCASupplementaryRound(roundNumber, bids, getCurrentPrices());
-            supplementaryRoundQueue.poll();
-        } else {
-            round = new CCAClockRound(roundNumber, bids, getCurrentPrices(), getDomain().getGoods());
-        }
-        // if (current.hasOutcome()) {
-        //     round.setOutcome(current.getOutcome());
-        // }
-        getAuctionInstrumentation().postRound(round);
-        rounds.add(round);
-        current = new AuctionRoundBuilder(getOutcomeRuleGenerator());
-        current.setMipInstrumentation(getMipInstrumentation());
-        updatePrices();
-    }
-
-    @Override
-    public boolean finished() {
-        return super.finished() || clockPhaseCompleted && !hasNextSupplementaryRound();
-    }
-
-    @Override
-    public Bid proposeBid(Bidder bidder) {
-        Bid bid = super.proposeBid(bidder);
-        if (!clockPhaseCompleted) {
-            Set<BundleBid> bundleBids = bid.getBundleBids().stream()
-                    .map(bb -> new BundleBid(getCurrentPrices().getPrice(bb.getBundle()).getAmount(), bb.getBundle(), bb.getId()))
-                    .collect(Collectors.toSet());
-            bid = new Bid(bundleBids);
-        }
-        return bid;
-    }
-
-    private void updatePrices() {
-        Map<Good, Integer> demand = new HashMap<>();
-        getDomain().getGoods().forEach(good -> demand.put(good, getLatestBids().getDemand(good)));
-        Prices updatedPrices = priceUpdater.updatePrices(getCurrentPrices(), demand);
-        if (getCurrentPrices().equals(updatedPrices) || getNumberOfRounds() >= getMaxRounds()) {
-            clockPhaseCompleted = true;
-            return;
-        }
-        currentPrices = updatedPrices;
-    }
-
-    @Override
-    public void advanceRound() {
-        List<Bidder> biddersToQuery = getDomain().getBidders().stream().filter(b -> !current.getBids().getBidders().contains(b)).collect(Collectors.toList());
-        if (!clockPhaseCompleted) {
-            ClockPhaseBidCollector collector = new ClockPhaseBidCollector(getNumberOfRounds() + 1, getCurrentPrices(), biddersToQuery);
-            log.debug("Starting clock round {}...", getNumberOfRounds() + 1);
-            submitBids(collector.collectBids());
-        } else {
-            if (supplementaryRoundQueue.isEmpty()) {
-                log.warn("No supplementary round found to run");
-                return;
-            }
-            SupplementaryRound supplementaryRound = supplementaryRoundQueue.peek();
-            SupplementaryBidCollector collector = new SupplementaryBidCollector(this, supplementaryRound);
-            log.debug("Starting supplementary round '{}'...", collector);
-            submitBids(collector.collectBids());
-        }
-        closeRound();
-    }
-
-    public boolean hasNextSupplementaryRound() {
-        return !supplementaryRoundQueue.isEmpty();
-    }
-
-    @Override
-    public void resetToRound(int index) {
-        AuctionRound round = getRound(index);
-        currentPrices = round.getPrices();
-        if (clockPhaseCompleted) {
-            AuctionRound previous = getRound(index - 1);
-            Preconditions.checkState(previous instanceof CCAClockRound,
-                    "Currently, the implementation does not allow to reset to another supplementary round than the first one.");
-            if (round instanceof CCAClockRound) {
-                clockPhaseCompleted = false;
-            }
-            supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
-        } else {
-            supplementaryRoundQueue = new LinkedList<>(supplementaryRounds);
-        }
-        super.resetToRound(index);
-    }
-
+	/**
+	 * Resets the auction to the end of the clock phase if the clock phase
+	 * has already finished and replaces all supplementary phases with the given phase
+	 * @param newSuppPhase the new supplementary phase
+	 */
+	public void replaceSupplementaryPhases(SupplementaryPhase newSuppPhase) {
+		this.phases = Stream.of(this.phases.get(0)).collect(Collectors.toList());
+		this.phases.add(newSuppPhase);
+		this.resetToRound(this.rounds.stream().filter(r -> r.getAuctionPhaseNumber() == 0).map(r -> r.getRoundNumber())
+				.reduce(Integer::max).orElse(-1) + 1);
+	}
 }

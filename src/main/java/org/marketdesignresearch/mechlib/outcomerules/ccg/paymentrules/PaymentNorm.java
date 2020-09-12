@@ -1,63 +1,77 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
-import org.marketdesignresearch.mechlib.core.BidderPayment;
-import org.marketdesignresearch.mechlib.core.Payment;
-import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
-import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
-import edu.harvard.econcs.jopt.solver.IMIP;
-import edu.harvard.econcs.jopt.solver.IMIPResult;
-
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.marketdesignresearch.mechlib.core.BidderPayment;
+import org.marketdesignresearch.mechlib.core.Payment;
+import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
+import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
+
+import edu.harvard.econcs.jopt.solver.IMIP;
+import edu.harvard.econcs.jopt.solver.IMIPResult;
+import edu.harvard.econcs.jopt.solver.MIPException;
+import edu.harvard.econcs.jopt.solver.SolveParam;
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class PaymentNorm implements CorePaymentNorm {
-    protected static final String BIDDER = "bidder_";
+	protected static final String BIDDER = "bidder_";
 
-    protected void setProposedValues(IMIPResult result, IMIP mip) {
-        result.getValues().forEach((n, v) -> mip.proposeValue(mip.getVar(n), v));
+	protected void setProposedValues(IMIPResult result, IMIP mip) {
+		result.getValues().forEach((n, v) -> mip.proposeValue(mip.getVar(n), v));
 
-    }
+	}
 
-    protected IMIPResult solveProgram(IMIP program) {
-    	getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT, program);
-        IMIPResult result = CPLEXUtils.SOLVER.solve(program);
-        getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT, program, result);
-        return result;
-    }
+	protected IMIPResult solveProgram(IMIP program) {
+		int currentSolver = 1;
+		while (true) {
+			try {
+				getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program);
+				IMIPResult result = CPLEXUtils.SOLVER.solve(program);
+				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program, result);
+				return result;
+			} catch (MIPException ex) {
+				// try different CPLEX solver
+				if (currentSolver > 4)
+					throw ex;
+				program.setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, currentSolver);
+				currentSolver++;
+			}
+		}
+	}
 
-    public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
-        Map<Bidder, BidderPayment> newBidderPayments = new HashMap<>();
-        for (Bidder winningBidder : winners) {
-            String variableId = BIDDER + winningBidder.getId();
-            BigDecimal newPayment = BigDecimal.ZERO;
+	public final Payment adaptProgram(Set<? extends Bidder> winners, IMIPResult mipResult, MetaInfo metaInfo) {
+		Map<Bidder, BidderPayment> newBidderPayments = new LinkedHashMap<>();
+		for (Bidder winningBidder : winners) {
+			String variableId = BIDDER + winningBidder.getId();
+			BigDecimal newPayment = BigDecimal.ZERO;
 
-            if (mipResult.getValues().containsKey(variableId)) {
-                newPayment = BigDecimal.valueOf(mipResult.getValue(variableId));
-            }
-            newBidderPayments.put(winningBidder, new BidderPayment(newPayment));
+			if (mipResult.getValues().containsKey(variableId)) {
+				newPayment = BigDecimal.valueOf(mipResult.getValue(variableId));
+			}
+			newBidderPayments.put(winningBidder, new BidderPayment(newPayment));
 
-        }
+		}
 
-        return new Payment(newBidderPayments, metaInfo);
-    }
+		return new Payment(newBidderPayments, metaInfo);
+	}
 
-    /**
-     * adds the norms objective to the program may also add additional
-     * constraints
-     * 
-     * @param program
-     * @return something but mostly nothing really bad solution
-     */
-    public abstract Object addNormObjective(IMIP program);
+	/**
+	 * adds the norms objective to the program may also add additional constraints
+	 * 
+	 * @param program
+	 * @return something but mostly nothing really bad solution
+	 */
+	public abstract Object addNormObjective(IMIP program);
 
-    // region instrumentation
-    @Getter @Setter
-    private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
-    // endregion
+	// region instrumentation
+	@Getter
+	@Setter
+	private MipInstrumentation mipInstrumentation = MipInstrumentation.NO_OP;
+	// endregion
 }

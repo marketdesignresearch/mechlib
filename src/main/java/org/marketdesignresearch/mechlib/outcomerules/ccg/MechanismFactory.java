@@ -1,11 +1,11 @@
 package org.marketdesignresearch.mechlib.outcomerules.ccg;
 
-import org.marketdesignresearch.mechlib.core.bid.Bids;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.outcomerules.OutcomeRule;
 
 public interface MechanismFactory {
 
-    OutcomeRule getOutcomeRule(Bids bids);
+	OutcomeRule getOutcomeRule(BundleValueBids<?> bids);
 
-    String getOutcomeRuleName();
+	String getOutcomeRuleName();
 }

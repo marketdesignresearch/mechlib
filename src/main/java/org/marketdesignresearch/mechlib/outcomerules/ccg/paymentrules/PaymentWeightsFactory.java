@@ -5,17 +5,17 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.Referenc
 
 public class PaymentWeightsFactory implements CorePaymentWeightsFactory {
 
-    @Override
-    public CorePaymentWeights createWeights(Outcome referencePoint) {
-        return new PaymentWeights(referencePoint.getPayment());
-    }
+	@Override
+	public CorePaymentWeights createWeights(Outcome referencePoint) {
+		return new PaymentWeights(referencePoint.getPayment());
+	}
 
-    @Override
-    public String getLubinParkesName(Norm norm, ReferencePointFactory rpFactory) {
-        if (norm.equals(Norm.MANHATTAN)) {
-            return rpFactory.getName() + "PaymentLarge";
-        }
-        return rpFactory.getName() + "PaymentWeights";
-    }
+	@Override
+	public String getLubinParkesName(Norm norm, ReferencePointFactory rpFactory) {
+		if (norm.equals(Norm.MANHATTAN)) {
+			return rpFactory.getName() + "PaymentLarge";
+		}
+		return rpFactory.getName() + "PaymentWeights";
+	}
 
 }

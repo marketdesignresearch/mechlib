@@ -1,9 +1,14 @@
 package org.marketdesignresearch.mechlib.core;
 
-import lombok.*;
+import java.util.UUID;
+
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Class representing a simple good that is sold in a Combinatorial Auction
@@ -13,34 +18,35 @@ import java.util.UUID;
  * @author Benedikt Bünz
  *
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({@PersistenceConstructor}))
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({ @PersistenceConstructor }))
 @EqualsAndHashCode
 @ToString(of = "name")
 public final class SimpleGood implements Good {
-    private static final long serialVersionUID = 6681285736188564800L;
+	private static final long serialVersionUID = 6681285736188564800L;
 
-    @Getter
-    private final String name;
-    @Getter @EqualsAndHashCode.Exclude
-    private final UUID uuid;
-    private final int availability;
-    @Getter
-    private final boolean dummyGood;
+	@Getter
+	private final String name;
+	@Getter
+	@EqualsAndHashCode.Exclude
+	private final UUID uuid;
+	private final int availability;
+	@Getter
+	private final boolean dummyGood;
 
-    public SimpleGood(String name) {
-        this(name, 1, false);
-    }
+	public SimpleGood(String name) {
+		this(name, 1, false);
+	}
 
-    public SimpleGood(String name, boolean dummyGood) {
-        this(name, 1, dummyGood);
-    }
+	public SimpleGood(String name, boolean dummyGood) {
+		this(name, 1, dummyGood);
+	}
 
-    public SimpleGood(String name, int availability, boolean dummyGood) {
-        this(name, UUID.randomUUID(), availability, dummyGood);
-    }
+	public SimpleGood(String name, int availability, boolean dummyGood) {
+		this(name, UUID.randomUUID(), availability, dummyGood);
+	}
 
-    @Override
-    public int getQuantity() {
-        return availability;
-    }
+	@Override
+	public int getQuantity() {
+		return availability;
+	}
 }
