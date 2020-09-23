@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 	@Getter
 	private final BundleExactValueBids supportVectorsPerBider;
 	private final Kernel kernel;
+	private final BigDecimal valueScalingFactor;
 	@Getter
 	@Setter
 	private MipInstrumentation mipInstrumentation;
@@ -41,7 +43,8 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 	public SupportVector(SupportVectorSetup setup, T bids, MipInstrumentation mipInstrumentation) {
 		this.mipInstrumentation = mipInstrumentation;
 		this.supportVectorsPerBider = new BundleExactValueBids();
-
+		this.valueScalingFactor = setup.getValueScalingFactor();
+		
 		for (Map.Entry<Bidder, B> entry : bids.getBidMap().entrySet()) {
 			this.supportVectorsPerBider.setBid(entry.getKey(),
 					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(setup.getValueScalingFactor())).getVectors());
@@ -61,7 +64,7 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 		for (BundleExactValuePair bv : supportVectorsPerBider.getBid(bidder).getBundleBids()){
 			value+=bv.getAmount().doubleValue()*kernel.getValue(bv.getBundle(),bundle);
 		}
-		return value;
+		return value * BigDecimal.ONE.divide(valueScalingFactor,RoundingMode.HALF_UP).doubleValue();
 	}
 
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);

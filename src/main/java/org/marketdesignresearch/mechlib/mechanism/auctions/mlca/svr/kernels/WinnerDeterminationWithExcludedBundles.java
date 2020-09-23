@@ -23,12 +23,14 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation.MipPurpose;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
+import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import com.google.common.collect.ImmutableMap;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.ISolution;
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
@@ -44,6 +46,22 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
+
+	@Override
+	protected Allocation solveWinnerDetermination() {
+		try {
+			return super.solveWinnerDetermination();
+		} catch(RuntimeException e) {
+			this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
+			try {
+				return super.solveWinnerDetermination();
+			} catch (RuntimeException e2) {
+				this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+				this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+				return super.solveWinnerDetermination();
+			}
+		}
+	}
 
 	private static final double DEFAULT_EPSILON = 0d;
 	
