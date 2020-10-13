@@ -22,6 +22,7 @@ public class SupportVectorSetup {
 	private final static double DEFAULT_INSENSIVITY_THRESHOLD = 0.0001;
 	private final static BigDecimal DEFAULT_VALUE_SCALING_FACTOR = BigDecimal.ONE;
 	private final static boolean DEFAULT_REMOVE_SMALL_SUPPORT_VECTORS = true;
+	private final static double DEFAULT_THRESHOLD_TO_REMOVE_SUPPORT_VECTORS = 1e-5d;
 
 	/**
 	 * Parameter C from Brero et. al. (2020), i.e. regularization trade-off
@@ -50,6 +51,14 @@ public class SupportVectorSetup {
 	@Getter
 	@Setter
 	private boolean removeSmallSupportVectors;
+	
+	/**
+	 * If {@link #removeSmallSupportVectors} is true all support vectors with 
+	 * an absolute value smaller than this threshold will be removed.
+	 */
+	@Getter
+	@Setter
+	private double thresholdToRemoveSmallSupportVectors;
 	/**
 	 * The SVR kernel
 	 */
@@ -58,6 +67,6 @@ public class SupportVectorSetup {
 	private Kernel kernel;
 
 	public SupportVectorSetup(Kernel kernel) {
-		this(DEFAULT_INTERPOLATION_WEIGHT, DEFAULT_INSENSIVITY_THRESHOLD, DEFAULT_VALUE_SCALING_FACTOR, DEFAULT_REMOVE_SMALL_SUPPORT_VECTORS, kernel);
+		this(DEFAULT_INTERPOLATION_WEIGHT, DEFAULT_INSENSIVITY_THRESHOLD, DEFAULT_VALUE_SCALING_FACTOR, DEFAULT_REMOVE_SMALL_SUPPORT_VECTORS, DEFAULT_THRESHOLD_TO_REMOVE_SUPPORT_VECTORS, kernel);
 	}
 }
