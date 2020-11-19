@@ -106,7 +106,6 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				Bundle query = infMarginalEconomies.computeIfAbsent(economy, e -> mlai.getInferredEfficientAllocation(auction.getDomain(), e)).allocationOf(bidder).getBundle();
 				if(queries.get(bidder).contains(query) || auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
-					System.out.println("new WDP Marginal");
 			
 					Allocation inferredEfficientAllocation = mlai
 						.getInferredEfficientAllocation(auction.getDomain(), economy,
@@ -130,7 +129,6 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 			Bundle query = infAllocationMain.allocationOf(bidder).getBundle();
 			
 			if(queries.get(bidder).contains(query) || auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
-				System.out.println("new WDP main");
 				Allocation infAllocation = mlai
 						.getInferredEfficientAllocation(
 								auction.getDomain(), this.mainEconomy, Map
