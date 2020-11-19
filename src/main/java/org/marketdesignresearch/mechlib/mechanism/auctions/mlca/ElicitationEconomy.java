@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 
 import com.google.common.base.Preconditions;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -17,6 +18,7 @@ import lombok.Getter;
  * 
  * @author Manuel Beyeler
  */
+@EqualsAndHashCode
 public class ElicitationEconomy {
 
 	@Getter

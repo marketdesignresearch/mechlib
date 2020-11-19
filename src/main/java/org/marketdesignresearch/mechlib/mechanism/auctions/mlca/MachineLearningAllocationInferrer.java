@@ -22,6 +22,7 @@ public interface MachineLearningAllocationInferrer {
 	 * @return the predicted efficient allocation for this economy.
 	 */
 	default Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy) {
+		System.out.println(economy);
 		return this.getInferredEfficientAllocation(domain, economy, new LinkedHashMap<Bidder, Set<Bundle>>());
 	}
 
