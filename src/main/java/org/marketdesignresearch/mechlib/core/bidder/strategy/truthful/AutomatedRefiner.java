@@ -9,6 +9,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARRefinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant1Refinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant2Refinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 
@@ -56,6 +58,8 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 		refiners = new HashMap<>();
 		refiners.put(DIARRefinement.class, new DIARRefiner());
 		refiners.put(MRPARRefinement.class, new MRPARRefiner());
+		refiners.put(DIARVariant1Refinement.class, new DIARVariant1Refiner());
+		refiners.put(DIARVariant2Refinement.class, new DIARVariant2Refiner());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -12,6 +12,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARRefinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant1Refinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant2Refinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
@@ -70,12 +72,28 @@ public class RefinementHelper {
 		epsilon = epsilon.divide(BigDecimal.valueOf(2 * bids.getBidders().size()), RoundingMode.HALF_UP);
 		return epsilon;
 	}
+	
+	public static BigDecimal calulateDIAREpsilonv2(BundleBoundValueBids bids) {
+		BigDecimal epsilon = BigDecimal.ZERO;
+		for (Bidder b : bids.getBidders()) {
+			BundleBoundValueBid bid = bids.getBid(b);
+			for (BundleBoundValuePair value : bid.getBundleBids()) {
+				epsilon = epsilon.add(value.getUpperBound().subtract(value.getLowerBound())
+						.divide(BigDecimal.valueOf(bid.getBundleBids().size()), RoundingMode.HALF_UP));
+			}
+		}
+		epsilon = epsilon.divide(BigDecimal.valueOf(2 * bids.getBidders().size()), RoundingMode.HALF_UP);
+		epsilon =  epsilon.divide(BigDecimal.valueOf(2),RoundingMode.HALF_UP);
+		return epsilon;
+	}
 
 	public static Set<RefinementType> getMRPARAndDIAR(BundleBoundValueBids bids) {
 		// Linked Hash set - the order of the refinement is deterministic
 		Set<RefinementType> refinements = new LinkedHashSet<>();
 		refinements.add(new MRPARRefinement());
-		refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
+		//refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
+		//refinements.add(new DIARVariant1Refinement(calulateDIAREpsilonv2(bids)));
+		refinements.add(new DIARVariant2Refinement(calulateDIAREpsilonv2(bids)));
 		return refinements;
 	}
 
