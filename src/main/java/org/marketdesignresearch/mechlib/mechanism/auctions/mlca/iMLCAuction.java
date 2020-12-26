@@ -23,7 +23,7 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
-
+	
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
@@ -56,6 +56,11 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 		this.setMaxRounds(1000);
 	}
 
+	
+	public RefinementPhase getRefinementPhase() {
+		return (RefinementPhase) this.phases.get(2);
+	}
+	
 	/**
 	 * This is a shortcut to finish all rounds and calculate the final result
 	 */

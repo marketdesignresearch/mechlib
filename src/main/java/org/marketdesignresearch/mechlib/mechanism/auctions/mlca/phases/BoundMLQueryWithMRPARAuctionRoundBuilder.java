@@ -3,6 +3,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,9 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.BoundValueQueryWithMRPARRefinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.BidderRefinementRoundInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator.ICEValidator;
 
 import com.google.common.base.Preconditions;
@@ -46,7 +49,7 @@ public class BoundMLQueryWithMRPARAuctionRoundBuilder extends AuctionRoundBuilde
 		interactions.entrySet()
 				.forEach(e -> ICEValidator.validateRefinement(original.get(e.getKey()), e.getValue().getBid(),
 						e.getValue().getPrices(), e.getValue().getProvisionalAllocation(),
-						RefinementHelper.getMRPAR()));
+						Set.of(new MRPARRefinement())));
 
 		// consistency of the bid was already validated before (i.e. if for every bundle
 		// of the original bid a bid was submitted)
