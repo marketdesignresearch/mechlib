@@ -3,13 +3,14 @@ package org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform;
 import java.math.BigDecimal;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformableValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 public interface ValueTransformation {
-    BundleExactValueBid apply(ValueFunction combinatorialValueFunction);
+    BundleExactValueBid apply(BidTransformableValueFunction combinatorialValueFunction);
 
     ValueTransformation ZERO = value -> value.toBid(b -> BigDecimal.ZERO);
-    ValueTransformation TRUTHFUL = ValueFunction::toBid;
+    ValueTransformation TRUTHFUL = BidTransformableValueFunction::toBid;
 
 
     @SuppressWarnings("unchecked")

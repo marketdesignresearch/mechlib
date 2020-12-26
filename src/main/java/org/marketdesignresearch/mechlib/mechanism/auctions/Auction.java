@@ -1,7 +1,9 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
@@ -11,6 +13,7 @@ import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.InteractionStrategy;
 import org.marketdesignresearch.mechlib.instrumentation.AuctionInstrumentationable;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
@@ -92,11 +95,6 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 	 * The seed used to generate the round random objects
 	 */
 	private Long seed;
-
-	/**
-	 * The round random object
-	 */
-	private Random roundRandom;
 
 	/**
 	 * Maximum number of rounds in this auction
@@ -266,7 +264,7 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 		AuctionRound<BB> round = this.current.build();
 		getAuctionInstrumentation().postRound(round);
 		rounds.add(round);
-		roundRandom = null;
+		BidderRandom.INSTANCE.setRandom(null);
 		prepareNextAuctionRoundBuilder();
 	}
 
@@ -285,35 +283,25 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 				this.currentPhaseRoundNumber = 0;
 			}
 			log.info("Starting round {}", this.getNumberOfRounds() + 1);
+			this.prepareBidderRoundRandom();
 			current = this.getCurrentPhase().createNextRoundBuilder(this);
 			this.currentPhaseRoundNumber++;
 		}
 	}
 
-	
-	/**
-	 * Gets the unique random object of this round. At the beginning of each round with the same round number 
-	 * the exact same random object will be returned if the seed was set in the constructor. This is also the
-	 * case when the auction was reset to any round. This enables an auction to achive reproducible results.
-	 * 
-	 * @return the round random object
-	 * 
-	 * @see Auction#Auction(Domain, OutcomeRuleGenerator, AuctionPhase, Long)
-	 */
-	public Random getCurrentRoundRandom() {
+	private void prepareBidderRoundRandom() {
 		if (seed == null) {
 			log.warn("No random seed provided. Please provide a seed to make experiments repeatable");
 			seed = new Random().nextLong();
 		}
-		if (roundRandom == null) {
-			Random init = new Random(seed);
-			long roundSeed = init.nextLong();
-			for (int i = 0; i < this.getNumberOfRounds(); i++) {
-				roundSeed = init.nextLong();
-			}
-			roundRandom = new Random(roundSeed);
+		
+		Random init = new Random(seed);
+		long roundSeed = init.nextLong();
+		for (int i = 0; i < this.getNumberOfRounds(); i++) {
+			roundSeed = init.nextLong();
 		}
-		return roundRandom;
+		
+		BidderRandom.INSTANCE.setRandom(new Random(roundSeed));
 	}
 
 	/**

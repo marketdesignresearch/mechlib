@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant1Refinement;
 
@@ -19,7 +20,7 @@ public class DIARVariant1Refiner extends AutomatedRefiner<DIARVariant1Refinement
 	public static BigDecimal roundingDelta = BigDecimal.valueOf(1E-8d);
 
 	@Override
-	public BundleBoundValueBid refineBids(DIARVariant1Refinement type, Bidder b, BundleBoundValueBid activeBids,
+	public BundleBoundValueBid refineBids(DIARVariant1Refinement type, ValueFunction b, BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
 
 		BundleBoundValueBid returnBid = refinedBids.copy();

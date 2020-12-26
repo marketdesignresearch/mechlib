@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant1Refinement;
@@ -17,14 +17,14 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 /**
  * Interface for automated refiners for one activity rule
  * 
- * @author Manuel
+ * @author Manuel Beyeler
  *
  * @param <E>
  */
 public abstract class AutomatedRefiner<E extends RefinementType> {
 	/**
 	 * @param type                  refinement type
-	 * @param b                     bidder
+	 * @param v                     the valuefunction
 	 * @param activeBids            bids active at the beginning of this refinement
 	 *                              round
 	 * @param refinedBids           bids that might have been refined by a previous
@@ -34,7 +34,7 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 	 * @param random    			Random instance
 	 * @return refined bids
 	 */
-	public abstract BundleBoundValueBid refineBids(E type, Bidder b, BundleBoundValueBid activeBids,
+	public abstract BundleBoundValueBid refineBids(E type, ValueFunction v, BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random);
 
 	/**
@@ -42,7 +42,7 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 	 * 
 	 * @return
 	 */
-	protected double getNextGuassianLikeDouble(Bidder b, Random random) {
+	protected double getNextGuassianLikeDouble(Random random) {
 		double value = 0;
 		int j = 2;
 		for (int i = 0; i < j; i++) {
@@ -67,9 +67,9 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 		return refiners.get(type.getClass());
 	}
 
-	public static BundleBoundValueBid refine(RefinementType type, Bidder bidder, BundleBoundValueBid activeBids,
+	public static BundleBoundValueBid refine(RefinementType type, ValueFunction valueFunction, BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
-		return getRefiner(type).refineBids(type, bidder, activeBids, refinedBids, prices, provisionalAllocation,
+		return getRefiner(type).refineBids(type, valueFunction, activeBids, refinedBids, prices, provisionalAllocation,
 				random);
 	}
 }

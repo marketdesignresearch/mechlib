@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
-public class ORValueFunction implements ValueFunction {
+public class ORValueFunction implements BidTransformableValueFunction {
 	private static final long serialVersionUID = -2661282710326907817L;
 
 	@Getter
@@ -42,7 +42,7 @@ public class ORValueFunction implements ValueFunction {
 	}
 
 	@Override
-	public BigDecimal getValueFor(Bundle bundle) {
+	public BigDecimal getValue(Bundle bundle) {
 		// For now, this assumes that the values are defined per item and availability
 		// (additive values)
 		bundleValues.forEach(bv -> Preconditions.checkArgument(

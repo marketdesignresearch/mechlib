@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
-public class XORValueFunction implements ValueFunction {
+public class XORValueFunction implements BidTransformableValueFunction {
 	private static final long serialVersionUID = -2661282710326907817L;
 
 	@Getter
@@ -42,7 +42,7 @@ public class XORValueFunction implements ValueFunction {
 	}
 
 	@Override
-	public BigDecimal getValueFor(Bundle bundle) {
+	public BigDecimal getValue(Bundle bundle) {
 		return bundleValues.stream().filter(bundleValue -> bundleValue.getBundle().equals(bundle))
 				.max(BundleValue::compareTo).orElse(BundleValue.ZERO).getAmount();
 	}

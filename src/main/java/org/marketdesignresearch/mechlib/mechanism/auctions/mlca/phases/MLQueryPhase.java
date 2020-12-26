@@ -15,6 +15,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
@@ -102,7 +103,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				// choose random setting and remove from setting list
 				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId()).remove(
-						auction.getCurrentRoundRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
+						BidderRandom.INSTANCE.getRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
 
 				Bundle query = infMarginalEconomies.computeIfAbsent(economy, e -> mlai.getInferredEfficientAllocation(auction.getDomain(), e)).allocationOf(bidder).getBundle();
 				if(queries.get(bidder).contains(query) || auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {

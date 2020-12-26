@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
@@ -48,7 +49,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		this.refinementEconomies = refinementEconomies;
 		this.priceGenerator = generator;
 
-		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(),
+		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, BidderRandom.INSTANCE.getRandom(),
 				efficiencyInfos);
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
