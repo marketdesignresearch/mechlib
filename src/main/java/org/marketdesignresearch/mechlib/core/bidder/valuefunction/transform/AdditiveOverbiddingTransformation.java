@@ -7,6 +7,7 @@ import java.util.Set;
 import org.marketdesignresearch.mechlib.core.Good;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformableValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 
 import com.google.common.collect.ImmutableSet;
@@ -38,7 +39,7 @@ public class AdditiveOverbiddingTransformation<S extends ComparableTransformatio
 
 
     @Override
-    public BundleExactValueBid apply(ValueFunction combinatorialValueFunction) {
+    public BundleExactValueBid apply(BidTransformableValueFunction combinatorialValueFunction) {
     	BundleExactValueBid bid = normalStrategy.apply(combinatorialValueFunction);
         if (overBid.signum() != 0) {
             BigDecimal bidSoFar = bid.getBundleBids().stream().map(BundleExactValuePair::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);

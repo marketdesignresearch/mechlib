@@ -5,6 +5,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformableValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.utils.PrecisionUtils;
 
@@ -22,7 +23,7 @@ public class AdditiveShaveTransformation implements ComparableTransformation<Add
     }
 
     @Override
-    public BundleExactValueBid apply(ValueFunction combinatorialValueFunction) {
+    public BundleExactValueBid apply(BidTransformableValueFunction combinatorialValueFunction) {
         return combinatorialValueFunction.toBid(b -> b.add(additiveShave).max(PrecisionUtils.EPSILON));
     }
 

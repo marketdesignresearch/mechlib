@@ -14,7 +14,7 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformableValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ShaveTransformation;
 
 /**
@@ -60,7 +60,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders,
-			Function<ValueFunction, BundleExactValueBid> operator) {
+			Function<BidTransformableValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (XORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
@@ -109,7 +109,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,
-			Function<ValueFunction, BundleExactValueBid> operator) {
+			Function<BidTransformableValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (ORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));

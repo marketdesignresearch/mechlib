@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.impl;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -11,7 +11,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
-import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 
@@ -46,7 +46,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 
 	@Override
 	// see thesis for details
-	public BundleBoundValueBid refineBids(MRPARRefinement type, Bidder b, BundleBoundValueBid activeBids,
+	public BundleBoundValueBid refineBids(MRPARRefinement type, ValueFunction b, BundleBoundValueBid activeBids,
 			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
 
 		BundleBoundValueBid returnBid = refinedBids.copy();
@@ -79,7 +79,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		}
 
 		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility)
-				.multiply(BigDecimal.valueOf(this.getNextGuassianLikeDouble(b, random))));
+				.multiply(BigDecimal.valueOf(this.getNextGuassianLikeDouble(random))));
 
 		BigDecimal preferedLowerBoundUtility = BigDecimal.ZERO;
 		if (prefered.left != null) {
@@ -137,7 +137,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		return returnBid;
 	}
 
-	public ImmutablePair<Bundle, BigDecimal> computePreferedBundle(Bidder b,
+	public ImmutablePair<Bundle, BigDecimal> computePreferedBundle(ValueFunction b,
 			BundleValueBid<BundleBoundValuePair> activeBids, Prices prices, Bundle provisionalAllocation) {
 		Bundle preferedBundle = null;
 		BigDecimal preferedUtility = BigDecimal.ZERO;

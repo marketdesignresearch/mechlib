@@ -3,11 +3,11 @@ package org.marketdesignresearch.mechlib.core.bidder.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulBoundValueQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulDemandQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulExactValueQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulProfitMaxQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulRefinementStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulBoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulDemandQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulExactValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulProfitMaxQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulRefinementStrategy;
 
 public class DefaultStrategyHandler {
 

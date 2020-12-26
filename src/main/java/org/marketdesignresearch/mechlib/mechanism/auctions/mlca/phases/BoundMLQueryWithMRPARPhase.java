@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
@@ -81,7 +82,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
 
 		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.createBidderRefinementRoundInfos(auction,
-				auction.getCurrentRoundRandom(), this.createEfficiencyInfo(auction));
+				BidderRandom.INSTANCE.getRandom(), this.createEfficiencyInfo(auction));
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
 

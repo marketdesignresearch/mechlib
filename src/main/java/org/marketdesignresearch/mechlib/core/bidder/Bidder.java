@@ -30,7 +30,7 @@ import com.google.common.base.Preconditions;
  * Lastly, a bidder has a default {@link org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ValueTransformation} based on which she would turn
  * her true valuations into bids.
  */
-public interface Bidder extends MipInstrumentationable {
+public interface Bidder extends MipInstrumentationable, ValueFunction{
 
 	/**
 	 * Gets the bidder's id.

@@ -76,7 +76,7 @@ public class ORBidder implements Bidder, Serializable {
 
 	@Override
 	public BigDecimal getValue(Bundle bundle) {
-		return valueFunction.getValueFor(bundle);
+		return valueFunction.getValue(bundle);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class ORBidder implements Bidder, Serializable {
 	@Override
 	public BigDecimal getValue(Bundle bundle, boolean ignoreAllocationLimits) {
 		Preconditions.checkArgument(ignoreAllocationLimits || this.getAllocationLimit().validate(bundle));
-		return valueFunction.getValueFor(bundle);
+		return valueFunction.getValue(bundle);
 	}
 
 	// region strategy
