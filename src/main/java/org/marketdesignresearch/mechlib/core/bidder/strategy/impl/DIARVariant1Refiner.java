@@ -33,14 +33,22 @@ public class DIARVariant1Refiner extends AutomatedRefiner<DIARVariant1Refinement
 			BundleBoundValuePair refinedBid = refinedBids.getBidForBundle(error.left);
 			BigDecimal trueValue = b.getValue(error.left);
 			// check if already reduced
-			if (refinedBid.getLowerBound().subtract(activeBid.getLowerBound())
-					.compareTo(type.getEpsilon().add(roundingDelta)) >= 0) {
-				// done with refinement
-				break;
+			if (activeBid.getBundle().equals(provisionalAllocation))  {
+				if (refinedBid.getLowerBound().subtract(activeBid.getLowerBound())
+						.compareTo(type.getEpsilon().add(roundingDelta)) >= 0) {
+					// done with refinement
+					break;
+				}
+			} else {
+				if (activeBid.getUpperBound().subtract(refinedBid.getUpperBound())
+						.compareTo(type.getEpsilon().add(roundingDelta)) >= 0) {
+					// done with refinement
+					break;
+				}
 			}
 
 			if (activeBid.getBundle().equals(provisionalAllocation)) {
-				// check if the lower bond can be increased by epsilon
+				// check if the lower bound can be increased by epsilon
 				if (activeBid.getLowerBound().add(type.getEpsilon()).add(roundingDelta)
 						.compareTo(b.getValue(error.left)) <= 0) {
 					BigDecimal newLowerBound = activeBid.getLowerBound().add(type.getEpsilon()).add(roundingDelta);

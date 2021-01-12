@@ -1,9 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
@@ -274,14 +272,17 @@ public abstract class Auction<BB extends BundleValueBids<?>> extends Mechanism i
 	 * closes the Auction if there is no next AuctionPhase.
 	 */
 	protected void prepareNextAuctionRoundBuilder() {
-		if ((this.phases.size() == this.currentPhaseNumber + 1 && this.getCurrentPhase().phaseFinished(this))
+		// Move to next round if phase has finished
+		while(this.phases.size() > this.currentPhaseNumber && this.getCurrentPhase().phaseFinished(this)) {
+			this.currentPhaseNumber++;
+			this.currentPhaseRoundNumber = 0;
+		}
+		// Stop if last phase has finished or maxRounds was reached
+		if ((this.phases.size() == this.currentPhaseNumber)
 				|| (maxRounds > 0 && getNumberOfRounds() >= maxRounds)) {
 			current = null;
+		// Start next round
 		} else {
-			if (this.getCurrentPhase().phaseFinished(this)) {
-				this.currentPhaseNumber++;
-				this.currentPhaseRoundNumber = 0;
-			}
 			log.info("Starting round {}", this.getNumberOfRounds() + 1);
 			this.prepareBidderRoundRandom();
 			current = this.getCurrentPhase().createNextRoundBuilder(this);

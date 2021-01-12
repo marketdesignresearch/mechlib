@@ -46,6 +46,7 @@ public class DIARVariant2Refiner extends AutomatedRefiner<DIARVariant2Refinement
 				break;
 			}
 			else {
+				// show that reduction is not possible
 				BigDecimal lowerDifference = trueValue.subtract(refinedBid.getLowerBound());
 				BigDecimal upperDifference = refinedBid.getUpperBound().subtract(trueValue);
 				if(lowerDifference.compareTo(upperDifference) > 0) {

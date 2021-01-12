@@ -1,8 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
@@ -15,7 +13,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.Effic
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfoCreator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.MRPAR_DIAR_RefinementRoundInfoCreator;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.RefinementHelper;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 
 import lombok.Getter;
@@ -52,12 +49,8 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 
 	@Override
 	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
-		if (this.allRefinementEconomies == null) {
-			this.allRefinementEconomies = this.createAllRefinementEconomies(auction);
-		}
-
 		this.updateInfo(auction);
-		return new RefinementAuctionRoundBuilder(auction, this.allRefinementEconomies, this.info,
+		return new RefinementAuctionRoundBuilder(auction, this.getAllRefinementEconomies(auction), this.info,
 				this.getPriceGenerator(), this.getRefinementInfoCreator());
 	}
 
@@ -69,7 +62,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 
 	private void updateInfo(Auction<BundleBoundValueBids> auction) {
 		if (this.refinementInfoRound != auction.getMaxRounds()) {
-			this.info = this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.allRefinementEconomies);
+			this.info = this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.getAllRefinementEconomies(auction));
 		}
 	}
 
@@ -85,5 +78,12 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 			auction.getDomain().getBidders()
 					.forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		return elicitationEconomies;
+	}
+	
+	private List<ElicitationEconomy> getAllRefinementEconomies(Auction<BundleBoundValueBids> auction) {
+		if (this.allRefinementEconomies == null) {
+			this.allRefinementEconomies = this.createAllRefinementEconomies(auction);
+		}
+		return this.allRefinementEconomies;
 	}
 }

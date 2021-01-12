@@ -23,7 +23,6 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation.MipPurpose;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.metainfo.MetaInfo;
-import org.marketdesignresearch.mechlib.utils.CPLEXUtils;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
 import com.google.common.collect.ImmutableMap;

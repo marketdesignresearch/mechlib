@@ -1,11 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
-import java.math.BigDecimal;
-
-import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValuePair;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 /**
