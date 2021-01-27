@@ -19,7 +19,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEcono
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.BidderRefinementRoundInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.BidderRefinementRoundInfoCreator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfo;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator.ICEValidator;
 
 import com.google.common.base.Preconditions;
@@ -35,15 +34,12 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	private final List<ElicitationEconomy> refinementEconomies;
 
 	private final Map<UUID, BundleBoundValueBid> original = new LinkedHashMap<>();
-	@Getter
-	private LinearPriceGenerator priceGenerator;
 
 	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction,
 			List<ElicitationEconomy> refinementEconomies, EfficiencyInfo efficiencyInfos,
-			LinearPriceGenerator generator, BidderRefinementRoundInfoCreator creator) {
+			BidderRefinementRoundInfoCreator creator) {
 		super(auction);
 		this.refinementEconomies = refinementEconomies;
-		this.priceGenerator = generator;
 
 		this.refinementInfos = creator.createBidderRefinementRoundInfos(auction, BidderRandom.INSTANCE.getRandom(),
 				efficiencyInfos);
@@ -54,7 +50,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			BidderRefinementRoundInfo info = this.refinementInfos.get(bidder.getId());
 			interactions.put(bidder.getId(),
-					new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements(),
+					new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements().get(bidder),
 							info.getAlphaAllocation().allocationOf(bidder).getBundle(), info.getPrices(),
 							latestAggregatedBids.getBid(bidder)));
 			this.original.put(bidder.getId(), latestAggregatedBids.getBid(bidder).copy());

@@ -77,7 +77,7 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 	}
 
 	@Override
-	public BundleValueBids<BundleBoundValueBid> multiply(BigDecimal scale) {
+	public BundleBoundValueBids multiply(BigDecimal scale) {
 		BundleBoundValueBids newBids = new BundleBoundValueBids();
 		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
 			newBids.setBid(entry.getKey(), entry.getValue().multiply(scale));

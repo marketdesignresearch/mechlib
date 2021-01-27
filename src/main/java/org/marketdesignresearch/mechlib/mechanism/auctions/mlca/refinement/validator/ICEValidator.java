@@ -12,6 +12,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant1Refinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant2Refinement;
+import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.DIARVariant3Refinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 
@@ -28,6 +29,7 @@ public class ICEValidator {
 		validators.put(MRPARRefinement.class, new MRPARValidator());
 		validators.put(DIARVariant1Refinement.class, new DIARVariant1Validator());
 		validators.put(DIARVariant2Refinement.class, new DIARVariant2Validator());
+		validators.put(DIARVariant3Refinement.class, new DIARVariant3Validator());
 	}
 
 	@SuppressWarnings("unchecked")

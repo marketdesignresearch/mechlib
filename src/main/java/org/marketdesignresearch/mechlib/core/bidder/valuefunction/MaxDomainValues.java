@@ -20,7 +20,4 @@ public class MaxDomainValues implements ValueFunction {
 			return BigDecimal.ZERO;
 		return domain.getBidders().stream().map(b -> b.getValue(bundle,true).add(epsilon)).max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
 	}
-	
-	
-	
 }

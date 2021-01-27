@@ -23,7 +23,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.Effic
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfoCreator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.MRPARRefinementRoundInfoCreator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.MRPAR_DIAR_RefinementRoundInfoCreator;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,8 +49,6 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 
 	@Getter
 	private List<ElicitationEconomy> refinementEconomies;
-	@Getter
-	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
 			int numberOfmarginalQueries, double timeLimit) {
@@ -71,7 +68,8 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 		super(mlComponent, maxQueries, numberOfmarginalQueries);
 		this.refineMarginalEconomies = refineMarginalEconomies;
 		this.intermediateRefinements = intermediateRefinments;
-		this.priceGenerator.setTimeLimit(timeLimit);
+		this.mlRoundRefinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
+		this.intermediateRefinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 		if (intermediateRefinements
 				&& BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
 			return new RefinementAuctionRoundBuilder(auction, refinementEconomies, this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.refinementEconomies),
-					this.getPriceGenerator(), this.getIntermediateRefinementInfoCreator());
+					this.getIntermediateRefinementInfoCreator());
 		}
 
 		return super.createNextRoundBuilder(auction);

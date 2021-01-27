@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -90,5 +91,5 @@ public abstract class BidderRefinementRoundInfoCreator {
 		return bidderRefinementInfos;
 	}
 
-	protected abstract LinkedHashSet<RefinementType> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation, Prices pi);
+	protected abstract LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation, Prices pi);
 }

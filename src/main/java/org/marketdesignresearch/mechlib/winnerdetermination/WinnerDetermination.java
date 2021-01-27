@@ -39,6 +39,7 @@ public abstract class WinnerDetermination implements AllocationRule {
 	 * @param timeLimit the time limit in seconds
 	 */
 	@Setter
+	@Getter
 	private double timeLimit = -1.0;
 
 	/**

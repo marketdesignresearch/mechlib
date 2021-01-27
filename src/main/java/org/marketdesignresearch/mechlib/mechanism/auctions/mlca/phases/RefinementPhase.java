@@ -39,19 +39,20 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 	private EfficiencyInfoCreator efficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator();
 
 	private List<ElicitationEconomy> allRefinementEconomies;
-	@Getter
-	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
+	//@Getter
+	//private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 
 	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
 		this(DEFAULT_MAX_NUMBER_OF_ROUNDS, refineMarginalEconomies);
-		this.priceGenerator.setTimeLimit(timeLimit);
+		this.refinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
+		//this.priceGenerator.setTimeLimit(timeLimit);
 	}
 
 	@Override
 	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
 		this.updateInfo(auction);
 		return new RefinementAuctionRoundBuilder(auction, this.getAllRefinementEconomies(auction), this.info,
-				this.getPriceGenerator(), this.getRefinementInfoCreator());
+				this.getRefinementInfoCreator());
 	}
 
 	@Override

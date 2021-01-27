@@ -2,6 +2,7 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.marketdesignresearch.mechlib.core.Allocation;
@@ -17,13 +18,20 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 public class MRPAR_DIAR_RefinementRoundInfoCreator extends BidderRefinementRoundInfoCreator {
 
 	@Override
-	protected LinkedHashSet<RefinementType> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation,
+	protected LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation,
 			Prices pi) {
 		// Linked Hash set - the order of the refinement is deterministic
 		LinkedHashSet<RefinementType> refinements = new LinkedHashSet<>();
 		refinements.add(new MRPARRefinement());
 		refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
-		return refinements;
+		
+		LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> result = new LinkedHashMap<>();
+		
+		for(Bidder b : bids.getBidders()) {
+			result.put(b, refinements);
+		}
+		
+		return result;
 	}
 
 	private BigDecimal calulateDIAREpsilon(BundleBoundValueBids bids) {
