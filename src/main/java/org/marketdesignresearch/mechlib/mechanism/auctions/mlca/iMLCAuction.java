@@ -9,6 +9,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundMLQueryWithMRPARPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundRandomQueryPhase;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.ConvergencePhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.MLQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RandomQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementPhase;
@@ -37,6 +38,13 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
 				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit);
 	}
+	
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
+			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies,
+			boolean intermediateRefinement, Long seed, double timeLimit, boolean convergenceDummyy) {
+		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
+				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit, convergenceDummyy);
+	}
 
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
@@ -46,10 +54,28 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 						refineMarginalEconomies, intermediateRefinement, timeLimit),
 				new RefinementPhase(refineMarginalEconomies, timeLimit), seed);
 	}
+	
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
+			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
+			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit, boolean convergenceDummy) {
+		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
+				new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound,
+						refineMarginalEconomies, intermediateRefinement, timeLimit),
+				new ConvergencePhase(), seed);
+	}
 
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
 			RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase,
 			RefinementPhase refinement, Long seed) {
+		super(domain, outcomeRule, initialPhase, seed);
+		this.addAuctionPhase(mlPhase);
+		this.addAuctionPhase(refinement);
+		this.setMaxRounds(1000);
+	}
+	
+	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
+			RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase,
+			ConvergencePhase refinement, Long seed) {
 		super(domain, outcomeRule, initialPhase, seed);
 		this.addAuctionPhase(mlPhase);
 		this.addAuctionPhase(refinement);

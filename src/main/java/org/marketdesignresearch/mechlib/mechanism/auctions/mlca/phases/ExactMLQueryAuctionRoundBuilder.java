@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ExactMLQueryAuctionRoundBuilder extends AuctionRoundBuilder<BundleExactValueBids> {
 
 	@Getter
-	private Map<UUID, ExactValueQuery> interactions;
+	private final Map<UUID, ExactValueQuery> interactions;
 
 	private final Map<UUID, List<ElicitationEconomy>> marginalsToQueryNext;
 

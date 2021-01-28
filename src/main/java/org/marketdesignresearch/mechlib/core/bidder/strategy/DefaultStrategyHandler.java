@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulBoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulConvergenceStratey;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulDemandQueryStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulExactValueQueryStrategy;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulProfitMaxQueryStrategy;
@@ -23,6 +24,7 @@ public class DefaultStrategyHandler {
 		defaultStrategies.put(BoundValueQueryWithMRPARRefinementStrategy.class, TruthfulBoundValueQueryStrategy.class);
 		defaultStrategies.put(RefinementStrategy.class, TruthfulRefinementStrategy.class);
 		defaultStrategies.put(BoundValueQueryStrategy.class, TruthfulBoundValueQueryStrategy.class);
+		defaultStrategies.put(ConvergenceStrategy.class, TruthfulConvergenceStratey.class);
 	}
 
 	/**
