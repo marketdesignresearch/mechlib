@@ -24,6 +24,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Converge
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultConvergenceInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyGuaranteeEfficiencyInfoCreator;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.IntervalSizeEffiencyInfoCreator;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDeterminationWithExclucedBundles;
 
@@ -36,21 +37,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 
-	public static BigDecimal DEFAULT_FIRST_EPSILON = BigDecimal.valueOf(0.005);
 	// add some slack due to inexact arithmetics
-	public static BigDecimal DEFAULT_EFFICIENCY_TOLERANCE = BigDecimal.valueOf(0.5);
-	
-	public static int DEFAULT_NUMBER_OF_BUNDLES = 4;
+	public static BigDecimal DEFAULT_EFFICIENCY_TOLERANCE = BigDecimal.valueOf(0.99999);	
 	
 	@Getter
-	@Setter
-	private BigDecimal firstEpsilon = DEFAULT_FIRST_EPSILON;
+	private final BigDecimal firstEpsilon;
 	@Getter
-	@Setter
-	private EfficiencyGuaranteeEfficiencyInfoCreator efficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator(DEFAULT_EFFICIENCY_TOLERANCE);
+	private final EfficiencyGuaranteeEfficiencyInfoCreator efficiencyInfoCreator;
 	@Getter
-	@Setter
-	private int numberOfBundles = 4;
+	private final int numberOfBundles;
+	
+	public ConvergencePhase(int numberOfBundles, BigDecimal epsilon) {
+		this.firstEpsilon = epsilon;
+		this.numberOfBundles = numberOfBundles;
+		this.efficiencyInfoCreator = new IntervalSizeEffiencyInfoCreator(DEFAULT_EFFICIENCY_TOLERANCE, epsilon);
+	}
 	
 	@Override
 	public AuctionRoundBuilder<BundleBoundValueBids> createNextRoundBuilder(Auction<BundleBoundValueBids> auction) {
@@ -102,9 +103,6 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 				}
 			}
 			
-			System.out.println("Number of Bundles: "+querySet.size());
-			System.out.println("Number of excluded Bundles: "+excludedSet.size());
-			
 			interactions.put(bidder.getId(), new DefaultConvergenceInteraction(bidder.getId(), auction, querySet, epsilon, bid));
 		}
 		
@@ -113,11 +111,6 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 
 	@Override
 	public boolean phaseFinished(Auction<BundleBoundValueBids> auction) {
-		// Run at least one convergence round
-		if(auction.getLastRound() == null || ! (auction.getLastRound() instanceof ConvergenceAuctionRound)) {
-			return false;
-		}
-		
 		return this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), List.of(new ElicitationEconomy(auction.getDomain()))).isConverged();
 	}
 	

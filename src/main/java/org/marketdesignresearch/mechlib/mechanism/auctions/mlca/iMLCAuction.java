@@ -1,5 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.marketdesignresearch.mechlib.core.Domain;
@@ -41,9 +42,9 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 	
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies,
-			boolean intermediateRefinement, Long seed, double timeLimit, boolean convergenceDummyy) {
+			boolean intermediateRefinement, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
-				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit, convergenceDummyy);
+				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit, convergenceEpsilon);
 	}
 
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
@@ -57,11 +58,11 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 	
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
-			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit, boolean convergenceDummy) {
+			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
 				new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound,
 						refineMarginalEconomies, intermediateRefinement, timeLimit),
-				new ConvergencePhase(), seed);
+				new ConvergencePhase(marginalQueriesPerRound+1,convergenceEpsilon), seed);
 	}
 
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
