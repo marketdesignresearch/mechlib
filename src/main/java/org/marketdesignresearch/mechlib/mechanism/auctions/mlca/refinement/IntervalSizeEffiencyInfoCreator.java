@@ -29,7 +29,7 @@ public class IntervalSizeEffiencyInfoCreator extends EfficiencyGuaranteeEfficien
 		BigDecimal lowerBoundValue = allocation.getTotalAllocationValue();
 		BigDecimal upperBoundValue = allocation.getTradesMap().entrySet().stream().map(e -> e.getValue().getBundle().equals(Bundle.EMPTY) ? BigDecimal.ZERO : bids.getBid(e.getKey()).getBidForBundle(e.getValue().getBundle()).getUpperBound()).reduce(BigDecimal.ZERO, BigDecimal::add);
 		
-		return upperBoundValue.subtract(lowerBoundValue).divide(upperBoundValue,RoundingMode.HALF_UP).compareTo(allocationValueGap) <= 0 && super.hasConverged(info, bids);
+		return upperBoundValue.subtract(lowerBoundValue).divide(upperBoundValue,allocationValueGap.scale()+1,RoundingMode.HALF_UP).compareTo(allocationValueGap) <= 0 && super.hasConverged(info, bids);
 	}
 	
 

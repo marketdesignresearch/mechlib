@@ -64,7 +64,7 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 		for (BundleExactValuePair bv : supportVectorsPerBider.getBid(bidder).getBundleBids()){
 			value+=bv.getAmount().doubleValue()*kernel.getValue(bv.getBundle(),bundle);
 		}
-		return value * BigDecimal.ONE.divide(valueScalingFactor,RoundingMode.HALF_UP).doubleValue();
+		return value * BigDecimal.ONE.divide(valueScalingFactor,10,RoundingMode.HALF_UP).doubleValue();
 	}
 
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);

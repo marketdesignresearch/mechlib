@@ -39,11 +39,11 @@ public abstract class EfficiencyInfoCreator {
 		EfficiencyInfo.ElicitationEconomyEfficiency info = new EfficiencyInfo.ElicitationEconomyEfficiency();
 
 		info.alpha = lowerBound.getTotalAllocationValue()
-				.divide(lowerBound.getTotalAllocationValue(), RoundingMode.HALF_UP).max(BigDecimal.valueOf(0.5))
+				.divide(lowerBound.getTotalAllocationValue(), 10, RoundingMode.HALF_UP).max(BigDecimal.valueOf(0.5))
 				.min(BigDecimal.ONE);
 
 		info.efficiency = lowerBound.getTotalAllocationValue().divide(perturbed.getTotalAllocationValue(),
-				RoundingMode.HALF_UP);
+				10, RoundingMode.HALF_UP);
 
 		return info;
 	}

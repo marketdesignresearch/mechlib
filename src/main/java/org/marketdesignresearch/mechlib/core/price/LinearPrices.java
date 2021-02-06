@@ -69,7 +69,7 @@ public class LinearPrices implements Prices {
 		LinkedHashMap<Good, Price> map = new LinkedHashMap<>();
 		for (Map.Entry<UUID, Price> entry : this.priceMap.entrySet()) {
 			map.put(this.goods.stream().filter(g -> g.getUuid().equals(entry.getKey())).findAny().orElseThrow(),
-                    new Price(entry.getValue().getAmount().divide(divisor, RoundingMode.HALF_UP)));
+                    new Price(entry.getValue().getAmount().divide(divisor, 10, RoundingMode.HALF_UP)));
 		}
 		return new LinearPrices(map);
 	}

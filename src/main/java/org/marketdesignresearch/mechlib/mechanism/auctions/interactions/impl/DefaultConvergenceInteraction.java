@@ -61,8 +61,9 @@ public class DefaultConvergenceInteraction extends DefaultInteraction<BundleBoun
 		for (BundleBoundValuePair pair : bid.getBundleBids()) {
 			BigDecimal interval = pair.getUpperBound().subtract(pair.getLowerBound());
 			if (pair.getUpperBound().compareTo(BigDecimal.ZERO) > 0) {
-				BigDecimal uncertainty = interval.divide(pair.getUpperBound(), RoundingMode.HALF_UP);
-				Preconditions.checkArgument(uncertainty.compareTo(epsilon) <= 0);
+				BigDecimal uncertainty = interval.divide(pair.getUpperBound(), epsilon.scale()+1, RoundingMode.DOWN);
+				// add 2% slack
+				Preconditions.checkArgument(uncertainty.compareTo(epsilon.multiply(BigDecimal.valueOf(1.02))) <= 0);
 			}
 		}
 

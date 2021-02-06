@@ -108,7 +108,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 				if (!bid.getBundle().equals(allocated)) {
 					BigDecimal value = allocatedValue.subtract(bid.getAmount());
 					c = mipWrapper.beginNewLEQConstraint(
-							value.add(offset.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)).doubleValue());
+							value.add(offset.divide(BigDecimal.valueOf(100))).doubleValue());
 					this.addPriceVariables(c, allocated, bid.getBundle());
 
 					Variable delta = mipWrapper.makeNewDoubleVar("Bid Delta " + (++varNr));
@@ -127,7 +127,7 @@ public class LinearPriceMinimizeDeltasWithNorm extends LinearPriceMIP {
 					if (this.priceConstraints.getConstrainedBids(bidder.getId()).contains(bid.getBundle())) {
 						maxDeltaValue = maxDeltaValue.min(
 								this.priceConstraints.getRightHandSide(bidder.getId(), bid.getBundle()).subtract(value)
-										.add(offset.divide(BigDecimal.valueOf(10), RoundingMode.HALF_UP)));
+										.add(offset.divide(BigDecimal.valueOf(10), offset.scale()+2, RoundingMode.HALF_UP)));
 					}
 
 					// add the delta variable if the max delta is not zero

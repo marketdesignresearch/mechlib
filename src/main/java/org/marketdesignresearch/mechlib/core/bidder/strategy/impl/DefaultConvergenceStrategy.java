@@ -35,9 +35,10 @@ public abstract class DefaultConvergenceStrategy implements ConvergenceStrategy{
 		for(Bundle bundle : query.getBundles()) {
 			BundleBoundValuePair currentPair = query.getLatestActiveBid().getBidForBundle(bundle);
 			BigDecimal upperUncertainty = epsilon.multiply(BigDecimal.valueOf(this.getNextGuassianLikeDouble(BidderRandom.INSTANCE.getRandom())));
+			upperUncertainty = upperUncertainty.min(epsilon);
 			
-			BigDecimal upperBound = getValueFunction().getValue(bundle).divide(BigDecimal.ONE.subtract(upperUncertainty), RoundingMode.HALF_DOWN);
-			upperBound = upperBound.max(currentPair.getLowerBound().divide(BigDecimal.ONE.subtract(epsilon),RoundingMode.HALF_DOWN));
+			BigDecimal upperBound = getValueFunction().getValue(bundle).divide(BigDecimal.ONE.subtract(upperUncertainty), Math.max(10,upperUncertainty.scale()), RoundingMode.DOWN);
+			upperBound = upperBound.max(currentPair.getLowerBound().divide(BigDecimal.ONE.subtract(epsilon), Math.max(10,upperUncertainty.scale()), RoundingMode.DOWN));
 			upperBound = upperBound.min(currentPair.getUpperBound());
 			upperBound = upperBound.max(getValueFunction().getValue(bundle));
 			

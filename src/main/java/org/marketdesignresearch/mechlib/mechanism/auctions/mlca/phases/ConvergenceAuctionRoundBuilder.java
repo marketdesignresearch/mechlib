@@ -51,8 +51,8 @@ public class ConvergenceAuctionRoundBuilder extends AuctionRoundBuilder<BundleBo
 
 				BigDecimal interval = pair.getUpperBound().subtract(pair.getLowerBound());
 				if (pair.getUpperBound().compareTo(BigDecimal.ZERO) > 0) {
-					BigDecimal uncertainty = interval.divide(pair.getUpperBound(), RoundingMode.HALF_UP);
-					if (uncertainty.compareTo(epsilon) > 0) {
+					BigDecimal uncertainty = interval.divide(pair.getUpperBound(), epsilon.scale()+1, RoundingMode.DOWN);
+					if (uncertainty.compareTo(epsilon.multiply(BigDecimal.valueOf(1.02))) > 0) {
 						throw new IllegalStateException("Bidder reported uncertainty of " + uncertainty
 								+ "but was requested to report at most " + epsilon);
 					}

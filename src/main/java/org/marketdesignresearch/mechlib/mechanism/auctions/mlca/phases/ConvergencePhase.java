@@ -61,7 +61,7 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 		AuctionRound<BundleBoundValueBids> round = auction.getLastRound();
 		if(round != null && round instanceof ConvergenceAuctionRound) {
 			ConvergenceAuctionRound convergenceRound = (ConvergenceAuctionRound) round;
-			epsilon = convergenceRound.getEpsilon().divide(BigDecimal.valueOf(2),RoundingMode.HALF_UP);
+			epsilon = convergenceRound.getEpsilon().divide(BigDecimal.valueOf(2));
 		}
 		
 		log.info("Epsilon: {}", epsilon);
@@ -120,7 +120,7 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 		if(pair.getUpperBound().compareTo(BigDecimal.ZERO) == 0) {
 			return true;
 		}
-		BigDecimal uncertainty = interval.divide(pair.getUpperBound(),RoundingMode.HALF_UP);
+		BigDecimal uncertainty = interval.divide(pair.getUpperBound(),epsilon.scale()+1,RoundingMode.HALF_UP);
 		return uncertainty.compareTo(epsilon) <= 0;
 	}
 

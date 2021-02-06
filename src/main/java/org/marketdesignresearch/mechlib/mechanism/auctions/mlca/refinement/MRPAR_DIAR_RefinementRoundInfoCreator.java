@@ -40,10 +40,10 @@ public class MRPAR_DIAR_RefinementRoundInfoCreator extends BidderRefinementRound
 			BundleBoundValueBid bid = bids.getBid(b);
 			for (BundleBoundValuePair value : bid.getBundleBids()) {
 				epsilon = epsilon.add(value.getUpperBound().subtract(value.getLowerBound())
-						.divide(BigDecimal.valueOf(bid.getBundleBids().size()), RoundingMode.HALF_UP));
+						.divide(BigDecimal.valueOf(bid.getBundleBids().size()), 10, RoundingMode.HALF_UP));
 			}
 		}
-		epsilon = epsilon.divide(BigDecimal.valueOf(2 * bids.getBidders().size()), RoundingMode.HALF_UP);
+		epsilon = epsilon.divide(BigDecimal.valueOf(2 * bids.getBidders().size()), 10, RoundingMode.HALF_UP);
 		return epsilon;
 	}
 

@@ -45,9 +45,9 @@ public class BoundSupportVectorMIP extends SupportVectorMIP<BundleBoundValueBid>
 			labeledDataVariables.put(-indexQuery, v2);
 
 			double spread = bid.getUpperBound().subtract(bid.getLowerBound())
-					.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).doubleValue();
+					.divide(BigDecimal.valueOf(2)).doubleValue();
 			double mean = bid.getUpperBound().add(bid.getLowerBound())
-					.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).doubleValue();
+					.divide(BigDecimal.valueOf(2)).doubleValue();
 			mipWrapper.addObjectiveTerm(-spread - this.getInsensitivityThreshold(),
 					labeledDataVariables.get(indexQuery));
 			mipWrapper.addObjectiveTerm(-spread - this.getInsensitivityThreshold(),
