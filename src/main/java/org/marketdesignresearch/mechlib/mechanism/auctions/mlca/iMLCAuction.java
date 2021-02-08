@@ -8,6 +8,7 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
+import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundMLQueryWithMRPARPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.BoundRandomQueryPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.ConvergencePhase;
@@ -84,8 +85,8 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 	}
 
 	
-	public RefinementPhase getRefinementPhase() {
-		return (RefinementPhase) this.phases.get(2);
+	public AuctionPhase<?> getPhaseNr(int i) {
+		return this.phases.get(i);
 	}
 	
 	/**

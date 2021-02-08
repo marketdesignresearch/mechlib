@@ -34,6 +34,10 @@ public abstract class BidderRefinementRoundInfoCreator {
 	@Getter
 	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 	
+	@Setter
+	@Getter
+	private boolean advancedPrices = true;
+	
 	public Map<UUID, BidderRefinementRoundInfo> createBidderRefinementRoundInfos(Auction<BundleBoundValueBids> auction,
 			Random random, EfficiencyInfo info) {
 		Map<UUID, BidderRefinementRoundInfo> previousRoundRefinementInfo = null;
@@ -75,10 +79,17 @@ public abstract class BidderRefinementRoundInfoCreator {
 				BundleExactValueBids perturbedValuation = auction.getLatestAggregatedBids()
 						.getPerturbedBids(alphaAllocation);
 
-				Prices prices = this.getPriceGenerator().getPrices(auction.getDomain(),
-						new ElicitationEconomy(auction.getDomain()), alphaAllocation,
-						List.of(alphaValuation, perturbedValuation), true);
-						//List.of(alphaValuation), false);
+				
+				Prices prices;
+				if(this.advancedPrices) {
+					prices = this.getPriceGenerator().getPrices(auction.getDomain(),
+							new ElicitationEconomy(auction.getDomain()), alphaAllocation,
+							List.of(alphaValuation, perturbedValuation), true);
+				} else {
+					prices = this.getPriceGenerator().getPrices(auction.getDomain(),
+							new ElicitationEconomy(auction.getDomain()), alphaAllocation,
+							List.of(alphaValuation), false);
+				}
 
 				refinementInfos.put(refinementEconomy,
 						new BidderRefinementRoundInfo(
