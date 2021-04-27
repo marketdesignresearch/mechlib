@@ -89,7 +89,7 @@ public abstract class WinnerDetermination implements AllocationRule {
 			IMIPResult mipResult = CPLEXUtils.SOLVER.solve(getMIP());
 			intermediateSolutions = solveIntermediateSolutions(mipResult);
 			Allocation bestAllocation = adaptMIPResult(mipResult);
-			mipInstrumentation.postMIP(purpose, getMIP(), mipResult, bestAllocation, intermediateSolutions);
+			mipInstrumentation.postMIP(purpose, this, getMIP(), mipResult, bestAllocation, intermediateSolutions);
 			return bestAllocation;
 		} catch (MIPException ex) {
 			log.warn("WD failed", ex);

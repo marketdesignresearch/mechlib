@@ -128,7 +128,7 @@ public abstract class LinearPriceMIP implements MipInstrumentationable {
 		getMIP().setSolveParam(SolveParam.CALCULATE_CONFLICT_SET, false);
 		this.instrumentation.preMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP());
 		IMIPResult result = CPLEXUtils.SOLVER.solve(getMIP());
-		this.instrumentation.postMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP(), result);
+		this.instrumentation.postMIP(MipPurpose.REFINEMENT_PRICES.name(), this, getMIP(), result);
 		return this.adaptMIPResult(result);
 	}
 
