@@ -18,7 +18,8 @@ import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformab
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ShaveTransformation;
 
 /**
- * Bids for bundles with exact values of multiple bidders (i.e. all bidders of an auction).
+ * Bids for bundles with exact values of multiple bidders (i.e. all bidders of
+ * an auction).
  * 
  * @author Manuel Beyeler
  */
@@ -125,8 +126,8 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		}
 		return newBids;
 	}
-	
-	public BundleExactValueBids exp() {	
+
+	public BundleExactValueBids exp() {
 		BundleExactValueBids newBids = new BundleExactValueBids();
 		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
 			newBids.setBid(entry.getKey(), entry.getValue().exp());
@@ -141,5 +142,5 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		}
 		return newBids;
 	}
-	
+
 }

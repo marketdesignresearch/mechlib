@@ -5,7 +5,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.instrumentation.MipInstrumentation;
 
 /**
- * See {@link SupportVector}. This version works with {@link BundleExactValueBids}.
+ * See {@link SupportVector}. This version works with
+ * {@link BundleExactValueBids}.
  * 
  * @author Manuel Beyeler
  */

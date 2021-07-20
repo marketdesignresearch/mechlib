@@ -17,10 +17,11 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 /**
- * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries} random value queries.
+ * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries}
+ * random value queries.
  * 
- * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
- * are issued.
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries
+ * for allocatable bundles are issued.
  * 
  * @author Manuel Beyeler
  *

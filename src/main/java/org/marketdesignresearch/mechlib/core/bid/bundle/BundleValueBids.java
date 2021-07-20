@@ -20,7 +20,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Collection of BundleValueBids per bidder (i.e. holds all bids of all bidders in an auction).
+ * Collection of BundleValueBids per bidder (i.e. holds all bids of all bidders
+ * in an auction).
  * 
  * @author Manuel Beyeler
  *
@@ -83,7 +84,8 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 
 	/**
 	 * @param factor multiplication factor
-	 * @return a new BundleValueBids where each (bundle) value is multiplied with the given multiplication factor.
+	 * @return a new BundleValueBids where each (bundle) value is multiplied with
+	 *         the given multiplication factor.
 	 */
 	public abstract BundleValueBids<T> multiply(BigDecimal factor);
 

@@ -16,11 +16,8 @@ import org.marketdesignresearch.mechlib.core.price.LinearPrices;
 
 import edu.harvard.econcs.jopt.solver.ISolution;
 import edu.harvard.econcs.jopt.solver.SolveParam;
-import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
-import edu.harvard.econcs.jopt.solver.mip.QuadraticTerm;
-import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 import lombok.Getter;
 

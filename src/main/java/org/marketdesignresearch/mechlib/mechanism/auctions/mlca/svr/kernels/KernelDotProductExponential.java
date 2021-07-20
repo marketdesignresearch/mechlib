@@ -14,7 +14,7 @@ import lombok.Setter;
  * @author Manuel Beyeler
  */
 public class KernelDotProductExponential extends KernelDotProduct {
-	
+
 	@Getter
 	@Setter
 	private double bandwidth;

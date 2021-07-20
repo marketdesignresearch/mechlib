@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CustomValueRefinementStrategy extends DefaultRefinementStrategy{
+public class CustomValueRefinementStrategy extends DefaultRefinementStrategy {
 
 	@Getter
 	private final ValueFunction valueFunction;

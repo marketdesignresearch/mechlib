@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BidderRefinementRoundInfo {
 	@Getter
-	public final Map<Bidder,LinkedHashSet<RefinementType>> refinements;
+	public final Map<Bidder, LinkedHashSet<RefinementType>> refinements;
 	@Getter
 	public final Prices prices;
 	@Getter

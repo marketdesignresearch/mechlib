@@ -90,13 +90,13 @@ public class ORWinnerDetermination extends BidBasedWinnerDetermination {
 				for (AllocationLimitConstraint alc : bidder.getAllocationLimit().getConstraints()) {
 					Constraint alConstraint = new Constraint(alc.getType(), alc.getConstant());
 					for (AllocationLimitConstraint.AllocationLimitLinearTerm lt : alc.getLinearTerms()) {
-						if(lt instanceof LinearGoodTerm) {
+						if (lt instanceof LinearGoodTerm) {
 							LinearGoodTerm goodTerm = (LinearGoodTerm) lt;
 							for (Pair<Integer, Variable> p : bundleGoodVariables.get(goodTerm.getGood())) {
 								alConstraint.addTerm(lt.getCoefficient() * p.getFirst(), p.getSecond());
 							}
-						} else if(lt instanceof LinearVarTerm) {
-							alConstraint.addTerm(((LinearVarTerm)lt).getLinearTerm());
+						} else if (lt instanceof LinearVarTerm) {
+							alConstraint.addTerm(((LinearVarTerm) lt).getLinearTerm());
 						} else {
 							throw new IllegalStateException("Unknow AllocationLimit Linear Term type");
 						}

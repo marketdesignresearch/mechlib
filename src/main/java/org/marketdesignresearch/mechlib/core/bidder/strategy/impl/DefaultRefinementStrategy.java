@@ -14,11 +14,11 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class DefaultRefinementStrategy implements RefinementStrategy, RefinementInstrumentable{
+public abstract class DefaultRefinementStrategy implements RefinementStrategy, RefinementInstrumentable {
 	@Getter
 	@Setter
 	private transient Bidder bidder;
-	
+
 	@Setter
 	@Getter
 	private RefinementInstrumentation refinementInstrumentation = RefinementInstrumentation.NO_OP;
@@ -28,18 +28,16 @@ public abstract class DefaultRefinementStrategy implements RefinementStrategy, R
 		BundleBoundValueBid refinedBid = query.getLatestActiveBid().copy();
 
 		for (RefinementType type : query.getRefinementTypes()) {
-			this.getRefinementInstrumentation().preRefinement(type, getBidder() , query.getLatestActiveBid(), refinedBid,
+			this.getRefinementInstrumentation().preRefinement(type, getBidder(), query.getLatestActiveBid(), refinedBid,
 					query.getPrices(), query.getProvisonalAllocation());
 			refinedBid = AutomatedRefiner.refine(type, this.getValueFunction(), query.getLatestActiveBid(), refinedBid,
 					query.getPrices(), query.getProvisonalAllocation(), BidderRandom.INSTANCE.getRandom());
-			this.getRefinementInstrumentation().postRefinement(type, this.getBidder(), query.getLatestActiveBid(), refinedBid,
-					query.getPrices(), query.getProvisonalAllocation());
+			this.getRefinementInstrumentation().postRefinement(type, this.getBidder(), query.getLatestActiveBid(),
+					refinedBid, query.getPrices(), query.getProvisonalAllocation());
 		}
 		return refinedBid;
 	}
-	
+
 	public abstract ValueFunction getValueFunction();
-	
-	
-	
+
 }

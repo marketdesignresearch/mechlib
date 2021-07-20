@@ -19,7 +19,7 @@ public class XORWinnerDeterminationWithExclucedBundles extends XORWinnerDetermin
 
 		for (Map.Entry<Bidder, Set<Bundle>> e : excludedBundles.entrySet()) {
 			for (Bundle b : e.getValue()) {
-				if(b.equals(Bundle.EMPTY)) {
+				if (b.equals(Bundle.EMPTY)) {
 					Constraint c = new Constraint(CompareType.GEQ, 1);
 					for (BundleExactValuePair allPair : this.getBids().getBid(e.getKey()).getBundleBids()) {
 						if (!allPair.getBundle().equals(Bundle.EMPTY)) {

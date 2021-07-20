@@ -6,7 +6,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ConvergenceInteraction;
 
-public interface ConvergenceStrategy extends InteractionStrategy{
+public interface ConvergenceStrategy extends InteractionStrategy {
 
 	BundleBoundValueBid applyConvergenceStrategy(ConvergenceInteraction query, Auction<?> auction);
 

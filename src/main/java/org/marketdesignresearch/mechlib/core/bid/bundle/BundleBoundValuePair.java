@@ -26,8 +26,8 @@ public class BundleBoundValuePair extends BundleExactValuePair {
 	/**
 	 * @param lowerBound lower bound of bid
 	 * @param upperBound upper bound of bid
-	 * @param bundle Goods to bid on
-	 * @param id     Same id as BundleValue
+	 * @param bundle     Goods to bid on
+	 * @param id         Same id as BundleValue
 	 */
 	public BundleBoundValuePair(BigDecimal lowerBound, BigDecimal upperBound, Set<Good> bundle, String id) {
 		this(lowerBound, upperBound, Bundle.of(bundle), id);
@@ -75,17 +75,16 @@ public class BundleBoundValuePair extends BundleExactValuePair {
 	}
 
 	public BundleBoundValuePair ln() {
-		return new BundleBoundValuePair(BigDecimal.valueOf(Math.log(Math.max(1e-15d,getLowerBound().doubleValue()))), BigDecimal.valueOf(Math.log(Math.max(1e-15d,getUpperBound().doubleValue()))), getBundle(),
-				getId());
+		return new BundleBoundValuePair(BigDecimal.valueOf(Math.log(Math.max(1e-15d, getLowerBound().doubleValue()))),
+				BigDecimal.valueOf(Math.log(Math.max(1e-15d, getUpperBound().doubleValue()))), getBundle(), getId());
 	}
-	
+
 	public BundleBoundValuePair exp() {
-		return new BundleBoundValuePair(BigDecimal.valueOf(Math.exp(getLowerBound().doubleValue())), BigDecimal.valueOf(Math.exp(getUpperBound().doubleValue())), getBundle(),
-				getId());
+		return new BundleBoundValuePair(BigDecimal.valueOf(Math.exp(getLowerBound().doubleValue())),
+				BigDecimal.valueOf(Math.exp(getUpperBound().doubleValue())), getBundle(), getId());
 	}
 
 	public BundleBoundValuePair add(BigDecimal amount) {
-		return new BundleBoundValuePair(getLowerBound().add(amount), getUpperBound().add(amount), getBundle(),
-				getId());
+		return new BundleBoundValuePair(getLowerBound().add(amount), getUpperBound().add(amount), getBundle(), getId());
 	}
 }

@@ -34,15 +34,15 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 
 	private final boolean refineMarginalEconomies;
 	private final boolean intermediateRefinements;
-	
+
 	@Getter
 	@Setter
 	private BidderRefinementRoundInfoCreator mlRoundRefinementInfoCreator = new MRPARRefinementRoundInfoCreator();
-	
+
 	@Getter
 	@Setter
 	private BidderRefinementRoundInfoCreator intermediateRefinementInfoCreator = new MRPAR_DIAR_RefinementRoundInfoCreator();
-	
+
 	@Getter
 	@Setter
 	private EfficiencyInfoCreator efficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator();
@@ -81,7 +81,9 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 		// check if requested and perform intermediate refinement
 		if (intermediateRefinements
 				&& BoundMLQueryWithMRPARAuctionRound.class.isAssignableFrom(auction.getLastRound().getClass())) {
-			return new RefinementAuctionRoundBuilder(auction, refinementEconomies, this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.refinementEconomies),
+			return new RefinementAuctionRoundBuilder(
+					auction, refinementEconomies, this.getEfficiencyInfoCreator()
+							.getEfficiencyInfo(auction.getLatestAggregatedBids(), this.refinementEconomies),
 					this.getIntermediateRefinementInfoCreator());
 		}
 
@@ -93,8 +95,10 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 			Auction<BundleBoundValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
 			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
 
-		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.getMlRoundRefinementInfoCreator().createBidderRefinementRoundInfos(auction,
-				BidderRandom.INSTANCE.getRandom(), this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.refinementEconomies));
+		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.getMlRoundRefinementInfoCreator()
+				.createBidderRefinementRoundInfos(auction, BidderRandom.INSTANCE.getRandom(),
+						this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(),
+								this.refinementEconomies));
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
 

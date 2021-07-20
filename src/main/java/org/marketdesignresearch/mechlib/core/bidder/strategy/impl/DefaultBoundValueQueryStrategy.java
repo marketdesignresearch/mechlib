@@ -28,7 +28,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public abstract class DefaultBoundValueQueryStrategy implements BoundValueQueryStrategy, BoundValueQueryWithMRPARRefinementStrategy, RefinementInstrumentable {
+public abstract class DefaultBoundValueQueryStrategy
+		implements BoundValueQueryStrategy, BoundValueQueryWithMRPARRefinementStrategy, RefinementInstrumentable {
 
 	private final static BigDecimal defaultStdDeviation = BigDecimal.valueOf(0.5);
 
@@ -47,8 +48,8 @@ public abstract class DefaultBoundValueQueryStrategy implements BoundValueQueryS
 
 	@Override
 	public BundleBoundValueBid applyBoundValueStrategy(BoundValueQuery interaction, Auction<?> auction) {
-		return new BundleBoundValueBid(interaction.getQueriedBundles().stream().map(
-				bundle -> this.getValueBoundsForBundle(bundle, BidderRandom.INSTANCE.getRandom(), stdDeviation))
+		return new BundleBoundValueBid(interaction.getQueriedBundles().stream()
+				.map(bundle -> this.getValueBoundsForBundle(bundle, BidderRandom.INSTANCE.getRandom(), stdDeviation))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
 
@@ -61,8 +62,8 @@ public abstract class DefaultBoundValueQueryStrategy implements BoundValueQueryS
 		MRPARRefinement type = new MRPARRefinement();
 		this.getRefinementInstrumentation().preRefinement(type, bidder, activeBids, activeBids, query.getPrices(),
 				query.getProvisionalAllocation());
-		BundleBoundValueBid bids = AutomatedRefiner.refine(type, this.getValueFunction(), activeBids, activeBids, query.getPrices(),
-				query.getProvisionalAllocation(), BidderRandom.INSTANCE.getRandom());
+		BundleBoundValueBid bids = AutomatedRefiner.refine(type, this.getValueFunction(), activeBids, activeBids,
+				query.getPrices(), query.getProvisionalAllocation(), BidderRandom.INSTANCE.getRandom());
 		this.getRefinementInstrumentation().postRefinement(type, bidder, activeBids, bids, query.getPrices(),
 				query.getProvisionalAllocation());
 		return bids;
@@ -82,8 +83,7 @@ public abstract class DefaultBoundValueQueryStrategy implements BoundValueQueryS
 	 * @param bundle
 	 * @return
 	 */
-	protected BundleBoundValuePair getValueBoundsForBundle(Bundle bundle, Random random,
-			BigDecimal stdDeviation) {
+	protected BundleBoundValuePair getValueBoundsForBundle(Bundle bundle, Random random, BigDecimal stdDeviation) {
 
 		BigDecimal value = this.getValueFunction().getValue(bundle);
 		BigDecimal lowerBound = value

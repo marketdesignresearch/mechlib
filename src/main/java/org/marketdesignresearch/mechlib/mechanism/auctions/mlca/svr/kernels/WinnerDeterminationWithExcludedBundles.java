@@ -68,9 +68,9 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 	}
 
 	protected Allocation solveWinnerDetermination(double timeout, int factor) {
-		
+
 		this.setTimeLimit(timeout * factor);
-		
+
 		try {
 			return super.solveWinnerDetermination();
 		} catch (RuntimeException e) {
@@ -81,14 +81,14 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 				try {
 					this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
 					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
-					return super.solveWinnerDetermination(); 
-				} catch(RuntimeException e3) {
-					if(factor>16) {
+					return super.solveWinnerDetermination();
+				} catch (RuntimeException e3) {
+					if (factor > 16) {
 						throw e3;
 					}
 					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 0);
 					// increase timelimit in case no solution was found with given timelimit
-					return this.solveWinnerDetermination(timeout, factor*2);
+					return this.solveWinnerDetermination(timeout, factor * 2);
 				}
 			}
 		}

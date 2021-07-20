@@ -11,18 +11,18 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.MRPARRefinement;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 
-public class MRPARRefinementRoundInfoCreator extends BidderRefinementRoundInfoCreator{
+public class MRPARRefinementRoundInfoCreator extends BidderRefinementRoundInfoCreator {
 
 	@Override
-	protected LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation,
-			Prices pi) {
-		
+	protected LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids,
+			Allocation alphaAllocation, Prices pi) {
+
 		LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> result = new LinkedHashMap<>();
-		
-		for(Bidder b : bids.getBidders()) {
+
+		for (Bidder b : bids.getBidders()) {
 			result.put(b, new LinkedHashSet<>(List.of(new MRPARRefinement())));
 		}
-		
+
 		return result;
 	}
 

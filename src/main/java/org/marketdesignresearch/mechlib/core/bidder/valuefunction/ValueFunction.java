@@ -13,7 +13,7 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 public interface ValueFunction extends Serializable {
 
 	/**
-	 * Gets value for a bundle. 
+	 * Gets value for a bundle.
 	 *
 	 * @param bundle the bundle
 	 * @return the value for this bundle

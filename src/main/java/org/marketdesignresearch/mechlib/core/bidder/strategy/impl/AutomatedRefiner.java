@@ -27,9 +27,9 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 	 *                              round
 	 * @param refinedBids           bids that might have been refined by a previous
 	 *                              called refiner (otherwise equals activeBids)
-	 * @param prices          		prices
+	 * @param prices                prices
 	 * @param provisionalAllocation provisional allocation of given bidder
-	 * @param random    			Random instance
+	 * @param random                Random instance
 	 * @return refined bids
 	 */
 	public abstract BundleBoundValueBid refineBids(E type, ValueFunction v, BundleBoundValueBid activeBids,
@@ -63,8 +63,9 @@ public abstract class AutomatedRefiner<E extends RefinementType> {
 		return refiners.get(type.getClass());
 	}
 
-	public static BundleBoundValueBid refine(RefinementType type, ValueFunction valueFunction, BundleBoundValueBid activeBids,
-			BundleBoundValueBid refinedBids, Prices prices, Bundle provisionalAllocation, Random random) {
+	public static BundleBoundValueBid refine(RefinementType type, ValueFunction valueFunction,
+			BundleBoundValueBid activeBids, BundleBoundValueBid refinedBids, Prices prices,
+			Bundle provisionalAllocation, Random random) {
 		return getRefiner(type).refineBids(type, valueFunction, activeBids, refinedBids, prices, provisionalAllocation,
 				random);
 	}

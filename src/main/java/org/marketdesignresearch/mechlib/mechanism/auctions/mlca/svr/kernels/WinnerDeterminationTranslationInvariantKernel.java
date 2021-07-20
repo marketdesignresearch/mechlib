@@ -20,7 +20,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 /**
- * WDP based on SVR gaussian kernel 
+ * WDP based on SVR gaussian kernel
  * 
  * @author Gianluca Brero
  * @author Manuel Beyeler

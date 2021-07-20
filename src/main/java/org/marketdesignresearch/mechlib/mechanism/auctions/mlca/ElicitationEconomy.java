@@ -13,8 +13,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * An elicitation economy (i.e. main or marginal economy). 
- * Holds a list of all bidders' UUIDs belonging to this economy.
+ * An elicitation economy (i.e. main or marginal economy). Holds a list of all
+ * bidders' UUIDs belonging to this economy.
  * 
  * @author Manuel Beyeler
  */
@@ -35,7 +35,8 @@ public class ElicitationEconomy {
 	}
 
 	/**
-	 * Creates a marginal economy for the given domain where the given bidder is excluded. 
+	 * Creates a marginal economy for the given domain where the given bidder is
+	 * excluded.
 	 */
 	public ElicitationEconomy(Domain domain, Bidder bidder) {
 		Preconditions.checkArgument(domain.getBidders().contains(bidder));

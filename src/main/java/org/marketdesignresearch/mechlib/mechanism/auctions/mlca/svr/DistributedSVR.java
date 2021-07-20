@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
- * Default machine learning component for MLCA based on support vector regression (SVR)
+ * Default machine learning component for MLCA based on support vector
+ * regression (SVR)
+ * 
  * @author Manuel Beyeler
  *
  * @param <T> the type of bids supported by this SVR implementation

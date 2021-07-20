@@ -2,7 +2,6 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.pric
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.FileSystems;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +30,6 @@ import edu.harvard.econcs.jopt.solver.mip.MIP;
 import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.VarType;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
-import edu.harvard.econcs.jopt.solver.server.cplex.CPlexMIPSolver;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -116,8 +114,9 @@ public abstract class LinearPriceMIP implements MipInstrumentationable {
 			}
 			return prices;
 		} catch (RuntimeException e) {
-			//new CPlexMIPSolver().exportToDisk(this.mip, FileSystems.getDefault().getPath("mip",
-			//		this.getMIPName() + "-" + System.currentTimeMillis() + ".lp"));
+			// new CPlexMIPSolver().exportToDisk(this.mip,
+			// FileSystems.getDefault().getPath("mip",
+			// this.getMIPName() + "-" + System.currentTimeMillis() + ".lp"));
 			throw e;
 		}
 	}

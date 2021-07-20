@@ -81,7 +81,8 @@ public class MLCATest {
 	@Test
 	public void testMLCAWithLinearKernel() {
 		ExactRandomQueryPhase initialPhase = new ExactRandomQueryPhase(30);
-		ExactDistributedSVR svr = new ExactDistributedSVR(new SupportVectorSetup(100, 0.0001, BigDecimal.ONE,true, new KernelLinear(0, 1)));
+		ExactDistributedSVR svr = new ExactDistributedSVR(
+				new SupportVectorSetup(100, 0.0001, BigDecimal.ONE, true, new KernelLinear(0, 1)));
 		ExactMLQueryPhase mlPhase = new ExactMLQueryPhase(svr, 50, 2);
 		MLCAuction auction = new MLCAuction(domain, OutcomeRuleGenerator.VCG_XOR, initialPhase, mlPhase, 1l);
 		Outcome outcome = auction.getOutcome();

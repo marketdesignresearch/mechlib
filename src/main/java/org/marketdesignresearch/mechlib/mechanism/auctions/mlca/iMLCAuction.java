@@ -22,7 +22,8 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The machine learning-powered iterative combinatorial auction with interval bidding by Beyeler et. al. (2021).
+ * The machine learning-powered iterative combinatorial auction with interval
+ * bidding by Beyeler et. al. (2021).
  * 
  * @author Manuel Beyeler
  */
@@ -31,20 +32,21 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
-	
+
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
-			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
+			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit,
+			BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
 				new BoundDistributedSVR(svrSetup), seed, timeLimit, convergenceEpsilon);
 	}
-	
+
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
 			Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
 				new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound,
 						DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit),
-				new ConvergencePhase(marginalQueriesPerRound+1,convergenceEpsilon), seed);
+				new ConvergencePhase(marginalQueriesPerRound + 1, convergenceEpsilon), seed);
 	}
 
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
@@ -55,7 +57,7 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 		this.addAuctionPhase(refinement);
 		this.setMaxRounds(1000);
 	}
-	
+
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule,
 			RandomQueryPhase<BundleBoundValueBids> initialPhase, MLQueryPhase<BundleBoundValueBids> mlPhase,
 			ConvergencePhase refinement, Long seed) {
@@ -65,11 +67,10 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 		this.setMaxRounds(1000);
 	}
 
-	
 	public AuctionPhase<?> getPhaseNr(int i) {
 		return this.phases.get(i);
 	}
-	
+
 	/**
 	 * This is a shortcut to finish all rounds and calculate the final result
 	 */

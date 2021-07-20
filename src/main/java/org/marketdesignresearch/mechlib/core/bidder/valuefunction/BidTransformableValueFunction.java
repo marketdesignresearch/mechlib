@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.function.UnaryOperator;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
+import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.winnerdetermination.WinnerDetermination;
 
-public interface BidTransformableValueFunction extends ValueFunction{
-
+public interface BidTransformableValueFunction extends ValueFunction {
 
 	/**
 	 * Turns the value function into a {@link BundleValueBid}, given a

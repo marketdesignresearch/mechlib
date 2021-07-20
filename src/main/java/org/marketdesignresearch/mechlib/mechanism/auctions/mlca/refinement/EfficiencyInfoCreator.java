@@ -16,40 +16,45 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Creates {@link EfficiencyInfo} objects. Subclasses must implement the {@link #hasConverged(LinkedHashMap, BundleBoundValueBids)} method.
+ * Creates {@link EfficiencyInfo} objects. Subclasses must implement the
+ * {@link #hasConverged(LinkedHashMap, BundleBoundValueBids)} method.
  * 
  * @author Manuel Beyeler
  */
 @Slf4j
 public abstract class EfficiencyInfoCreator {
-	
+
 	private static final BigDecimal DEFAULT_MIN_ALPHA = BigDecimal.valueOf(0.5);
-	
+
 	@Setter
 	@Getter
 	private BigDecimal minAlpha;
-	
+
 	public EfficiencyInfoCreator() {
 		this(DEFAULT_MIN_ALPHA);
 	}
-	
+
 	public EfficiencyInfoCreator(BigDecimal minAlpha) {
 		this.minAlpha = minAlpha;
 	}
-	
+
 	/**
-	 * @param info informations of how efficient are allocation in each economy of interest 
+	 * @param info informations of how efficient are allocation in each economy of
+	 *             interest
 	 * @param bids the bids
-	 * @return true if the criterion to stop the refinement is met (e.g. the allocation is efficient and some other conditions are met).
+	 * @return true if the criterion to stop the refinement is met (e.g. the
+	 *         allocation is efficient and some other conditions are met).
 	 */
-	public abstract boolean hasConverged(LinkedHashMap<ElicitationEconomy,EfficiencyInfo.ElicitationEconomyEfficiency> info, BundleBoundValueBids bids);
-	
+	public abstract boolean hasConverged(
+			LinkedHashMap<ElicitationEconomy, EfficiencyInfo.ElicitationEconomyEfficiency> info,
+			BundleBoundValueBids bids);
+
 	public EfficiencyInfo getEfficiencyInfo(BundleBoundValueBids bids, List<ElicitationEconomy> elicitationEconomies) {
 		LinkedHashMap<ElicitationEconomy, EfficiencyInfo.ElicitationEconomyEfficiency> infoMap = new LinkedHashMap<>();
-		for(ElicitationEconomy eco : elicitationEconomies) {
+		for (ElicitationEconomy eco : elicitationEconomies) {
 			infoMap.put(eco, this.getElicitationEconomyEfficiency(bids.only(new LinkedHashSet<>(eco.getBidders()))));
 		}
-		
+
 		return new EfficiencyInfo(this.hasConverged(infoMap, bids), infoMap);
 	}
 
@@ -61,15 +66,15 @@ public abstract class EfficiencyInfoCreator {
 				+ "\tTrue value: " + lowerBound.getTrueSocialWelfare().setScale(2, RoundingMode.HALF_UP));
 		log.info("Perturbed Reported Value: " + perturbed.getTotalAllocationValue().setScale(2, RoundingMode.HALF_UP)
 				+ "\tTrue value: " + perturbed.getTrueSocialWelfare().setScale(2, RoundingMode.HALF_UP));
-		
+
 		EfficiencyInfo.ElicitationEconomyEfficiency info = new EfficiencyInfo.ElicitationEconomyEfficiency();
-		
+
 		info.alpha = lowerBound.getTotalAllocationValue()
 				.divide(perturbed.getTotalAllocationValue(), 10, RoundingMode.HALF_UP).max(this.minAlpha)
 				.min(BigDecimal.ONE);
 
-		info.efficiency = lowerBound.getTotalAllocationValue().divide(perturbed.getTotalAllocationValue(),
-				10, RoundingMode.HALF_UP);
+		info.efficiency = lowerBound.getTotalAllocationValue().divide(perturbed.getTotalAllocationValue(), 10,
+				RoundingMode.HALF_UP);
 
 		return info;
 	}

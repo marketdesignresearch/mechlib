@@ -18,19 +18,19 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 public class MRPAR_DIAR_RefinementRoundInfoCreator extends BidderRefinementRoundInfoCreator {
 
 	@Override
-	protected LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation,
-			Prices pi) {
+	protected LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids,
+			Allocation alphaAllocation, Prices pi) {
 		// Linked Hash set - the order of the refinement is deterministic
 		LinkedHashSet<RefinementType> refinements = new LinkedHashSet<>();
 		refinements.add(new MRPARRefinement());
 		refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
-		
+
 		LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> result = new LinkedHashMap<>();
-		
-		for(Bidder b : bids.getBidders()) {
+
+		for (Bidder b : bids.getBidders()) {
 			result.put(b, refinements);
 		}
-		
+
 		return result;
 	}
 

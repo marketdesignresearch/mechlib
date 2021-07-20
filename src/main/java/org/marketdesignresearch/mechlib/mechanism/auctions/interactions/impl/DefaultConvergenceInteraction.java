@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
-import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBid;
 import org.marketdesignresearch.mechlib.core.bidder.strategy.ConvergenceStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ConvergenceInteraction;
@@ -61,7 +60,7 @@ public class DefaultConvergenceInteraction extends DefaultInteraction<BundleBoun
 		for (BundleBoundValuePair pair : bid.getBundleBids()) {
 			BigDecimal interval = pair.getUpperBound().subtract(pair.getLowerBound());
 			if (pair.getUpperBound().compareTo(BigDecimal.ZERO) > 0) {
-				BigDecimal uncertainty = interval.divide(pair.getUpperBound(), epsilon.scale()+1, RoundingMode.DOWN);
+				BigDecimal uncertainty = interval.divide(pair.getUpperBound(), epsilon.scale() + 1, RoundingMode.DOWN);
 				// add 2% slack
 				Preconditions.checkArgument(uncertainty.compareTo(epsilon.multiply(BigDecimal.valueOf(1.02))) <= 0);
 			}

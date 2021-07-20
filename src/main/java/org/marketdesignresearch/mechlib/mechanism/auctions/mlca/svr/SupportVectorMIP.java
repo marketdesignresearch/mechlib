@@ -68,7 +68,7 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 	private void solveMIP() {
 
 		IMIPResult result = null;
-		
+
 		try {
 			this.getMipInstrumentation().preMIP(MipPurpose.SUPPORT_VECTOR.name(), this.mip);
 			result = CPLEXUtils.SOLVER.solve(this.mip);
@@ -107,7 +107,8 @@ public abstract class SupportVectorMIP<B extends BundleValueBid<?>> implements M
 		}
 		Map<Bundle, Double> fb = new LinkedHashMap<>();
 		for (Bundle b : fbMap.keySet()) {
-			if (!this.removeSmallSupportVectors || !DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, this.getThresholdRemoveSupportVectors()))
+			if (!this.removeSmallSupportVectors
+					|| !DoubleMath.fuzzyEquals(fbMap.get(b), 0.0, this.getThresholdRemoveSupportVectors()))
 				fb.put(b, fbMap.get(b));
 		}
 		this.resultVectors = new BundleExactValueBid();

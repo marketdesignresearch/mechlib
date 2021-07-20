@@ -28,15 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class BidderRefinementRoundInfoCreator {
-	
+
 	@Setter
 	@Getter
 	private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
-	
+
 	@Setter
 	@Getter
 	private boolean advancedPrices = true;
-	
+
 	public Map<UUID, BidderRefinementRoundInfo> createBidderRefinementRoundInfos(Auction<BundleBoundValueBids> auction,
 			Random random, EfficiencyInfo info) {
 		Map<UUID, BidderRefinementRoundInfo> previousRoundRefinementInfo = null;
@@ -61,10 +61,11 @@ public abstract class BidderRefinementRoundInfoCreator {
 			// Make sure that the refinement conducted in this round is requested by this
 			// phase
 			bidderRefinementEconomies = bidderRefinementEconomies.stream()
-					.filter(b -> info.getElicitationEconomyEfficiency().keySet().contains(b)).collect(Collectors.toList());
+					.filter(b -> info.getElicitationEconomyEfficiency().keySet().contains(b))
+					.collect(Collectors.toList());
 			if (bidderRefinementEconomies.isEmpty()) {
-				bidderRefinementEconomies = info.getElicitationEconomyEfficiency().keySet().stream().filter(e -> e.getBidders().contains(bidder.getId()))
-						.collect(Collectors.toList());
+				bidderRefinementEconomies = info.getElicitationEconomyEfficiency().keySet().stream()
+						.filter(e -> e.getBidders().contains(bidder.getId())).collect(Collectors.toList());
 			}
 			ElicitationEconomy refinementEconomy = bidderRefinementEconomies
 					.remove(random.nextInt(bidderRefinementEconomies.size()));
@@ -77,22 +78,23 @@ public abstract class BidderRefinementRoundInfoCreator {
 				BundleExactValueBids perturbedValuation = auction.getLatestAggregatedBids()
 						.getPerturbedBids(alphaAllocation);
 
-				
 				Prices prices;
-				if(this.advancedPrices) {
+				if (this.advancedPrices) {
 					prices = this.getPriceGenerator().getPrices(auction.getDomain(),
 							new ElicitationEconomy(auction.getDomain()), alphaAllocation,
 							List.of(alphaValuation, perturbedValuation), true);
 				} else {
 					prices = this.getPriceGenerator().getPrices(auction.getDomain(),
-							new ElicitationEconomy(auction.getDomain()), alphaAllocation,
-							List.of(alphaValuation), false);
+							new ElicitationEconomy(auction.getDomain()), alphaAllocation, List.of(alphaValuation),
+							false);
 				}
 
 				refinementInfos.put(refinementEconomy,
 						new BidderRefinementRoundInfo(
-								this.createRefinementType(auction.getLatestAggregatedBids()
-										.only(new LinkedHashSet<>(refinementEconomy.getBidders())), alphaAllocation, prices),
+								this.createRefinementType(
+										auction.getLatestAggregatedBids()
+												.only(new LinkedHashSet<>(refinementEconomy.getBidders())),
+										alphaAllocation, prices),
 								prices, alphaAllocation, refinementEconomy, bidderRefinementEconomies));
 			}
 			bidderRefinementInfos.put(bidder.getId(), refinementInfos.get(refinementEconomy));
@@ -106,5 +108,6 @@ public abstract class BidderRefinementRoundInfoCreator {
 				.getAlphaBids(info.getElicitationEconomyEfficiency().get(refinementEconomy).alpha);
 	}
 
-	protected abstract LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation, Prices pi);
+	protected abstract LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> createRefinementType(
+			BundleBoundValueBids bids, Allocation alphaAllocation, Prices pi);
 }

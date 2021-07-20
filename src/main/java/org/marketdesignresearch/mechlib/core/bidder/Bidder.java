@@ -27,10 +27,11 @@ import com.google.common.base.Preconditions;
  * maximizing bundle(s) of this bidder?</li>
  * </ol>
  * <br>
- * Lastly, a bidder has a default {@link org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ValueTransformation} based on which she would turn
- * her true valuations into bids.
+ * Lastly, a bidder has a default
+ * {@link org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ValueTransformation}
+ * based on which she would turn her true valuations into bids.
  */
-public interface Bidder extends MipInstrumentationable, ValueFunction{
+public interface Bidder extends MipInstrumentationable, ValueFunction {
 
 	/**
 	 * Gets the bidder's id.

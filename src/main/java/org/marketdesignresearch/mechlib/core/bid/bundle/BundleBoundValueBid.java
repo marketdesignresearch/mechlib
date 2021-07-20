@@ -45,13 +45,13 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		return new BundleBoundValueBid(newBids);
 	}
-	
+
 	public BundleBoundValueBid ln() {
 		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.ln())
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		return new BundleBoundValueBid(newBids);
 	}
-	
+
 	public BundleBoundValueBid exp() {
 		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.exp())
 				.collect(Collectors.toCollection(LinkedHashSet::new));

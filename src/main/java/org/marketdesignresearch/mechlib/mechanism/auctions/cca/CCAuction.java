@@ -16,11 +16,11 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * An Implementation of the well-known Combinatorial Clock Auction.
- * By default it has only a clock phase and can be extended with different
+ * An Implementation of the well-known Combinatorial Clock Auction. By default
+ * it has only a clock phase and can be extended with different
  * SupplementaryRounds ({@link SupplementaryPhase}).
  * 
- * Initial prices for the clock phase are obtained from the domain 
+ * Initial prices for the clock phase are obtained from the domain
  * ({@link Domain#proposeStartingPrices()}) or set to 0 for all goods.
  * ({@link #CCAuction(Domain, OutcomeRuleGenerator, boolean)})
  * 
@@ -35,9 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CCAuction extends ExactValueAuction {
 
 	/**
-	 * Creates a new CCA auction for the given domain.
-	 * Setting initial prices to 0 and using the default 
-	 * PriceUpater of the {@link CCAClockPhase}
+	 * Creates a new CCA auction for the given domain. Setting initial prices to 0
+	 * and using the default PriceUpater of the {@link CCAClockPhase}
 	 * 
 	 * Default Outcomerule is {@link OutcomeRuleGenerator#CCG}.
 	 */
@@ -46,17 +45,15 @@ public class CCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * Creates a new CCA auction for the given domain.
-	 * Initial prices are set to 0 and the given {@link PriceUpdater}
-	 * is used.
+	 * Creates a new CCA auction for the given domain. Initial prices are set to 0
+	 * and the given {@link PriceUpdater} is used.
 	 */
 	public CCAuction(Domain domain, PriceUpdater priceUpdater) {
 		this(domain, OutcomeRuleGenerator.CCG, priceUpdater);
 	}
 
 	/**
-	 * Creates a new CCA auction for the given domain.
-	 * Initial prices are set to 0.
+	 * Creates a new CCA auction for the given domain. Initial prices are set to 0.
 	 * Default Price Updater of {@link CCAClockPhase} is used.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator outcomeRuleGenerator) {
@@ -71,8 +68,8 @@ public class CCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * Creates a new CCA auction with the default {@link PriceUpdater} of 
-	 * the {@link CCAClockPhase}.
+	 * Creates a new CCA auction with the default {@link PriceUpdater} of the
+	 * {@link CCAClockPhase}.
 	 * 
 	 * @param currentPrices initial prices
 	 */
@@ -82,6 +79,7 @@ public class CCAuction extends ExactValueAuction {
 
 	/**
 	 * Creates a new CCAuction for the given domain.
+	 * 
 	 * @param currentPrices initial prices
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, Prices currentPrices,
@@ -91,7 +89,10 @@ public class CCAuction extends ExactValueAuction {
 
 	/**
 	 * Creates a CCAuction for the given domain.
-	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
+	 * 
+	 * @param proposeStartingPrices if set to true the proposed prices of
+	 *                              {@link Domain#proposeStartingPrices()} are used.
+	 *                              Otherwiese prices are set to 0.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
 		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices), null);
@@ -99,7 +100,10 @@ public class CCAuction extends ExactValueAuction {
 
 	/**
 	 * Creates a CCAuction for the given domain.
-	 * @param proposeStartingPrices if set to true the proposed prices of {@link Domain#proposeStartingPrices()} are used. Otherwiese prices are set to 0.
+	 * 
+	 * @param proposeStartingPrices if set to true the proposed prices of
+	 *                              {@link Domain#proposeStartingPrices()} are used.
+	 *                              Otherwiese prices are set to 0.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices,
 			PriceUpdater priceUpdater) {
@@ -107,8 +111,9 @@ public class CCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * Adds a new supplementary phase to the end of the auction.
-	 * Note that you can add multiple supplementary rounds to an auction
+	 * Adds a new supplementary phase to the end of the auction. Note that you can
+	 * add multiple supplementary rounds to an auction
+	 * 
 	 * @param supplementaryRound the supplementary phase to add
 	 */
 	public void addSupplementaryRound(SupplementaryPhase supplementaryRound) {
@@ -158,8 +163,9 @@ public class CCAuction extends ExactValueAuction {
 	}
 
 	/**
-	 * Resets the auction to the end of the clock phase if the clock phase
-	 * has already finished and replaces all supplementary phases with the given phase
+	 * Resets the auction to the end of the clock phase if the clock phase has
+	 * already finished and replaces all supplementary phases with the given phase
+	 * 
 	 * @param newSuppPhase the new supplementary phase
 	 */
 	public void replaceSupplementaryPhases(SupplementaryPhase newSuppPhase) {

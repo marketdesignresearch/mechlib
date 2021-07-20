@@ -30,8 +30,8 @@ import lombok.ToString;
 public class AllocationLimitConstraint {
 
 	/**
-	 * A linear term of an AllocationLimitConstraint. You can use linear terms formulated on Goods or on 
-	 * additional JOpt Variables.
+	 * A linear term of an AllocationLimitConstraint. You can use linear terms
+	 * formulated on Goods or on additional JOpt Variables.
 	 */
 	@ToString
 	@EqualsAndHashCode
@@ -42,19 +42,22 @@ public class AllocationLimitConstraint {
 		 */
 		@Getter
 		private final double coefficient;
-		
+
 		/**
-		 * Can be used to generate JOpt linear terms for a WDP problem if every good allocated to a bidder is represented in the
-		 * WDP by one or more JOpt Variables. Note that the returned term may contain additional JOpt Variables. All additional
-		 * JOpt variables can be obtained using {@link AllocationLimit#getAdditionalVariables()}.
+		 * Can be used to generate JOpt linear terms for a WDP problem if every good
+		 * allocated to a bidder is represented in the WDP by one or more JOpt
+		 * Variables. Note that the returned term may contain additional JOpt Variables.
+		 * All additional JOpt variables can be obtained using
+		 * {@link AllocationLimit#getAdditionalVariables()}.
 		 * 
-		 * @param goodVariables The List of JOpt Variables for every Good that represent 
-		 * 			if this good is allocated to the respective bidder 
+		 * @param goodVariables The List of JOpt Variables for every Good that represent
+		 *                      if this good is allocated to the respective bidder
 		 * @return a JOpt Linear Term
 		 */
-		public abstract List<edu.harvard.econcs.jopt.solver.mip.LinearTerm> getLinearTerms(Map<Good, List<Variable>> goodVariables);
+		public abstract List<edu.harvard.econcs.jopt.solver.mip.LinearTerm> getLinearTerms(
+				Map<Good, List<Variable>> goodVariables);
 	}
-	
+
 	/**
 	 * A linear term formulated with respect of a single good.
 	 */
@@ -63,11 +66,12 @@ public class AllocationLimitConstraint {
 	public static class LinearGoodTerm extends AllocationLimitLinearTerm {
 		@Getter
 		private final Good good;
-		
+
 		/**
 		 * Creates a new LinearGoodTerm
+		 * 
 		 * @param coefficient the coefficient of this linear term
-		 * @param good the Good
+		 * @param good        the Good
 		 */
 		public LinearGoodTerm(double coefficient, Good good) {
 			super(coefficient);
@@ -78,29 +82,30 @@ public class AllocationLimitConstraint {
 		 * @see AllocationLimitLinearTerm
 		 */
 		@Override
-		public List<LinearTerm> getLinearTerms(
-				Map<Good, List<Variable>> goodVariables) {
+		public List<LinearTerm> getLinearTerms(Map<Good, List<Variable>> goodVariables) {
 			List<LinearTerm> result = new ArrayList<>();
 			// Do not add constraint for goods where no variable is available
-			// (i.e. the good seems to be not allocatable in this MIP and therefore 
+			// (i.e. the good seems to be not allocatable in this MIP and therefore
 			// this good = 0 is always true)
-			if(goodVariables.containsKey(good)) {
-				for(Variable var : goodVariables.get(good)) {
+			if (goodVariables.containsKey(good)) {
+				for (Variable var : goodVariables.get(good)) {
 					result.add(new edu.harvard.econcs.jopt.solver.mip.LinearTerm(this.getCoefficient(), var));
 				}
 			}
 			return result;
 		}
-		
+
 	}
-	
+
 	/**
-	 * A linear term for an additional JOpt variable which allows to formulate more complex constraints.
-	 * You do not need to register additional variables in any place. They will be registered automatically
-	 * and made available through {@link AllocationLimit#getAdditionalVariables()}.
+	 * A linear term for an additional JOpt variable which allows to formulate more
+	 * complex constraints. You do not need to register additional variables in any
+	 * place. They will be registered automatically and made available through
+	 * {@link AllocationLimit#getAdditionalVariables()}.
 	 * 
-	 * However, note that you need to make sure that your variable (names) are unique. Of course you can use
-	 * the same varialbe in multiple constraints and terms to formulate your problem.
+	 * However, note that you need to make sure that your variable (names) are
+	 * unique. Of course you can use the same varialbe in multiple constraints and
+	 * terms to formulate your problem.
 	 */
 	@ToString(callSuper = true)
 	@EqualsAndHashCode(callSuper = true)
@@ -110,9 +115,10 @@ public class AllocationLimitConstraint {
 		 */
 		@Getter
 		private final Variable variable;
-		
+
 		/**
 		 * Creates a new LinearVarTerm
+		 * 
 		 * @param coefficient the coefficient
 		 * @param variable
 		 */
@@ -125,16 +131,15 @@ public class AllocationLimitConstraint {
 		 * @see AllocationLimitLinearTerm#getLinearTerms(Map)
 		 */
 		@Override
-		public List<LinearTerm> getLinearTerms(
-				Map<Good, List<Variable>> goodVariables) {
+		public List<LinearTerm> getLinearTerms(Map<Good, List<Variable>> goodVariables) {
 			return List.of(this.getLinearTerm());
 		}
-		
+
 		/**
 		 * @return the linear JOpt term
 		 */
 		public LinearTerm getLinearTerm() {
-			return new LinearTerm(this.getCoefficient(),this.getVariable());
+			return new LinearTerm(this.getCoefficient(), this.getVariable());
 		}
 	}
 
@@ -153,7 +158,7 @@ public class AllocationLimitConstraint {
 	 */
 	@Getter
 	private List<AllocationLimitLinearTerm> linearTerms = new ArrayList<>();
-	
+
 	/**
 	 * Additional JOpt variables used in this constraint
 	 */
@@ -162,18 +167,20 @@ public class AllocationLimitConstraint {
 
 	/**
 	 * add a new linear term with respect to an allocated good
+	 * 
 	 * @param coefficient the coefficient
-	 * @param good the good
+	 * @param good        the good
 	 * @see LinearGoodTerm
 	 */
 	public void addTerm(double coefficient, Good good) {
 		this.linearTerms.add(new LinearGoodTerm(coefficient, good));
 	}
-	
+
 	/**
 	 * add a new linear term with an addiationl JOpt variable
+	 * 
 	 * @param coefficient the coefficient
-	 * @param variable the variable
+	 * @param variable    the variable
 	 * @see LinearVarTerm
 	 */
 	public void addTerm(double coefficient, Variable variable) {
@@ -182,11 +189,13 @@ public class AllocationLimitConstraint {
 	}
 
 	/**
-	 * Can be used by a WDP to create JOpt constraints if for every allocated good for this bidder multiply JOpt
-	 * variables exist. Note that this constraint can contain additional JOpt variables which must be added to 
-	 * the JOpt problem (see {@link AllocationLimit#getAdditionalVariables()} to get all additional variable of
-	 * the problem or {@link AllocationLimitConstraint#getAdditionalVariables()} to get all additional variables
-	 * for this constraint. 
+	 * Can be used by a WDP to create JOpt constraints if for every allocated good
+	 * for this bidder multiply JOpt variables exist. Note that this constraint can
+	 * contain additional JOpt variables which must be added to the JOpt problem
+	 * (see {@link AllocationLimit#getAdditionalVariables()} to get all additional
+	 * variable of the problem or
+	 * {@link AllocationLimitConstraint#getAdditionalVariables()} to get all
+	 * additional variables for this constraint.
 	 * 
 	 * @param goodVariables the good variables for the respective bidder in the WDP
 	 * @return a JOpt constraint
@@ -202,12 +211,15 @@ public class AllocationLimitConstraint {
 	}
 
 	/**
-	 * Creates a JOpt constraint if only one variable per bidder and good exists in the WDP.
+	 * Creates a JOpt constraint if only one variable per bidder and good exists in
+	 * the WDP.
+	 * 
 	 * @param map the good variables for the respective bidder in the WDP
 	 * @return aJOpt constraint
 	 * @see AllocationLimitConstraint#createCPLEXConstraintWithMultiVarsPerGood(Map)
 	 */
 	public Constraint createCPLEXConstraint(Map<Good, Variable> map) {
-		return this.createCPLEXConstraintWithMultiVarsPerGood(map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> List.of(e.getValue()), (e1, e2) -> e1, LinkedHashMap::new)));
+		return this.createCPLEXConstraintWithMultiVarsPerGood(map.entrySet().stream().collect(
+				Collectors.toMap(Map.Entry::getKey, e -> List.of(e.getValue()), (e1, e2) -> e1, LinkedHashMap::new)));
 	}
 }

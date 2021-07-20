@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
-
 /**
  * Bids for bundles with exact values (of one bidder).
  * 

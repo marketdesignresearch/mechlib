@@ -31,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * The machine learning phase of MLCA. See Brero et. al. (2020) for details.
  * 
- * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
- * are issued.
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries
+ * for allocatable bundles are issued.
  * 
  * @author Manuel Beyeler
  *
@@ -105,20 +105,21 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId()).remove(
 						BidderRandom.INSTANCE.getRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
 
-				Bundle query = infMarginalEconomies.computeIfAbsent(economy, e -> mlai.getInferredEfficientAllocation(auction.getDomain(), e)).allocationOf(bidder).getBundle();
-				if(queries.get(bidder).contains(query) || auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
-			
-					Allocation inferredEfficientAllocation = mlai
-						.getInferredEfficientAllocation(auction.getDomain(), economy,
-								Map.of(bidder, Stream.concat(
-												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
-														.stream().map(bb -> bb.getBundle()),
-												queries.get(bidder).stream())
-										.collect(Collectors.toCollection(LinkedHashSet::new))));
+				Bundle query = infMarginalEconomies
+						.computeIfAbsent(economy, e -> mlai.getInferredEfficientAllocation(auction.getDomain(), e))
+						.allocationOf(bidder).getBundle();
+				if (queries.get(bidder).contains(query)
+						|| auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
+
+					Allocation inferredEfficientAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(),
+							economy,
+							Map.of(bidder,
+									Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
+											.stream().map(bb -> bb.getBundle()), queries.get(bidder).stream())
+											.collect(Collectors.toCollection(LinkedHashSet::new))));
 					query = inferredEfficientAllocation.allocationOf(bidder).getBundle();
 				}
-				log.info(economy.toString() + " New bundle: "
-						+ query);
+				log.info(economy.toString() + " New bundle: " + query);
 				queries.get(bidder).add(query);
 			}
 		}
@@ -126,19 +127,19 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 		// Main Elicitation
 		Allocation infAllocationMain = mlai.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy);
 		for (Bidder bidder : auction.getDomain().getBidders()) {
-			
+
 			Bundle query = infAllocationMain.allocationOf(bidder).getBundle();
-			
-			if(queries.get(bidder).contains(query) || auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
+
+			if (queries.get(bidder).contains(query)
+					|| auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
 				Allocation infAllocation = mlai
-						.getInferredEfficientAllocation(
-								auction.getDomain(), this.mainEconomy, Map
-								.of(bidder, Stream
+						.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy,
+								Map.of(bidder, Stream
 										.concat(Stream.concat(
 												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
-												.stream().map(bb -> bb.getBundle()),
-													queries.get(bidder).stream()), Stream.of(Bundle.EMPTY))
-											.collect(Collectors.toCollection(LinkedHashSet::new))));
+														.stream().map(bb -> bb.getBundle()),
+												queries.get(bidder).stream()), Stream.of(Bundle.EMPTY))
+										.collect(Collectors.toCollection(LinkedHashSet::new))));
 				query = infAllocation.allocationOf(bidder).getBundle();
 			}
 			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(), query);

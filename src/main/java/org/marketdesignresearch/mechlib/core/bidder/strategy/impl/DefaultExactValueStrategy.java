@@ -15,17 +15,17 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactVal
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class DefaultExactValueStrategy implements ExactValueQueryStrategy{
+public abstract class DefaultExactValueStrategy implements ExactValueQueryStrategy {
 
 	@Setter
 	@Getter
 	private transient Bidder bidder;
-	
+
 	public BundleExactValueBid applyExactValueStrategy(ExactValueQuery interaction, Auction<?> auction) {
-		return new BundleExactValueBid(interaction.getQueriedBundles().stream()
-				.map(b -> new BundleExactValuePair(this.getValueFunction().getValue(b), b, UUID.randomUUID().toString()))
+		return new BundleExactValueBid(interaction.getQueriedBundles().stream().map(
+				b -> new BundleExactValuePair(this.getValueFunction().getValue(b), b, UUID.randomUUID().toString()))
 				.collect(Collectors.toCollection(LinkedHashSet::new)));
 	}
-	
+
 	public abstract ValueFunction getValueFunction();
 }
