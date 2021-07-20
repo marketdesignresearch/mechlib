@@ -15,6 +15,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Creates {@link EfficiencyInfo} objects. Subclasses must implement the {@link #hasConverged(LinkedHashMap, BundleBoundValueBids)} method.
+ * 
+ * @author Manuel Beyeler
+ */
 @Slf4j
 public abstract class EfficiencyInfoCreator {
 	
@@ -32,6 +37,11 @@ public abstract class EfficiencyInfoCreator {
 		this.minAlpha = minAlpha;
 	}
 	
+	/**
+	 * @param info informations of how efficient are allocation in each economy of interest 
+	 * @param bids the bids
+	 * @return true if the criterion to stop the refinement is met (e.g. the allocation is efficient and some other conditions are met).
+	 */
 	public abstract boolean hasConverged(LinkedHashMap<ElicitationEconomy,EfficiencyInfo.ElicitationEconomyEfficiency> info, BundleBoundValueBids bids);
 	
 	public EfficiencyInfo getEfficiencyInfo(BundleBoundValueBids bids, List<ElicitationEconomy> elicitationEconomies) {

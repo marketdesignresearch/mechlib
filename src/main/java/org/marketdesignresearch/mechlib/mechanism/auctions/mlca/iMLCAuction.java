@@ -21,6 +21,11 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The machine learning-powered iterative combinatorial auction with interval bidding by Beyeler et. al. (2021).
+ * 
+ * @author Manuel Beyeler
+ */
 @Slf4j
 public class iMLCAuction extends Auction<BundleBoundValueBids> {
 
@@ -28,41 +33,17 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
 	
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
-			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit) {
+			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
-				new BoundDistributedSVR(svrSetup), DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS,
-				seed, timeLimit);
-	}
-
-	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
-			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies,
-			boolean intermediateRefinement, Long seed, double timeLimit) {
-		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
-				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit);
-	}
-	
-	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
-			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, boolean refineMarginalEconomies,
-			boolean intermediateRefinement, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
-		this(domain, outcomeRule, numberOfInitialRandomQueries, maxQueries, marginalQueriesPerRound,
-				new BoundDistributedSVR(svrSetup), refineMarginalEconomies, intermediateRefinement, seed, timeLimit, convergenceEpsilon);
-	}
-
-	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
-			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
-			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit) {
-		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
-				new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound,
-						refineMarginalEconomies, intermediateRefinement, timeLimit),
-				new RefinementPhase(refineMarginalEconomies, timeLimit), seed);
+				new BoundDistributedSVR(svrSetup), seed, timeLimit, convergenceEpsilon);
 	}
 	
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, MachineLearningComponent<BundleBoundValueBids> mlComponent,
-			boolean refineMarginalEconomies, boolean intermediateRefinement, Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
+			Long seed, double timeLimit, BigDecimal convergenceEpsilon) {
 		this(domain, outcomeRule, new BoundRandomQueryPhase(numberOfInitialRandomQueries),
 				new BoundMLQueryWithMRPARPhase(mlComponent, maxQueries, marginalQueriesPerRound,
-						refineMarginalEconomies, intermediateRefinement, timeLimit),
+						DEFAULT_REFINE_MARGINAL_ECONOMIES, DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit),
 				new ConvergencePhase(marginalQueriesPerRound+1,convergenceEpsilon), seed);
 	}
 

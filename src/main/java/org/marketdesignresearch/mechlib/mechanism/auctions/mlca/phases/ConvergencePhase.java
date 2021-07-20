@@ -33,6 +33,13 @@ import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Final Phase of iMLCA as proposed by Beyeler (2021). This phase only tighten bounds to guarantee that the final
+ * allocation is the efficient allocation with respect to bids and that the gap between the lower and upper 
+ * bound social welfare for this allocation is within a relative difference.
+ * 
+ * @author Manuel Beyeler
+ */
 @Slf4j
 public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 
@@ -46,6 +53,10 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 	@Getter
 	private final int numberOfBundles;
 	
+	/**
+	 * @param numberOfBundles that should be tighted in each round per bidder
+	 * @param epsilon the maximal relative social welfare gap for the final allocation
+	 */
 	public ConvergencePhase(int numberOfBundles, BigDecimal epsilon) {
 		this.firstEpsilon = epsilon;
 		this.numberOfBundles = numberOfBundles;

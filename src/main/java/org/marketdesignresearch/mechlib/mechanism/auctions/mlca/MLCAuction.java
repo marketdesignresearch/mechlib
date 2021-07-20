@@ -15,7 +15,7 @@ import org.marketdesignresearch.mechlib.outcomerules.OutcomeRuleGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The machine learning-powered iterative combinatorial auction by Bero et. al. (2020).
+ * The machine learning-powered iterative combinatorial auction by Bero et. al. (2021).
  * 
  * SVR hyper parameters for GSVM, LSVM and MRVM are provided with the domains as part of SATS.
  * 
@@ -31,9 +31,9 @@ public class MLCAuction extends ExactValueAuction {
 	 * 
 	 * @param domain the domain
 	 * @param outcomeRule OutcomeRule that will be used to compute the outcome
-	 * @param numberOfInitialRandomQueries parameter Q_init from Brero et. al. (2020).
-	 * @param maxQueries Q_max from Brero et. al. (2020).
-	 * @param marginalQueriesPerRound (Q_round-1) from Brero et. al. (2020).
+	 * @param numberOfInitialRandomQueries parameter Q_init from Brero et. al. (2021).
+	 * @param maxQueries Q_max from Brero et. al. (2021).
+	 * @param marginalQueriesPerRound (Q_round-1) from Brero et. al. (2021).
 	 * @param svrSetup the setup for the support vector regression
 	 * @param seed a seed that is used to make random choices in the auction (i.e. sample random initial bundles)
 	 */
@@ -49,8 +49,8 @@ public class MLCAuction extends ExactValueAuction {
 	 * @param domain the domain
 	 * @param outcomeRule OutcomeRule that will be used to compute the outcome
 	 * @param numberOfInitialRandomQueries parameter Q_init from Brero et. al. (2020).
-	 * @param maxQueries Q_max from Brero et. al. (2020).
-	 * @param marginalQueriesPerRound (Q_round-1) from Brero et. al. (2020).
+	 * @param maxQueries Q_max from Brero et. al. (2021).
+	 * @param marginalQueriesPerRound (Q_round-1) from Brero et. al. (2021).
 	 * @param mlComponent a generic machine learning component that will be used by the query module to inferr the optimal allocation
 	 * @param seed a seed that is used to make random choices in the auction (i.e. sample random initial bundles)
 	 */

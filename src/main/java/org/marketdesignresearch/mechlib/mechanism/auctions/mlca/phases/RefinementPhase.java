@@ -13,7 +13,6 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.Effic
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfoCreator;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.MRPAR_DIAR_RefinementRoundInfoCreator;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,30 +21,24 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 
-	//private static final int DEFAULT_MAX_NUMBER_OF_ROUNDS = 30;
-
 	private transient int refinementInfoRound = -1;
 	private transient EfficiencyInfo info;
 
-	//private final int maxNumberOfRounds;
 	private final boolean refineMarginalEconomies;
-	
+
 	@Getter
 	@Setter
 	private BidderRefinementRoundInfoCreator refinementInfoCreator = new MRPAR_DIAR_RefinementRoundInfoCreator();
-	
+
 	@Getter
 	@Setter
 	private EfficiencyInfoCreator efficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator();
 
 	private List<ElicitationEconomy> allRefinementEconomies;
-	//@Getter
-	//private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 
 	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
 		this(refineMarginalEconomies);
 		this.refinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
-		//this.priceGenerator.setTimeLimit(timeLimit);
 	}
 
 	@Override
@@ -63,7 +56,8 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 
 	private void updateInfo(Auction<BundleBoundValueBids> auction) {
 		if (this.refinementInfoRound != auction.getMaxRounds()) {
-			this.info = this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.getAllRefinementEconomies(auction));
+			this.info = this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(),
+					this.getAllRefinementEconomies(auction));
 		}
 	}
 
@@ -80,7 +74,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 					.forEach(bidder -> elicitationEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		return elicitationEconomies;
 	}
-	
+
 	private List<ElicitationEconomy> getAllRefinementEconomies(Auction<BundleBoundValueBids> auction) {
 		if (this.allRefinementEconomies == null) {
 			this.allRefinementEconomies = this.createAllRefinementEconomies(auction);
