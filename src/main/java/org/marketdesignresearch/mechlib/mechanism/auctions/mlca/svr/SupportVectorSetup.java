@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The support vector setup (i.e. hyperparametes for the SVRs). Note that this version is not
- * normalized. Default setups for some Kernels for GSVM, LSVM and MRVM domain are 
- * part of SATS where also these domains are defined.
+ * The support vector setup (i.e. hyperparametes for the SVRs). Note that this
+ * version is not normalized. Default setups for some Kernels for GSVM, LSVM and
+ * MRVM domain are part of SATS where also these domains are defined.
  * 
  * @author Manuel Beyeler
  */
@@ -29,32 +29,35 @@ public class SupportVectorSetup {
 	 */
 	@Getter
 	@Setter
-	private  double interpolationWeight;
+	private double interpolationWeight;
 	/**
-	 * Parameter epsilon from Brero et. al. (2020), i.e. the epsilon from the epsilon-insensivity loss function
+	 * Parameter epsilon from Brero et. al. (2020), i.e. the epsilon from the
+	 * epsilon-insensivity loss function
 	 */
 	@Getter
 	@Setter
 	private double insensitivityThreshold;
 	/**
-	 * In some cases the values of a domain might be too high (or low) to be handled properly by this SVR 
-	 * formulation. Therefore you might scale them (value * valueScalingFactor) by a fixed amount such that 
-	 * you still have full control over all hyperparamters
+	 * In some cases the values of a domain might be too high (or low) to be handled
+	 * properly by this SVR formulation. Therefore you might scale them (value *
+	 * valueScalingFactor) by a fixed amount such that you still have full control
+	 * over all hyperparamters
 	 */
 	@Getter
 	@Setter
 	private BigDecimal valueScalingFactor;
 	/**
-	 * For performance reasons support vectors below 1e-5 may be removed/cancelled after the SVR training.
-	 * Set this parameter to false if you want to avoid this.
+	 * For performance reasons support vectors below 1e-5 may be removed/cancelled
+	 * after the SVR training. Set this parameter to false if you want to avoid
+	 * this.
 	 */
 	@Getter
 	@Setter
 	private boolean removeSmallSupportVectors;
-	
+
 	/**
-	 * If {@link #removeSmallSupportVectors} is true all support vectors with 
-	 * an absolute value smaller than this threshold will be removed.
+	 * If {@link #removeSmallSupportVectors} is true all support vectors with an
+	 * absolute value smaller than this threshold will be removed.
 	 */
 	@Getter
 	@Setter
@@ -67,6 +70,7 @@ public class SupportVectorSetup {
 	private Kernel kernel;
 
 	public SupportVectorSetup(Kernel kernel) {
-		this(DEFAULT_INTERPOLATION_WEIGHT, DEFAULT_INSENSIVITY_THRESHOLD, DEFAULT_VALUE_SCALING_FACTOR, DEFAULT_REMOVE_SMALL_SUPPORT_VECTORS, DEFAULT_THRESHOLD_TO_REMOVE_SUPPORT_VECTORS, kernel);
+		this(DEFAULT_INTERPOLATION_WEIGHT, DEFAULT_INSENSIVITY_THRESHOLD, DEFAULT_VALUE_SCALING_FACTOR,
+				DEFAULT_REMOVE_SMALL_SUPPORT_VECTORS, DEFAULT_THRESHOLD_TO_REMOVE_SUPPORT_VECTORS, kernel);
 	}
 }

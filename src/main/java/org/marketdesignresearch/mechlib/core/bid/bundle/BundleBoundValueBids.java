@@ -77,12 +77,40 @@ public class BundleBoundValueBids extends BundleValueBids<BundleBoundValueBid> {
 	}
 
 	@Override
-	public BundleValueBids<BundleBoundValueBid> multiply(BigDecimal scale) {
+	public BundleBoundValueBids multiply(BigDecimal scale) {
 		BundleBoundValueBids newBids = new BundleBoundValueBids();
 		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
 			newBids.setBid(entry.getKey(), entry.getValue().multiply(scale));
 		}
 		return newBids;
+	}
+
+	public BundleBoundValueBids add(BigDecimal scale) {
+		BundleBoundValueBids newBids = new BundleBoundValueBids();
+		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().add(scale));
+		}
+		return newBids;
+	}
+
+	public BundleBoundValueBids ln() {
+		BundleBoundValueBids newBids = new BundleBoundValueBids();
+		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().ln());
+		}
+		return newBids;
+	}
+
+	public BundleBoundValueBids exp() {
+		BundleBoundValueBids newBids = new BundleBoundValueBids();
+		for (Map.Entry<Bidder, BundleBoundValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().exp());
+		}
+		return newBids;
+	}
+
+	public BundleExactValueBids getLogAlphaExpBids(BigDecimal alpha) {
+		return this.add(BigDecimal.valueOf(1)).ln().getAlphaBids(alpha).exp().add(BigDecimal.valueOf(-1));
 	}
 
 	public BundleExactValueBids getAlphaBids(BigDecimal alpha) {

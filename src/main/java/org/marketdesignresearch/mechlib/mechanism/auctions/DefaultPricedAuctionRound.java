@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * A default implementation for the PricedAuctionRound interface. 
- * It is based on {@link DefaultAuctionRound} and handles most 
- * mendatory attributes of an AuctionRound.
+ * A default implementation for the PricedAuctionRound interface. It is based on
+ * {@link DefaultAuctionRound} and handles most mendatory attributes of an
+ * AuctionRound.
  * 
  * @author Manuel Beyeler
  *

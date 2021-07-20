@@ -18,7 +18,9 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEcono
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningComponent;
 
 /**
- * ML query phase of MLCA that queries exact values (i.e. uses {@link ExactValueQuery}s).
+ * ML query phase of MLCA that queries exact values (i.e. uses
+ * {@link ExactValueQuery}s).
+ * 
  * @author Manuel Beyeler
  */
 public class ExactMLQueryPhase extends MLQueryPhase<BundleExactValueBids> {

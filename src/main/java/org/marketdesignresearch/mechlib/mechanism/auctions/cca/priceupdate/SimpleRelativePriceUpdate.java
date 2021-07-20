@@ -17,8 +17,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * A simple price updater that just updates prices for items with 
- * overdemand by some procentual surplus. 
+ * A simple price updater that just updates prices for items with overdemand by
+ * some procentual surplus.
  * 
  * If prices are 0 a fixed initial stepsize is used on the first update
  * 

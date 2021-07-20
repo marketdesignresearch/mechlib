@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 
-
 /**
  * Bids for bundles with exact values (of one bidder).
  * 
@@ -49,6 +48,18 @@ public class BundleExactValueBid extends BundleValueBid<BundleExactValuePair> {
 	@Override
 	public BundleExactValueBid multiply(BigDecimal scale) {
 		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.multiply(scale))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleExactValueBid(newBids);
+	}
+
+	public BundleExactValueBid exp() {
+		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.exp())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleExactValueBid(newBids);
+	}
+
+	public BundleExactValueBid add(BigDecimal valueOf) {
+		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.add(valueOf))
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		return new BundleExactValueBid(newBids);
 	}

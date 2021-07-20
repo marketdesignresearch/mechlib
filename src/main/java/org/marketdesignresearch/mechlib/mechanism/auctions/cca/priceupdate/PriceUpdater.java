@@ -7,6 +7,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 
 /**
  * Price updater for the clock phase of the combinatorial clock auction.
+ * 
  * @author Fabio Isler
  */
 public interface PriceUpdater {

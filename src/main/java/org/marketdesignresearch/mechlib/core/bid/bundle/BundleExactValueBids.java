@@ -14,11 +14,12 @@ import org.marketdesignresearch.mechlib.core.Outcome;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.core.bidder.ORBidder;
 import org.marketdesignresearch.mechlib.core.bidder.XORBidder;
-import org.marketdesignresearch.mechlib.core.bidder.valuefunction.ValueFunction;
+import org.marketdesignresearch.mechlib.core.bidder.valuefunction.BidTransformableValueFunction;
 import org.marketdesignresearch.mechlib.core.bidder.valuefunction.transform.ShaveTransformation;
 
 /**
- * Bids for bundles with exact values of multiple bidders (i.e. all bidders of an auction).
+ * Bids for bundles with exact values of multiple bidders (i.e. all bidders of
+ * an auction).
  * 
  * @author Manuel Beyeler
  */
@@ -60,7 +61,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromXORBidders(List<? extends XORBidder> bidders,
-			Function<ValueFunction, BundleExactValueBid> operator) {
+			Function<BidTransformableValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (XORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
@@ -109,7 +110,7 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 	}
 
 	public static BundleExactValueBids fromORBidders(List<? extends ORBidder> bidders,
-			Function<ValueFunction, BundleExactValueBid> operator) {
+			Function<BidTransformableValueFunction, BundleExactValueBid> operator) {
 		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
 		for (ORBidder bidder : bidders) {
 			bidMap.put(bidder, operator.apply(bidder.getValueFunction()));
@@ -125,4 +126,21 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		}
 		return newBids;
 	}
+
+	public BundleExactValueBids exp() {
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().exp());
+		}
+		return newBids;
+	}
+
+	public BundleExactValueBids add(BigDecimal valueOf) {
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().add(valueOf));
+		}
+		return newBids;
+	}
+
 }

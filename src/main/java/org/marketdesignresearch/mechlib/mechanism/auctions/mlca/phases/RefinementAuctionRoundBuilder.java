@@ -3,33 +3,29 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementQuery;
-import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.RefinementType;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultRefinementQueryInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.phases.RefinementHelper.EfficiencyInfo;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.prices.LinearPriceGenerator;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.BidderRefinementRoundInfo;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.BidderRefinementRoundInfoCreator;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyInfo;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.validator.ICEValidator;
-import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBoundValueBids>
-		implements BidderRefinementRoundInfoCreator {
+public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBoundValueBids> {
 
 	@Getter
 	private final Map<UUID, RefinementQuery> interactions;
@@ -38,17 +34,14 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 	private final List<ElicitationEconomy> refinementEconomies;
 
 	private final Map<UUID, BundleBoundValueBid> original = new LinkedHashMap<>();
-	@Getter
-	private LinearPriceGenerator priceGenerator;
 
 	public RefinementAuctionRoundBuilder(Auction<BundleBoundValueBids> auction,
-			List<ElicitationEconomy> refinementEconomies, Map<ElicitationEconomy, EfficiencyInfo> efficiencyInfos,
-			LinearPriceGenerator generator) {
+			List<ElicitationEconomy> refinementEconomies, EfficiencyInfo efficiencyInfos,
+			BidderRefinementRoundInfoCreator creator) {
 		super(auction);
 		this.refinementEconomies = refinementEconomies;
-		this.priceGenerator = generator;
 
-		this.refinementInfos = this.createBidderRefinementRoundInfos(auction, auction.getCurrentRoundRandom(),
+		this.refinementInfos = creator.createBidderRefinementRoundInfos(auction, BidderRandom.INSTANCE.getRandom(),
 				efficiencyInfos);
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();
@@ -57,7 +50,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			BidderRefinementRoundInfo info = this.refinementInfos.get(bidder.getId());
 			interactions.put(bidder.getId(),
-					new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements(),
+					new DefaultRefinementQueryInteraction(bidder.getId(), auction, info.getRefinements().get(bidder),
 							info.getAlphaAllocation().allocationOf(bidder).getBundle(), info.getPrices(),
 							latestAggregatedBids.getBid(bidder)));
 			this.original.put(bidder.getId(), latestAggregatedBids.getBid(bidder).copy());
@@ -83,16 +76,6 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 								.collect(Collectors.toMap(e -> this.getAuction().getBidder(e.getKey()),
 										e -> e.getValue().getBid(), (e1, e2) -> e1, LinkedHashMap::new))),
 				refinementInfos);
-	}
-
-	@Override
-	public Set<RefinementType> createRefinementType(BundleBoundValueBids bids) {
-		return RefinementHelper.getMRPARAndDIAR(bids);
-	}
-
-	@Override
-	public Logger getLogger() {
-		return log;
 	}
 
 	@Override

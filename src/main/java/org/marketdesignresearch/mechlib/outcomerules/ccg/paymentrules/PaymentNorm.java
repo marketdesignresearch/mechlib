@@ -33,7 +33,7 @@ public abstract class PaymentNorm implements CorePaymentNorm {
 			try {
 				getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program);
 				IMIPResult result = CPLEXUtils.SOLVER.solve(program);
-				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), program, result);
+				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), this, program, result);
 				return result;
 			} catch (MIPException ex) {
 				// try different CPLEX solver

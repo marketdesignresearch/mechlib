@@ -6,9 +6,5 @@ package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels;
  * @author Manuel Beyeler
  */
 public enum KernelType {
-	Linear,
-	Quadratic,
-	Polynomial,
-	Exponential,
-	Gaussian;
+	Linear, Quadratic, Polynomial, Exponential, Gaussian;
 }

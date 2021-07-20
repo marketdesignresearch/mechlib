@@ -31,8 +31,9 @@ public class GoodAllocationLimit extends AllocationLimit {
 	/**
 	 * Create a new GoodAllocationLimit
 	 * 
-	 * @param domainGoods all goods in this domain
-	 * @param limitedGoods a limited set of goods that may be allocated to this bidder
+	 * @param domainGoods  all goods in this domain
+	 * @param limitedGoods a limited set of goods that may be allocated to this
+	 *                     bidder
 	 */
 	public GoodAllocationLimit(List<? extends Good> domainGoods, List<? extends Good> limitedGoods) {
 		super(domainGoods);

@@ -32,8 +32,9 @@ public class BundleSizeAllocationLimit extends AllocationLimit {
 
 	/**
 	 * Creates a new BundleSizeAllocationLimit
+	 * 
 	 * @param bundleSizeLimit the maximum number of items in any allocated bundle
-	 * @param goods all goods of this domain
+	 * @param goods           all goods of this domain
 	 */
 	public BundleSizeAllocationLimit(int bundleSizeLimit, List<? extends Good> goods) {
 		super(goods);

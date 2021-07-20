@@ -65,8 +65,8 @@ public class PriceConstraints {
 	}
 
 	public void addSlack(BigDecimal slack) {
-		for(Map<Bundle, BigDecimal> map : this.rightHandSides.values()) {
-			map.replaceAll((b,d) -> d.add(slack));
+		for (Map<Bundle, BigDecimal> map : this.rightHandSides.values()) {
+			map.replaceAll((b, d) -> d.add(slack));
 		}
 	}
 }

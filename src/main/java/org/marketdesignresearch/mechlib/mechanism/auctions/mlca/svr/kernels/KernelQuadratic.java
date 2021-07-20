@@ -20,7 +20,7 @@ import lombok.Setter;
  * @author Manuel Beyeler
  */
 public class KernelQuadratic extends Kernel {
-	
+
 	@Getter
 	@Setter
 	private double coeff0;
@@ -36,7 +36,7 @@ public class KernelQuadratic extends Kernel {
 		this.coeff1 = coeff1;
 		this.coeff2 = coeff2;
 	}
-	
+
 	@Override
 	public Double getValue(Bundle bundle, Bundle bundle2) {
 		int value = BundleEncoder.getStandardDotProdWith(bundle, bundle2);
@@ -66,5 +66,5 @@ public class KernelQuadratic extends Kernel {
 	public KernelType getKernelType() {
 		return KernelType.Quadratic;
 	}
-	
+
 }

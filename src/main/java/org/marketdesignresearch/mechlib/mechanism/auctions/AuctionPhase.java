@@ -3,9 +3,8 @@ package org.marketdesignresearch.mechlib.mechanism.auctions;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 
 /**
- * An AuctionPhase can consists of multiple rounds. The auction
- * creates an AuctionRoundBuilder for every round that must handle one round of
- * this phase.
+ * An AuctionPhase can consists of multiple rounds. The auction creates an
+ * AuctionRoundBuilder for every round that must handle one round of this phase.
  * 
  * Note that the AuctionPhase itself should not contain any state itself. The
  * state of the AuctionPhase should be completely captured by the AuctionRounds
@@ -21,8 +20,8 @@ public interface AuctionPhase<BB extends BundleValueBids<?>> {
 	/**
 	 * creates the AuctionRoundBuilder for the next round
 	 * 
-	 * Note that the state of this method is not defined if {@link #phaseFinished(Auction)}
-	 * returns true.
+	 * Note that the state of this method is not defined if
+	 * {@link #phaseFinished(Auction)} returns true.
 	 * 
 	 * @param auction the corresponding auction
 	 * @return an AuctionBuilder

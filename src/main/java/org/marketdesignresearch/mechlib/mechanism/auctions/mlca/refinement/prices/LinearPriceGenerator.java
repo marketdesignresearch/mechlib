@@ -75,23 +75,24 @@ public class LinearPriceGenerator {
 			LinearPriceMinimizeDeltaMIP accMip = null;
 			do {
 				try {
-				// minimize overall delta
-				 accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(),
-					currentValuation, allocation, constraint, timeLimit);
-				prices = accMip.getPrices();
-				done = true;
-				} catch(RuntimeException re) {
+					// minimize overall delta
+					accMip = new LinearPriceMinimizeDeltaMIP(domain, setting.getBidders(), currentValuation, allocation,
+							constraint, timeLimit);
+					prices = accMip.getPrices();
+					done = true;
+				} catch (RuntimeException re) {
 					constraint.addSlack(localOffset);
-					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}", localOffset, re);
+					log.warn("Unable to solve LinearPriceMinimizeDeltaMIP. Add more Slack to constraints: {}",
+							localOffset, re);
 					localOffset = localOffset.scaleByPowerOfTen(1);
-					// happens rarely that such a high offset needs to be added, 
-					// but for domains with high values it might occur 
+					// happens rarely that such a high offset needs to be added,
+					// but for domains with high values it might occur
 					// continue anyway
-					if(localOffset.compareTo(BigDecimal.valueOf(100)) > 0) {
+					if (localOffset.compareTo(BigDecimal.valueOf(100)) > 0) {
 						done = true;
 					}
 				}
-			} while(!done);
+			} while (!done);
 
 			localOffset = offset;
 			done = false;

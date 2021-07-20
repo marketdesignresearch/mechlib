@@ -22,7 +22,7 @@ public class KernelDotProductPolynomial extends KernelDotProduct {
 	public KernelDotProductPolynomial(double[] coefficients) {
 		this.coefficients = coefficients;
 	}
-	
+
 	public Double getValue(Bundle bundle, Bundle bundle2) {
 		Double value = 0.0;
 		for (int i = 1; i < coefficients.length; i++) {
