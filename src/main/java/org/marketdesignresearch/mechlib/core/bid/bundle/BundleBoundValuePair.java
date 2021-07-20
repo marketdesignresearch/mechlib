@@ -73,4 +73,19 @@ public class BundleBoundValuePair extends BundleExactValuePair {
 		return new BundleBoundValuePair(getLowerBound().multiply(amount), getUpperBound().multiply(amount), getBundle(),
 				getId());
 	}
+
+	public BundleBoundValuePair ln() {
+		return new BundleBoundValuePair(BigDecimal.valueOf(Math.log(Math.max(1e-15d,getLowerBound().doubleValue()))), BigDecimal.valueOf(Math.log(Math.max(1e-15d,getUpperBound().doubleValue()))), getBundle(),
+				getId());
+	}
+	
+	public BundleBoundValuePair exp() {
+		return new BundleBoundValuePair(BigDecimal.valueOf(Math.exp(getLowerBound().doubleValue())), BigDecimal.valueOf(Math.exp(getUpperBound().doubleValue())), getBundle(),
+				getId());
+	}
+
+	public BundleBoundValuePair add(BigDecimal amount) {
+		return new BundleBoundValuePair(getLowerBound().add(amount), getUpperBound().add(amount), getBundle(),
+				getId());
+	}
 }

@@ -45,6 +45,18 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		return new BundleBoundValueBid(newBids);
 	}
+	
+	public BundleBoundValueBid ln() {
+		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.ln())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleBoundValueBid(newBids);
+	}
+	
+	public BundleBoundValueBid exp() {
+		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.exp())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleBoundValueBid(newBids);
+	}
 
 	public BundleExactValueBid getAlphaBid(BigDecimal alpha) {
 		return new BundleExactValueBid(this.getBundleBids().stream()
@@ -65,5 +77,11 @@ public class BundleBoundValueBid extends BundleValueBid<BundleBoundValuePair> {
 
 	public BundleBoundValueBid copy() {
 		return new BundleBoundValueBid(new LinkedHashSet<>(this.getBundleBids()));
+	}
+
+	public BundleBoundValueBid add(BigDecimal scale) {
+		LinkedHashSet<BundleBoundValuePair> newBids = getBundleBids().stream().map(bid -> bid.add(scale))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleBoundValueBid(newBids);
 	}
 }

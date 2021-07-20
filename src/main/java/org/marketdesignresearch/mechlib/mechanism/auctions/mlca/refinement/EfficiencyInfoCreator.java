@@ -11,10 +11,26 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class EfficiencyInfoCreator {
+	
+	private static final BigDecimal DEFAULT_MIN_ALPHA = BigDecimal.valueOf(0.5);
+	
+	@Setter
+	@Getter
+	private BigDecimal minAlpha;
+	
+	public EfficiencyInfoCreator() {
+		this(DEFAULT_MIN_ALPHA);
+	}
+	
+	public EfficiencyInfoCreator(BigDecimal minAlpha) {
+		this.minAlpha = minAlpha;
+	}
 	
 	public abstract boolean hasConverged(LinkedHashMap<ElicitationEconomy,EfficiencyInfo.ElicitationEconomyEfficiency> info, BundleBoundValueBids bids);
 	
@@ -37,9 +53,9 @@ public abstract class EfficiencyInfoCreator {
 				+ "\tTrue value: " + perturbed.getTrueSocialWelfare().setScale(2, RoundingMode.HALF_UP));
 		
 		EfficiencyInfo.ElicitationEconomyEfficiency info = new EfficiencyInfo.ElicitationEconomyEfficiency();
-
+		
 		info.alpha = lowerBound.getTotalAllocationValue()
-				.divide(lowerBound.getTotalAllocationValue(), 10, RoundingMode.HALF_UP).max(BigDecimal.valueOf(0.5))
+				.divide(perturbed.getTotalAllocationValue(), 10, RoundingMode.HALF_UP).max(this.minAlpha)
 				.min(BigDecimal.ONE);
 
 		info.efficiency = lowerBound.getTotalAllocationValue().divide(perturbed.getTotalAllocationValue(),

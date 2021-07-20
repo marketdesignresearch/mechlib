@@ -82,7 +82,7 @@ public abstract class DefaultBoundValueQueryStrategy implements BoundValueQueryS
 	 * @param bundle
 	 * @return
 	 */
-	private BundleBoundValuePair getValueBoundsForBundle(Bundle bundle, Random random,
+	protected BundleBoundValuePair getValueBoundsForBundle(Bundle bundle, Random random,
 			BigDecimal stdDeviation) {
 
 		BigDecimal value = this.getValueFunction().getValue(bundle);

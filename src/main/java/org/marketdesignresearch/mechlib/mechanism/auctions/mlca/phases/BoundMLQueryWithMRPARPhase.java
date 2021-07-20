@@ -45,7 +45,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	
 	@Getter
 	@Setter
-	private EfficiencyInfoCreator EfficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator();
+	private EfficiencyInfoCreator efficiencyInfoCreator = new EfficiencyGuaranteeEfficiencyInfoCreator();
 
 	@Getter
 	private List<ElicitationEconomy> refinementEconomies;
@@ -93,7 +93,7 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 			Auction<BundleBoundValueBids> auction, Map<Bidder, Set<Bundle>> restrictedBids,
 			Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp) {
 
-		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.mlRoundRefinementInfoCreator.createBidderRefinementRoundInfos(auction,
+		Map<UUID, BidderRefinementRoundInfo> bidderRefinementInfos = this.getMlRoundRefinementInfoCreator().createBidderRefinementRoundInfos(auction,
 				BidderRandom.INSTANCE.getRandom(), this.getEfficiencyInfoCreator().getEfficiencyInfo(auction.getLatestAggregatedBids(), this.refinementEconomies));
 
 		BundleBoundValueBids latestAggregatedBids = auction.getLatestAggregatedBids();

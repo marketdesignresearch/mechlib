@@ -22,12 +22,12 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 
-	private static final int DEFAULT_MAX_NUMBER_OF_ROUNDS = 30;
+	//private static final int DEFAULT_MAX_NUMBER_OF_ROUNDS = 30;
 
 	private transient int refinementInfoRound = -1;
 	private transient EfficiencyInfo info;
 
-	private final int maxNumberOfRounds;
+	//private final int maxNumberOfRounds;
 	private final boolean refineMarginalEconomies;
 	
 	@Getter
@@ -43,7 +43,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 	//private LinearPriceGenerator priceGenerator = new LinearPriceGenerator();
 
 	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
-		this(DEFAULT_MAX_NUMBER_OF_ROUNDS, refineMarginalEconomies);
+		this(refineMarginalEconomies);
 		this.refinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
 		//this.priceGenerator.setTimeLimit(timeLimit);
 	}
@@ -58,7 +58,7 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 	@Override
 	public boolean phaseFinished(Auction<BundleBoundValueBids> auction) {
 		this.updateInfo(auction);
-		return info.isConverged() || auction.getCurrentPhaseRoundNumber() == this.maxNumberOfRounds;
+		return info.isConverged();
 	}
 
 	private void updateInfo(Auction<BundleBoundValueBids> auction) {

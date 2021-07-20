@@ -52,4 +52,16 @@ public class BundleExactValueBid extends BundleValueBid<BundleExactValuePair> {
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		return new BundleExactValueBid(newBids);
 	}
+
+	public BundleExactValueBid exp() {
+		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.exp())
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleExactValueBid(newBids);
+	}
+
+	public BundleExactValueBid add(BigDecimal valueOf) {
+		LinkedHashSet<BundleExactValuePair> newBids = getBundleBids().stream().map(bid -> bid.add(valueOf))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+		return new BundleExactValueBid(newBids);
+	}
 }

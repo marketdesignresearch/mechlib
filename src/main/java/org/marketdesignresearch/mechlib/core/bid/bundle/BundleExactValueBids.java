@@ -125,4 +125,21 @@ public class BundleExactValueBids extends BundleValueBids<BundleExactValueBid> {
 		}
 		return newBids;
 	}
+	
+	public BundleExactValueBids exp() {	
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().exp());
+		}
+		return newBids;
+	}
+
+	public BundleExactValueBids add(BigDecimal valueOf) {
+		BundleExactValueBids newBids = new BundleExactValueBids();
+		for (Map.Entry<Bidder, BundleExactValueBid> entry : getBidMap().entrySet()) {
+			newBids.setBid(entry.getKey(), entry.getValue().add(valueOf));
+		}
+		return newBids;
+	}
+	
 }

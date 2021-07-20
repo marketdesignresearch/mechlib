@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -73,8 +72,7 @@ public abstract class BidderRefinementRoundInfoCreator {
 			log.info("Bidder {} uses refinement economy {}", bidder.getName(), refinementEconomy);
 
 			if (!refinementInfos.containsKey(refinementEconomy)) {
-				BundleExactValueBids alphaValuation = auction.getLatestAggregatedBids()
-						.getAlphaBids(info.getElicitationEconomyEfficiency().get(refinementEconomy).alpha);
+				BundleExactValueBids alphaValuation = getAlphaValuation(auction, info, refinementEconomy);
 				Allocation alphaAllocation = new XORWinnerDetermination(alphaValuation).getAllocation();
 				BundleExactValueBids perturbedValuation = auction.getLatestAggregatedBids()
 						.getPerturbedBids(alphaAllocation);
@@ -100,6 +98,12 @@ public abstract class BidderRefinementRoundInfoCreator {
 			bidderRefinementInfos.put(bidder.getId(), refinementInfos.get(refinementEconomy));
 		}
 		return bidderRefinementInfos;
+	}
+
+	protected BundleExactValueBids getAlphaValuation(Auction<BundleBoundValueBids> auction, EfficiencyInfo info,
+			ElicitationEconomy refinementEconomy) {
+		return auction.getLatestAggregatedBids()
+				.getAlphaBids(info.getElicitationEconomyEfficiency().get(refinementEconomy).alpha);
 	}
 
 	protected abstract LinkedHashMap<Bidder,LinkedHashSet<RefinementType>> createRefinementType(BundleBoundValueBids bids, Allocation alphaAllocation, Prices pi);
