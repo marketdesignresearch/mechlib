@@ -27,6 +27,11 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.MRPAR
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The second phase of iMLCA (Beyeler et. al. 2021)
+ * 
+ * @author Manuel Beyeler
+ */
 public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBids> {
 
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
@@ -50,18 +55,39 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	@Getter
 	private List<ElicitationEconomy> refinementEconomies;
 
+	/**
+	 * @param mlComponent the ml component used to generate queries
+	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
+	 * @param timeLimit the time limit to solve the ML WDP
+	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
 			int numberOfmarginalQueries, double timeLimit) {
 		this(mlComponent, maxQueries, numberOfmarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES,
 				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
 
+	/**
+	 * @param mlComponent the ml component used to generate queries
+	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
+	 * @param refineMarginalEconomies if set to true, generates prices with respect to marginal economies to achieve higher efficiency in the marginal economies (version not described in Beyeler et. al 2021)
+	 * @param timeLimit the time limit to solve the ML WDP
+	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
 			int numberOfmarginalQueries, boolean refineMarginalEconomies, double timeLimit) {
 		this(mlComponent, maxQueries, numberOfmarginalQueries, refineMarginalEconomies,
 				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
 
+	/**
+	 * @param mlComponent the ml component used to generate queries
+	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
+	 * @param refineMarginalEconomies if set to true, generates prices with respect to marginal economies to achieve higher efficiency in the marginal economies (version not described in Beyeler et. al 2021)
+	 * @param intermediateRefinments if set to true, each round with ML based queries and MRPAR refinement will be followed by one refinement round with MRPAR and DIAR refinement (version not described in Beyeler et. al. 2021)
+	 * @param timeLimit the time limit to solve the ML WDP
+	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
 			int numberOfmarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinments,
 			double timeLimit) {

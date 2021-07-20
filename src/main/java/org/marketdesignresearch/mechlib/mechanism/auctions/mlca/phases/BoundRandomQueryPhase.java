@@ -12,12 +12,20 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultBoundValueQueryInteraction;
 
+/**
+ * The first phase of iMLCA (Beyeler et. al. 2021)
+ * 
+ * @author Manuel Beyeler
+ */
 public class BoundRandomQueryPhase extends RandomQueryPhase<BundleBoundValueBids> {
 
 	public BoundRandomQueryPhase() {
 		super();
 	}
 
+	/**
+	 * @param numberOfQueries the number of random queries per bidder (Q^init in Beyeler et. al. (2021))
+	 */
 	public BoundRandomQueryPhase(int numberOfQueries) {
 		super(numberOfQueries);
 	}

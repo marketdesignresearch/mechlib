@@ -33,6 +33,17 @@ public class iMLCAuction extends Auction<BundleBoundValueBids> {
 	private static final boolean DEFAULT_REFINE_MARGINAL_ECONOMIES = false;
 	private static final boolean DEFAULT_INTERMEDIATE_REFINEMENTS = false;
 
+	/**
+	 * @param domain the domain
+	 * @param outcomeRule the outcome rule
+	 * @param numberOfInitialRandomQueries number of initial queries per bidder in the first phase (Q^init in Beyeler et. al. (2021))
+	 * @param maxQueries maximum number of queries per bidder in the second phase (Q^max in Beyeler et. al. (2021))
+	 * @param marginalQueriesPerRound number of marginal queries per round (equals Q^round -1 in Beyeler et. al. (2021), note that Q^round also includes the query for the main economy)
+	 * @param svrSetup the support vector setup
+	 * @param seed the seed to sample random bundles in the first phase
+	 * @param timeLimit the timelimit for the SVR WDP in the second phase in seconds
+	 * @param convergenceEpsilon \epsion^stop in Beyeler et. al. (2021)
+	 */
 	public iMLCAuction(Domain domain, OutcomeRuleGenerator outcomeRule, int numberOfInitialRandomQueries,
 			int maxQueries, int marginalQueriesPerRound, SupportVectorSetup svrSetup, Long seed, double timeLimit,
 			BigDecimal convergenceEpsilon) {

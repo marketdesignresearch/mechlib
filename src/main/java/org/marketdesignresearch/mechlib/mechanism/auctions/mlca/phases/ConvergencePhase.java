@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Final Phase of iMLCA as proposed by Beyeler (2021). This phase only tighten
+ * Final Phase of iMLCA as proposed by Beyeler et. al. (2021). This phase only tighten
  * bounds to guarantee that the final allocation is the efficient allocation
  * with respect to bids and that the gap between the lower and upper bound
  * social welfare for this allocation is within a relative difference.
