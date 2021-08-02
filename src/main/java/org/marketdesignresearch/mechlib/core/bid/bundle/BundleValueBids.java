@@ -103,4 +103,24 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 		}
 		return new SingleItemBids(new BundleExactValueBids(bidsPerGood));
 	}
+	
+	public BundleExactValueBids getTrueValueBids() {
+		
+		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
+		for(Bidder b : this.getBidders()) {
+			bidMap.put(b, this.getTrueValueBid(b));
+		}
+		
+		return new BundleExactValueBids(bidMap);
+	}
+	
+	private BundleExactValueBid getTrueValueBid(Bidder b) {
+		Set<BundleExactValuePair> pairs = new LinkedHashSet<>();
+		
+		for(BundleExactValuePair oldPair : this.getBid(b).getBundleBids()) {
+			pairs.add(new BundleExactValuePair(b.getValue(oldPair.getBundle()), oldPair.getBundle(), oldPair.getId()));
+		}
+		
+		return new BundleExactValueBid(pairs);
+	}
 }
