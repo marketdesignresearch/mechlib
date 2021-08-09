@@ -21,8 +21,7 @@
             <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
         </license>
     </licenses>
-
-
+    
     <developers>
         <developer>
             <name>Fabio Isler</name>
@@ -61,7 +60,7 @@
         <slf4j.version>1.7.23</slf4j.version>
         <log4j.version>2.13.3</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <delombok.output>${project.build.outputDirectory}/delombok</delombok.output>
+        <delombok.output>${project.basedir}/target/delombok</delombok.output>
     </properties>
 
     <dependencies>
