@@ -71,10 +71,10 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 			BigDecimal trueValue = BigDecimal.ZERO;
 			if (diarError.left != null)
 				trueValue = b.getValue(diarError.left);
-			BigDecimal provisonalOffset = BigDecimal.ZERO;
-			// check if provisioinalTrade is empty
+			BigDecimal provisionalOffset = BigDecimal.ZERO;
+			// check if provisionalTrade is empty
 			if (!(provisionalTrade.getTotalAmount() == 0)) {
-				provisonalOffset = trueValueProvisional
+				provisionalOffset = trueValueProvisional
 						.subtract(activeBids.getBidForBundle(provisionalTrade).getLowerBound());
 			}
 
@@ -84,7 +84,7 @@ public class DIARRefiner extends AutomatedRefiner<DIARRefinement> {
 
 			if (diarError.left != null)
 				diarBundleOffset = activeBids.getBidForBundle(diarError.left).getUpperBound().subtract(trueValue);
-			if (diarBundleOffset.add(provisonalOffset).compareTo(epsilon.add(beta)) > 0
+			if (diarBundleOffset.add(provisionalOffset).compareTo(epsilon.add(beta)) > 0
 					&& (diarError.left != null || !(provisionalTrade.getTotalAmount() == 0))) {
 				// reduce error if possible
 				BigDecimal neededReduction = epsilon.add(roundingDelta);

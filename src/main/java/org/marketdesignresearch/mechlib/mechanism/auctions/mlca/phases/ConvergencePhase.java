@@ -24,7 +24,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Converge
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.impl.DefaultConvergenceInteraction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.ElicitationEconomy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.EfficiencyGuaranteeEfficiencyInfoCreator;
-import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.IntervalSizeEffiencyInfoCreator;
+import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.refinement.IntervalSizeEfficiencyInfoCreator;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDetermination;
 import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDeterminationWithExclucedBundles;
 
@@ -34,10 +34,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Final Phase of iMLCA as proposed by Beyeler et. al. (2021). This phase only tighten
- * bounds to guarantee that the final allocation is the efficient allocation
- * with respect to bids and that the gap between the lower and upper bound
- * social welfare for this allocation is within a relative difference.
+ * Final Phase of iMLCA as proposed by Beyeler et. al. (2021). This phase only
+ * tighten bounds to guarantee that the final allocation is the efficient
+ * allocation with respect to bids and that the gap between the lower and upper
+ * bound social welfare for this allocation is within a relative difference.
  * 
  * @author Manuel Beyeler
  */
@@ -55,14 +55,14 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 	private final int numberOfBundles;
 
 	/**
-	 * @param numberOfBundles that should be tighted in each round per bidder
+	 * @param numberOfBundles that should be tighten in each round per bidder
 	 * @param epsilon         the maximal relative social welfare gap for the final
 	 *                        allocation
 	 */
 	public ConvergencePhase(int numberOfBundles, BigDecimal epsilon) {
 		this.firstEpsilon = epsilon;
 		this.numberOfBundles = numberOfBundles;
-		this.efficiencyInfoCreator = new IntervalSizeEffiencyInfoCreator(DEFAULT_EFFICIENCY_TOLERANCE, epsilon);
+		this.efficiencyInfoCreator = new IntervalSizeEfficiencyInfoCreator(DEFAULT_EFFICIENCY_TOLERANCE, epsilon);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 			BundleBoundValuePair lowerBoundAllocatedValuePair = bid
 					.getBidForBundle(lowerBoundAllocation.allocationOf(bidder).getBundle());
 			if (lowerBoundAllocatedValuePair != null) {
-				if (this.verifiyIntervalSize(lowerBoundAllocatedValuePair, epsilon)) {
+				if (this.verifyIntervalSize(lowerBoundAllocatedValuePair, epsilon)) {
 					excludedSet.add(lowerBoundAllocatedValuePair.getBundle());
 				} else {
 					querySet.add(lowerBoundAllocatedValuePair.getBundle());
@@ -109,7 +109,7 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 				BundleBoundValuePair perturbedPair = bid
 						.getBidForBundle(perturbedAllocation.allocationOf(bidder).getBundle());
 				if (perturbedPair != null) {
-					if (this.verifiyIntervalSize(perturbedPair, epsilon)) {
+					if (this.verifyIntervalSize(perturbedPair, epsilon)) {
 						excludedSet.add(perturbedPair.getBundle());
 					} else {
 						querySet.add(perturbedPair.getBundle());
@@ -132,7 +132,7 @@ public class ConvergencePhase implements AuctionPhase<BundleBoundValueBids> {
 				List.of(new ElicitationEconomy(auction.getDomain()))).isConverged();
 	}
 
-	private boolean verifiyIntervalSize(BundleBoundValuePair pair, BigDecimal epsilon) {
+	private boolean verifyIntervalSize(BundleBoundValuePair pair, BigDecimal epsilon) {
 		BigDecimal interval = pair.getUpperBound().subtract(pair.getLowerBound());
 		// Do not divide by zero
 		if (pair.getUpperBound().compareTo(BigDecimal.ZERO) == 0) {

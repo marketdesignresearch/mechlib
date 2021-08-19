@@ -1,6 +1,5 @@
 package org.marketdesignresearch.mechlib.core.bidder;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.LinkedHashSet;
@@ -38,7 +37,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 @EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
-public class ORBidder implements Bidder, Serializable {
+public class ORBidder implements Bidder {
 	private static final long serialVersionUID = -4896848195956099257L;
 
 	@Getter

@@ -56,44 +56,66 @@ public class BoundMLQueryWithMRPARPhase extends MLQueryPhase<BundleBoundValueBid
 	private List<ElicitationEconomy> refinementEconomies;
 
 	/**
-	 * @param mlComponent the ml component used to generate queries
-	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
-	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
-	 * @param timeLimit the time limit to solve the ML WDP
+	 * @param mlComponent             the ml component used to generate queries
+	 * @param maxQueries              the maximal number of queries per bidder
+	 *                                (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfMarginalQueries the number of marginal queries per bidder and
+	 *                                round (equals Q^round -1 in Beyeler et. al.
+	 *                                2021, note that Q^round also includes a query
+	 *                                for the main economy.
+	 * @param timeLimit               the time limit to solve the ML WDP
 	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
-			int numberOfmarginalQueries, double timeLimit) {
-		this(mlComponent, maxQueries, numberOfmarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES,
+			int numberOfMarginalQueries, double timeLimit) {
+		this(mlComponent, maxQueries, numberOfMarginalQueries, DEFAULT_REFINE_MARGINAL_ECONOMIES,
 				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
 
 	/**
-	 * @param mlComponent the ml component used to generate queries
-	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
-	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
-	 * @param refineMarginalEconomies if set to true, generates prices with respect to marginal economies to achieve higher efficiency in the marginal economies (version not described in Beyeler et. al 2021)
-	 * @param timeLimit the time limit to solve the ML WDP
+	 * @param mlComponent             the ml component used to generate queries
+	 * @param maxQueries              the maximal number of queries per bidder
+	 *                                (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfMarginalQueries the number of marginal queries per bidder and
+	 *                                round (equals Q^round -1 in Beyeler et. al.
+	 *                                2021, note that Q^round also includes a query
+	 *                                for the main economy.
+	 * @param refineMarginalEconomies if set to true, generates prices with respect
+	 *                                to marginal economies to achieve higher
+	 *                                efficiency in the marginal economies (version
+	 *                                not described in Beyeler et. al 2021)
+	 * @param timeLimit               the time limit to solve the ML WDP
 	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
-			int numberOfmarginalQueries, boolean refineMarginalEconomies, double timeLimit) {
-		this(mlComponent, maxQueries, numberOfmarginalQueries, refineMarginalEconomies,
+			int numberOfMarginalQueries, boolean refineMarginalEconomies, double timeLimit) {
+		this(mlComponent, maxQueries, numberOfMarginalQueries, refineMarginalEconomies,
 				DEFAULT_INTERMEDIATE_REFINEMENTS, timeLimit);
 	}
 
 	/**
-	 * @param mlComponent the ml component used to generate queries
-	 * @param maxQueries the maximal number of queries per bidder (Q^max in Beyeler et. al. 2021)
-	 * @param numberOfmarginalQueries the number of marginal queries per bidder and round (equals Q^round -1 in Beyeler et. al. 2021, note that Q^round also includes a query for the main economy.
-	 * @param refineMarginalEconomies if set to true, generates prices with respect to marginal economies to achieve higher efficiency in the marginal economies (version not described in Beyeler et. al 2021)
-	 * @param intermediateRefinments if set to true, each round with ML based queries and MRPAR refinement will be followed by one refinement round with MRPAR and DIAR refinement (version not described in Beyeler et. al. 2021)
-	 * @param timeLimit the time limit to solve the ML WDP
+	 * @param mlComponent             the ml component used to generate queries
+	 * @param maxQueries              the maximal number of queries per bidder
+	 *                                (Q^max in Beyeler et. al. 2021)
+	 * @param numberOfMarginalQueries the number of marginal queries per bidder and
+	 *                                round (equals Q^round -1 in Beyeler et. al.
+	 *                                2021, note that Q^round also includes a query
+	 *                                for the main economy.
+	 * @param refineMarginalEconomies if set to true, generates prices with respect
+	 *                                to marginal economies to achieve higher
+	 *                                efficiency in the marginal economies (version
+	 *                                not described in Beyeler et. al 2021)
+	 * @param intermediateRefinements if set to true, each round with ML based
+	 *                                queries and MRPAR refinement will be followed
+	 *                                by one refinement round with MRPAR and DIAR
+	 *                                refinement (version not described in Beyeler
+	 *                                et. al. 2021)
+	 * @param timeLimit               the time limit to solve the ML WDP
 	 */
 	public BoundMLQueryWithMRPARPhase(MachineLearningComponent<BundleBoundValueBids> mlComponent, int maxQueries,
-			int numberOfmarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinments,
+			int numberOfMarginalQueries, boolean refineMarginalEconomies, boolean intermediateRefinements,
 			double timeLimit) {
-		super(mlComponent, maxQueries, numberOfmarginalQueries);
+		super(mlComponent, maxQueries, numberOfMarginalQueries);
 		this.refineMarginalEconomies = refineMarginalEconomies;
-		this.intermediateRefinements = intermediateRefinments;
+		this.intermediateRefinements = intermediateRefinements;
 		this.mlRoundRefinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
 		this.intermediateRefinementInfoCreator.getPriceGenerator().setTimeLimit(timeLimit);
 	}

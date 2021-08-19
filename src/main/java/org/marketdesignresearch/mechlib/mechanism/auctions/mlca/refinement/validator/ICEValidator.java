@@ -35,14 +35,14 @@ public class ICEValidator {
 			Prices bidderPrices, Bundle provisionalAllocation, Set<RefinementType> refinementType)
 			throws ValidatorException {
 
-		checkRefiementConsistency(activeBids, refinedBids);
+		checkRefinementConsistency(activeBids, refinedBids);
 
 		for (RefinementType type : refinementType) {
 			getValidator(type).validateRefinement(type, activeBids, refinedBids, bidderPrices, provisionalAllocation);
 		}
 	}
 
-	private static void checkRefiementConsistency(BundleValueBid<BundleBoundValuePair> activeBids,
+	private static void checkRefinementConsistency(BundleValueBid<BundleBoundValuePair> activeBids,
 			BundleValueBid<BundleBoundValuePair> refinedBids) throws ValidatorException {
 		for (BundleBoundValuePair active : activeBids.getBundleBids()) {
 			Preconditions.checkState(refinedBids.getBidForBundle(active.getBundle()) != null);

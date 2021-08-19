@@ -39,7 +39,7 @@ public abstract class EfficiencyInfoCreator {
 	}
 
 	/**
-	 * @param info informations of how efficient are allocation in each economy of
+	 * @param info information of how efficient are allocation in each economy of
 	 *             interest
 	 * @param bids the bids
 	 * @return true if the criterion to stop the refinement is met (e.g. the

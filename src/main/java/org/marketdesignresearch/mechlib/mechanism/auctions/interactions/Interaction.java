@@ -6,14 +6,14 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 
 /**
  * In an (iterative) auction every bidder is asked to provide certain
- * informations in every round. We model this using Interactions. An Interaction
+ * information in every round. We model this using Interactions. An Interaction
  * holds all information provided by the auction that can be used by the bidder
  * to answer this query (interaction). The specific interaction will further
  * contain methods that allow a bidder to submit his answer to the auction.
  * 
  * Every interaction has a matching strategy interface
- * {@link InteractionStrategy} that is able to create a bid which anserwers the
- * query asked in this interaction. A bidders anwer to this interaction query
+ * {@link InteractionStrategy} that is able to create a bid which answers the
+ * query asked in this interaction. A bidder's answer to this interaction query
  * might be customized by implementing and registering a new strategy
  * {@link Bidder#setStrategy(InteractionStrategy)}.
  * 

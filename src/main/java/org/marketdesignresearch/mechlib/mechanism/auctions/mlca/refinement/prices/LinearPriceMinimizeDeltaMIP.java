@@ -30,8 +30,8 @@ public class LinearPriceMinimizeDeltaMIP extends LinearPriceMIP {
 	private BigDecimal deltaResult = BigDecimal.valueOf(MIPWrapper.MAX_VALUE);
 
 	public LinearPriceMinimizeDeltaMIP(Domain domain, List<UUID> bidders, BundleExactValueBids bids,
-			Allocation allocation, PriceConstraints constraint, double timelimit) {
-		super(domain, bidders, allocation, constraint, timelimit);
+			Allocation allocation, PriceConstraints constraint, double timeLimit) {
+		super(domain, bidders, allocation, constraint, timeLimit);
 		this.bids = bids;
 	}
 

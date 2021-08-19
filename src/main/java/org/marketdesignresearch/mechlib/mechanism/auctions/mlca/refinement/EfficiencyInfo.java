@@ -18,7 +18,7 @@ public class EfficiencyInfo {
 	private final boolean converged;
 
 	/**
-	 * Efficiency informations about each economy.
+	 * Efficiency information about each economy.
 	 */
 	@Getter
 	private final LinkedHashMap<ElicitationEconomy, ElicitationEconomyEfficiency> elicitationEconomyEfficiency;

@@ -10,7 +10,7 @@ import lombok.ToString;
 
 /**
  * A default implementation for the PricedAuctionRound interface. It is based on
- * {@link DefaultAuctionRound} and handles most mendatory attributes of an
+ * {@link DefaultAuctionRound} and handles most mandatory attributes of an
  * AuctionRound.
  * 
  * @author Manuel Beyeler

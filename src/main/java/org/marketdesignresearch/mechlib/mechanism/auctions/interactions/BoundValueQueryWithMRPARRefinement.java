@@ -18,7 +18,7 @@ import org.marketdesignresearch.mechlib.core.price.Prices;
 public interface BoundValueQueryWithMRPARRefinement extends BoundValueQuery {
 
 	/**
-	 * @return the provisional allocatedbundle for the MRPAR
+	 * @return the provisional allocated bundle for the MRPAR
 	 */
 	public Bundle getProvisionalAllocation();
 

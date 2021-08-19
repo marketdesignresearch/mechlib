@@ -87,7 +87,7 @@ public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDeter
 						throw e3;
 					}
 					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 0);
-					// increase timelimit in case no solution was found with given timelimit
+					// increase time limit in case no solution was found with given time limit
 					return this.solveWinnerDetermination(timeout, factor * 2);
 				}
 			}

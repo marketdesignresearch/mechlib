@@ -21,7 +21,7 @@ import org.marketdesignresearch.mechlib.winnerdetermination.XORWinnerDeterminati
  * 
  * @author Manuel Beyeler
  */
-public class IntervalSizeEffiencyInfoCreator extends EfficiencyGuaranteeEfficiencyInfoCreator {
+public class IntervalSizeEfficiencyInfoCreator extends EfficiencyGuaranteeEfficiencyInfoCreator {
 
 	private final BigDecimal allocationValueGap;
 
@@ -32,7 +32,7 @@ public class IntervalSizeEffiencyInfoCreator extends EfficiencyGuaranteeEfficien
 	 *                            bound social welfare allocation of an allocation
 	 *                            to meet the second condition.
 	 */
-	public IntervalSizeEffiencyInfoCreator(BigDecimal efficiencyTolerance, BigDecimal allowedUncertainty) {
+	public IntervalSizeEfficiencyInfoCreator(BigDecimal efficiencyTolerance, BigDecimal allowedUncertainty) {
 		super(efficiencyTolerance);
 		this.allocationValueGap = allowedUncertainty;
 	}

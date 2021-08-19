@@ -29,11 +29,11 @@ public abstract class DefaultRefinementStrategy implements RefinementStrategy, R
 
 		for (RefinementType type : query.getRefinementTypes()) {
 			this.getRefinementInstrumentation().preRefinement(type, getBidder(), query.getLatestActiveBid(), refinedBid,
-					query.getPrices(), query.getProvisonalAllocation());
+					query.getPrices(), query.getProvisionalAllocation());
 			refinedBid = AutomatedRefiner.refine(type, this.getValueFunction(), query.getLatestActiveBid(), refinedBid,
-					query.getPrices(), query.getProvisonalAllocation(), BidderRandom.INSTANCE.getRandom());
+					query.getPrices(), query.getProvisionalAllocation(), BidderRandom.INSTANCE.getRandom());
 			this.getRefinementInstrumentation().postRefinement(type, this.getBidder(), query.getLatestActiveBid(),
-					refinedBid, query.getPrices(), query.getProvisonalAllocation());
+					refinedBid, query.getPrices(), query.getProvisionalAllocation());
 		}
 		return refinedBid;
 	}

@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The support vector setup (i.e. hyperparametes for the SVRs). Note that this
+ * The support vector setup (i.e. hyperparameters for the SVRs). Note that this
  * version is not normalized. Default setups for some Kernels for GSVM, LSVM and
  * MRVM domain are part of SATS where also these domains are defined.
  * 
@@ -41,7 +41,7 @@ public class SupportVectorSetup {
 	 * In some cases the values of a domain might be too high (or low) to be handled
 	 * properly by this SVR formulation. Therefore you might scale them (value *
 	 * valueScalingFactor) by a fixed amount such that you still have full control
-	 * over all hyperparamters
+	 * over all hyperparameters
 	 */
 	@Getter
 	@Setter

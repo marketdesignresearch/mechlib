@@ -23,7 +23,7 @@ public class MRPAR_DIAR_RefinementRoundInfoCreator extends BidderRefinementRound
 		// Linked Hash set - the order of the refinement is deterministic
 		LinkedHashSet<RefinementType> refinements = new LinkedHashSet<>();
 		refinements.add(new MRPARRefinement());
-		refinements.add(new DIARRefinement(calulateDIAREpsilon(bids)));
+		refinements.add(new DIARRefinement(calculateDIAREpsilon(bids)));
 
 		LinkedHashMap<Bidder, LinkedHashSet<RefinementType>> result = new LinkedHashMap<>();
 
@@ -34,7 +34,7 @@ public class MRPAR_DIAR_RefinementRoundInfoCreator extends BidderRefinementRound
 		return result;
 	}
 
-	private BigDecimal calulateDIAREpsilon(BundleBoundValueBids bids) {
+	private BigDecimal calculateDIAREpsilon(BundleBoundValueBids bids) {
 		BigDecimal epsilon = BigDecimal.ZERO;
 		for (Bidder b : bids.getBidders()) {
 			BundleBoundValueBid bid = bids.getBid(b);

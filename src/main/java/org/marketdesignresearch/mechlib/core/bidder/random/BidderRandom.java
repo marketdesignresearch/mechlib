@@ -12,7 +12,7 @@ public enum BidderRandom {
 
 	public Random getRandom() {
 		if (threadLocal.get() == null) {
-			log.warn("Random seed not set. Results will not be reproducable");
+			log.warn("Random seed not set. Results will not be reproducible");
 			threadLocal.set(new Random());
 		}
 		return threadLocal.get();

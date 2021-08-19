@@ -19,7 +19,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * A bundle is a collection of goods with corresponding quantities. Often, in
@@ -29,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__({ @PersistenceConstructor }))
 @EqualsAndHashCode
-@Slf4j
 public final class Bundle {
 	/**
 	 * The empty bundle.

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
+public class MultiNormCorePaymentRule extends BaseCorePaymentRule {
 	private final PaymentNorm primaryNorm;
 	private final PaymentNorm[] additionalNorms;
 	private final IMIP program;

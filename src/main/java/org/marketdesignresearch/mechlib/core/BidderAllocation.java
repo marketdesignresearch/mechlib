@@ -16,7 +16,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Immutable Wrapper for an allocation
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__({ @PersistenceConstructor }))
 @ToString
 @EqualsAndHashCode
-@Slf4j
 public final class BidderAllocation {
 	public static final BidderAllocation ZERO_ALLOCATION = new BidderAllocation(BigDecimal.ZERO, emptySet(),
 			emptySet());

@@ -14,8 +14,8 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 public class LinearPriceMaximizePricesMIP extends LinearPriceMIP {
 
 	public LinearPriceMaximizePricesMIP(Domain domain, List<UUID> bidders, Allocation allocation,
-			PriceConstraints constraint, double timelimit) {
-		super(domain, bidders, allocation, constraint, timelimit);
+			PriceConstraints constraint, double timeLimit) {
+		super(domain, bidders, allocation, constraint, timeLimit);
 	}
 
 	@Override

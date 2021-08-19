@@ -62,7 +62,7 @@ public class RefinementAuctionRoundBuilder extends AuctionRoundBuilder<BundleBou
 		// Validate submissions
 		interactions.entrySet()
 				.forEach(e -> ICEValidator.validateRefinement(original.get(e.getKey()), e.getValue().getBid(),
-						e.getValue().getPrices(), e.getValue().getProvisonalAllocation(),
+						e.getValue().getPrices(), e.getValue().getProvisionalAllocation(),
 						e.getValue().getRefinementTypes()));
 		// check if no new bids were added
 		// consistency of the bid was already validated before (i.e. if for every bundle

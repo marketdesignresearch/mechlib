@@ -45,17 +45,17 @@ public abstract class LinearPriceMIP implements MipInstrumentationable {
 	@Getter(AccessLevel.PROTECTED)
 	private Set<Bidder> bidders;
 	private PriceConstraints priceConstraint;
-	private double timelimit;
+	private double timeLimit;
 
 	private LinearPrices prices;
 
 	public LinearPriceMIP(Domain domain, List<UUID> bidders, Allocation allocation, PriceConstraints constraint,
-			double timelimit) {
+			double timeLimit) {
 		this.bidders = bidders.stream()
 				.map(id -> domain.getBidders().stream().filter(b -> b.getId().equals(id)).findAny().orElseThrow())
 				.collect(Collectors.toCollection(LinkedHashSet::new));
 		this.allocation = allocation;
-		this.timelimit = timelimit;
+		this.timeLimit = timeLimit;
 		this.priceConstraint = constraint;
 		this.createVariables(domain);
 	}
@@ -122,8 +122,8 @@ public abstract class LinearPriceMIP implements MipInstrumentationable {
 	}
 
 	protected LinearPrices solveMIP() {
-		if (timelimit > 0)
-			getMIP().setSolveParam(SolveParam.TIME_LIMIT, timelimit);
+		if (timeLimit > 0)
+			getMIP().setSolveParam(SolveParam.TIME_LIMIT, timeLimit);
 		getMIP().setSolveParam(SolveParam.CALCULATE_CONFLICT_SET, false);
 		this.instrumentation.preMIP(MipPurpose.REFINEMENT_PRICES.name(), getMIP());
 		IMIPResult result = CPLEXUtils.SOLVER.solve(getMIP());

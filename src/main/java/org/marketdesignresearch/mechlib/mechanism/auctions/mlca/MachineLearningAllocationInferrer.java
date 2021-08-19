@@ -20,7 +20,7 @@ public interface MachineLearningAllocationInferrer {
 	/**
 	 * @param domain  the domain
 	 * @param economy the economy (i.e main or marginal) that should be part of the
-	 *                WDP (or the allation)
+	 *                WDP (or the allocation)
 	 * @return the predicted efficient allocation for this economy.
 	 */
 	default Allocation getInferredEfficientAllocation(Domain domain, ElicitationEconomy economy) {
@@ -30,7 +30,7 @@ public interface MachineLearningAllocationInferrer {
 	/**
 	 * @param domain          the domain
 	 * @param economy         the economy (i.e main or marginal) that should be part
-	 *                        of the WDP (or the allation)
+	 *                        of the WDP (or the allocation)
 	 * @param excludedBundles a map of bundles that may not be allocated to the
 	 *                        bidder specified (limits the set of feasible
 	 *                        allocations).

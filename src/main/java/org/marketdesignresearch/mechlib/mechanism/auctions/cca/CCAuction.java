@@ -36,9 +36,9 @@ public class CCAuction extends ExactValueAuction {
 
 	/**
 	 * Creates a new CCA auction for the given domain. Setting initial prices to 0
-	 * and using the default PriceUpater of the {@link CCAClockPhase}
+	 * and using the default PriceUpdater of the {@link CCAClockPhase}
 	 * 
-	 * Default Outcomerule is {@link OutcomeRuleGenerator#CCG}.
+	 * Default OutcomeRule is {@link OutcomeRuleGenerator#CCG}.
 	 */
 	public CCAuction(Domain domain) {
 		this(domain, OutcomeRuleGenerator.CCG);
@@ -92,7 +92,7 @@ public class CCAuction extends ExactValueAuction {
 	 * 
 	 * @param proposeStartingPrices if set to true the proposed prices of
 	 *                              {@link Domain#proposeStartingPrices()} are used.
-	 *                              Otherwiese prices are set to 0.
+	 *                              Otherwise prices are set to 0.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices) {
 		super(domain, mechanismType, new CCAClockPhase(domain, proposeStartingPrices), null);
@@ -103,7 +103,7 @@ public class CCAuction extends ExactValueAuction {
 	 * 
 	 * @param proposeStartingPrices if set to true the proposed prices of
 	 *                              {@link Domain#proposeStartingPrices()} are used.
-	 *                              Otherwiese prices are set to 0.
+	 *                              Otherwise prices are set to 0.
 	 */
 	public CCAuction(Domain domain, OutcomeRuleGenerator mechanismType, boolean proposeStartingPrices,
 			PriceUpdater priceUpdater) {

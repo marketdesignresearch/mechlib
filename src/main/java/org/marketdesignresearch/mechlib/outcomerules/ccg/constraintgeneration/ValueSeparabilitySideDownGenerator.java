@@ -19,8 +19,7 @@ import org.marketdesignresearch.mechlib.core.bidder.Bidder;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.blockingallocation.BlockedBidders;
 import org.marketdesignresearch.mechlib.outcomerules.ccg.paymentrules.CorePaymentRule;
 
-public class ValueSeparabilitySideDownGenerator extends ValueSeparabilityGenerator
-		implements PartialConstraintGenerator {
+public class ValueSeparabilitySideDownGenerator extends ValueSeparabilityGenerator {
 
 	@Override
 	protected void investigateSubCoalition(Set<PotentialCoalition> blockingBidders,

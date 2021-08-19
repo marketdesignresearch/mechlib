@@ -19,8 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
- * An alternate final phase for iMLCA that uses the refinement process described by Lubin et. al. (2008).
- * The process is based on the MRPAR and the DIAR activity rule.
+ * An alternate final phase for iMLCA that uses the refinement process described
+ * by Lubin et. al. (2008). The process is based on the MRPAR and the DIAR
+ * activity rule.
  * 
  * @author Manuel Beyeler
  */
@@ -31,8 +32,9 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 	private transient EfficiencyInfo info;
 
 	/**
-	 * If set to true the refinement will also target the marginal economies (i.e. achieve the same efficiency guarantee for all marginal 
-	 * economies as for the main economies.
+	 * If set to true the refinement will also target the marginal economies (i.e.
+	 * achieve the same efficiency guarantee for all marginal economies as for the
+	 * main economies.
 	 */
 	private final boolean refineMarginalEconomies;
 
@@ -47,8 +49,10 @@ public class RefinementPhase implements AuctionPhase<BundleBoundValueBids> {
 	private List<ElicitationEconomy> allRefinementEconomies;
 
 	/**
-	 * @param refineMarginalEconomies if set to true the finement will also target the marginal economies
-	 * @param timeLimit the timelimit for a CPLEX problem whil generating linear prices
+	 * @param refineMarginalEconomies if set to true the refinement will also target
+	 *                                the marginal economies
+	 * @param timeLimit               the time limit for a CPLEX problem while
+	 *                                generating linear prices
 	 */
 	public RefinementPhase(boolean refineMarginalEconomies, double timeLimit) {
 		this(refineMarginalEconomies);

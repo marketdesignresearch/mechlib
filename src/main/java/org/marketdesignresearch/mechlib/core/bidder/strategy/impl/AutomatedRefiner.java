@@ -22,7 +22,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.Refineme
 public abstract class AutomatedRefiner<E extends RefinementType> {
 	/**
 	 * @param type                  refinement type
-	 * @param v                     the valuefunction
+	 * @param v                     the value function
 	 * @param activeBids            bids active at the beginning of this refinement
 	 *                              round
 	 * @param refinedBids           bids that might have been refined by a previous

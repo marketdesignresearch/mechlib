@@ -48,8 +48,8 @@ public class LinearPriceMinimizePricesNormMIP extends LinearPriceMIP {
 	private BigDecimal priceSum;
 
 	public LinearPriceMinimizePricesNormMIP(Domain domain, List<UUID> bidders, Allocation allocation,
-			PriceConstraints constraint, BigDecimal priceSum, double timelimit) {
-		super(domain, bidders, allocation, constraint, timelimit);
+			PriceConstraints constraint, BigDecimal priceSum, double timeLimit) {
+		super(domain, bidders, allocation, constraint, timeLimit);
 
 		this.priceSum = priceSum;
 	}

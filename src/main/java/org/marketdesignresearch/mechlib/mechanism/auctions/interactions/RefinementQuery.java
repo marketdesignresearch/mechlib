@@ -7,7 +7,7 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
 /**
- * Bidders are asked to refine their active bids and sumbit new (possible
+ * Bidders are asked to refine their active bids and submit new (possible
  * update) bids for all bundles in {@link #getLatestActiveBid()} such that they
  * comply with the specified activity rules ({@link #getRefinementTypes()}).
  * 
@@ -23,7 +23,7 @@ public interface RefinementQuery extends TypedInteraction<BundleBoundValueBid> {
 	/**
 	 * @return the provisional allocation
 	 */
-	public Bundle getProvisonalAllocation();
+	public Bundle getProvisionalAllocation();
 
 	/**
 	 * @return current prices
@@ -31,7 +31,7 @@ public interface RefinementQuery extends TypedInteraction<BundleBoundValueBid> {
 	public Prices getPrices();
 
 	/**
-	 * @return lastest active bids
+	 * @return latest active bids
 	 */
 	public BundleBoundValueBid getLatestActiveBid();
 }

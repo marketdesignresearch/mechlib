@@ -51,7 +51,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 
 		BundleBoundValueBid returnBid = refinedBids.copy();
 
-		ImmutablePair<Bundle, BigDecimal> prefered = computePreferedBundle(b, activeBids, prices,
+		ImmutablePair<Bundle, BigDecimal> preferred = computePreferredBundle(b, activeBids, prices,
 				provisionalAllocation);
 
 		BigDecimal secondBestUtility = BigDecimal.valueOf(-Double.MAX_VALUE);
@@ -59,7 +59,7 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 
 		// find second best true utility and upper bound utility
 		for (BundleBoundValuePair bid : activeBids.getBundleBids()) {
-			if (!bid.getBundle().equals(prefered.left)) {
+			if (!bid.getBundle().equals(preferred.left)) {
 				BigDecimal utility = b.getValue(bid.getBundle()).subtract(prices.getPrice(bid.getBundle()).getAmount());
 				BigDecimal upperBoundUtility = refinedBids.getBidForBundle(bid.getBundle()).getUpperBound()
 						.subtract(prices.getPrice(bid.getBundle()).getAmount());
@@ -73,48 +73,49 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		}
 
 		// check for empty bundle if this is not the preferred one
-		if (prefered.left != null && !prefered.left.equals(Bundle.EMPTY)) {
+		if (preferred.left != null && !preferred.left.equals(Bundle.EMPTY)) {
 			secondBestUtility = BigDecimal.ZERO.max(secondBestUtility);
 			secondBestUpperBoundUtility = BigDecimal.ZERO.max(secondBestUpperBoundUtility);
 		}
 
-		BigDecimal breakpointUtility = secondBestUtility.add(prefered.right.subtract(secondBestUtility)
+		BigDecimal breakpointUtility = secondBestUtility.add(preferred.right.subtract(secondBestUtility)
 				.multiply(BigDecimal.valueOf(this.getNextGuassianLikeDouble(random))));
 
-		BigDecimal preferedLowerBoundUtility = BigDecimal.ZERO;
-		if (prefered.left != null) {
-			preferedLowerBoundUtility = refinedBids.getBidForBundle(prefered.left).getLowerBound()
-					.subtract(prices.getPrice(prefered.left).getAmount());
+		BigDecimal preferredLowerBoundUtility = BigDecimal.ZERO;
+		if (preferred.left != null) {
+			preferredLowerBoundUtility = refinedBids.getBidForBundle(preferred.left).getLowerBound()
+					.subtract(prices.getPrice(preferred.left).getAmount());
 		}
 
 		// Do not refine more than needed
-		breakpointUtility = breakpointUtility.max(preferedLowerBoundUtility);
+		breakpointUtility = breakpointUtility.max(preferredLowerBoundUtility);
 		breakpointUtility = breakpointUtility.min(secondBestUpperBoundUtility);
 
 		// Make sure the strictness of MRPAR holds for candidate passing trade <>
 		// provisional trade
 		// even if local delta is set to 0
-		if (prefered.left != null && !prefered.left.equals(provisionalAllocation)) {
+		if (preferred.left != null && !preferred.left.equals(provisionalAllocation)) {
 			localStrictDelta = localStrictDelta.add(strictEta);
-		} else if (provisionalAllocation != null && !provisionalAllocation.equals(prefered.left)) {
+		} else if (provisionalAllocation != null && !provisionalAllocation.equals(preferred.left)) {
 			localStrictDelta = localStrictDelta.add(strictEta);
 		}
 
-		if (prefered.left != null) {
-			BigDecimal newMin = breakpointUtility.add(prices.getPrice(prefered.left).getAmount()).add(localStrictDelta);
+		if (preferred.left != null) {
+			BigDecimal newMin = breakpointUtility.add(prices.getPrice(preferred.left).getAmount())
+					.add(localStrictDelta);
 			// Do not lower the min even if breakpointUtility would suggest so
-			newMin = newMin.max(refinedBids.getBidForBundle(prefered.left).getLowerBound());
+			newMin = newMin.max(refinedBids.getBidForBundle(preferred.left).getLowerBound());
 			// Make sure bids are still truthful
-			newMin = newMin.min(b.getValue(prefered.left));
+			newMin = newMin.min(b.getValue(preferred.left));
 
-			MRPARRefiner.addAmount(newMin.subtract(refinedBids.getBidForBundle(prefered.left).getLowerBound()));
+			MRPARRefiner.addAmount(newMin.subtract(refinedBids.getBidForBundle(preferred.left).getLowerBound()));
 			returnBid.addBundleBid(
-					new BundleBoundValuePair(newMin, refinedBids.getBidForBundle(prefered.left).getUpperBound(),
-							prefered.left, UUID.randomUUID().toString()));
+					new BundleBoundValuePair(newMin, refinedBids.getBidForBundle(preferred.left).getUpperBound(),
+							preferred.left, UUID.randomUUID().toString()));
 		}
 
 		// find bundles that may need to be refined (lower the upper bounds)
-		Set<Bundle> witnessTrades = this.getWitnessTrades(prefered.left, refinedBids, prices);
+		Set<Bundle> witnessTrades = this.getWitnessTrades(preferred.left, refinedBids, prices);
 
 		for (Bundle bundle : witnessTrades) {
 			BigDecimal delta = localStrictDelta;
@@ -137,43 +138,43 @@ public class MRPARRefiner extends AutomatedRefiner<MRPARRefinement> {
 		return returnBid;
 	}
 
-	public ImmutablePair<Bundle, BigDecimal> computePreferedBundle(ValueFunction b,
+	public ImmutablePair<Bundle, BigDecimal> computePreferredBundle(ValueFunction b,
 			BundleValueBid<BundleBoundValuePair> activeBids, Prices prices, Bundle provisionalAllocation) {
-		Bundle preferedBundle = null;
-		BigDecimal preferedUtility = BigDecimal.ZERO;
+		Bundle preferredBundle = null;
+		BigDecimal preferredUtility = BigDecimal.ZERO;
 
 		// find one bundle with the highest utility
 		for (BundleBoundValuePair pair : activeBids.getBundleBids()) {
 			BigDecimal utility = b.getValue(pair.getBundle()).subtract(prices.getPrice(pair.getBundle()).getAmount());
-			if (utility.compareTo(preferedUtility) > 0) {
-				preferedBundle = pair.getBundle();
-				preferedUtility = utility;
+			if (utility.compareTo(preferredUtility) > 0) {
+				preferredBundle = pair.getBundle();
+				preferredUtility = utility;
 			}
 		}
 
 		// break ties in preference for the provisional allocation, so MRPAR can be
 		// satisfied
 		if (!(provisionalAllocation.getTotalAmount() == 0) && b.getValue(provisionalAllocation)
-				.subtract(prices.getPrice(provisionalAllocation).getAmount()).compareTo(preferedUtility) >= 0) {
-			preferedBundle = provisionalAllocation;
+				.subtract(prices.getPrice(provisionalAllocation).getAmount()).compareTo(preferredUtility) >= 0) {
+			preferredBundle = provisionalAllocation;
 		}
-		return new ImmutablePair<>(preferedBundle, preferedUtility);
+		return new ImmutablePair<>(preferredBundle, preferredUtility);
 	}
 
-	private Set<Bundle> getWitnessTrades(Bundle preferedBundle, BundleValueBid<BundleBoundValuePair> refinedBids,
+	private Set<Bundle> getWitnessTrades(Bundle preferredBundle, BundleValueBid<BundleBoundValuePair> refinedBids,
 			Prices prices) {
 
-		BigDecimal minUtilityPreferedBundle = BigDecimal.ZERO;
-		if (preferedBundle != null) {
-			minUtilityPreferedBundle = refinedBids.getBidForBundle(preferedBundle).getLowerBound()
-					.subtract(prices.getPrice(preferedBundle).getAmount());
+		BigDecimal minUtilityPreferredBundle = BigDecimal.ZERO;
+		if (preferredBundle != null) {
+			minUtilityPreferredBundle = refinedBids.getBidForBundle(preferredBundle).getLowerBound()
+					.subtract(prices.getPrice(preferredBundle).getAmount());
 		}
 		Set<Bundle> witnessTrades = new LinkedHashSet<>();
 
 		for (BundleBoundValuePair bid : refinedBids.getBundleBids()) {
-			if (!bid.getBundle().equals(preferedBundle)) {
+			if (!bid.getBundle().equals(preferredBundle)) {
 				if (bid.getUpperBound().subtract(prices.getPrice(bid.getBundle()).getAmount())
-						.compareTo(minUtilityPreferedBundle) >= 0) {
+						.compareTo(minUtilityPreferredBundle) >= 0) {
 					witnessTrades.add(bid.getBundle());
 				}
 			}

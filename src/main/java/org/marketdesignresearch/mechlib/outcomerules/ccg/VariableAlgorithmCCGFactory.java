@@ -12,10 +12,7 @@ import org.marketdesignresearch.mechlib.outcomerules.ccg.referencepoint.VCGRefer
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
-public class VariableAlgorithmCCGFactory extends ConfigurableCCGFactory implements MechanismFactory {
-	/**
-	 * 
-	 */
+public class VariableAlgorithmCCGFactory extends ConfigurableCCGFactory {
 
 	public VariableAlgorithmCCGFactory(ReferencePointFactory rpFactory,
 			BlockingAllocationFinder blockingAllocationFinder, Set<ConstraintGenerationAlgorithm> algorithms) {

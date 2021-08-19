@@ -104,7 +104,7 @@ public class AllocationLimitConstraint {
 	 * {@link AllocationLimit#getAdditionalVariables()}.
 	 * 
 	 * However, note that you need to make sure that your variable (names) are
-	 * unique. Of course you can use the same varialbe in multiple constraints and
+	 * unique. Of course you can use the same variable in multiple constraints and
 	 * terms to formulate your problem.
 	 */
 	@ToString(callSuper = true)
@@ -177,7 +177,7 @@ public class AllocationLimitConstraint {
 	}
 
 	/**
-	 * add a new linear term with an addiationl JOpt variable
+	 * add a new linear term with an additional JOpt variable
 	 * 
 	 * @param coefficient the coefficient
 	 * @param variable    the variable
