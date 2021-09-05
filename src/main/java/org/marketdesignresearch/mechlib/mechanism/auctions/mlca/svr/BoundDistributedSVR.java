@@ -4,7 +4,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.MachineLearningAllocationInferrer;
 
 /**
- * See {@link DistributedSVR}. This version works with {@link BundleBoundValueBids}.
+ * See {@link DistributedSVR}. This version works with
+ * {@link BundleBoundValueBids}.
  * 
  * @author Manuel Beyeler
  */

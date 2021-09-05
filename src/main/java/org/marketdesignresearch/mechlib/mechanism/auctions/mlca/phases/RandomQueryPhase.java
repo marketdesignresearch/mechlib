@@ -10,16 +10,18 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRoundBuilder;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 /**
- * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries} random value queries.
+ * Initial phase of MLCA. Each bidder receives {@link #numberOfInitialQueries}
+ * random value queries.
  * 
- * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
- * are issued.
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries
+ * for allocatable bundles are issued.
  * 
  * @author Manuel Beyeler
  *
@@ -45,7 +47,7 @@ public abstract class RandomQueryPhase<T extends BundleValueBids<?>> implements 
 
 	@Override
 	public AuctionRoundBuilder<T> createNextRoundBuilder(Auction<T> auction) {
-		Random random = auction.getCurrentRoundRandom();
+		Random random = BidderRandom.INSTANCE.getRandom();
 		Map<Bidder, Set<Bundle>> bidderRestrictedBids = new LinkedHashMap<>();
 
 		for (Bidder b : auction.getDomain().getBidders()) {

@@ -4,8 +4,8 @@ import org.marketdesignresearch.mechlib.core.bid.demand.DemandBid;
 import org.marketdesignresearch.mechlib.core.price.Prices;
 
 /**
- * In a demand query a bidder must specify which bundle is his most prefered 
- * bundle for the given prices. A bidder must submit a DemandBid
+ * In a demand query a bidder must specify which bundle is his preferred bundle
+ * for the given prices. A bidder must submit a DemandBid.
  * 
  * @author Manuel Beyeler
  * @see DemandBid

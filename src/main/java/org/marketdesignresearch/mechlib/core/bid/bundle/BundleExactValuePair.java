@@ -92,4 +92,12 @@ public class BundleExactValuePair {
 		return new BundleExactValuePair(this.getAmount().max(otherBid.getAmount()), this.getBundle(),
 				UUID.randomUUID().toString());
 	}
+
+	public BundleExactValuePair exp() {
+		return new BundleExactValuePair(BigDecimal.valueOf(Math.exp(getAmount().doubleValue())), bundle, id);
+	}
+
+	public BundleExactValuePair add(BigDecimal valueOf) {
+		return new BundleExactValuePair(getAmount().add(valueOf), bundle, id);
+	}
 }

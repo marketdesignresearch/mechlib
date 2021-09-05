@@ -1,7 +1,6 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValueBid;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleBoundValuePair;
@@ -13,8 +12,8 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 /**
- * Trains support vectors based on given bids and kernel.
- * Formulation by Smola and Schoelkopf 2003
+ * Trains support vectors based on given bids and kernel. Formulation by Smola
+ * and Schoelkopf 2003
  * 
  * @author Gianluca Brero
  */
@@ -44,10 +43,9 @@ public class BoundSupportVectorMIP extends SupportVectorMIP<BundleBoundValueBid>
 			labeledDataVariables.put(indexQuery, v1);
 			labeledDataVariables.put(-indexQuery, v2);
 
-			double spread = bid.getUpperBound().subtract(bid.getLowerBound())
-					.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).doubleValue();
-			double mean = bid.getUpperBound().add(bid.getLowerBound())
-					.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).doubleValue();
+			double spread = bid.getUpperBound().subtract(bid.getLowerBound()).divide(BigDecimal.valueOf(2))
+					.doubleValue();
+			double mean = bid.getUpperBound().add(bid.getLowerBound()).divide(BigDecimal.valueOf(2)).doubleValue();
 			mipWrapper.addObjectiveTerm(-spread - this.getInsensitivityThreshold(),
 					labeledDataVariables.get(indexQuery));
 			mipWrapper.addObjectiveTerm(-spread - this.getInsensitivityThreshold(),

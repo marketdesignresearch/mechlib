@@ -19,7 +19,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
 
 /**
- * WDP based on SVR linear kernel 
+ * WDP based on SVR linear kernel
  * 
  * @author Gianluca Brero
  * @author Manuel Beyeler

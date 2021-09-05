@@ -48,8 +48,8 @@ public class BundleValue implements Comparable<BundleValue>, Serializable {
 	private final String id;
 
 	public BundleValue(BigDecimal amount, Set<Good> bundle, String id) {
-		this(amount, new Bundle((LinkedHashMap<Good, Integer>) bundle.stream().collect(Collectors.toMap(good -> good, good -> 1, (e1, e2) -> e1, LinkedHashMap::new))), id)
-				;
+		this(amount, new Bundle((LinkedHashMap<Good, Integer>) bundle.stream()
+				.collect(Collectors.toMap(good -> good, good -> 1, (e1, e2) -> e1, LinkedHashMap::new))), id);
 	}
 
 	public BundleValue(BigDecimal amount, Bundle bundle) {

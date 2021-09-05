@@ -4,8 +4,8 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 
 /**
- * The supplementary phase of the combinatorial clock auction. Normally
- * a supplementary phase has only 1 round.
+ * The supplementary phase of the combinatorial clock auction. Normally a
+ * supplementary phase has only 1 round.
  * 
  * @author Manuel Beyeler
  */

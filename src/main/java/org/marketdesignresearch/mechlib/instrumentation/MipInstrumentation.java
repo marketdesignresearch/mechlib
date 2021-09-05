@@ -20,12 +20,12 @@ public class MipInstrumentation {
 	public void preMIP(String mipPurpose, IMIP mip) {
 	}
 
-	public void postMIP(String mipPurpose, IMIP mip, IMIPResult result, Allocation bestAllocation,
+	public void postMIP(String mipPurpose, Object mipCaller, IMIP mip, IMIPResult result, Allocation bestAllocation,
 			List<Allocation> poolAllocations) {
 	}
 
-	public void postMIP(String mipPurpose, IMIP mip, IMIPResult result) {
-		this.postMIP(mipPurpose, mip, result, Allocation.EMPTY_ALLOCATION, new ArrayList<>());
+	public void postMIP(String mipPurpose, Object mipCaller, IMIP mip, IMIPResult result) {
+		this.postMIP(mipPurpose, mipCaller, mip, result, Allocation.EMPTY_ALLOCATION, new ArrayList<>());
 	}
 
 	public enum MipPurpose {

@@ -16,7 +16,7 @@ import edu.harvard.econcs.jopt.solver.mip.MIPWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ParameterizedCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
+public class ParameterizedCorePaymentRule extends BaseCorePaymentRule {
 
 	private final List<CorePaymentNorm> objectiveNorms;
 	private final IMIP program;

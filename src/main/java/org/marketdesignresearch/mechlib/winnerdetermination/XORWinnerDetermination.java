@@ -24,7 +24,7 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
  */
 public class XORWinnerDetermination extends BidBasedWinnerDetermination {
 
-	private final MIPWrapper winnerDeterminationProgram;
+	protected final MIPWrapper winnerDeterminationProgram;
 
 	public XORWinnerDetermination(BundleValueBids<?> bids) {
 		super(bids);

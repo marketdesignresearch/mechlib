@@ -18,6 +18,7 @@ import lombok.Setter;
 
 /**
  * A support vector regression (SVR) kernel.
+ * 
  * @author Manuel Beyeler
  */
 public abstract class Kernel implements MipInstrumentationable {
@@ -41,11 +42,14 @@ public abstract class Kernel implements MipInstrumentationable {
 	public abstract Double getValue(Bundle bundle, Bundle bundle2);
 
 	/**
-	 * Returns the allocation for the given domain and economy with the highest learned value, while the given excludedBundles are not part of this allocation. 
-	 * @param domain the domain
-	 * @param economy the economy (from the given domain)
-	 * @param supportVectorsPerBidder 
-	 * @param excludedBundles the bundles that must not be allocated
+	 * Returns the allocation for the given domain and economy with the highest
+	 * learned value, while the given excludedBundles are not part of this
+	 * allocation.
+	 * 
+	 * @param domain                  the domain
+	 * @param economy                 the economy (from the given domain)
+	 * @param supportVectorsPerBidder
+	 * @param excludedBundles         the bundles that must not be allocated
 	 * @return the inferred allocation
 	 */
 	public Allocation getAllocationWithExcludedBundles(Domain domain, ElicitationEconomy economy,
@@ -62,7 +66,6 @@ public abstract class Kernel implements MipInstrumentationable {
 	protected abstract WinnerDetermination createWinnerDetermination(Domain domain, ElicitationEconomy economy,
 			BundleExactValueBids supportVectorsPerBidder, Map<Bidder, Set<Bundle>> excludedBids);
 
-	
 	/**
 	 * @return the type of this kernel.
 	 */

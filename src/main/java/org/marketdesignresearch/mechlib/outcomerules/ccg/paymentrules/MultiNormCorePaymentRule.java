@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements CorePaymentRule {
+public class MultiNormCorePaymentRule extends BaseCorePaymentRule {
 	private final PaymentNorm primaryNorm;
 	private final PaymentNorm[] additionalNorms;
 	private final IMIP program;
@@ -52,7 +52,8 @@ public class MultiNormCorePaymentRule extends BaseCorePaymentRule implements Cor
 				}
 				getMipInstrumentation().preMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram);
 				IMIPResult mipResult = CPLEXUtils.SOLVER.solve(tempProgram);
-				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), tempProgram, mipResult);
+				getMipInstrumentation().postMIP(MipInstrumentation.MipPurpose.PAYMENT.name(), this, tempProgram,
+						mipResult);
 				MetaInfo tempMetaInfo = new MetaInfo();
 				tempMetaInfo.setNumberOfQPs(1);
 				result = primaryNorm.adaptProgram(allocation.getWinners(), mipResult, tempMetaInfo);

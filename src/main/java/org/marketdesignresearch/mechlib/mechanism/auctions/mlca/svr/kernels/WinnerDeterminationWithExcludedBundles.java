@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableMap;
 
 import edu.harvard.econcs.jopt.solver.IMIP;
 import edu.harvard.econcs.jopt.solver.ISolution;
+import edu.harvard.econcs.jopt.solver.SolveParam;
 import edu.harvard.econcs.jopt.solver.mip.CompareType;
 import edu.harvard.econcs.jopt.solver.mip.Constraint;
 import edu.harvard.econcs.jopt.solver.mip.Variable;
@@ -37,7 +38,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Kernel WDP that excludes certain allocation (based on allocated bundles) from the feasible set of allocations.
+ * Kernel WDP that excludes certain allocation (based on allocated bundles) from
+ * the feasible set of allocations.
  * 
  * @author Gianluca Brero
  * @author Manuel Beyeler
@@ -45,8 +47,55 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class WinnerDeterminationWithExcludedBundles extends WinnerDetermination {
 
+	@Override
+	protected Allocation solveWinnerDetermination() {
+		if (this.getTimeLimit() > 0) {
+			return this.solveWinnerDetermination(this.getTimeLimit(), 1);
+		} else {
+			try {
+				return super.solveWinnerDetermination();
+			} catch (RuntimeException e) {
+				this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
+				try {
+					return super.solveWinnerDetermination();
+				} catch (RuntimeException e2) {
+					this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+					return super.solveWinnerDetermination();
+				}
+			}
+		}
+	}
+
+	protected Allocation solveWinnerDetermination(double timeout, int factor) {
+
+		this.setTimeLimit(timeout * factor);
+
+		try {
+			return super.solveWinnerDetermination();
+		} catch (RuntimeException e) {
+			this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 3);
+			try {
+				return super.solveWinnerDetermination();
+			} catch (RuntimeException e2) {
+				try {
+					this.getMIP().setSolveParam(SolveParam.OPTIMALITY_TARGET, 0);
+					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 4);
+					return super.solveWinnerDetermination();
+				} catch (RuntimeException e3) {
+					if (factor > 16) {
+						throw e3;
+					}
+					this.getMIP().setSolveParam(SolveParam.LP_OPTIMIZATION_ALG, 0);
+					// increase time limit in case no solution was found with given time limit
+					return this.solveWinnerDetermination(timeout, factor * 2);
+				}
+			}
+		}
+	}
+
 	private static final double DEFAULT_EPSILON = 0d;
-	
+
 	@Getter(AccessLevel.PACKAGE)
 	protected Map<UUID, Map<Good, Variable>> bidderGoodVariables = new LinkedHashMap<>();
 

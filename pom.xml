@@ -6,7 +6,7 @@
 
     <groupId>org.marketdesignresearch</groupId>
     <artifactId>mechlib</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -21,7 +21,7 @@
             <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
         </license>
     </licenses>
-
+    
     <developers>
         <developer>
             <name>Fabio Isler</name>

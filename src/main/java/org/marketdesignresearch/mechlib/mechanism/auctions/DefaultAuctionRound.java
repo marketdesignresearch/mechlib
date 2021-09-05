@@ -9,11 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Default Auction round that contains attributes for all mendatory auction state fields.
+ * Default Auction round that contains attributes for all mandatory auction
+ * state fields.
  * 
  * @author Manuel Beyeler
  *
- * @param <BB> The bundle bid type of this AuctionRound 
+ * @param <BB> The bundle bid type of this AuctionRound
  */
 @ToString
 @EqualsAndHashCode
@@ -28,7 +29,7 @@ public abstract class DefaultAuctionRound<BB extends BundleValueBids<?>> impleme
 	private final int auctionPhaseRoundNumber;
 
 	/**
-	 * Creates an AuctionRound and sets all mendatory state fields corresponding to 
+	 * Creates an AuctionRound and sets all mandatory state fields corresponding to
 	 * the current state of the given auction.
 	 * 
 	 * @param auction the Auction where this AuctionRound should belong to

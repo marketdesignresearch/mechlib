@@ -25,9 +25,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * The clock phase of the combinatorial clock auction.
- * This phase will finish if there is no over demand. 
- * A {@link PriceUpdater} is used to compute prices for the next round
+ * The clock phase of the combinatorial clock auction. This phase will finish if
+ * there is no over demand. A {@link PriceUpdater} is used to compute prices for
+ * the next round
  * 
  * The default price updater is the SimpleRelativePriceUpdate
  * 

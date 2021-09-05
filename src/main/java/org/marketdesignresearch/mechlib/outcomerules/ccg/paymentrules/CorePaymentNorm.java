@@ -14,7 +14,8 @@ public interface CorePaymentNorm extends MipInstrumentationable {
 	 * respect to the norm is added.
 	 *
 	 * @param program
-	 * @return a Payment vector that minimizes the distances regarding this norm and a given reference Point
+	 * @return a Payment vector that minimizes the distances regarding this norm and
+	 *         a given reference Point
 	 */
 	Payment minimizeDistance(IMIP program);
 

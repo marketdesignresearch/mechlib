@@ -3,9 +3,12 @@ package org.marketdesignresearch.mechlib.core.bidder.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulDemandQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulExactValueQueryStrategy;
-import org.marketdesignresearch.mechlib.core.bidder.strategy.truthful.TruthfulProfitMaxQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulBoundValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulConvergenceStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulDemandQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulExactValueQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulProfitMaxQueryStrategy;
+import org.marketdesignresearch.mechlib.core.bidder.strategy.impl.TruthfulRefinementStrategy;
 
 public class DefaultStrategyHandler {
 
@@ -18,6 +21,10 @@ public class DefaultStrategyHandler {
 		defaultStrategies.put(DemandQueryStrategy.class, TruthfulDemandQueryStrategy.class);
 		defaultStrategies.put(ExactValueQueryStrategy.class, TruthfulExactValueQueryStrategy.class);
 		defaultStrategies.put(ProfitMaxStrategy.class, TruthfulProfitMaxQueryStrategy.class);
+		defaultStrategies.put(BoundValueQueryWithMRPARRefinementStrategy.class, TruthfulBoundValueQueryStrategy.class);
+		defaultStrategies.put(RefinementStrategy.class, TruthfulRefinementStrategy.class);
+		defaultStrategies.put(BoundValueQueryStrategy.class, TruthfulBoundValueQueryStrategy.class);
+		defaultStrategies.put(ConvergenceStrategy.class, TruthfulConvergenceStrategy.class);
 	}
 
 	/**
