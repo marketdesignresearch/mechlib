@@ -29,10 +29,11 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * A bidder specific allocation limit. Using this allocation limit it is possible to restrict 
- * a bidders final allocation using linear constraints on Goods. These allocation limits are
- * automatically respected by any WDP in mechlib and it is possibly to add them in a very 
- * generic way to any other kind of WDP problem.
+ * A bidder specific allocation limit. Using this allocation limit it is
+ * possible to restrict a bidders final allocation using linear constraints on
+ * Goods. These allocation limits are automatically respected by any WDP in
+ * mechlib and it is possibly to add them in a very generic way to any other
+ * kind of WDP problem.
  * 
  * Note that an allocation limit is always bidder and domain specific.
  * 
@@ -49,13 +50,13 @@ public abstract class AllocationLimit {
 	private List<AllocationLimitConstraint> constraints = new ArrayList<>();
 	/**
 	 * Additional (JOpt) Variables that do not correspond to goods but may be used
-	 * to formulate more complicated linear constraint. When you implement a new
-	 * WDP that respects AllocationLimits make sure to take these variables into
-	 * account and possibly add them to the JOpt problem.
+	 * to formulate more complicated linear constraint. When you implement a new WDP
+	 * that respects AllocationLimits make sure to take these variables into account
+	 * and possibly add them to the JOpt problem.
 	 */
 	@Getter
 	private LinkedHashSet<Variable> additionalVariables = new LinkedHashSet<>();
-	
+
 	/**
 	 * A MIP that is used to verify if a certain bundle is allocatable with respect
 	 * to this AllocationLimit
@@ -64,8 +65,8 @@ public abstract class AllocationLimit {
 	 * @see #getUniformRandomBundle(Random, List)
 	 */
 	private IMIP validationMIP;
-	private Map<Good,Variable> validationGoodVariables = new HashMap<>();
-	
+	private Map<Good, Variable> validationGoodVariables = new HashMap<>();
+
 	/**
 	 * @param goodList all goods in the respective domain
 	 */
@@ -73,10 +74,10 @@ public abstract class AllocationLimit {
 		this.validationMIP = MIPWrapper.makeNewMaxMIP();
 		this.validationMIP.setSolveParam(SolveParam.CALCULATE_CONFLICT_SET, false);
 		this.validationMIP.setSolveParam(SolveParam.CONSTRAINT_BACKOFF_LIMIT, 0);
-		
+
 		int varCount = 1;
-		for(Good good : goodList) {
-			Variable var = new Variable("ALGood"+(varCount++), VarType.INT, 0, good.getQuantity());
+		for (Good good : goodList) {
+			Variable var = new Variable("ALGood" + (varCount++), VarType.INT, 0, good.getQuantity());
 			this.validationMIP.add(var);
 			this.validationMIP.addObjectiveTerm(1, var);
 			this.validationGoodVariables.put(good, var);
@@ -87,8 +88,7 @@ public abstract class AllocationLimit {
 	 * Default AllocationLimit which allows a bidder to win any bundle.
 	 */
 	public static AllocationLimit NO = new NoAllocationLimit();
-			
-			
+
 	public static final class NoAllocationLimit extends AllocationLimit {
 		protected NoAllocationLimit() {
 			super(new ArrayList<>());
@@ -98,7 +98,7 @@ public abstract class AllocationLimit {
 		public boolean validate(Bundle bundle) {
 			return true;
 		}
-		
+
 		public boolean validateDomainCompatiblity(List<? extends Good> domainGoods) {
 			return true;
 		}
@@ -116,6 +116,7 @@ public abstract class AllocationLimit {
 
 	/**
 	 * Add linear constraints on goods for this AllocationLimit
+	 * 
 	 * @param constraint constraint to add
 	 * @see AllocationLimitConstraint
 	 */
@@ -129,39 +130,42 @@ public abstract class AllocationLimit {
 	}
 
 	/**
-	 * Calculate the number of allocatable bundles (i.e. the size of the feasible set of bundles
-	 * with respect to this AllocationLimit).
+	 * Calculate the number of allocatable bundles (i.e. the size of the feasible
+	 * set of bundles with respect to this AllocationLimit).
+	 * 
 	 * @param startingSpace
 	 * @return
 	 */
 	public abstract int calculateAllocationBundleSpace(List<? extends Good> startingSpace);
 
-	
 	/**
-	 * Samples a bundle uniformly at random from the set resulting from the intersection of the 
-	 * set of feasible bundles with respect to this AllocationLimit and the bundle space induced
-	 * by the given list of goods
+	 * Samples a bundle uniformly at random from the set resulting from the
+	 * intersection of the set of feasible bundles with respect to this
+	 * AllocationLimit and the bundle space induced by the given list of goods
 	 * 
-	 * @param random The random object used to sample the bundle 
-	 * @param goods The returned bundle is limited to contain only goods from this list
+	 * @param random The random object used to sample the bundle
+	 * @param goods  The returned bundle is limited to contain only goods from this
+	 *               list
 	 * @return the sampled bundle
 	 */
 	public abstract Bundle getUniformRandomBundle(Random random, List<? extends Good> goods);
 
 	/**
 	 * Validate whether a bundle is allocatable with respect this AllocationLimit
+	 * 
 	 * @param bundle the bundle to validate
 	 * @return true if this bundle is allocatable, otherwise false
 	 */
 	public boolean validate(Bundle bundle) {
-		Preconditions.checkArgument(this.validateDomainCompatiblity(bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toList())));
+		Preconditions.checkArgument(this.validateDomainCompatiblity(
+				bundle.getBundleEntries().stream().map(BundleEntry::getGood).collect(Collectors.toList())));
 		IMIP testMIP = this.validationMIP.typedClone();
-		for(Map.Entry<Good, Variable> entry : this.validationGoodVariables.entrySet()) {
-			Constraint c = new Constraint(CompareType.EQ,bundle.countGood(entry.getKey()));
+		for (Map.Entry<Good, Variable> entry : this.validationGoodVariables.entrySet()) {
+			Constraint c = new Constraint(CompareType.EQ, bundle.countGood(entry.getKey()));
 			c.addTerm(1, entry.getValue());
 			testMIP.add(c);
 		}
-		
+
 		try {
 			CPLEXUtils.SOLVER.solve(testMIP);
 			return true;

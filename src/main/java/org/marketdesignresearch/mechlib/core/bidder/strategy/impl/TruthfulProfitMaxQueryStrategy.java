@@ -1,4 +1,4 @@
-package org.marketdesignresearch.mechlib.core.bidder.strategy.truthful;
+package org.marketdesignresearch.mechlib.core.bidder.strategy.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -12,6 +12,7 @@ import org.marketdesignresearch.mechlib.core.bidder.strategy.ProfitMaxStrategy;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ProfitMaxQuery;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,7 @@ import lombok.extern.log4j.Log4j2;
 public class TruthfulProfitMaxQueryStrategy implements ProfitMaxStrategy {
 
 	@Setter
+	@Getter
 	private transient Bidder bidder;
 
 	@Override

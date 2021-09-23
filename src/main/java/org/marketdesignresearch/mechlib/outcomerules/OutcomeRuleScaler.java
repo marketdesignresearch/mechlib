@@ -37,7 +37,7 @@ public class OutcomeRuleScaler implements OutcomeRule {
 		// create Payment with original values
 		Payment newPayment = new Payment(originalOutcome.getPayment().getPaymentMap().entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey,
-						e -> new BidderPayment(e.getValue().getAmount().divide(this.scale, RoundingMode.HALF_UP)),
+						e -> new BidderPayment(e.getValue().getAmount().divide(this.scale, 10, RoundingMode.HALF_UP)),
 						(e1, e2) -> e2, LinkedHashMap::new)),
 				originalOutcome.getPayment().getMetaInfo());
 
@@ -55,7 +55,7 @@ public class OutcomeRuleScaler implements OutcomeRule {
 		if (originalOutcome.getAllocation().getPotentialCoalitions() != null) {
 			potentialCoalitions = originalOutcome.getAllocation().getPotentialCoalitions().stream()
 					.map(p -> new PotentialCoalition(p.getBundle(), p.getBidder(),
-							p.getValue().divide(this.scale, RoundingMode.HALF_UP)))
+							p.getValue().divide(this.scale, 10, RoundingMode.HALF_UP)))
 					.collect(Collectors.toCollection(LinkedHashSet::new));
 		}
 

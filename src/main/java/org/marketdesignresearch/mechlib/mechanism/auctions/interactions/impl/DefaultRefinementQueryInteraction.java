@@ -22,7 +22,7 @@ public class DefaultRefinementQueryInteraction extends DefaultInteraction<Bundle
 	@Getter
 	private final Set<RefinementType> refinementTypes;
 	@Getter
-	private final Bundle provisonalAllocation;
+	private final Bundle provisionalAllocation;
 	@Getter
 	private final Prices prices;
 	@Getter
@@ -33,7 +33,7 @@ public class DefaultRefinementQueryInteraction extends DefaultInteraction<Bundle
 			Bundle provisionalAllocation, Prices prices, BundleBoundValueBid latestActiveBids) {
 		super(bidder);
 		this.refinementTypes = refinementTypes;
-		this.provisonalAllocation = provisionalAllocation;
+		this.provisionalAllocation = provisionalAllocation;
 		this.prices = prices;
 		this.latestActiveBid = latestActiveBids;
 	}
@@ -43,7 +43,7 @@ public class DefaultRefinementQueryInteraction extends DefaultInteraction<Bundle
 			BundleBoundValueBid latestActiveBids) {
 		super(bidder, auction);
 		this.refinementTypes = refinementTypes;
-		this.provisonalAllocation = provisionalAllocation;
+		this.provisionalAllocation = provisionalAllocation;
 		this.prices = prices;
 		this.latestActiveBid = latestActiveBids;
 	}

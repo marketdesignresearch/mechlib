@@ -15,6 +15,7 @@ import org.marketdesignresearch.mechlib.core.Bundle;
 import org.marketdesignresearch.mechlib.core.allocationlimits.AllocationLimit;
 import org.marketdesignresearch.mechlib.core.bid.bundle.BundleValueBids;
 import org.marketdesignresearch.mechlib.core.bidder.Bidder;
+import org.marketdesignresearch.mechlib.core.bidder.random.BidderRandom;
 import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionPhase;
 import org.marketdesignresearch.mechlib.mechanism.auctions.AuctionRound;
@@ -30,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * The machine learning phase of MLCA. See Brero et. al. (2020) for details.
  * 
- * This phase respects {@link AllocationLimit}s. This means only ValueQueries for allocatable bundles 
- * are issued.
+ * This phase respects {@link AllocationLimit}s. This means only ValueQueries
+ * for allocatable bundles are issued.
  * 
  * @author Manuel Beyeler
  *
@@ -66,7 +67,7 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 					.forEach(bidder -> this.marginalEconomies.add(new ElicitationEconomy(auction.getDomain(), bidder)));
 		}
 
-		Map<Bidder, Set<Bundle>> restrictedBids = new LinkedHashMap<>();
+		Map<Bidder, Set<Bundle>> queries = new LinkedHashMap<>();
 		Map<UUID, List<ElicitationEconomy>> bidderMarginalsTemp = new LinkedHashMap<>();
 
 		for (int i = auction.getNumberOfRounds() - 1; i >= 0; i--) {
@@ -86,12 +87,13 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 				? this.numberOfMarginalQueriesPerRound
 				: this.getMaxQueries() - currentNumberOfQueries - 1;
 
+		Map<ElicitationEconomy, Allocation> infMarginalEconomies = new LinkedHashMap<>();
 		// Marginal Elicitation
 		for (Bidder bidder : auction.getDomain().getBidders()) {
 			log.info("Add marginal queries for Bidder {}", bidder.getName());
 
 			bidderMarginalsTemp.putIfAbsent(bidder.getId(), new ArrayList<>());
-			restrictedBids.putIfAbsent(bidder, new LinkedHashSet<>());
+			queries.putIfAbsent(bidder, new LinkedHashSet<>());
 
 			for (int i = 0; i < marginalQueries; i++) {
 				// If all marginals were processed refill marginal list
@@ -101,38 +103,50 @@ public abstract class MLQueryPhase<T extends BundleValueBids<?>> implements Auct
 
 				// choose random setting and remove from setting list
 				ElicitationEconomy economy = bidderMarginalsTemp.get(bidder.getId()).remove(
-						auction.getCurrentRoundRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
+						BidderRandom.INSTANCE.getRandom().nextInt(bidderMarginalsTemp.get(bidder.getId()).size()));
 
-				Allocation inferredEfficientAllocation = mlai
-						.getInferredEfficientAllocation(auction.getDomain(), economy,
-								Map.of(bidder, Stream.concat(
-												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
-														.stream().map(bb -> bb.getBundle()),
-												restrictedBids.get(bidder).stream())
-										.collect(Collectors.toCollection(LinkedHashSet::new))));
-				log.info(economy.toString() + " New bundle: "
-						+ inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
-				restrictedBids.get(bidder).add(inferredEfficientAllocation.getTradesMap().get(bidder).getBundle());
+				Bundle query = infMarginalEconomies
+						.computeIfAbsent(economy, e -> mlai.getInferredEfficientAllocation(auction.getDomain(), e))
+						.allocationOf(bidder).getBundle();
+				if (queries.get(bidder).contains(query)
+						|| auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
+
+					Allocation inferredEfficientAllocation = mlai.getInferredEfficientAllocation(auction.getDomain(),
+							economy,
+							Map.of(bidder,
+									Stream.concat(auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
+											.stream().map(bb -> bb.getBundle()), queries.get(bidder).stream())
+											.collect(Collectors.toCollection(LinkedHashSet::new))));
+					query = inferredEfficientAllocation.allocationOf(bidder).getBundle();
+				}
+				log.info(economy.toString() + " New bundle: " + query);
+				queries.get(bidder).add(query);
 			}
 		}
 
 		// Main Elicitation
+		Allocation infAllocationMain = mlai.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy);
 		for (Bidder bidder : auction.getDomain().getBidders()) {
-			Allocation infAllocation = mlai
-					.getInferredEfficientAllocation(
-							auction.getDomain(), this.mainEconomy, Map
-									.of(bidder, Stream
-											.concat(Stream.concat(
-													auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
-															.stream().map(bb -> bb.getBundle()),
-													restrictedBids.get(bidder).stream()), Stream.of(Bundle.EMPTY))
-											.collect(Collectors.toCollection(LinkedHashSet::new))));
-			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(),
-					infAllocation.getTradesMap().get(bidder).getBundle());
-			restrictedBids.get(bidder).add(infAllocation.getTradesMap().get(bidder).getBundle());
+
+			Bundle query = infAllocationMain.allocationOf(bidder).getBundle();
+
+			if (queries.get(bidder).contains(query)
+					|| auction.getLatestAggregatedBids().getBid(bidder).getBidForBundle(query) != null) {
+				Allocation infAllocation = mlai
+						.getInferredEfficientAllocation(auction.getDomain(), this.mainEconomy,
+								Map.of(bidder, Stream
+										.concat(Stream.concat(
+												auction.getLatestAggregatedBids().getBid(bidder).getBundleBids()
+														.stream().map(bb -> bb.getBundle()),
+												queries.get(bidder).stream()), Stream.of(Bundle.EMPTY))
+										.collect(Collectors.toCollection(LinkedHashSet::new))));
+				query = infAllocation.allocationOf(bidder).getBundle();
+			}
+			log.info("Bidder {}: Main Economy New bundle: {}", bidder.getName(), query);
+			queries.get(bidder).add(query);
 		}
 
-		return this.createConcreteAuctionRoundBuilder(auction, restrictedBids, bidderMarginalsTemp);
+		return this.createConcreteAuctionRoundBuilder(auction, queries, bidderMarginalsTemp);
 	}
 
 	protected abstract AuctionRoundBuilder<T> createConcreteAuctionRoundBuilder(Auction<T> auction,

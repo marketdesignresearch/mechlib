@@ -4,7 +4,9 @@ import org.marketdesignresearch.mechlib.core.bid.bundle.BundleExactValueBids;
 import org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr.kernels.Kernel;
 
 /**
- * See {@link DistributedSVR}. This version works with {@link BundleExactValueBids}.
+ * See {@link DistributedSVR}. This version works with
+ * {@link BundleExactValueBids}.
+ * 
  * @author Manuel Beyeler
  */
 public class ExactDistributedSVR extends DistributedSVR<BundleExactValueBids> {

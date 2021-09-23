@@ -20,7 +20,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Collection of BundleValueBids per bidder (i.e. holds all bids of all bidders in an auction).
+ * Collection of BundleValueBids per bidder (i.e. holds all bids of all bidders
+ * in an auction).
  * 
  * @author Manuel Beyeler
  *
@@ -83,7 +84,8 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 
 	/**
 	 * @param factor multiplication factor
-	 * @return a new BundleValueBids where each (bundle) value is multiplied with the given multiplication factor.
+	 * @return a new BundleValueBids where each (bundle) value is multiplied with
+	 *         the given multiplication factor.
 	 */
 	public abstract BundleValueBids<T> multiply(BigDecimal factor);
 
@@ -100,5 +102,25 @@ public abstract class BundleValueBids<T extends BundleValueBid<? extends BundleE
 				bidsPerGood.put(entry.getKey(), new BundleExactValueBid(bundleBids));
 		}
 		return new SingleItemBids(new BundleExactValueBids(bidsPerGood));
+	}
+	
+	public BundleExactValueBids getTrueValueBids() {
+		
+		Map<Bidder, BundleExactValueBid> bidMap = new LinkedHashMap<>();
+		for(Bidder b : this.getBidders()) {
+			bidMap.put(b, this.getTrueValueBid(b));
+		}
+		
+		return new BundleExactValueBids(bidMap);
+	}
+	
+	private BundleExactValueBid getTrueValueBid(Bidder b) {
+		Set<BundleExactValuePair> pairs = new LinkedHashSet<>();
+		
+		for(BundleExactValuePair oldPair : this.getBid(b).getBundleBids()) {
+			pairs.add(new BundleExactValuePair(b.getValue(oldPair.getBundle()), oldPair.getBundle(), oldPair.getId()));
+		}
+		
+		return new BundleExactValueBid(pairs);
 	}
 }

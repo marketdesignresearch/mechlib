@@ -1,6 +1,7 @@
 package org.marketdesignresearch.mechlib.mechanism.auctions.mlca.svr;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * MachineLearningAllocationInferrer. Trains the support vectors for all bidders 
+ * MachineLearningAllocationInferrer. Trains the support vectors for all bidders
  * and solved WDP based on the learned value functions.
  * 
  * @author Manuel Beyeler
@@ -33,6 +34,7 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 	@Getter
 	private final BundleExactValueBids supportVectorsPerBider;
 	private final Kernel kernel;
+	private final BigDecimal valueScalingFactor;
 	@Getter
 	@Setter
 	private MipInstrumentation mipInstrumentation;
@@ -41,10 +43,12 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 	public SupportVector(SupportVectorSetup setup, T bids, MipInstrumentation mipInstrumentation) {
 		this.mipInstrumentation = mipInstrumentation;
 		this.supportVectorsPerBider = new BundleExactValueBids();
+		this.valueScalingFactor = setup.getValueScalingFactor();
 
 		for (Map.Entry<Bidder, B> entry : bids.getBidMap().entrySet()) {
 			this.supportVectorsPerBider.setBid(entry.getKey(),
-					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(setup.getValueScalingFactor())).getVectors());
+					this.createSupportVectorMIP(setup, (B) entry.getValue().multiply(setup.getValueScalingFactor()))
+							.getVectors());
 		}
 		kernel = setup.getKernel();
 	}
@@ -54,14 +58,15 @@ public abstract class SupportVector<B extends BundleValueBid<?>, T extends Bundl
 			Map<Bidder, Set<Bundle>> excludedBids) {
 		return this.kernel.getAllocationWithExcludedBundles(domain, economy, this.supportVectorsPerBider, excludedBids);
 	}
-	
+
 	public double getModelPredictedValueOf(Bidder bidder, Bundle bundle) {
-		if (supportVectorsPerBider==null || supportVectorsPerBider.getBid(bidder) == null) return 0d;
+		if (supportVectorsPerBider == null || supportVectorsPerBider.getBid(bidder) == null)
+			return 0d;
 		Double value = 0.0;
-		for (BundleExactValuePair bv : supportVectorsPerBider.getBid(bidder).getBundleBids()){
-			value+=bv.getAmount().doubleValue()*kernel.getValue(bv.getBundle(),bundle);
+		for (BundleExactValuePair bv : supportVectorsPerBider.getBid(bidder).getBundleBids()) {
+			value += bv.getAmount().doubleValue() * kernel.getValue(bv.getBundle(), bundle);
 		}
-		return value;
+		return value * BigDecimal.ONE.divide(valueScalingFactor, 10, RoundingMode.HALF_UP).doubleValue();
 	}
 
 	protected abstract SupportVectorMIP<B> createSupportVectorMIP(SupportVectorSetup setup, B bid);

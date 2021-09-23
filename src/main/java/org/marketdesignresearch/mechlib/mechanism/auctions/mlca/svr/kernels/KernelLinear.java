@@ -20,7 +20,7 @@ import lombok.Setter;
  * @author Manuel Beyeler
  */
 public class KernelLinear extends Kernel {
-	
+
 	@Getter
 	@Setter
 	private double coeff0;

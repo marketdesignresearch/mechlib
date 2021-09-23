@@ -6,7 +6,7 @@
 
     <groupId>org.marketdesignresearch</groupId>
     <artifactId>mechlib</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -21,7 +21,7 @@
             <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
         </license>
     </licenses>
-
+    
     <developers>
         <developer>
             <name>Fabio Isler</name>
@@ -38,7 +38,7 @@
         <connection>scm:git:git://github.com/marketdesignresearch/mechlib.git</connection>
         <developerConnection>scm:git:git@github.com:marketdesignresearch/mechlib.git</developerConnection>
         <url>https://github.com/marketdesignresearch/mechlib/tree/master/</url>
-        <tag>v0.1.0</tag>
+        <tag>v0.2.0</tag>
     </scm>
 
     <distributionManagement>
@@ -72,9 +72,10 @@
         <dependency>
             <groupId>cplex</groupId>
             <artifactId>cplex</artifactId>
-            <version>12.10</version>
+            <version>20.1</version>
             <optional>true</optional>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${env.CPLEX_STUDIO_DIR201}/cplex/lib/cplex.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -156,6 +157,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M3</version>
+                    <configuration>
+                        <argLine>"-Djava.library.path=${env.CPLEX_STUDIO_BINARIES201}"</argLine>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

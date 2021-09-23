@@ -7,6 +7,7 @@ import org.marketdesignresearch.mechlib.mechanism.auctions.Auction;
 import org.marketdesignresearch.mechlib.mechanism.auctions.interactions.ExactValueQuery;
 
 public interface ExactValueQueryStrategy extends InteractionStrategy {
+
 	BundleExactValueBid applyExactValueStrategy(ExactValueQuery interaction, Auction<?> auction);
 
 	default Set<Class<? extends InteractionStrategy>> getTypes() {
